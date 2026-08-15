@@ -51,9 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  music: 'music',
-  playlist: 'playlist',
-  user: 'user'
+  Follow: 'Follow',
+  Like: 'Like',
+  PlayHistory: 'PlayHistory',
+  Playlist: 'Playlist',
+  User: 'User',
+  PlaylistTrack: 'PlaylistTrack',
+  Track: 'Track'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,24 +76,44 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const MusicScalarFieldEnum = {
-  id: 'id',
-  playlist_id: 'playlist_id',
-  name: 'name',
-  author: 'author',
-  time: 'time',
-  created_at: 'created_at'
+export const FollowScalarFieldEnum = {
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
 } as const
 
-export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
+export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
+
+
+export const LikeScalarFieldEnum = {
+  userId: 'userId',
+  trackId: 'trackId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
+
+export const PlayHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  trackId: 'trackId',
+  playedAt: 'playedAt',
+  duration: 'duration'
+} as const
+
+export type PlayHistoryScalarFieldEnum = (typeof PlayHistoryScalarFieldEnum)[keyof typeof PlayHistoryScalarFieldEnum]
 
 
 export const PlaylistScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
-  playlist_name: 'playlist_name',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  name: 'name',
+  description: 'description',
+  coverUrl: 'coverUrl',
+  isPublic: 'isPublic',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum]
@@ -97,13 +121,55 @@ export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typ
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  username: 'username',
   email: 'email',
-  password: 'password',
-  created_at: 'created_at'
+  username: 'username',
+  passwordHash: 'passwordHash',
+  avatarUrl: 'avatarUrl',
+  deezerUserId: 'deezerUserId',
+  deezerAccessToken: 'deezerAccessToken',
+  createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const PlaylistTrackScalarFieldEnum = {
+  id: 'id',
+  playlistId: 'playlistId',
+  trackId: 'trackId',
+  position: 'position',
+  addedAt: 'addedAt',
+  addedById: 'addedById'
+} as const
+
+export type PlaylistTrackScalarFieldEnum = (typeof PlaylistTrackScalarFieldEnum)[keyof typeof PlaylistTrackScalarFieldEnum]
+
+
+export const TrackScalarFieldEnum = {
+  id: 'id',
+  deezerId: 'deezerId',
+  title: 'title',
+  titleShort: 'titleShort',
+  duration: 'duration',
+  isrc: 'isrc',
+  explicit: 'explicit',
+  previewUrl: 'previewUrl',
+  releaseDate: 'releaseDate',
+  rank: 'rank',
+  trackPosition: 'trackPosition',
+  diskNumber: 'diskNumber',
+  artistDeezerId: 'artistDeezerId',
+  artistName: 'artistName',
+  artistPicture: 'artistPicture',
+  albumDeezerId: 'albumDeezerId',
+  albumTitle: 'albumTitle',
+  albumCover: 'albumCover',
+  albumCoverBig: 'albumCoverBig',
+  fetchedAt: 'fetchedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrackScalarFieldEnum = (typeof TrackScalarFieldEnum)[keyof typeof TrackScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -120,4 +186,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

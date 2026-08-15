@@ -18,17 +18,37 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model music
+ * Model Follow
  * 
  */
-export type music = Prisma.musicModel
+export type Follow = Prisma.FollowModel
 /**
- * Model playlist
+ * Model Like
  * 
  */
-export type playlist = Prisma.playlistModel
+export type Like = Prisma.LikeModel
 /**
- * Model user
+ * Model PlayHistory
  * 
  */
-export type user = Prisma.userModel
+export type PlayHistory = Prisma.PlayHistoryModel
+/**
+ * Model Playlist
+ * 
+ */
+export type Playlist = Prisma.PlaylistModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model PlaylistTrack
+ * 
+ */
+export type PlaylistTrack = Prisma.PlaylistTrackModel
+/**
+ * Model Track
+ * 
+ */
+export type Track = Prisma.TrackModel

@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Music
- * const music = await prisma.music.findMany()
+ * // Fetch zero or more Follows
+ * const follows = await prisma.follow.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,17 +42,37 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model music
+ * Model Follow
  * 
  */
-export type music = Prisma.musicModel
+export type Follow = Prisma.FollowModel
 /**
- * Model playlist
+ * Model Like
  * 
  */
-export type playlist = Prisma.playlistModel
+export type Like = Prisma.LikeModel
 /**
- * Model user
+ * Model PlayHistory
  * 
  */
-export type user = Prisma.userModel
+export type PlayHistory = Prisma.PlayHistoryModel
+/**
+ * Model Playlist
+ * 
+ */
+export type Playlist = Prisma.PlaylistModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model PlaylistTrack
+ * 
+ */
+export type PlaylistTrack = Prisma.PlaylistTrackModel
+/**
+ * Model Track
+ * 
+ */
+export type Track = Prisma.TrackModel
