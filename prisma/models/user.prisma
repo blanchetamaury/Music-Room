@@ -1,0 +1,11 @@
+model user {
+	id			String 		@id @default(uuid())
+
+	username 	String
+	email		String		@unique
+	password	String
+
+	playlist	playlist[]
+
+	created_at	DateTime	@default(now())
+}

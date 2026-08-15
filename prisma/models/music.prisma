@@ -1,0 +1,12 @@
+model music {
+	id				String 		@id @default(uuid())
+	playlist_id		String
+
+	name			String
+	author			String
+	time			Int
+
+	created_at		DateTime	@default(now())
+
+	playlist		playlist	@relation(fields: [playlist_id], references: [id], onDelete: Cascade)
+}

@@ -43,6 +43,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4fb75a98-9a7c-483f-905b-5b9f944d265f"
+      }
+    },
+    "owner": "amauryblas-team"
   }
 }
