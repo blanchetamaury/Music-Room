@@ -9,7 +9,7 @@ export async function GET(req: Request) {
 
 	try {
 		const tracks = await searchTracks(q)
-		return Response.json({ tracks })
+		return Response.json({ data: tracks })
 	} catch (err) {
 		console.error('[searchTracks]', err)
 		return Response.json({ error: 'search failed' }, { status: 502 })

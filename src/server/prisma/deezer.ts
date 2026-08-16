@@ -117,4 +117,11 @@ async function refreshStaleTracks(deezerIds: string[]) {
   await Promise.allSettled(stale.map((t) => getTrack(t.deezerId)))
 }
 
-export { getTrack, searchTracks, refreshStaleTracks }
+async function getChart(limit = 100) {
+  const res = await fetch(`${DEEZER_API}/chart/0/tracks?limit=${limit}`)
+  if (!res.ok) throw new Error(`Deezer ${res.status}`)
+  const { data }: { data: DeezerTrack[] } = await res.json()
+  return data
+}
+
+export { getTrack, searchTracks, refreshStaleTracks, getChart }

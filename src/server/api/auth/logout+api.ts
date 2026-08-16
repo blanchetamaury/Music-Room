@@ -1,5 +1,6 @@
 import { verifyCsrf } from '../../lib/csrf';
 import { errorHandler, ERRORS_DETAILS } from '../../utils/error';
+import { Request } from 'express';
 
 export async function POST(req: Request): Promise<Response> {
 	return errorHandler(async () => {

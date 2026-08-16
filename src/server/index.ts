@@ -9,8 +9,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8081';
 
+// Allow both localhost and ngrok URLs
+const allowedOrigins = [
+  CLIENT_URL,
+  'http://localhost:8081',
+  'http://localhost:19006',
+  'https://ambulance-eggshell-preamble.ngrok-free.dev',
+];
+
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],

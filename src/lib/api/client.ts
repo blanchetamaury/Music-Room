@@ -6,6 +6,27 @@ interface ApiResponse<T> {
   data?: T;
 }
 
+type DeezerTrack = {
+  id: string | number
+  title: string
+  title_short?: string
+  duration: string | number
+  isrc?: string
+  explicit_lyrics?: boolean
+  preview?: string
+  release_date?: string
+  rank?: string | number
+  track_position?: number
+  disk_number?: number
+  artist: { id: string | number; name: string; picture_medium?: string }
+  album: {
+    id: string | number
+    title: string
+    cover_medium?: string
+    cover_big?: string
+  }
+}
+
 async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -73,6 +94,14 @@ export const api = {
 
     oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
   },
+  deezer: {
+    tracks: (q: string) => {
+      return fetchApi<DeezerTrack[]>(`/deezer/tracks?q=${encodeURIComponent(q)}`);
+    },
+    chart: () => {
+      return fetchApi<DeezerTrack[]>(`/deezer/chartsfirts`);
+    }
+  }
 };
 
 export function getApiBaseUrl(): string {
