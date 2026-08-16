@@ -23,6 +23,11 @@ export * from './enums';
  */
 export type Follow = Prisma.FollowModel
 /**
+ * Model fortytwo_oauth
+ * 
+ */
+export type fortytwo_oauth = Prisma.fortytwo_oauthModel
+/**
  * Model Like
  * 
  */
@@ -38,11 +43,6 @@ export type PlayHistory = Prisma.PlayHistoryModel
  */
 export type Playlist = Prisma.PlaylistModel
 /**
- * Model User
- * 
- */
-export type User = Prisma.UserModel
-/**
  * Model PlaylistTrack
  * 
  */
@@ -52,3 +52,8 @@ export type PlaylistTrack = Prisma.PlaylistTrackModel
  * 
  */
 export type Track = Prisma.TrackModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

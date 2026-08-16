@@ -52,12 +52,13 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Follow: 'Follow',
+  fortytwo_oauth: 'fortytwo_oauth',
   Like: 'Like',
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
-  User: 'User',
   PlaylistTrack: 'PlaylistTrack',
-  Track: 'Track'
+  Track: 'Track',
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,6 +84,16 @@ export const FollowScalarFieldEnum = {
 } as const
 
 export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
+
+
+export const Fortytwo_oauthScalarFieldEnum = {
+  id: 'id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  valid_until: 'valid_until'
+} as const
+
+export type Fortytwo_oauthScalarFieldEnum = (typeof Fortytwo_oauthScalarFieldEnum)[keyof typeof Fortytwo_oauthScalarFieldEnum]
 
 
 export const LikeScalarFieldEnum = {
@@ -117,20 +128,6 @@ export const PlaylistScalarFieldEnum = {
 } as const
 
 export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum]
-
-
-export const UserScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  username: 'username',
-  passwordHash: 'passwordHash',
-  avatarUrl: 'avatarUrl',
-  deezerUserId: 'deezerUserId',
-  deezerAccessToken: 'deezerAccessToken',
-  createdAt: 'createdAt'
-} as const
-
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const PlaylistTrackScalarFieldEnum = {
@@ -170,6 +167,22 @@ export const TrackScalarFieldEnum = {
 } as const
 
 export type TrackScalarFieldEnum = (typeof TrackScalarFieldEnum)[keyof typeof TrackScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  username: 'username',
+  passwordHash: 'passwordHash',
+  avatarUrl: 'avatarUrl',
+  deezerUserId: 'deezerUserId',
+  deezerAccessToken: 'deezerAccessToken',
+  fortytwo_oauth_id: 'fortytwo_oauth_id',
+  fortytwo_user_id: 'fortytwo_user_id',
+  createdAt: 'createdAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {

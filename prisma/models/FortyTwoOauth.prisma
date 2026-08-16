@@ -1,0 +1,9 @@
+model fortytwo_oauth {
+	id				String			@id			@default(uuid())
+
+	access_token	String?
+	refresh_token	String?
+	valid_until		DateTime		@default(now())
+
+	user			User?
+}

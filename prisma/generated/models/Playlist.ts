@@ -380,6 +380,11 @@ export type PlaylistMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type PlaylistScalarRelationFilter = {
+  is?: Prisma.PlaylistWhereInput
+  isNot?: Prisma.PlaylistWhereInput
+}
+
 export type PlaylistListRelationFilter = {
   every?: Prisma.PlaylistWhereInput
   some?: Prisma.PlaylistWhereInput
@@ -390,17 +395,22 @@ export type PlaylistOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type PlaylistScalarRelationFilter = {
-  is?: Prisma.PlaylistWhereInput
-  isNot?: Prisma.PlaylistWhereInput
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type PlaylistCreateNestedOneWithoutTracksInput = {
+  create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
+  connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput
+  connect?: Prisma.PlaylistWhereUniqueInput
+}
+
+export type PlaylistUpdateOneRequiredWithoutTracksNestedInput = {
+  create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
+  connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput
+  upsert?: Prisma.PlaylistUpsertWithoutTracksInput
+  connect?: Prisma.PlaylistWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlaylistUpdateToOneWithWhereWithoutTracksInput, Prisma.PlaylistUpdateWithoutTracksInput>, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
 }
 
 export type PlaylistCreateNestedManyWithoutOwnerInput = {
@@ -445,18 +455,64 @@ export type PlaylistUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.PlaylistScalarWhereInput | Prisma.PlaylistScalarWhereInput[]
 }
 
-export type PlaylistCreateNestedOneWithoutTracksInput = {
-  create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
-  connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput
-  connect?: Prisma.PlaylistWhereUniqueInput
+export type PlaylistCreateWithoutTracksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  coverUrl?: string | null
+  isPublic?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutPlaylistsInput
 }
 
-export type PlaylistUpdateOneRequiredWithoutTracksNestedInput = {
-  create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
-  connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput
-  upsert?: Prisma.PlaylistUpsertWithoutTracksInput
-  connect?: Prisma.PlaylistWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PlaylistUpdateToOneWithWhereWithoutTracksInput, Prisma.PlaylistUpdateWithoutTracksInput>, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
+export type PlaylistUncheckedCreateWithoutTracksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  coverUrl?: string | null
+  isPublic?: boolean
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PlaylistCreateOrConnectWithoutTracksInput = {
+  where: Prisma.PlaylistWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
+}
+
+export type PlaylistUpsertWithoutTracksInput = {
+  update: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
+  create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
+  where?: Prisma.PlaylistWhereInput
+}
+
+export type PlaylistUpdateToOneWithWhereWithoutTracksInput = {
+  where?: Prisma.PlaylistWhereInput
+  data: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
+}
+
+export type PlaylistUpdateWithoutTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutPlaylistsNestedInput
+}
+
+export type PlaylistUncheckedUpdateWithoutTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PlaylistCreateWithoutOwnerInput = {
@@ -519,66 +575,6 @@ export type PlaylistScalarWhereInput = {
   ownerId?: Prisma.StringFilter<"Playlist"> | string
   createdAt?: Prisma.DateTimeFilter<"Playlist"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Playlist"> | Date | string
-}
-
-export type PlaylistCreateWithoutTracksInput = {
-  id?: string
-  name: string
-  description?: string | null
-  coverUrl?: string | null
-  isPublic?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutPlaylistsInput
-}
-
-export type PlaylistUncheckedCreateWithoutTracksInput = {
-  id?: string
-  name: string
-  description?: string | null
-  coverUrl?: string | null
-  isPublic?: boolean
-  ownerId: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type PlaylistCreateOrConnectWithoutTracksInput = {
-  where: Prisma.PlaylistWhereUniqueInput
-  create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
-}
-
-export type PlaylistUpsertWithoutTracksInput = {
-  update: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
-  create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>
-  where?: Prisma.PlaylistWhereInput
-}
-
-export type PlaylistUpdateToOneWithWhereWithoutTracksInput = {
-  where?: Prisma.PlaylistWhereInput
-  data: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>
-}
-
-export type PlaylistUpdateWithoutTracksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutPlaylistsNestedInput
-}
-
-export type PlaylistUncheckedUpdateWithoutTracksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PlaylistCreateManyOwnerInput = {

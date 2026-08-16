@@ -371,48 +371,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type PlayHistoryCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
-  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-}
-
-export type PlayHistoryUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
-  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-}
-
-export type PlayHistoryUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
-  set?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  disconnect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  delete?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  update?: Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput | Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
-}
-
-export type PlayHistoryUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
-  set?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  disconnect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  delete?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
-  update?: Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput | Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
-}
-
 export type PlayHistoryCreateNestedManyWithoutTrackInput = {
   create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutTrackInput, Prisma.PlayHistoryUncheckedCreateWithoutTrackInput> | Prisma.PlayHistoryCreateWithoutTrackInput[] | Prisma.PlayHistoryUncheckedCreateWithoutTrackInput[]
   connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutTrackInput | Prisma.PlayHistoryCreateOrConnectWithoutTrackInput[]
@@ -455,55 +413,46 @@ export type PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput = {
   deleteMany?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
 }
 
-export type PlayHistoryCreateWithoutUserInput = {
-  id?: string
-  playedAt?: Date | string
-  duration?: number | null
-  track: Prisma.TrackCreateNestedOneWithoutPlaysInput
+export type PlayHistoryCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
+  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
 }
 
-export type PlayHistoryUncheckedCreateWithoutUserInput = {
-  id?: string
-  trackId: string
-  playedAt?: Date | string
-  duration?: number | null
+export type PlayHistoryUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
+  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
 }
 
-export type PlayHistoryCreateOrConnectWithoutUserInput = {
-  where: Prisma.PlayHistoryWhereUniqueInput
-  create: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput>
+export type PlayHistoryUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
+  set?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  disconnect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  delete?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  update?: Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput | Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
 }
 
-export type PlayHistoryCreateManyUserInputEnvelope = {
-  data: Prisma.PlayHistoryCreateManyUserInput | Prisma.PlayHistoryCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type PlayHistoryUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.PlayHistoryWhereUniqueInput
-  update: Prisma.XOR<Prisma.PlayHistoryUpdateWithoutUserInput, Prisma.PlayHistoryUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput>
-}
-
-export type PlayHistoryUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.PlayHistoryWhereUniqueInput
-  data: Prisma.XOR<Prisma.PlayHistoryUpdateWithoutUserInput, Prisma.PlayHistoryUncheckedUpdateWithoutUserInput>
-}
-
-export type PlayHistoryUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.PlayHistoryScalarWhereInput
-  data: Prisma.XOR<Prisma.PlayHistoryUpdateManyMutationInput, Prisma.PlayHistoryUncheckedUpdateManyWithoutUserInput>
-}
-
-export type PlayHistoryScalarWhereInput = {
-  AND?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
-  OR?: Prisma.PlayHistoryScalarWhereInput[]
-  NOT?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
-  id?: Prisma.StringFilter<"PlayHistory"> | string
-  userId?: Prisma.StringFilter<"PlayHistory"> | string
-  trackId?: Prisma.StringFilter<"PlayHistory"> | string
-  playedAt?: Prisma.DateTimeFilter<"PlayHistory"> | Date | string
-  duration?: Prisma.IntNullableFilter<"PlayHistory"> | number | null
+export type PlayHistoryUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput> | Prisma.PlayHistoryCreateWithoutUserInput[] | Prisma.PlayHistoryUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutUserInput | Prisma.PlayHistoryCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PlayHistoryCreateManyUserInputEnvelope
+  set?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  disconnect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  delete?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  connect?: Prisma.PlayHistoryWhereUniqueInput | Prisma.PlayHistoryWhereUniqueInput[]
+  update?: Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayHistoryUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput | Prisma.PlayHistoryUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
 }
 
 export type PlayHistoryCreateWithoutTrackInput = {
@@ -546,32 +495,55 @@ export type PlayHistoryUpdateManyWithWhereWithoutTrackInput = {
   data: Prisma.XOR<Prisma.PlayHistoryUpdateManyMutationInput, Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackInput>
 }
 
-export type PlayHistoryCreateManyUserInput = {
+export type PlayHistoryScalarWhereInput = {
+  AND?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
+  OR?: Prisma.PlayHistoryScalarWhereInput[]
+  NOT?: Prisma.PlayHistoryScalarWhereInput | Prisma.PlayHistoryScalarWhereInput[]
+  id?: Prisma.StringFilter<"PlayHistory"> | string
+  userId?: Prisma.StringFilter<"PlayHistory"> | string
+  trackId?: Prisma.StringFilter<"PlayHistory"> | string
+  playedAt?: Prisma.DateTimeFilter<"PlayHistory"> | Date | string
+  duration?: Prisma.IntNullableFilter<"PlayHistory"> | number | null
+}
+
+export type PlayHistoryCreateWithoutUserInput = {
+  id?: string
+  playedAt?: Date | string
+  duration?: number | null
+  track: Prisma.TrackCreateNestedOneWithoutPlaysInput
+}
+
+export type PlayHistoryUncheckedCreateWithoutUserInput = {
   id?: string
   trackId: string
   playedAt?: Date | string
   duration?: number | null
 }
 
-export type PlayHistoryUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  track?: Prisma.TrackUpdateOneRequiredWithoutPlaysNestedInput
+export type PlayHistoryCreateOrConnectWithoutUserInput = {
+  where: Prisma.PlayHistoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput>
 }
 
-export type PlayHistoryUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  trackId?: Prisma.StringFieldUpdateOperationsInput | string
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+export type PlayHistoryCreateManyUserInputEnvelope = {
+  data: Prisma.PlayHistoryCreateManyUserInput | Prisma.PlayHistoryCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
-export type PlayHistoryUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  trackId?: Prisma.StringFieldUpdateOperationsInput | string
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+export type PlayHistoryUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PlayHistoryWhereUniqueInput
+  update: Prisma.XOR<Prisma.PlayHistoryUpdateWithoutUserInput, Prisma.PlayHistoryUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.PlayHistoryCreateWithoutUserInput, Prisma.PlayHistoryUncheckedCreateWithoutUserInput>
+}
+
+export type PlayHistoryUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PlayHistoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.PlayHistoryUpdateWithoutUserInput, Prisma.PlayHistoryUncheckedUpdateWithoutUserInput>
+}
+
+export type PlayHistoryUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.PlayHistoryScalarWhereInput
+  data: Prisma.XOR<Prisma.PlayHistoryUpdateManyMutationInput, Prisma.PlayHistoryUncheckedUpdateManyWithoutUserInput>
 }
 
 export type PlayHistoryCreateManyTrackInput = {
@@ -598,6 +570,34 @@ export type PlayHistoryUncheckedUpdateWithoutTrackInput = {
 export type PlayHistoryUncheckedUpdateManyWithoutTrackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type PlayHistoryCreateManyUserInput = {
+  id?: string
+  trackId: string
+  playedAt?: Date | string
+  duration?: number | null
+}
+
+export type PlayHistoryUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  track?: Prisma.TrackUpdateOneRequiredWithoutPlaysNestedInput
+}
+
+export type PlayHistoryUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  trackId?: Prisma.StringFieldUpdateOperationsInput | string
+  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type PlayHistoryUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  trackId?: Prisma.StringFieldUpdateOperationsInput | string
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
