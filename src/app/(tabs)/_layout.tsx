@@ -15,12 +15,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
       }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarStyle: { display: 'none'}
-        }}
-      />
+      <Tabs.Screen name="home" options={{ tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="explore" options={{ tabBarStyle: { display: 'none' } }} />
     </Tabs>
   );
 }

@@ -27,6 +27,14 @@ type Props = {
   /** Style INTÉRIEUR (padding, alignItems...) */
   contentStyle?: StyleProp<ViewStyle>
   radius?: number
+  topLeftRadius?: number
+  topRightRadius?: number
+  bottomLeftRadius?: number
+  bottomRightRadius?: number
+  contentTopLeftRadius?: number
+  contentTopRightRadius?: number
+  contentBottomLeftRadius?: number
+  contentBottomRightRadius?: number
   intensity?: number
   tint?: Tint
   /** Reflet animé qui balaie la surface */
@@ -40,6 +48,14 @@ export default function LiquidGlass({
   style,
   contentStyle,
   radius = 24,
+  topLeftRadius,
+  topRightRadius,
+  bottomLeftRadius,
+  bottomRightRadius,
+  contentTopLeftRadius,
+  contentTopRightRadius,
+  contentBottomLeftRadius,
+  contentBottomRightRadius,
   intensity = 40,
   tint = 'dark',
   shimmer = true,
@@ -66,9 +82,23 @@ export default function LiquidGlass({
 
   const isLight = tint === 'light'
 
+  const outerRadius = {
+    borderTopLeftRadius: topLeftRadius ?? radius,
+    borderTopRightRadius: topRightRadius ?? radius,
+    borderBottomLeftRadius: bottomLeftRadius ?? radius,
+    borderBottomRightRadius: bottomRightRadius ?? radius,
+  }
+
+  const contentRadius = {
+    borderTopLeftRadius: contentTopLeftRadius ?? topLeftRadius ?? radius,
+    borderTopRightRadius: contentTopRightRadius ?? topRightRadius ?? radius,
+    borderBottomLeftRadius: contentBottomLeftRadius ?? bottomLeftRadius ?? radius,
+    borderBottomRightRadius: contentBottomRightRadius ?? bottomRightRadius ?? radius,
+  }
+
   return (
     // 1. WRAPPER : porte l'ombre (applique la `style` passée pour layout)
-      <View style={[styles.clip, style as any, { borderRadius: radius }]}>
+      <View style={[styles.clip, style as any, outerRadius]}>
         {/* 3. LE FLOU */}
         <BlurView
           intensity={intensity}
@@ -81,8 +111,8 @@ export default function LiquidGlass({
         <LinearGradient
           colors={
             isLight
-              ? ['rgba(255,255,255,0.55)', 'rgba(255,255,255,0.18)', 'rgba(255,255,255,0.30)']
-              : ['rgba(255,255,255,0.20)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.10)']
+              ? ['rgba(255,255,255,0.40)', 'rgba(255,255,255,0.12)', 'rgba(255,255,255,0.18)']
+              : ['rgba(255,255,255,0.12)', 'rgba(255,255,255,0.03)', 'rgba(255,255,255,0.08)']
           }
           locations={[0, 0.55, 1]}
           start={{ x: 0, y: 0 }}
@@ -139,7 +169,7 @@ export default function LiquidGlass({
 
         {/* 9. BORD SUPÉRIEUR : la fine ligne blanche qui vend l'effet */}
         <LinearGradient
-          colors={['transparent', 'rgba(255,255,255,0.85)', 'transparent']}
+          colors={['transparent', 'rgba(255,255,255,0.30)', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.topEdge}
@@ -150,13 +180,14 @@ export default function LiquidGlass({
         <View
           style={[
             styles.border,
-            { borderRadius: radius, borderColor: isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)' },
+            outerRadius,
+            { borderColor: isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)' },
           ]}
           pointerEvents="none"
         />
 
         {/* 11. CONTENU */}
-        <View style={[styles.content, contentStyle]}>{children}</View>
+        <View style={[styles.content, contentRadius, contentStyle]}>{children}</View>
       </View>
   )
 }
@@ -208,9 +239,9 @@ const styles = StyleSheet.create({
   topEdge: {
     position: 'absolute',
     top: 0,
-    left: '12%',
-    right: '12%',
-    height: StyleSheet.hairlineWidth * 2,
+    left: '18%',
+    right: '18%',
+    height: StyleSheet.hairlineWidth,
   },
   border: {
     ...StyleSheet.absoluteFillObject,

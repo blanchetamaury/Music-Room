@@ -1,17 +1,17 @@
+import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    StyleSheet,
-    TextInput,
-    View,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	StyleSheet,
+	TextInput,
+	View,
 } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
-import { Link } from 'expo-router';
-import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 
 export function LoginForm({
   onLogin,
@@ -36,8 +36,7 @@ export function LoginForm({
   const isPasswordValid = password.length >= 6;
   const canSubmit = isEmailValid && isPasswordValid;
 
-  const formBg = useThemeColor({ light: 'rgba(24, 20, 20, 0.94)', dark: 'rgba(18,18,18,0.86)' }, 'background');
-  const glassBg = useThemeColor({ light: 'rgba(255,255,255,0.18)', dark: 'rgba(255,255,255,0.06)' }, 'background');
+  const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const inputTextColor = useThemeColor({}, 'text');
 
   const handleSubmit = () => {
@@ -48,9 +47,14 @@ export function LoginForm({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.wrapper}>
-      <LiquidGlass style={[styles.form, { backgroundColor: glassBg }]}>
-        {/* Decorative layers to simulate liquid glass */}
-        <View pointerEvents="none" style={styles.glassOverlayInner} />
+      <LiquidGlass
+        style={[styles.form, { backgroundColor: glassBg }]}
+        radius={16}
+        topLeftRadius={16}
+        topRightRadius={16}
+        bottomLeftRadius={16}
+        bottomRightRadius={16}
+      >
         <Pressable
           onPress={() => onRegister?.()}
           style={styles.topRightBtn}

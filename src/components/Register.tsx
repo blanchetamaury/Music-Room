@@ -23,12 +23,19 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
   const rules = useMemo(() => checkRules(pw), [pw]);
   const completed = [rules.hasUpper, rules.hasNumber, rules.hasSpecial].filter(Boolean).length;
 
-  const formBg = useThemeColor({ light: 'rgba(255,255,255,0.14)', dark: 'rgba(255,255,255,0.06)' }, 'background');
+  const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
 
   return (
-    <LiquidGlass style={[styles.container, { backgroundColor: formBg }]}>
+    <LiquidGlass
+      style={[styles.container, { backgroundColor: formBg }]}
+      radius={16}
+      topLeftRadius={16}
+      topRightRadius={16}
+      bottomLeftRadius={16}
+      bottomRightRadius={16}
+    >
       <Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
         <View style={styles.iconPlaceholder} />
       </Pressable>
@@ -168,6 +175,9 @@ const styles = StyleSheet.create({
   },
   inputDistinct: {
     backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  inputInvalid: {
+    borderColor: '#ff6b6b',
   },
   error: {
     marginTop: 6,
