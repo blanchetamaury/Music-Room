@@ -1,8 +1,8 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 
-import LiquidGlass from '@/components/LiquidGlass';
-import { ThemedText } from '@/components/themed-text';
+import LiquidGlass from '../LiquidGlass';
+import { ThemedText } from '../themed-text';
 
 import { playlistUsers } from './data';
 import { homeStyles } from './home.styles';

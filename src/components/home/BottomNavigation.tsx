@@ -1,9 +1,8 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 
-import LiquidGlass from '@/components/LiquidGlass';
-
-import { homeStyles } from '@/components/home/home.styles';
+import { homeStyles } from '@/src/components/home/home.styles';
+import LiquidGlass from '../LiquidGlass';
 
 export type TabKey = 'home' | 'playlist' | 'profile';
 

@@ -1,17 +1,17 @@
+import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    StyleSheet,
-    TextInput,
-    View,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	StyleSheet,
+	TextInput,
+	View,
 } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
-import { Link } from 'expo-router';
-import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 
 export function LoginForm({
   onLogin,

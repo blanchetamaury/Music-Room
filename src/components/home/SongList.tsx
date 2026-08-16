@@ -2,11 +2,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 
-import LiquidGlass from '@/components/LiquidGlass';
-import { ThemedText } from '@/components/themed-text';
-
+import LiquidGlass from '../LiquidGlass';
+import { ThemedText } from '../themed-text';
 import { playlistSongs } from './data';
-import { homeStyles } from './home.styles.ts';
+import { homeStyles } from './home.styles';
 
 export function SongList({
   activeTrack,
