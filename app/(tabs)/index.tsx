@@ -1,98 +1,133 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
+import { LoginForm } from '@/components/LoginForm';
+import { MusicPreview } from '@/components/MusicPreview';
+import { Register } from '@/components/Register';
+import { ResetPassword } from '@/components/ResetPassword';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+export default function LoginScreen() {
+    const sample = [
+        { color: '#ff7f50', title: 'React Beats', artist: 'Expo DJ' },
+        { color: '#7ec8e3', title: 'Sunset Loop', artist: 'Wave Maker' },
+        { color: '#9b59b6', title: 'Night Drive', artist: 'Synth Labs' },
+    ];
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
+
+    function rnd(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const DENSITY = 14; // increased density
+    const animatedConfigs = Array.from({ length: DENSITY }).map(() => ({
+        startX: rnd(0, SCREEN_W * 0.9),
+        startY: SCREEN_H + rnd(10, 400),
+        endY: -200,
+        drift: rnd(-180, 180),
+        duration: Math.floor(rnd(7000, 16000)),
+        delay: Math.floor(rnd(0, 6000)),
+    }));
+
+    const [modeIndex, setModeIndex] = useState<0 | 1 | 2>(1); // 0 = register, 1 = login, 2 = reset
+
+    const handleLogin = (email: string, password: string) => {
+        console.log('login', { email, password });
+    };
+
+    const progress = useSharedValue(0); // -1 register, 0 login, 1 reset
+
+    useEffect(() => {
+        const target = (modeIndex - 1) as number; // -1 | 0 | 1
+        progress.value = withTiming(target, { duration: 420 });
+    }, [modeIndex]);
+
+    const loginStyle = useAnimatedStyle(() => {
+        const tx = interpolate(progress.value, [-1, 0, 1], [SCREEN_W * 0.6, 0, -SCREEN_W * 0.6]);
+        const op = interpolate(progress.value, [-1, 0, 1], [0, 1, 0]);
+        return { transform: [{ translateX: tx }], opacity: op };
+    });
+
+    const resetStyle = useAnimatedStyle(() => {
+        const tx = interpolate(progress.value, [-1, 0, 1], [SCREEN_W * 1.2, SCREEN_W * 0.6, 0]);
+        const op = interpolate(progress.value, [-1, 0, 1], [0, 0, 1]);
+        return { transform: [{ translateX: tx }], opacity: op };
+    });
+
+    const registerStyle = useAnimatedStyle(() => {
+        const tx = interpolate(progress.value, [-1, 0, 1], [0, -SCREEN_W * 0.6, -SCREEN_W * 1.2]);
+        const op = interpolate(progress.value, [-1, 0, 1], [1, 0, 0]);
+        return { transform: [{ translateX: tx }], opacity: op };
+    });
+
+    return (
+        <ThemedView style={styles.container}>
+            {/* Full-screen overlay for animated previews */}
+            <View style={styles.fullOverlay} pointerEvents="none">
+                {animatedConfigs.map((cfg, i) => (
+                    <MusicPreview
+                        key={`anim-${i}`}
+                        color={sample[i % sample.length].color}
+                        title={sample[i % sample.length].title}
+                        artist={sample[i % sample.length].artist}
+                        animationConfig={cfg}
+                    />
+                ))}
+            </View>
+
+            <View style={styles.center}>
+                <Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, registerStyle]} pointerEvents={modeIndex === 0 ? 'auto' : 'none'}>
+                    <Register onBack={() => setModeIndex(1)} onRegisterComplete={() => setModeIndex(1)} onGoogle={() => console.log('google')} />
+                </Animated.View>
+
+                <Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
+                    <LoginForm onLogin={handleLogin} onForgot={() => setModeIndex(2)} onGoogle={() => console.log('google')} onRegister={() => setModeIndex(0)} />
+                </Animated.View>
+
+                <Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, resetStyle]} pointerEvents={modeIndex === 2 ? 'auto' : 'none'}>
+                    <ResetPassword onBack={() => setModeIndex(1)} onResetComplete={() => setModeIndex(1)} />
+                </Animated.View>
+            </View>
+        </ThemedView>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    background: {
+        position: 'absolute',
+        top: 80,
+        left: 16,
+        right: 16,
+        opacity: 0.9,
+    },
+    row: {
+        paddingHorizontal: 8,
+        alignItems: 'center',
+    },
+    center: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        zIndex: 10,
+    },
+    hint: {
+        marginTop: 12,
+        opacity: 0.85,
+    },
+    fullOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none',
+    },
 });
