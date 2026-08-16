@@ -1,4 +1,3 @@
-import { ThemedText } from '@/components/themed-text';
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
@@ -11,6 +10,7 @@ import Animated, {
 	withSequence,
 	withTiming,
 } from 'react-native-reanimated';
+import { ThemedText } from './themed-text';
 
 export function MusicPreview({
   color = '#ddd',

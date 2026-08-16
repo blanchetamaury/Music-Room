@@ -1,9 +1,9 @@
-import { ThemedText } from '@/components/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { useThemeColor } from '@/src/hooks/use-theme-color';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import LiquidGlass from './LiquidGlass';
+import { ThemedText } from './themed-text';
 
 export function ResetPassword({
   onBack,

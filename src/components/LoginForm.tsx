@@ -1,15 +1,15 @@
-import { ThemedText } from '@/components/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { useThemeColor } from '@/src/hooks/use-theme-color';
 import React, { useState } from 'react';
 import {
-	KeyboardAvoidingView,
-	Platform,
-	Pressable,
-	StyleSheet,
-	TextInput,
-	View,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
 } from 'react-native';
 import LiquidGlass from './LiquidGlass';
+import { ThemedText } from './themed-text';
 
 export function LoginForm({
   onLogin,

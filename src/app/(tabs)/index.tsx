@@ -1,8 +1,9 @@
-import { LoginForm } from '@/components/LoginForm';
-import { MusicPreview } from '@/components/MusicPreview';
-import { Register } from '@/components/Register';
-import { ResetPassword } from '@/components/ResetPassword';
-import { ThemedView } from '@/components/themed-view';
+
+import { LoginForm } from '@/src/components/LoginForm';
+import { MusicPreview } from '@/src/components/MusicPreview';
+import { Register } from '@/src/components/Register';
+import { ResetPassword } from '@/src/components/ResetPassword';
+import { ThemedView } from '@/src/components/themed-view';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';

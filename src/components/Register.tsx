@@ -1,8 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { useThemeColor } from '@/src/hooks/use-theme-color';
 import React, { useMemo, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import LiquidGlass from './LiquidGlass';
+import { ThemedText } from './themed-text';
 
 function checkRules(pw: string) {
   const hasUpper = /[A-Z]/.test(pw);
