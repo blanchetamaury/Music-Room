@@ -5,13 +5,14 @@ import { ResetPassword } from '@/src/components/ResetPassword';
 import { ThemedView } from '@/src/components/themed-view';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
-	interpolate,
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
+import { api } from '@/src/lib/api/client';
 
 export type AuthMode = 'login' | 'register' | 'reset-password';
 
@@ -23,7 +24,7 @@ function LoginScreenInner({
   onGoogle,
   onRegister,
 }: {
-  onLogin: () => void;
+  onLogin: (email: string, password: string) => Promise<void>;
   onForgot: () => void;
   onGoogle: () => void;
   onRegister: () => void;
@@ -118,13 +119,35 @@ export default function LoginScreen() {
     return { transform: [{ translateX: tx }], opacity: op };
   });
 
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await api.auth.login(email, password);
+      if (!response.success) {
+        throw new Error(response.message || 'Login failed');
+      }
+      handleAuthComplete();
+    } catch (err) {
+      // Error is handled in LoginForm component
+      console.error('Login error:', err);
+    }
+  };
+
+  const handleRegisterComplete = () => {
+    handleAuthComplete();
+  };
+
+  const handleResetComplete = () => {
+    handleAuthComplete();
+  };
+
   const handleAuthComplete = () => {
     setIsAuthed(true);
     router.replace('/(tabs)/home');
   };
 
   const handleGoogleAuth = () => {
-    console.log('google');
+    const url = api.auth.oauthFortyTwo();
+    window.location.href = url;
   };
 
   const handleModeChange = (newMode: AuthMode) => {
@@ -148,14 +171,14 @@ export default function LoginScreen() {
       >
         <RegisterScreenInner
           onBack={() => handleModeChange('login')}
-          onRegisterComplete={handleAuthComplete}
+          onRegisterComplete={handleRegisterComplete}
           onGoogle={handleGoogleAuth}
         />
       </Animated.View>
 
       <Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
         <LoginScreenInner
-          onLogin={handleAuthComplete}
+          onLogin={handleLogin}
           onForgot={() => handleModeChange('reset-password')}
           onGoogle={handleGoogleAuth}
           onRegister={() => handleModeChange('register')}
@@ -168,7 +191,7 @@ export default function LoginScreen() {
       >
         <ResetPasswordScreenInner
           onBack={() => handleModeChange('login')}
-          onResetComplete={handleAuthComplete}
+          onResetComplete={handleResetComplete}
         />
       </Animated.View>
     </ThemedView>

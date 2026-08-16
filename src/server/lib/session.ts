@@ -1,9 +1,9 @@
-import { ERRORS_DETAILS } from '@/src/server/utils/error';
-import { JWTSessionPayload, SessionPayload } from '@/types/session/SessionPayload';
-import * as SecureStore from 'expo-secure-store';
+import { ERRORS_DETAILS } from '../utils/error';
+import { JWTSessionPayload, SessionPayload } from '../../types/session/SessionPayload';
 import { SignJWT, jwtVerify } from 'jose';
+import { Request, Response } from 'express';
 
-const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET);
+const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET || 'default-secret-change-in-production');
 
 interface CreatedSessionPayload {
 	body: string;
@@ -31,8 +31,8 @@ const decrypt = async (session: string | undefined = ''): Promise<JWTSessionPayl
 const createSession = async (payload: SessionPayload): Promise<CreatedSessionPayload> => {
 	const expirationDate = Date.now() + 2 * 60 * 60 * 1000;
 	const body = await encrypt({
-		exp: expirationDate,
-		iat: Date.now(),
+		exp: Math.floor(expirationDate / 1000),
+		iat: Math.floor(Date.now() / 1000),
 		iss: 'BDE-42',
 		...payload,
 	});
@@ -42,15 +42,8 @@ const createSession = async (payload: SessionPayload): Promise<CreatedSessionPay
 const setSession = async (session: CreatedSessionPayload, response: Response): Promise<void> => {
     response.headers.append(
         'Set-Cookie',
-        `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax; Secure`
+        `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`
     );
-};
-
-const unsetSession = async (): Promise<void> => {
-	const sessionCookie = await SecureStore.getItemAsync('session');
-
-	if (!sessionCookie) return;
-	await SecureStore.deleteItemAsync('session');
 };
 
 const createAndSetSession = async (payload: SessionPayload): Promise<string> => {
@@ -58,10 +51,18 @@ const createAndSetSession = async (payload: SessionPayload): Promise<string> => 
     return `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
 };
 
+const getSessionFromCookie = (req: Request): string | null => {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return null;
+  
+  const match = cookieHeader.match(/session=([^;]+)/);
+  return match ? match[1] : null;
+};
+
 const getSession = async (req: Request): Promise<SessionPayload | null> => {
 	try {
-		const cookie = await SecureStore.getItemAsync('session');
-		if (cookie === null) return null;
+		const cookie = getSessionFromCookie(req);
+		if (!cookie) return null;
 		const session = await decrypt(cookie);
 		if (Date.now() / 1000 >= session.exp) return null;
 		return session;
@@ -88,5 +89,4 @@ export {
 	createAndSetSession, createSession, decrypt, encrypt, getSession,
 	getThrowableSession,
 	parseUserId, setSession,
-	unsetSession
 };

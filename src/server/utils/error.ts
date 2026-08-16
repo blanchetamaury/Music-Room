@@ -10,6 +10,7 @@ const ERRORS_DETAILS: Record<string, (...args: string[]) => Response> = {
 	invalid_body: () => Response.json({ success: false, message: "Invalid body" }, { status: 400 }),
 	missing_parameter: () => Response.json({ success: false, message: "Missing parameter" }, { status: 400 }),
 	invalid_parameter: () => Response.json({ success: false, message: "Invalid parameter" }, { status: 400 }),
+	unsupported_content_type: () => Response.json({ success: false, message: "Unsupported content type" }, { status: 400 }),
 
 	account_exist_with_mail: () => Response.json({ success: false, message: "Account exist with this mail" }, { status: 400 }),
 	account_unsupported_action: () => Response.json({ success: false, message: "Account unsupported action" }, { status: 403 }),
@@ -17,6 +18,9 @@ const ERRORS_DETAILS: Record<string, (...args: string[]) => Response> = {
 	permission_denied: () => Response.json({ success: false, message: "Permission denied" }, { status: 403 }),
 
 	category_does_not_exists: () => Response.json({ success: false, message: "Category does not exist" }, { status: 403 }),
+
+	too_many_attempts: () => Response.json({ success: false, message: "Too many attempts, please try again later" }, { status: 429 }),
+	two_factor_auth_required: () => Response.json({ success: false, message: "Two-factor authentication required" }, { status: 403 }),
 };
 
 const errorHandler = async (fn: () => Promise<Response>): Promise<Response> => {

@@ -65,8 +65,13 @@ async function getTrack(deezerId: string) {
     throw new Error(`Deezer ${res.status}`)
   }
 
-  const dz: DeezerTrack = await res.json()
-  const data = mapTrack(dz)
+  const json = await res.json()
+  if (json.error) {
+    if (cached) return cached
+    throw new Error(`Deezer error: ${json.error.message ?? 'unknown'}`)
+  }
+
+  const data = mapTrack(json as DeezerTrack)
 
   return prisma.track.upsert({
     where:  { deezerId },
@@ -79,9 +84,14 @@ async function searchTracks(query: string, limit = 25) {
   const res = await fetch(
     `${DEEZER_API}/search?q=${encodeURIComponent(query)}&limit=${limit}`
   )
-  const { data }: { data: DeezerTrack[] } = await res.json()
+  if (!res.ok) throw new Error(`Deezer search ${res.status}`)
 
-  Promise.allSettled(
+  const json = await res.json()
+  if (json.error) throw new Error(`Deezer error: ${json.error.message ?? 'unknown'}`)
+
+  const data: DeezerTrack[] = json.data ?? []
+
+  void Promise.allSettled(
     data.map((dz) => {
       const payload = mapTrack(dz)
       return prisma.track.upsert({
@@ -90,15 +100,15 @@ async function searchTracks(query: string, limit = 25) {
         update: payload,
       })
     })
-  ).catch(() => {})
+  )
 
   return data
 }
 
-async function refreshStaleTracks(trackIds: string[]) {
+async function refreshStaleTracks(deezerIds: string[]) {
   const stale = await prisma.track.findMany({
     where: {
-      id:        { in: trackIds },
+      deezerId:  { in: deezerIds },
       fetchedAt: { lt: new Date(Date.now() - CACHE_TTL_MS) },
     },
     select: { deezerId: true },

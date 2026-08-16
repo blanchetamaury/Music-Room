@@ -1,12 +1,12 @@
-import { createAndSetSession } from '@/lib/session';
+import { createCsrfCookie } from '../../lib/csrf';
+import { createAndSetSession } from '../../lib/session';
+import { LoginParametersSchema } from '../../schema/LoginParamtersSchema';
+import { countRateLimitLoginByIp, countRateLimitLoginByUserId, createRateLimitLogin } from '../../prisma/ratelimitLogin';
+import { getUserByMail } from '../../prisma/user';
+import { errorHandler, ERRORS_DETAILS } from '../../utils/error';
+import { parseBody } from '../../utils/parsing';
+import { LoginParameters } from '../../types/auth/LoginParameters';
 import * as bcrypt from 'bcrypt';
-import { parseBody } from '@/utils/parsing';
-import { errorHandler, ERRORS_DETAILS } from '@/utils/error';
-import { createCsrfCookie } from '@/lib/csrf';
-import { countRateLimitLoginByIp, countRateLimitLoginByUserId, createRateLimitLogin } from '@/prisma/ratelimitLogin';
-import { getUserByMail } from '@/prisma/user';
-import { LoginParametersSchema } from '@/schema/LoginParamtersSchema';
-import { LoginParameters } from '@/types/auth/LoginParameters';
 
 const MAX_ATTEMPTS_PER_ACCOUNT = 5;
 const MAX_ATTEMPTS_PER_IP = 20;
@@ -15,7 +15,7 @@ const WINDOW_MS = 15 * 60 * 1000;
 export async function POST(req: Request): Promise<Response> {
 	return errorHandler(async () => {
 		const body = await parseBody<LoginParameters>(req, LoginParametersSchema);
-		const ip = req.headers.get('x-forwarded-for') ?? 'unknown';
+		const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown';
 
 		const user = await getUserByMail(body.mail, { fortytwo_oauth: true });
 
@@ -46,12 +46,19 @@ export async function POST(req: Request): Promise<Response> {
 
 		await createRateLimitLogin(user.id, ip, true);
 
-		await createAndSetSession({
+		const sessionCookie = await createAndSetSession({
 			user_id: user.id
 		});
 
-		createCsrfCookie();
+		const { cookie: csrfCookie } = createCsrfCookie();
 
-		return Response.json({ success: true }, { status: 200 });
+		const headers = new Headers();
+		headers.append('Set-Cookie', sessionCookie);
+		headers.append('Set-Cookie', csrfCookie);
+
+		return new Response(JSON.stringify({ success: true }), {
+			status: 200,
+			headers,
+		});
 	});
 }

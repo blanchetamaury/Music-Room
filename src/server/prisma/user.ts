@@ -1,7 +1,7 @@
-import { FortyTwoCursusUserDetails } from "@/types/fortytwo/FortyTwoCursusUserDetails";
-import { FortyTwoOauthToken } from "@/types/fortytwo/FortyTwoOauthToken";
-import { Prisma } from "./generated/client";
-import { prisma } from "./prisma";
+import { FortyTwoCursusUserDetails } from '../../types/fortytwo/FortyTwoCursusUserDetails';
+import { FortyTwoOauthToken } from '../../types/fortytwo/FortyTwoOauthToken';
+import { Prisma } from './generated/client';
+import { prisma } from './prisma';
 import * as bcrypt from 'bcrypt';
 
 const createOrUpdateStudentUser = async (

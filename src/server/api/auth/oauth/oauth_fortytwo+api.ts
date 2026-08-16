@@ -1,8 +1,8 @@
-import { createCsrfCookie } from "@/lib/csrf";
-import { createSession } from "@/lib/session";
-import { createOrUpdateStudentUser } from "@/prisma/user";
-import { getFortyTwoMe, getFortyTwoOauthToken } from "@/rest/fortytwo";
-import { errorHandler } from "@/utils/error";
+import { createCsrfCookie } from '../../../lib/csrf';
+import { createSession } from '../../../lib/session';
+import { getFortyTwoMe, getFortyTwoOauthToken } from '../../../rest/fortytwo';
+import { createOrUpdateStudentUser } from '../../../prisma/user';
+import { errorHandler } from '../../../utils/error';
 
 export async function GET(request: Request): Promise<Response> {
     return errorHandler(async () => {
@@ -23,8 +23,10 @@ export async function GET(request: Request): Promise<Response> {
         const { cookie: csrfCookie } = createCsrfCookie();
         const sessionCookie = `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
 
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:8081';
+        
         const headers = new Headers();
-        headers.append('Location', new URL('/home', request.url).toString());
+        headers.append('Location', `${clientUrl}/(tabs)/home`);
         headers.append('Set-Cookie', sessionCookie);
         headers.append('Set-Cookie', csrfCookie);
 
