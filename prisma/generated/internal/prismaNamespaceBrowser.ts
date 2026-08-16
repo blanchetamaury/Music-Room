@@ -57,6 +57,7 @@ export const ModelName = {
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
   PlaylistTrack: 'PlaylistTrack',
+  ratelimit_login: 'ratelimit_login',
   Track: 'Track',
   User: 'User'
 } as const
@@ -140,6 +141,17 @@ export const PlaylistTrackScalarFieldEnum = {
 } as const
 
 export type PlaylistTrackScalarFieldEnum = (typeof PlaylistTrackScalarFieldEnum)[keyof typeof PlaylistTrackScalarFieldEnum]
+
+
+export const Ratelimit_loginScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  ip: 'ip',
+  success: 'success',
+  created_at: 'created_at'
+} as const
+
+export type Ratelimit_loginScalarFieldEnum = (typeof Ratelimit_loginScalarFieldEnum)[keyof typeof Ratelimit_loginScalarFieldEnum]
 
 
 export const TrackScalarFieldEnum = {

@@ -1,0 +1,12 @@
+model ratelimit_login {
+	id						String			@id		@default(uuid())
+	
+	user_id					String
+	ip						String
+	success					Boolean
+
+	created_at				DateTime		@default(now())
+	
+	@@index([user_id, created_at])
+  	@@index([ip, created_at])
+}

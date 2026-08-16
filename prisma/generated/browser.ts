@@ -48,6 +48,11 @@ export type Playlist = Prisma.PlaylistModel
  */
 export type PlaylistTrack = Prisma.PlaylistTrackModel
 /**
+ * Model ratelimit_login
+ * 
+ */
+export type ratelimit_login = Prisma.ratelimit_loginModel
+/**
  * Model Track
  * 
  */

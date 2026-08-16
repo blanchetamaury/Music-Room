@@ -3,6 +3,7 @@ const ERRORS_DETAILS: Record<string, (...args: string[]) => Response> = {
 	internal_error: () => Response.json({ success: false, message: "Internal server error" }, { status: 501 }),
 	invalid_oauth_error: () => Response.json({ success: false, message: "Invalid code" }, { status: 401 }),
 	session_expired: () => Response.json({ success: false, message: "This session expired." }, { status: 401 }),
+	already_exist: () => Response.json({ success: false, message: "Is already exist" }, { status: 401 }),
 
 	invalid_mail_password: () => Response.json({ success: false, message: "Invalid password or mail" }, { status: 401 }),
 
