@@ -281,48 +281,6 @@ export type LikeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type LikeCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.LikeCreateManyUserInputEnvelope
-  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-}
-
-export type LikeUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.LikeCreateManyUserInputEnvelope
-  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-}
-
-export type LikeUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.LikeUpsertWithWhereUniqueWithoutUserInput | Prisma.LikeUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.LikeCreateManyUserInputEnvelope
-  set?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  disconnect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  delete?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  update?: Prisma.LikeUpdateWithWhereUniqueWithoutUserInput | Prisma.LikeUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.LikeUpdateManyWithWhereWithoutUserInput | Prisma.LikeUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
-}
-
-export type LikeUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.LikeUpsertWithWhereUniqueWithoutUserInput | Prisma.LikeUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.LikeCreateManyUserInputEnvelope
-  set?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  disconnect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  delete?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
-  update?: Prisma.LikeUpdateWithWhereUniqueWithoutUserInput | Prisma.LikeUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.LikeUpdateManyWithWhereWithoutUserInput | Prisma.LikeUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
-}
-
 export type LikeCreateNestedManyWithoutTrackInput = {
   create?: Prisma.XOR<Prisma.LikeCreateWithoutTrackInput, Prisma.LikeUncheckedCreateWithoutTrackInput> | Prisma.LikeCreateWithoutTrackInput[] | Prisma.LikeUncheckedCreateWithoutTrackInput[]
   connectOrCreate?: Prisma.LikeCreateOrConnectWithoutTrackInput | Prisma.LikeCreateOrConnectWithoutTrackInput[]
@@ -365,49 +323,46 @@ export type LikeUncheckedUpdateManyWithoutTrackNestedInput = {
   deleteMany?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
 }
 
-export type LikeCreateWithoutUserInput = {
-  createdAt?: Date | string
-  track: Prisma.TrackCreateNestedOneWithoutLikesInput
+export type LikeCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.LikeCreateManyUserInputEnvelope
+  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
 }
 
-export type LikeUncheckedCreateWithoutUserInput = {
-  trackId: string
-  createdAt?: Date | string
+export type LikeUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.LikeCreateManyUserInputEnvelope
+  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
 }
 
-export type LikeCreateOrConnectWithoutUserInput = {
-  where: Prisma.LikeWhereUniqueInput
-  create: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput>
+export type LikeUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.LikeUpsertWithWhereUniqueWithoutUserInput | Prisma.LikeUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.LikeCreateManyUserInputEnvelope
+  set?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  disconnect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  delete?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  update?: Prisma.LikeUpdateWithWhereUniqueWithoutUserInput | Prisma.LikeUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.LikeUpdateManyWithWhereWithoutUserInput | Prisma.LikeUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
 }
 
-export type LikeCreateManyUserInputEnvelope = {
-  data: Prisma.LikeCreateManyUserInput | Prisma.LikeCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type LikeUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.LikeWhereUniqueInput
-  update: Prisma.XOR<Prisma.LikeUpdateWithoutUserInput, Prisma.LikeUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput>
-}
-
-export type LikeUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.LikeWhereUniqueInput
-  data: Prisma.XOR<Prisma.LikeUpdateWithoutUserInput, Prisma.LikeUncheckedUpdateWithoutUserInput>
-}
-
-export type LikeUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.LikeScalarWhereInput
-  data: Prisma.XOR<Prisma.LikeUpdateManyMutationInput, Prisma.LikeUncheckedUpdateManyWithoutUserInput>
-}
-
-export type LikeScalarWhereInput = {
-  AND?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
-  OR?: Prisma.LikeScalarWhereInput[]
-  NOT?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
-  userId?: Prisma.StringFilter<"Like"> | string
-  trackId?: Prisma.StringFilter<"Like"> | string
-  createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
+export type LikeUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput> | Prisma.LikeCreateWithoutUserInput[] | Prisma.LikeUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.LikeCreateOrConnectWithoutUserInput | Prisma.LikeCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.LikeUpsertWithWhereUniqueWithoutUserInput | Prisma.LikeUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.LikeCreateManyUserInputEnvelope
+  set?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  disconnect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  delete?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  connect?: Prisma.LikeWhereUniqueInput | Prisma.LikeWhereUniqueInput[]
+  update?: Prisma.LikeUpdateWithWhereUniqueWithoutUserInput | Prisma.LikeUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.LikeUpdateManyWithWhereWithoutUserInput | Prisma.LikeUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
 }
 
 export type LikeCreateWithoutTrackInput = {
@@ -446,24 +401,49 @@ export type LikeUpdateManyWithWhereWithoutTrackInput = {
   data: Prisma.XOR<Prisma.LikeUpdateManyMutationInput, Prisma.LikeUncheckedUpdateManyWithoutTrackInput>
 }
 
-export type LikeCreateManyUserInput = {
+export type LikeScalarWhereInput = {
+  AND?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
+  OR?: Prisma.LikeScalarWhereInput[]
+  NOT?: Prisma.LikeScalarWhereInput | Prisma.LikeScalarWhereInput[]
+  userId?: Prisma.StringFilter<"Like"> | string
+  trackId?: Prisma.StringFilter<"Like"> | string
+  createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
+}
+
+export type LikeCreateWithoutUserInput = {
+  createdAt?: Date | string
+  track: Prisma.TrackCreateNestedOneWithoutLikesInput
+}
+
+export type LikeUncheckedCreateWithoutUserInput = {
   trackId: string
   createdAt?: Date | string
 }
 
-export type LikeUpdateWithoutUserInput = {
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  track?: Prisma.TrackUpdateOneRequiredWithoutLikesNestedInput
+export type LikeCreateOrConnectWithoutUserInput = {
+  where: Prisma.LikeWhereUniqueInput
+  create: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput>
 }
 
-export type LikeUncheckedUpdateWithoutUserInput = {
-  trackId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type LikeCreateManyUserInputEnvelope = {
+  data: Prisma.LikeCreateManyUserInput | Prisma.LikeCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
-export type LikeUncheckedUpdateManyWithoutUserInput = {
-  trackId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type LikeUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.LikeWhereUniqueInput
+  update: Prisma.XOR<Prisma.LikeUpdateWithoutUserInput, Prisma.LikeUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.LikeCreateWithoutUserInput, Prisma.LikeUncheckedCreateWithoutUserInput>
+}
+
+export type LikeUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.LikeWhereUniqueInput
+  data: Prisma.XOR<Prisma.LikeUpdateWithoutUserInput, Prisma.LikeUncheckedUpdateWithoutUserInput>
+}
+
+export type LikeUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.LikeScalarWhereInput
+  data: Prisma.XOR<Prisma.LikeUpdateManyMutationInput, Prisma.LikeUncheckedUpdateManyWithoutUserInput>
 }
 
 export type LikeCreateManyTrackInput = {
@@ -483,6 +463,26 @@ export type LikeUncheckedUpdateWithoutTrackInput = {
 
 export type LikeUncheckedUpdateManyWithoutTrackInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LikeCreateManyUserInput = {
+  trackId: string
+  createdAt?: Date | string
+}
+
+export type LikeUpdateWithoutUserInput = {
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  track?: Prisma.TrackUpdateOneRequiredWithoutLikesNestedInput
+}
+
+export type LikeUncheckedUpdateWithoutUserInput = {
+  trackId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LikeUncheckedUpdateManyWithoutUserInput = {
+  trackId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
