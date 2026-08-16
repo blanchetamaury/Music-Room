@@ -1,0 +1,20 @@
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String?
+  avatarUrl    String?
+
+  deezerUserId      String?  @unique
+  deezerAccessToken String?
+
+  createdAt    DateTime @default(now())
+
+  playlists    Playlist[]
+  likes        Like[]
+  plays        PlayHistory[]
+  follows      Follow[]  @relation("follower")
+  followers    Follow[]  @relation("following")
+
+  @@map("users")
+}
