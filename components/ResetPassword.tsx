@@ -76,7 +76,14 @@ export function ResetPassword({
   };
 
   return (
-    <LiquidGlass style={[styles.container, { backgroundColor: formBg }]}> 
+    <LiquidGlass
+      style={[styles.container, { backgroundColor: formBg }]}
+      radius={16}
+      topLeftRadius={16}
+      topRightRadius={16}
+      bottomLeftRadius={16}
+      bottomRightRadius={16}
+    >
       <View style={styles.headerRow}>
         <Pressable onPress={() => onBack?.()} style={styles.backBtn} accessibilityRole="button">
           <ThemedText type="link" style={{ color: '#fff' }}>←</ThemedText>

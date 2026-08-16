@@ -46,9 +46,14 @@ export function LoginForm({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.wrapper}>
-      <LiquidGlass style={[styles.form, { backgroundColor: glassBg }]}>
-        {/* Decorative layers to simulate liquid glass */}
-        <View pointerEvents="none" style={styles.glassOverlayInner} />
+      <LiquidGlass
+        style={[styles.form, { backgroundColor: glassBg }]}
+        radius={16}
+        topLeftRadius={16}
+        topRightRadius={16}
+        bottomLeftRadius={16}
+        bottomRightRadius={16}
+      >
         <Pressable
           onPress={() => onRegister?.()}
           style={styles.topRightBtn}

@@ -28,7 +28,14 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
   const isEmailValid = emailRegex.test(email);
 
   return (
-    <LiquidGlass style={[styles.container, { backgroundColor: formBg }]}>
+    <LiquidGlass
+      style={[styles.container, { backgroundColor: formBg }]}
+      radius={16}
+      topLeftRadius={16}
+      topRightRadius={16}
+      bottomLeftRadius={16}
+      bottomRightRadius={16}
+    >
       <Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
         <View style={styles.iconPlaceholder} />
       </Pressable>
@@ -168,6 +175,9 @@ const styles = StyleSheet.create({
   },
   inputDistinct: {
     backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  inputInvalid: {
+    borderColor: '#ff6b6b',
   },
   error: {
     marginTop: 6,
