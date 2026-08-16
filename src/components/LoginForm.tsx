@@ -36,8 +36,7 @@ export function LoginForm({
   const isPasswordValid = password.length >= 6;
   const canSubmit = isEmailValid && isPasswordValid;
 
-  const formBg = useThemeColor({ light: 'rgba(24, 20, 20, 0.94)', dark: 'rgba(18,18,18,0.86)' }, 'background');
-  const glassBg = useThemeColor({ light: 'rgba(255,255,255,0.18)', dark: 'rgba(255,255,255,0.06)' }, 'background');
+  const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const inputTextColor = useThemeColor({}, 'text');
 
   const handleSubmit = () => {

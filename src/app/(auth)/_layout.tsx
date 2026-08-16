@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
 
 export default function AuthLayout() {
 	
@@ -14,11 +13,3 @@ export default function AuthLayout() {
 		</Stack>
 	);
 }
-
-const styles = StyleSheet.create({
-  fullOverlay: {
-	...StyleSheet.absoluteFillObject,
-	zIndex: 0,
-	pointerEvents: 'none',
-  },
-});

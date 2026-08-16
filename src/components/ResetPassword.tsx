@@ -20,7 +20,7 @@ export function ResetPassword({
 
   const reveal = useSharedValue(0);
 
-  const formBg = useThemeColor({ light: 'rgba(255,255,255,0.94)', dark: 'rgba(18,18,18,0.86)' }, 'background');
+  const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 
   useEffect(() => {
     if (codeSent) {
