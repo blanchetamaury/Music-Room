@@ -1,23 +1,24 @@
 import { FortyTwoCursusUserDetails } from '@/types/fortytwo/FortyTwoCursusUserDetails';
 import { FortyTwoOauthToken } from '@/types/fortytwo/FortyTwoOauthToken';
 import { ERRORS_DETAILS } from '@/utils/error';
+import { RelativePathString } from 'expo-router';
 
 const FORTY_TWO_BASE_URL = 'https://api.intra.42.fr';
 
-export function generateFortyTwoAuthorizationUrl(): string {
+export function generateFortyTwoAuthorizationUrl(): RelativePathString {
 	const url: URL = new URL(`${FORTY_TWO_BASE_URL}/oauth/authorize`);
 
-	if (process.env.NEXT_PUBLIC_OAUTH_42_CLIENTID === undefined)
-		throw new Error('Missing key NEXT_PUBLIC_OAUTH_42_CLIENTID in environement');
+	if (process.env.EXPO_PUBLIC_OAUTH_42_CLIENTID === undefined)
+		throw new Error('Missing key EXPO_PUBLIC_OAUTH_42_CLIENTID in environement');
 
-	url.searchParams.set('client_id', process.env.NEXT_PUBLIC_OAUTH_42_CLIENTID);
+	url.searchParams.set('client_id', process.env.EXPO_PUBLIC_OAUTH_42_CLIENTID);
 	url.searchParams.set(
 		'redirect_uri',
-		`https://${process.env.NEXT_PUBLIC_BASE_URL}/app/api/auth/oauth/fortytwo/authorize`
+		`http://${process.env.EXPO_PUBLIC_BASE_URL}/api/oauth_fortytwo`
 	);
 	url.searchParams.set('response_type', 'code');
 
-	return url.toString();
+	return url.toString() as RelativePathString;
 }
 
 export async function getFortyTwoOauthToken(code: string): Promise<FortyTwoOauthToken> {
@@ -25,10 +26,10 @@ export async function getFortyTwoOauthToken(code: string): Promise<FortyTwoOauth
 		method: 'POST',
 		body: JSON.stringify({
 			grant_type: 'authorization_code',
-			client_id: process.env.NEXT_PUBLIC_OAUTH_42_CLIENTID,
+			client_id: process.env.EXPO_PUBLIC_OAUTH_42_CLIENTID,
 			client_secret: process.env.OAUTH_42_SECRET,
 			code: code,
-			redirect_uri: `https://${process.env.NEXT_PUBLIC_BASE_URL}/app/api/auth/oauth/fortytwo/authorize`,
+			redirect_uri: `http://${process.env.EXPO_PUBLIC_BASE_URL}/api/oauth_fortytwo`,
 		}),
 		headers: {
 			'Content-Type': 'application/json',

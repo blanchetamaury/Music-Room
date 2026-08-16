@@ -1,28 +1,30 @@
 import { randomBytes } from 'crypto';
-import * as SecureStore from 'expo-secure-store';
 
 const CSRF_COOKIE_NAME = 'csrf_token';
 
 export function generateCsrfToken(): string {
-	return randomBytes(32).toString('hex');
+    return randomBytes(32).toString('hex');
 }
 
-export async function setCsrfToken(): Promise<string> {
+// Renvoie le header Set-Cookie à ajouter à la Response
+export function createCsrfCookie(): { token: string; cookie: string } {
     const token = generateCsrfToken();
-    await SecureStore.setItemAsync(CSRF_COOKIE_NAME, token);
-    return token;
+    const cookie = `${CSRF_COOKIE_NAME}=${token}; Path=/; SameSite=Strict; Max-Age=${60 * 60 * 24}`;
+    return { token, cookie };
 }
 
-export async function getCsrfToken(): Promise<string | null> {
-    return await SecureStore.getItemAsync(CSRF_COOKIE_NAME);
+export function getCsrfTokenFromRequest(req: Request): string | null {
+    const cookieHeader = req.headers.get('cookie') ?? '';
+    const match = cookieHeader.match(new RegExp(`${CSRF_COOKIE_NAME}=([^;]+)`));
+    return match ? match[1] : null;
 }
 
-export async function verifyCsrf(req: Request): Promise<boolean> {
-	const cookieToken = await getCsrfToken();
-	const headerToken = req.headers.get('x-csrf-token');
+export function verifyCsrf(req: Request): boolean {
+    const cookieToken = getCsrfTokenFromRequest(req);
+    const headerToken = req.headers.get('x-csrf-token');
 
-	if (!cookieToken || !headerToken) return false;
-	if (cookieToken !== headerToken) return false;
+    if (!cookieToken || !headerToken) return false;
+    if (cookieToken !== headerToken) return false;
 
-	return true;
+    return true;
 }

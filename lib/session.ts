@@ -1,4 +1,3 @@
-import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
 import { JWTSessionPayload, SessionPayload } from '@/types/session/SessionPayload';
 import * as SecureStore from 'expo-secure-store';
@@ -40,8 +39,11 @@ const createSession = async (payload: SessionPayload): Promise<CreatedSessionPay
 	return { body, expirationDate };
 };
 
-const setSession = async (session: CreatedSessionPayload): Promise<void> => {
-	await SecureStore.setItemAsync('session', session.body);
+const setSession = async (session: CreatedSessionPayload, response: Response): Promise<void> => {
+    response.headers.append(
+        'Set-Cookie',
+        `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax; Secure`
+    );
 };
 
 const unsetSession = async (): Promise<void> => {
@@ -51,8 +53,9 @@ const unsetSession = async (): Promise<void> => {
 	await SecureStore.deleteItemAsync('session');
 };
 
-const createAndSetSession = async (payload: SessionPayload): Promise<void> => {
-	await setSession(await createSession(payload));
+const createAndSetSession = async (payload: SessionPayload): Promise<string> => {
+    const session = await createSession(payload);
+    return `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
 };
 
 const getSession = async (req: Request): Promise<SessionPayload | null> => {

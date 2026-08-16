@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
+import { Link } from 'expo-router';
+import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 
 export function LoginForm({
   onLogin,
@@ -122,9 +124,9 @@ export function LoginForm({
           <View style={styles.separatorLine} />
         </View>
 
-        <Pressable style={styles.googleBtn} onPress={() => onGoogle?.()} accessibilityRole="button">
+        <Pressable style={styles.googleBtn} accessibilityRole="button">
           <View style={styles.googleLogoPlaceholder} />
-          <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Log in with Google</ThemedText>
+          <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
         </Pressable>
 
         <Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">

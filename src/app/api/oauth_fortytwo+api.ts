@@ -1,28 +1,36 @@
-import { getFortyTwoMe, getFortyTwoOauthToken } from '@/rest/fortytwo';
-import { createAndSetSession } from '@/lib/session';
-import { FortyTwoOauthToken } from '@/types/fortytwo/FortyTwoOauthToken';
-import { FortyTwoCursusUserDetails } from '@/types/fortytwo/FortyTwoCursusUserDetails';
-import { setCsrfToken } from '@/lib/csrf';
-import { errorHandler } from '@/utils/error';
-import { createOrUpdateStudentUser } from '@/prisma/user';
+import { createCsrfCookie } from "@/lib/csrf";
+import { createSession } from "@/lib/session";
+import { createOrUpdateStudentUser } from "@/prisma/user";
+import { getFortyTwoMe, getFortyTwoOauthToken } from "@/rest/fortytwo";
+import { errorHandler } from "@/utils/error";
 
 export async function GET(request: Request): Promise<Response> {
-	return errorHandler(async () => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const code: string | null = urlParams.get('code');
-		if (code === null) return Response.json({ "success": false, "redirect": '/' });
+    return errorHandler(async () => {
+        const url = new URL(request.url);
+        const code = url.searchParams.get('code');
+        if (code === null) {
+            return Response.redirect(new URL('/', request.url).toString(), 302);
+        }
 
-		const authorization: FortyTwoOauthToken = await getFortyTwoOauthToken(code);
-		const me: FortyTwoCursusUserDetails = await getFortyTwoMe(authorization.access_token);
+        const authorization = await getFortyTwoOauthToken(code);
+        const me = await getFortyTwoMe(authorization.access_token);
+        const user = await createOrUpdateStudentUser(me, authorization);
 
-		const user = await createOrUpdateStudentUser(me, authorization);
+        const session = await createSession({
+            user_id: user.id
+        });
 
-		await createAndSetSession({
-			user_id: user.id,
-		});
+        const { cookie: csrfCookie } = createCsrfCookie();
+        const sessionCookie = `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
 
-		await setCsrfToken();
+        const headers = new Headers();
+        headers.append('Location', new URL('/home', request.url).toString());
+        headers.append('Set-Cookie', sessionCookie);
+        headers.append('Set-Cookie', csrfCookie);
 
-		return Response.json({ "success": false, "redirect": '/home' })
-	});
+        return new Response(null, {
+            status: 302,
+            headers,
+        });
+    });
 }

@@ -16,6 +16,7 @@ const createOrUpdateStudentUser = async (
 	return prisma.user.upsert({
 		where: { fortytwo_user_id: me.id },
 		create: {
+			fortytwo_user_id: me.id,
 			email: me.email,
 			username: me.usual_full_name,
 			avatarUrl: me.image.versions.medium,
