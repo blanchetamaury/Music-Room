@@ -1,0 +1,37 @@
+model Track {
+  id            String   @id @default(cuid())
+
+  deezerId      String   @unique
+
+  title         String
+  titleShort    String?
+  duration      Int                       
+  isrc          String?
+  explicit      Boolean  @default(false)
+  previewUrl    String?
+  releaseDate   DateTime?
+  rank          Int?                      
+  trackPosition Int?
+  diskNumber    Int?
+
+  artistDeezerId String
+  artistName     String
+  artistPicture  String?
+
+  albumDeezerId  String
+  albumTitle     String
+  albumCover     String?
+  albumCoverBig  String?
+
+  fetchedAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  playlistTracks PlaylistTrack[]
+  likes          Like[]
+  plays          PlayHistory[]
+
+  @@index([artistDeezerId])
+  @@index([albumDeezerId])
+  @@index([title])
+  @@map("tracks")
+}
