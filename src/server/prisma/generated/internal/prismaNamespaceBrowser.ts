@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Follow: 'Follow',
   fortytwo_oauth: 'fortytwo_oauth',
+  Google_oauth: 'Google_oauth',
   Like: 'Like',
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
@@ -95,6 +96,17 @@ export const Fortytwo_oauthScalarFieldEnum = {
 } as const
 
 export type Fortytwo_oauthScalarFieldEnum = (typeof Fortytwo_oauthScalarFieldEnum)[keyof typeof Fortytwo_oauthScalarFieldEnum]
+
+
+export const Google_oauthScalarFieldEnum = {
+  id: 'id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  token_type: 'token_type',
+  expires_in: 'expires_in'
+} as const
+
+export type Google_oauthScalarFieldEnum = (typeof Google_oauthScalarFieldEnum)[keyof typeof Google_oauthScalarFieldEnum]
 
 
 export const LikeScalarFieldEnum = {
@@ -191,6 +203,7 @@ export const UserScalarFieldEnum = {
   deezerAccessToken: 'deezerAccessToken',
   fortytwo_oauth_id: 'fortytwo_oauth_id',
   fortytwo_user_id: 'fortytwo_user_id',
+  google_oauth_id: 'google_oauth_id',
   createdAt: 'createdAt'
 } as const
 

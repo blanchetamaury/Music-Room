@@ -10,6 +10,7 @@
  */
 export type * from './models/Follow'
 export type * from './models/fortytwo_oauth'
+export type * from './models/Google_oauth'
 export type * from './models/Like'
 export type * from './models/PlayHistory'
 export type * from './models/Playlist'

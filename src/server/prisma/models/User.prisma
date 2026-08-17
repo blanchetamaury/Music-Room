@@ -7,9 +7,11 @@ model User {
 
   deezerUserId          String?     @unique
   deezerAccessToken     String?
+  
   fortytwo_oauth_id			String?			@unique
   fortytwo_user_id      Int?        @unique
 
+  google_oauth_id			  String?			@unique
 
   createdAt             DateTime    @default(now())
 
@@ -19,6 +21,7 @@ model User {
   follows                 Follow[]            @relation("follower")
   followers               Follow[]            @relation("following")
   fortytwo_oauth				  fortytwo_oauth?			@relation(fields: [fortytwo_oauth_id], references: [id], onDelete: Cascade)
+  google_oauth				    Google_oauth?			  @relation(fields: [google_oauth_id], references: [id], onDelete: Cascade)
 
   @@map("users")
 }

@@ -1,0 +1,10 @@
+model Google_oauth {
+	id				String			@id			@default(uuid())
+
+	access_token	String?
+	refresh_token	String?
+	token_type		String?
+	expires_in		Int?
+
+	user			User?
+}

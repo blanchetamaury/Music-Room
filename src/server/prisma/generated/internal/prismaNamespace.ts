@@ -399,6 +399,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Follow: 'Follow',
   fortytwo_oauth: 'fortytwo_oauth',
+  Google_oauth: 'Google_oauth',
   Like: 'Like',
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "follow" | "fortytwo_oauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "track" | "user"
+    modelProps: "follow" | "fortytwo_oauth" | "google_oauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "track" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -570,6 +571,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.fortytwo_oauthCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Fortytwo_oauthCountAggregateOutputType> | number
+        }
+      }
+    }
+    Google_oauth: {
+      payload: Prisma.$Google_oauthPayload<ExtArgs>
+      fields: Prisma.Google_oauthFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.Google_oauthFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.Google_oauthFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        findFirst: {
+          args: Prisma.Google_oauthFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.Google_oauthFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        findMany: {
+          args: Prisma.Google_oauthFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+        }
+        create: {
+          args: Prisma.Google_oauthCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        createMany: {
+          args: Prisma.Google_oauthCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.Google_oauthCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+        }
+        delete: {
+          args: Prisma.Google_oauthDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        update: {
+          args: Prisma.Google_oauthUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        deleteMany: {
+          args: Prisma.Google_oauthDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.Google_oauthUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.Google_oauthUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+        }
+        upsert: {
+          args: Prisma.Google_oauthUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+        }
+        aggregate: {
+          args: Prisma.Google_oauthAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGoogle_oauth>
+        }
+        groupBy: {
+          args: Prisma.Google_oauthGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Google_oauthGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.Google_oauthCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Google_oauthCountAggregateOutputType> | number
         }
       }
     }
@@ -1149,6 +1224,17 @@ export const Fortytwo_oauthScalarFieldEnum = {
 export type Fortytwo_oauthScalarFieldEnum = (typeof Fortytwo_oauthScalarFieldEnum)[keyof typeof Fortytwo_oauthScalarFieldEnum]
 
 
+export const Google_oauthScalarFieldEnum = {
+  id: 'id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  token_type: 'token_type',
+  expires_in: 'expires_in'
+} as const
+
+export type Google_oauthScalarFieldEnum = (typeof Google_oauthScalarFieldEnum)[keyof typeof Google_oauthScalarFieldEnum]
+
+
 export const LikeScalarFieldEnum = {
   userId: 'userId',
   trackId: 'trackId',
@@ -1243,6 +1329,7 @@ export const UserScalarFieldEnum = {
   deezerAccessToken: 'deezerAccessToken',
   fortytwo_oauth_id: 'fortytwo_oauth_id',
   fortytwo_user_id: 'fortytwo_user_id',
+  google_oauth_id: 'google_oauth_id',
   createdAt: 'createdAt'
 } as const
 
@@ -1494,6 +1581,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   follow?: Prisma.FollowOmit
   fortytwo_oauth?: Prisma.fortytwo_oauthOmit
+  google_oauth?: Prisma.Google_oauthOmit
   like?: Prisma.LikeOmit
   playHistory?: Prisma.PlayHistoryOmit
   playlist?: Prisma.PlaylistOmit

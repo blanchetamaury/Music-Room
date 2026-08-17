@@ -7,7 +7,7 @@ import { FortyTwolanguageUser } from './FortyTwoLanguageUser';
 import { FortyTwoProjectUser } from './FortyTwoProjectUser';
 import { FortyTwoTitle } from './FortyTwoTitle';
 import { FortyTwoTitleUser } from './FortyTwoTitleUser';
-import { FortyTwoUser } from '@/types/fortytwo/FortyTwoUser';
+import { FortyTwoUser } from './FortyTwoUser';
 
 export interface FortyTwoCursusUserDetails extends FortyTwoUser {
 	groups: unknown[];

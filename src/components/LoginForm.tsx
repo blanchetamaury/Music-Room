@@ -15,6 +15,7 @@ import {
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
 import { api } from '@/src/lib/api/client';
+import { generateGoogleAuthorizationUrl } from '../server/rest/google';
 
 export function LoginForm({
   onLogin,
@@ -153,6 +154,11 @@ export function LoginForm({
         <Pressable style={styles.googleBtn} accessibilityRole="button">
           <View style={styles.googleLogoPlaceholder} />
           <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with 42</Link>
+        </Pressable>
+
+        <Pressable style={styles.googleBtn} accessibilityRole="button">
+          <View style={styles.googleLogoPlaceholder} />
+          <Link href={generateGoogleAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
         </Pressable>
 
         <Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">

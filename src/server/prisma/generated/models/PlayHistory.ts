@@ -363,14 +363,6 @@ export type PlayHistoryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type PlayHistoryCreateNestedManyWithoutTrackInput = {
   create?: Prisma.XOR<Prisma.PlayHistoryCreateWithoutTrackInput, Prisma.PlayHistoryUncheckedCreateWithoutTrackInput> | Prisma.PlayHistoryCreateWithoutTrackInput[] | Prisma.PlayHistoryUncheckedCreateWithoutTrackInput[]
   connectOrCreate?: Prisma.PlayHistoryCreateOrConnectWithoutTrackInput | Prisma.PlayHistoryCreateOrConnectWithoutTrackInput[]

@@ -1,8 +1,8 @@
 import { createCsrfCookie } from '../../../lib/csrf';
 import { createSession } from '../../../lib/session';
-import { createOrUpdateFortyTwoUser } from '../../../prisma/user';
-import { getFortyTwoMe, getFortyTwoOauthToken } from '../../../rest/fortytwo';
 import { errorHandler } from '../../../utils/error';
+import { getGoogleMe, getGoogleOauthToken } from '../../../rest/google';
+import { createOrUpdateGoogleUser } from '../../../prisma/user';
 
 export async function GET(request: Request): Promise<Response> {
     return errorHandler(async () => {
@@ -12,9 +12,9 @@ export async function GET(request: Request): Promise<Response> {
             return Response.redirect(new URL('/', request.url).toString(), 302);
         }
 
-        const authorization = await getFortyTwoOauthToken(code);
-        const me = await getFortyTwoMe(authorization.access_token);
-        const user = await createOrUpdateFortyTwoUser(me, authorization);
+        const authorization = await getGoogleOauthToken(code);
+        const me = await getGoogleMe(authorization.access_token);
+        const user = await createOrUpdateGoogleUser(me, authorization);
 
         const session = await createSession({
             user_id: user.id

@@ -28,6 +28,11 @@ export type Follow = Prisma.FollowModel
  */
 export type fortytwo_oauth = Prisma.fortytwo_oauthModel
 /**
+ * Model Google_oauth
+ * 
+ */
+export type Google_oauth = Prisma.Google_oauthModel
+/**
  * Model Like
  * 
  */

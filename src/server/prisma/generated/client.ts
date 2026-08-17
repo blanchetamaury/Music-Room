@@ -12,8 +12,6 @@
 
 import * as process from 'node:process'
 import * as path from 'node:path'
-import { fileURLToPath } from 'node:url'
-globalThis['__dirname'] = path.dirname(fileURLToPath(import.meta.url))
 
 import * as runtime from "@prisma/client/runtime/client"
 import * as $Enums from "./enums"
@@ -51,6 +49,11 @@ export type Follow = Prisma.FollowModel
  * 
  */
 export type fortytwo_oauth = Prisma.fortytwo_oauthModel
+/**
+ * Model Google_oauth
+ * 
+ */
+export type Google_oauth = Prisma.Google_oauthModel
 /**
  * Model Like
  * 
