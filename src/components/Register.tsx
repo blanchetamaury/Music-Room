@@ -26,7 +26,7 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
   const rules = useMemo(() => checkRules(pw), [pw]);
   const completed = [rules.hasUpper, rules.hasNumber, rules.hasSpecial].filter(Boolean).length;
 
-  const formBg = useThemeColor({ light: 'rgba(255,255,255,0.14)', dark: 'rgba(255,255,255,0.06)' }, 'background');
+  const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
   const isPasswordValid = pw.length >= 6 && confirm === pw && completed === 3;

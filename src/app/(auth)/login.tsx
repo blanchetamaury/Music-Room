@@ -30,7 +30,7 @@ function LoginScreenInner({
   onRegister: () => void;
 }) {
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.center}>
         <LoginForm
           onLogin={onLogin}
@@ -39,7 +39,7 @@ function LoginScreenInner({
           onRegister={onRegister}
         />
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -53,13 +53,13 @@ function RegisterScreenInner({
   onGoogle: () => void;
 }) {
   return (
-    <ThemedView style={styles.authContainer}>
+    <View style={styles.authContainer}>
       <Register
         onBack={onBack}
         onRegisterComplete={onRegisterComplete}
         onGoogle={onGoogle}
       />
-    </ThemedView>
+    </View>
   );
 }
 
@@ -71,12 +71,12 @@ function ResetPasswordScreenInner({
   onResetComplete: () => void;
 }) {
   return (
-    <ThemedView style={styles.authContainer}>
+    <View style={styles.authContainer}>
       <ResetPassword
         onBack={onBack}
         onResetComplete={onResetComplete}
       />
-    </ThemedView>
+    </View>
   );
 }
 
@@ -152,10 +152,6 @@ export default function LoginScreen() {
 
   const handleModeChange = (newMode: AuthMode) => {
     setMode(newMode);
-    router.push({
-      pathname: '/login',
-      params: { mode: newMode },
-    });
   };
 
   if (isAuthed) {
