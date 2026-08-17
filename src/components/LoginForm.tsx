@@ -1,6 +1,7 @@
 import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
 import { Link } from 'expo-router';
+import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import {
 	KeyboardAvoidingView,
@@ -12,6 +13,8 @@ import {
 } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
+import { FTIcon } from './ui/42-icon';
+import { GoogleIcon } from './ui/google-icon';
 
 export function LoginForm({
   onLogin,
@@ -108,7 +111,8 @@ export function LoginForm({
             accessibilityLabel="password"
           />
           <Pressable onPress={() => setShowPassword((v) => !v)} style={styles.showBtn} accessibilityRole="button">
-            <View style={styles.iconPlaceholder} />
+            { showPassword != true && <EyeOff style={{ color: "#ffffff"}}></EyeOff> }
+			{ showPassword == true && <Eye style={{ color: "#ffffff"}}></Eye>}
           </Pressable>
         </View>
 
@@ -129,8 +133,13 @@ export function LoginForm({
         </View>
 
         <Pressable style={styles.googleBtn} accessibilityRole="button">
-          <View style={styles.googleLogoPlaceholder} />
+          <GoogleIcon></GoogleIcon>
           <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
+        </Pressable>
+
+		<Pressable style={styles.googleBtn} accessibilityRole="button">
+          <FTIcon></FTIcon>
+          <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with 42</Link>
         </Pressable>
 
         <Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
@@ -226,7 +235,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 12,
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    backgroundColor: 'rgba(0, 0, 0, 0.69)',
     flexDirection: 'row',
     gap: 10,
     justifyContent: 'center',

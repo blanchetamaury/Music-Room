@@ -1,8 +1,11 @@
+import { GoogleIcon } from '@/src/components/ui/google-icon';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
+import { FTIcon } from './ui/42-icon';
 
 function checkRules(pw: string) {
   const hasUpper = /[A-Z]/.test(pw);
@@ -13,10 +16,13 @@ function checkRules(pw: string) {
 
 export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: () => void; onRegisterComplete?: () => void; onGoogle?: () => void }) {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [pw, setPw] = useState('');
   const [confirm, setConfirm] = useState('');
   const [touchedEmail, setTouchedEmail] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
+  const [touchUsername, setTouchUsername] = useState(false);
+  const [usernameFocused, setUsernameFocused] = useState(false);
   const [touchedConfirm, setTouchedConfirm] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -37,7 +43,7 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
       bottomRightRadius={16}
     >
       <Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
-        <View style={styles.iconPlaceholder} />
+        <ChevronRight style={{ color: "#ffff" }}></ChevronRight>
       </Pressable>
 
       <ThemedText type="title" style={[styles.title, { color: '#fff' }]}>Create account</ThemedText>
@@ -62,6 +68,23 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
       </View>
       {touchedEmail && !isEmailValid && !emailFocused && <ThemedText style={styles.error}>Invalid email address</ThemedText>}
 
+	  <View style={[styles.inputWrapper, styles.inputDistinct]}>
+        <TextInput
+          placeholder="Username"
+          placeholderTextColor="#D1D5D8"
+          value={username}
+          onChangeText={(v) => setUsername(v)}
+          onFocus={() => setUsernameFocused(true)}
+          onBlur={() => { setUsernameFocused(false); setTouchUsername(true); }}
+          underlineColorAndroid="transparent"
+          style={[
+            styles.input,
+            { color: '#fff' },
+            Platform.OS === 'web' ? ({ outlineWidth: 0, outlineColor: 'transparent', outlineStyle: 'none' } as any) : null,
+          ]}
+        />
+      </View>
+
       <View style={[styles.inputWrapper, styles.inputDistinct]}>
         <TextInput
           placeholder="Password"
@@ -77,7 +100,8 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
           ]}
         />
         <Pressable onPress={() => setShowPw((s) => !s)} style={styles.pwToggle} accessibilityRole="button">
-          <View style={styles.iconPlaceholder} />
+			{ showPw != true && <EyeOff style={{ color: "#ffffff"}}></EyeOff> }
+			{ showPw == true && <Eye style={{ color: "#ffffff"}}></Eye>}
         </Pressable>
       </View>
 
@@ -106,7 +130,8 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
           ]}
         />
         <Pressable onPress={() => setShowConfirm((s) => !s)} style={styles.pwToggle} accessibilityRole="button">
-          <View style={styles.iconPlaceholder} />
+			{ showConfirm != true && <EyeOff style={{ color: "#ffffff"}}></EyeOff> }
+			{ showConfirm == true && <Eye style={{ color: "#ffffff"}}></Eye>}
         </Pressable>
       </View>
       {touchedConfirm && confirm !== pw && <ThemedText style={styles.error}>Passwords do not match</ThemedText>}
@@ -116,9 +141,14 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
         <ThemedText style={{ color: '#fff' }}>or</ThemedText>
         <View style={styles.separatorLine} />
       </View>
-
+	  
       <Pressable style={styles.googleBtn} onPress={() => onGoogle?.()} accessibilityRole="button">
-        <View style={styles.googleLogoPlaceholder} />
+		<GoogleIcon></GoogleIcon>
+        <ThemedText style={{ color: '#fff' }}>Create with Google</ThemedText>
+      </Pressable>
+
+	  <Pressable style={styles.googleBtn} onPress={() => onGoogle?.()} accessibilityRole="button">
+		<FTIcon></FTIcon>
         <ThemedText style={{ color: '#fff' }}>Create with Google</ThemedText>
       </Pressable>
 
@@ -127,11 +157,11 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
         onPress={() => { if (isEmailValid && pw.length >= 6 && confirm === pw && completed === 3) onRegisterComplete?.(); }}
         accessibilityRole="button"
         disabled={!(isEmailValid && pw.length >= 6 && confirm === pw && completed === 3)}>
-        <ThemedText style={{ color: '#fff', fontWeight: '600' }}>Create account</ThemedText>
+        <ThemedText style={{ color: '#ffffff', fontWeight: '600' }}>Create account</ThemedText>
       </Pressable>
 
       <Pressable onPress={() => onBack?.()} style={styles.signInLink} accessibilityRole="button">
-        <ThemedText style={{ color: '#fff' }}>Already have an account? <ThemedText type="defaultSemiBold">Log in</ThemedText></ThemedText>
+        <ThemedText style={{ color: '#fff', fontSize: 13}}>Already have an account ? <ThemedText type="defaultSemiBold">Log in</ThemedText></ThemedText>
       </Pressable>
     </LiquidGlass>
   );
@@ -235,7 +265,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(58, 225, 255, 0.12)',
   },
   signInLink: {
     marginTop: 12,

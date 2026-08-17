@@ -1,4 +1,5 @@
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -84,13 +85,13 @@ export function ResetPassword({
       bottomLeftRadius={16}
       bottomRightRadius={16}
     >
+
       <View style={styles.headerRow}>
         <Pressable onPress={() => onBack?.()} style={styles.backBtn} accessibilityRole="button">
-          <ThemedText type="link" style={{ color: '#fff' }}>←</ThemedText>
+          <ChevronLeft style={{ color: "#ffff" }}></ChevronLeft>
         </Pressable>
         <ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>Reset password</ThemedText>
       </View>
-
       <View style={styles.inputWrapper}>
         <TextInput
           placeholder="Email"
