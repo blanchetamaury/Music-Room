@@ -1,24 +1,26 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Animated, {
-	Easing,
-	interpolate,
-	useAnimatedStyle,
-	useSharedValue,
-	withDelay,
-	withRepeat,
-	withSequence,
-	withTiming,
+    Easing,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withRepeat,
+    withSequence,
+    withTiming,
 } from 'react-native-reanimated';
 import { ThemedText } from './themed-text';
 
 export function MusicPreview({
   color = '#ddd',
+  cover,
   title,
   artist,
   animationConfig,
 }: {
   color?: string;
+  cover?: string;
   title: string;
   artist: string;
   animationConfig?: {
@@ -65,10 +67,16 @@ export function MusicPreview({
 
   return (
     <Container style={[styles.container, animationConfig ? styles.animatedContainer : null, animatedStyle]} pointerEvents="none">
-      <View style={[styles.cover, { backgroundColor: color }]} />
+      {cover ? (
+        <Image source={{ uri: cover }} style={styles.cover} resizeMode="cover" />
+      ) : (
+        <View style={[styles.cover, { backgroundColor: color }]} />
+      )}
       <View style={styles.meta}>
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
-        <ThemedText type="default" style={styles.artist}>
+        <ThemedText type="defaultSemiBold" numberOfLines={1}>
+          {title}
+        </ThemedText>
+        <ThemedText type="default" style={styles.artist} numberOfLines={1}>
           {artist}
         </ThemedText>
       </View>

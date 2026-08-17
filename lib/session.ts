@@ -1,7 +1,7 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { ERRORS_DETAILS } from '@/src/server/utils/error';
 import { JWTSessionPayload, SessionPayload } from '@/types/session/SessionPayload';
 import * as SecureStore from 'expo-secure-store';
-import { ERRORS_DETAILS } from '@/utils/error';
+import { SignJWT, jwtVerify } from 'jose';
 
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET);
 
@@ -85,13 +85,8 @@ const parseUserId = (id: string, session: SessionPayload): { id: string; is_me: 
 };
 
 export {
-	encrypt,
-	decrypt,
-	createSession,
-	setSession,
-	unsetSession,
-	createAndSetSession,
-	getSession,
+	createAndSetSession, createSession, decrypt, encrypt, getSession,
 	getThrowableSession,
-	parseUserId,
+	parseUserId, setSession,
+	unsetSession
 };

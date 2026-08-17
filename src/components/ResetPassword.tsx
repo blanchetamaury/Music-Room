@@ -1,7 +1,8 @@
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { api } from '@/src/lib/api/client';
 import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
@@ -16,7 +17,11 @@ export function ResetPassword({
   const [email, setEmail] = useState('');
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
 
   const reveal = useSharedValue(0);
@@ -26,7 +31,7 @@ export function ResetPassword({
   useEffect(() => {
     if (codeSent) {
       reveal.value = withTiming(1, { duration: 350 });
-      setCountdown(10);
+      setCountdown(60);
       timerRef.current = setInterval(() => {
         setCountdown((c) => {
           if (c <= 1) {
@@ -44,11 +49,12 @@ export function ResetPassword({
       }
       setCountdown(0);
       setCode('');
+      setNewPassword('');
+      setConfirmPassword('');
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current as any);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codeSent]);
 
   const revealStyle = useAnimatedStyle(() => {
@@ -58,23 +64,51 @@ export function ResetPassword({
     };
   });
 
-  const sendCode = () => {
+  const sendCode = async () => {
     if (!email) return;
-    setCodeSent(true);
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await api.auth.resetPassword.request(email);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to send reset code');
+      }
+      setCodeSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send reset code');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resend = () => {
     if (countdown > 0) return;
     setCode('');
-    setCodeSent(true);
+    sendCode();
   };
 
-  const submitReset = () => {
-    if (code.length === 6) {
-      // simulate success
+  const submitReset = async () => {
+    if (code.length !== 6 || !newPassword || newPassword !== confirmPassword) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await api.auth.resetPassword.verify(email, code, newPassword);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to reset password');
+      }
       onResetComplete?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reset password');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const canSubmitCode = code.length === 6 && newPassword.length >= 6 && newPassword === confirmPassword;
 
   return (
     <LiquidGlass
@@ -92,47 +126,86 @@ export function ResetPassword({
         </Pressable>
         <ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>Reset password</ThemedText>
       </View>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#D1D5D8"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          underlineColorAndroid="transparent"
-          style={[
-            styles.input,
-            { color: '#fff' },
-            Platform.OS === 'web' ? ({ outlineWidth: 0, outlineColor: 'transparent', outlineStyle: 'none' } as any) : null,
-          ]}
-        />
-      </View>
 
-      <Pressable onPress={sendCode} style={styles.actionBtn} accessibilityRole="button">
-        <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Send code</ThemedText>
-      </Pressable>
+      {error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-      <Animated.View style={[styles.codeContainer, revealStyle]} pointerEvents={codeSent ? 'auto' : 'none'}>
-        <ThemedText style={{ color: '#fff' }}>Enter the 6-digit code</ThemedText>
-        <TextInput
-          placeholder="------"
-          placeholderTextColor="#D1D5D8"
-          keyboardType="number-pad"
-          value={code}
-          onChangeText={(v) => setCode(v.replace(/[^0-9]/g, '').slice(0, 6))}
-          style={[styles.codeInput, { color: '#fff' }]}
-          maxLength={6}
-        />
+      {!codeSent ? (
+        <>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor="#D1D5D8"
+              value={email}
+              onChangeText={(text) => { setEmail(text); setError(null); }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              underlineColorAndroid="transparent"
+              style={[
+                styles.input,
+                { color: '#fff' },
+                Platform.OS === 'web' ? ({ outlineWidth: 0, outlineColor: 'transparent', outlineStyle: 'none' } as any) : null,
+              ]}
+            />
+          </View>
 
-        <Pressable onPress={submitReset} style={styles.actionBtn} accessibilityRole="button">
-          <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Reset password</ThemedText>
-        </Pressable>
+          <Pressable onPress={sendCode} disabled={!email || isLoading} style={[styles.actionBtn, !email || isLoading ? styles.actionBtnDisabled : null]} accessibilityRole="button">
+            {isLoading ? <ActivityIndicator color="#fff" size="small" /> : <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Send code</ThemedText>}
+          </Pressable>
+        </>
+      ) : (
+        <Animated.View style={[styles.codeContainer, revealStyle]} pointerEvents={codeSent ? 'auto' : 'none'}>
+          <ThemedText style={{ color: '#fff' }}>Enter the 6-digit code</ThemedText>
+          <TextInput
+            placeholder="------"
+            placeholderTextColor="#D1D5D8"
+            keyboardType="number-pad"
+            value={code}
+            onChangeText={(v) => setCode(v.replace(/[^0-9]/g, '').slice(0, 6))}
+            style={[styles.codeInput, { color: '#fff' }]}
+            maxLength={6}
+          />
 
-        <Pressable onPress={resend} style={styles.resendBtn} accessibilityRole="button" disabled={countdown > 0}>
-          <ThemedText type="link" style={{ color: '#fff' }}>{countdown > 0 ? `Resend (${countdown}s)` : 'Resend code'}</ThemedText>
-        </Pressable>
-      </Animated.View>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              placeholder="New password"
+              placeholderTextColor="#D1D5D8"
+              value={newPassword}
+              onChangeText={(text) => { setNewPassword(text); setError(null); }}
+              secureTextEntry
+              underlineColorAndroid="transparent"
+              style={[
+                styles.input,
+                { color: '#fff' },
+                Platform.OS === 'web' ? ({ outlineWidth: 0, outlineColor: 'transparent', outlineStyle: 'none' } as any) : null,
+              ]}
+            />
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <TextInput
+              placeholder="Confirm password"
+              placeholderTextColor="#D1D5D8"
+              value={confirmPassword}
+              onChangeText={(text) => { setConfirmPassword(text); setError(null); }}
+              secureTextEntry
+              underlineColorAndroid="transparent"
+              style={[
+                styles.input,
+                { color: '#fff' },
+                Platform.OS === 'web' ? ({ outlineWidth: 0, outlineColor: 'transparent', outlineStyle: 'none' } as any) : null,
+              ]}
+            />
+          </View>
+
+          <Pressable onPress={submitReset} disabled={!canSubmitCode || isLoading} style={[styles.actionBtn, !canSubmitCode || isLoading ? styles.actionBtnDisabled : null]} accessibilityRole="button">
+            {isLoading ? <ActivityIndicator color="#fff" size="small" /> : <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Reset password</ThemedText>}
+          </Pressable>
+
+          <Pressable onPress={resend} style={styles.resendBtn} accessibilityRole="button" disabled={countdown > 0}>
+            <ThemedText type="link" style={{ color: '#fff' }}>{countdown > 0 ? `Resend (${countdown}s)` : 'Resend code'}</ThemedText>
+          </Pressable>
+        </Animated.View>
+      )}
     </LiquidGlass>
   );
 }
@@ -163,6 +236,7 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     marginTop: 8,
+    width: '100%',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
@@ -174,11 +248,15 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     marginTop: 14,
+    width: '100%',
     paddingVertical: 16,
     paddingHorizontal: 14,
     borderRadius: 12,
     alignItems: 'center',
     backgroundColor: '#0a7ea4',
+  },
+  actionBtnDisabled: {
+    backgroundColor: 'rgba(10,126,164,0.45)',
   },
   codeContainer: {
     marginTop: 16,
@@ -198,5 +276,11 @@ const styles = StyleSheet.create({
   },
   resendBtn: {
     marginTop: 10,
+  },
+  error: {
+    marginTop: 6,
+    marginBottom: 8,
+    color: '#ff6b6b',
+    textAlign: 'center',
   },
 });

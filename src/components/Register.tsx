@@ -1,8 +1,9 @@
 import { GoogleIcon } from '@/src/components/ui/google-icon';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { api } from '@/src/lib/api/client';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
-import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
 import { FTIcon } from './ui/42-icon';
@@ -26,12 +27,37 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
   const [touchedConfirm, setTouchedConfirm] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const rules = useMemo(() => checkRules(pw), [pw]);
   const completed = [rules.hasUpper, rules.hasNumber, rules.hasSpecial].filter(Boolean).length;
 
   const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
+  const isPasswordValid = pw.length >= 6 && confirm === pw && completed === 3;
+
+  const handleSubmit = async () => {
+    if (!isPasswordValid || isLoading) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const username = email.split('@')[0];
+      const response = await api.auth.signup(email, pw, username);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Registration failed');
+      }
+      
+      onRegisterComplete?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <LiquidGlass
@@ -48,12 +74,14 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
 
       <ThemedText type="title" style={[styles.title, { color: '#fff' }]}>Create account</ThemedText>
 
+      {error && <ThemedText style={styles.error}>{error}</ThemedText>}
+
       <View style={[styles.inputWrapper, touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null]}>
         <TextInput
           placeholder="Email"
           placeholderTextColor="#D1D5D8"
           value={email}
-          onChangeText={(v) => setEmail(v)}
+          onChangeText={(v) => { setEmail(v); setError(null); }}
           onFocus={() => setEmailFocused(true)}
           onBlur={() => { setEmailFocused(false); setTouchedEmail(true); }}
           keyboardType="email-address"
@@ -90,7 +118,7 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
           placeholder="Password"
           placeholderTextColor="#D1D5D8"
           value={pw}
-          onChangeText={(v) => setPw(v.replace(/\s/g, ''))}
+          onChangeText={(v) => { setPw(v.replace(/\s/g, '')); setError(null); }}
           secureTextEntry={!showPw}
           underlineColorAndroid="transparent"
           style={[
@@ -119,7 +147,7 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
           placeholder="Confirm password"
           placeholderTextColor="#D1D5D8"
           value={confirm}
-          onChangeText={(v) => setConfirm(v.replace(/\s/g, ''))}
+          onChangeText={(v) => { setConfirm(v.replace(/\s/g, '')); setError(null); }}
           secureTextEntry={!showConfirm}
           underlineColorAndroid="transparent"
           onBlur={() => setTouchedConfirm(true)}
@@ -153,11 +181,15 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
       </Pressable>
 
       <Pressable
-        style={[styles.createBtn, !(isEmailValid && pw.length >= 6 && confirm === pw && completed === 3) ? { opacity: 0.55 } : null]}
-        onPress={() => { if (isEmailValid && pw.length >= 6 && confirm === pw && completed === 3) onRegisterComplete?.(); }}
+        style={[styles.createBtn, !isPasswordValid ? { opacity: 0.55 } : null]}
+        onPress={handleSubmit}
         accessibilityRole="button"
-        disabled={!(isEmailValid && pw.length >= 6 && confirm === pw && completed === 3)}>
-        <ThemedText style={{ color: '#ffffff', fontWeight: '600' }}>Create account</ThemedText>
+        disabled={!isPasswordValid || isLoading}>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" size="small" />
+        ) : (
+          <ThemedText style={{ color: '#ffffff', fontWeight: '600' }}>Create account</ThemedText>
+        )}
       </Pressable>
 
       <Pressable onPress={() => onBack?.()} style={styles.signInLink} accessibilityRole="button">
@@ -211,7 +243,9 @@ const styles = StyleSheet.create({
   },
   error: {
     marginTop: 6,
+    marginBottom: 8,
     color: '#ff6b6b',
+    textAlign: 'center',
   },
   iconPlaceholder: {
     width: 20,

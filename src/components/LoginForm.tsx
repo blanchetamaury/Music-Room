@@ -1,20 +1,21 @@
-import { generateFortyTwoAuthorizationUrl } from '@/rest/fortytwo';
+import { generateFortyTwoAuthorizationUrl } from '@/src/app/rest/fortytwo';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
 import { Link } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import {
+	ActivityIndicator,
 	KeyboardAvoidingView,
 	Platform,
 	Pressable,
 	StyleSheet,
 	TextInput,
-	View,
+	View
 } from 'react-native';
+import { generateGoogleAuthorizationUrl } from '../server/rest/google';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
 import { FTIcon } from './ui/42-icon';
-import { GoogleIcon } from './ui/google-icon';
 
 export function LoginForm({
   onLogin,
@@ -22,7 +23,7 @@ export function LoginForm({
   onGoogle,
   onRegister,
 }: {
-  onLogin?: (email: string, password: string) => void;
+  onLogin?: (email: string, password: string) => Promise<void>;
   onForgot?: () => void;
   onGoogle?: () => void;
   onRegister?: () => void;
@@ -33,6 +34,8 @@ export function LoginForm({
   const [emailFocused, setEmailFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
@@ -42,8 +45,19 @@ export function LoginForm({
   const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
   const inputTextColor = useThemeColor({}, 'text');
 
-  const handleSubmit = () => {
-    if (canSubmit) onLogin?.(email, password);
+  const handleSubmit = async () => {
+    if (!canSubmit || isLoading) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      await onLogin?.(email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,12 +82,14 @@ export function LoginForm({
 
         <ThemedText type="title" style={[styles.title, { color: '#fff' }]}>Log in</ThemedText>
 
+        {error && <ThemedText style={styles.error}>{error}</ThemedText>}
+
         <View style={[styles.inputWrapper, touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null]}>
           <TextInput
             placeholder="Email"
             placeholderTextColor="#D1D5D8"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => { setEmail(text); setError(null); }}
             onFocus={() => setEmailFocused(true)}
             onBlur={() => { setEmailFocused(false); setTouchedEmail(true); }}
             keyboardType="email-address"
@@ -96,7 +112,7 @@ export function LoginForm({
             placeholder="Password"
             placeholderTextColor="#D1D5D8"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => { setPassword(text); setError(null); }}
             onFocus={() => setPasswordFocused(true)}
             onBlur={() => setPasswordFocused(false)}
             secureTextEntry={!showPassword}
@@ -118,12 +134,16 @@ export function LoginForm({
 
         <Pressable
           onPress={handleSubmit}
-          disabled={!canSubmit}
-          style={[styles.loginBtn, !canSubmit ? styles.loginBtnDisabled : null]}
+          disabled={!canSubmit || isLoading}
+          style={[styles.loginBtn, !canSubmit || isLoading ? styles.loginBtnDisabled : null]}
           accessibilityRole="button">
-          <ThemedText type="defaultSemiBold" style={[styles.loginBtnText, !canSubmit ? { opacity: 0.6 } : null]}>
-            Log in
-          </ThemedText>
+          {isLoading ? (
+            <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <ThemedText type="defaultSemiBold" style={[styles.loginBtnText, !canSubmit ? { opacity: 0.6 } : null]}>
+              Log in
+            </ThemedText>
+          )}
         </Pressable>
 
         <View style={styles.separatorRow}>
@@ -133,8 +153,13 @@ export function LoginForm({
         </View>
 
         <Pressable style={styles.googleBtn} accessibilityRole="button">
-          <GoogleIcon></GoogleIcon>
-          <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
+          <View style={styles.googleLogoPlaceholder} />
+          <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with 42</Link>
+        </Pressable>
+
+        <Pressable style={styles.googleBtn} accessibilityRole="button">
+          <View style={styles.googleLogoPlaceholder} />
+          <Link href={generateGoogleAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
         </Pressable>
 
 		<Pressable style={styles.googleBtn} accessibilityRole="button">
@@ -194,7 +219,9 @@ const styles = StyleSheet.create({
   },
   error: {
     marginTop: 6,
+    marginBottom: 8,
     color: '#ff6b6b',
+    textAlign: 'center',
   },
   showBtn: {
     position: 'absolute',
