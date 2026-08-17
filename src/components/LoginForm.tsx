@@ -16,6 +16,7 @@ import { generateGoogleAuthorizationUrl } from '../server/rest/google';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
 import { FTIcon } from './ui/42-icon';
+import { GoogleIcon } from './ui/google-icon';
 
 export function LoginForm({
   onLogin,
@@ -153,18 +154,13 @@ export function LoginForm({
         </View>
 
         <Pressable style={styles.googleBtn} accessibilityRole="button">
-          <View style={styles.googleLogoPlaceholder} />
+          <FTIcon></FTIcon>
           <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with 42</Link>
         </Pressable>
 
         <Pressable style={styles.googleBtn} accessibilityRole="button">
-          <View style={styles.googleLogoPlaceholder} />
+          <GoogleIcon></GoogleIcon>
           <Link href={generateGoogleAuthorizationUrl()} style={{ color: '#fff' }}>Log in with Google</Link>
-        </Pressable>
-
-		<Pressable style={styles.googleBtn} accessibilityRole="button">
-          <FTIcon></FTIcon>
-          <Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>Log in with 42</Link>
         </Pressable>
 
         <Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">

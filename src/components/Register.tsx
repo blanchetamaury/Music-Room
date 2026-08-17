@@ -1,4 +1,3 @@
-import { GoogleIcon } from '@/src/components/ui/google-icon';
 import { useThemeColor } from '@/src/hooks/use-theme-color';
 import { api } from '@/src/lib/api/client';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
@@ -6,7 +5,6 @@ import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import LiquidGlass from './LiquidGlass';
 import { ThemedText } from './themed-text';
-import { FTIcon } from './ui/42-icon';
 
 function checkRules(pw: string) {
   const hasUpper = /[A-Z]/.test(pw);
@@ -170,16 +168,6 @@ export function Register({ onBack, onRegisterComplete, onGoogle }: { onBack?: ()
         <View style={styles.separatorLine} />
       </View>
 	  
-      <Pressable style={styles.googleBtn} onPress={() => onGoogle?.()} accessibilityRole="button">
-		<GoogleIcon></GoogleIcon>
-        <ThemedText style={{ color: '#fff' }}>Create with Google</ThemedText>
-      </Pressable>
-
-	  <Pressable style={styles.googleBtn} onPress={() => onGoogle?.()} accessibilityRole="button">
-		<FTIcon></FTIcon>
-        <ThemedText style={{ color: '#fff' }}>Create with Google</ThemedText>
-      </Pressable>
-
       <Pressable
         style={[styles.createBtn, !isPasswordValid ? { opacity: 0.55 } : null]}
         onPress={handleSubmit}
