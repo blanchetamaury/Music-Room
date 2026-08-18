@@ -9,7 +9,7 @@ import { homeStyles } from './home.styles';
 
 export function PlayerCard({ currentTrack }: { currentTrack: Track }) {
 	const [play, setPlay] = useState(false);
-	
+
 	return (
 		<View style={homeStyles.playerWrap}>
 			<LiquidGlass
@@ -32,16 +32,16 @@ export function PlayerCard({ currentTrack }: { currentTrack: Track }) {
 						accessibilityRole="button"
 						accessibilityLabel={play ? 'Pause' : 'Play'}
 					>
-						{play == true && <Play style={{ color: "#ffffff"}}></Play>}
-						{play != true && <Pause style={{ color: "#ffffff"}}></Pause>}
+						{play == true && <Play style={{ color: '#ffffff' }}></Play>}
+						{play != true && <Pause style={{ color: '#ffffff' }}></Pause>}
 					</Pressable>
 				</View>
-					
+
 				<View style={homeStyles.playerInfo}>
 					<ThemedText style={homeStyles.playerTitle}>{currentTrack.title}</ThemedText>
 					<ThemedText style={homeStyles.playerArtist}>{currentTrack.artist}</ThemedText>
 				</View>
-				
+
 				<View style={[homeStyles.playerCover, { backgroundColor: currentTrack.cover }]} />
 			</LiquidGlass>
 		</View>

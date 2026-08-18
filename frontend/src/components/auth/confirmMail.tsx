@@ -5,8 +5,12 @@ import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { api } from '../../lib/api/client';
 import { ThemedText } from '../themed-text';
 
-export function ConfirmMail({ onBack, onConfirmComplete, email }: {
-	onBack?: (value : boolean) => void;
+export function ConfirmMail({
+	onBack,
+	onConfirmComplete,
+	email,
+}: {
+	onBack?: (value: boolean) => void;
 	onConfirmComplete?: (value: boolean) => void;
 	email: string;
 }) {
@@ -25,15 +29,14 @@ export function ConfirmMail({ onBack, onConfirmComplete, email }: {
 			setCountdown(60);
 			timerRef.current = setInterval(() => {
 				setCountdown((c) => {
-				if (c <= 1) {
-					if (timerRef.current) clearInterval(timerRef.current as any);
-					return 0;
-				}
-				return c - 1;
+					if (c <= 1) {
+						if (timerRef.current) clearInterval(timerRef.current as any);
+						return 0;
+					}
+					return c - 1;
 				});
 			}, 1000) as unknown as number;
-		} 
-		else {
+		} else {
 			reveal.value = withTiming(0, { duration: 300 });
 			if (timerRef.current) {
 				clearInterval(timerRef.current as any);
@@ -47,20 +50,17 @@ export function ConfirmMail({ onBack, onConfirmComplete, email }: {
 		};
 	}, [codeSent]);
 
-
-	useEffect( () => {
+	useEffect(() => {
 		sendCode();
 	}, []);
 
 	const sendCode = async () => {
-		
 		setIsLoading(true);
 		setError(null);
-		
+
 		try {
 			const response = await api.auth.resetPassword.request(email);
-			if (!response.success)
-				throw new Error(response.message || 'Failed to send code');
+			if (!response.success) throw new Error(response.message || 'Failed to send code');
 			setCodeSent(true);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Failed to send code');
@@ -77,22 +77,21 @@ export function ConfirmMail({ onBack, onConfirmComplete, email }: {
 
 	const submitMail = async () => {
 		if (code.length !== 6) return;
-		
+
 		setIsLoading(true);
 		setError(null);
-		
+
 		try {
 			const response = await api.auth.confirmMailAccount(email, code);
-			if (!response.success)
-				throw new Error(response.message || 'Failed to confirm mail');
+			if (!response.success) throw new Error(response.message || 'Failed to confirm mail');
 			onConfirmComplete?.(true);
 			onBack?.(false);
 		} catch (err) {
-		  setError(err instanceof Error ? err.message : 'Failed to confirm mail');
+			setError(err instanceof Error ? err.message : 'Failed to confirm mail');
 		} finally {
-		  setIsLoading(false);
+			setIsLoading(false);
 		}
-	  };
+	};
 
 	const canSubmitCode = true;
 
@@ -100,12 +99,22 @@ export function ConfirmMail({ onBack, onConfirmComplete, email }: {
 		<>
 			<View style={styles.headerRow}>
 				<Pressable onPress={() => onBack?.(false)} style={styles.backBtn} accessibilityRole="button">
-				<ChevronLeft style={{ color: "#ffff" }}></ChevronLeft>
+					<ChevronLeft style={{ color: '#ffff' }}></ChevronLeft>
 				</Pressable>
-				<ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>Confirm the email</ThemedText>
+				<ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>
+					Confirm the email
+				</ThemedText>
 			</View>
 
-			<View style={{ width: "100%", display: 'flex', alignItems: 'center', gap: 5, paddingTop: 15 }}>
+			<View
+				style={{
+					width: '100%',
+					display: 'flex',
+					alignItems: 'center',
+					gap: 5,
+					paddingTop: 15,
+				}}
+			>
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 				<ThemedText style={{ color: '#fff' }}>Enter the 6-digit code</ThemedText>
 				<TextInput
@@ -118,19 +127,37 @@ export function ConfirmMail({ onBack, onConfirmComplete, email }: {
 					maxLength={6}
 				/>
 
-				<Pressable onPress={submitMail} disabled={!canSubmitCode || isLoading} style={[styles.actionBtn, !canSubmitCode || isLoading ? styles.actionBtnDisabled : null]} accessibilityRole="button">
-					{isLoading ? <ActivityIndicator color="#fff" size="small" /> : <ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>Reset password</ThemedText>}
+				<Pressable
+					onPress={submitMail}
+					disabled={!canSubmitCode || isLoading}
+					style={[styles.actionBtn, !canSubmitCode || isLoading ? styles.actionBtnDisabled : null]}
+					accessibilityRole="button"
+				>
+					{isLoading ? (
+						<ActivityIndicator color="#fff" size="small" />
+					) : (
+						<ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>
+							Reset password
+						</ThemedText>
+					)}
 				</Pressable>
 
-				<Pressable onPress={resend} style={styles.resendBtn} accessibilityRole="button" disabled={countdown > 0}>
-					<ThemedText type="link" style={{ color: '#fff' }}>{countdown > 0 ? `Resend (${countdown}s)` : 'Resend code'}</ThemedText>
+				<Pressable
+					onPress={resend}
+					style={styles.resendBtn}
+					accessibilityRole="button"
+					disabled={countdown > 0}
+				>
+					<ThemedText type="link" style={{ color: '#fff' }}>
+						{countdown > 0 ? `Resend (${countdown}s)` : 'Resend code'}
+					</ThemedText>
 				</Pressable>
 			</View>
 		</>
-		);
-	}
+	);
+}
 
-	const styles = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		width: '92%',
 		maxWidth: 420,

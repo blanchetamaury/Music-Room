@@ -13,13 +13,10 @@ export function generateGoogleAuthorizationUrl(): RelativePathString {
 		throw new Error('Missing key EXPO_PUBLIC_OAUTH_GOOGLE_CLIENTID in environement');
 
 	const baseUrl = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:3000';
-	
+
 	url.searchParams.set('client_id', process.env.EXPO_PUBLIC_OAUTH_GOOGLE_CLIENTID);
 	url.searchParams.set('scope', 'openid email profile');
-	url.searchParams.set(
-		'redirect_uri',
-		`${baseUrl}/api/auth/oauth/oauth_google`
-	);
+	url.searchParams.set('redirect_uri', `${baseUrl}/api/auth/oauth/oauth_google`);
 	url.searchParams.set('response_type', 'code');
 
 	return url.toString() as RelativePathString;
