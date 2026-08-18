@@ -179,9 +179,6 @@ CREATE INDEX "tracks_title_idx" ON "tracks"("title");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
-
--- CreateIndex
 CREATE UNIQUE INDEX "users_deezerUserId_key" ON "users"("deezerUserId");
 
 -- CreateIndex

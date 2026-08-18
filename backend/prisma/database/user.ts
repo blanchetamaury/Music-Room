@@ -17,7 +17,9 @@ const createOrUpdateFortyTwoUser = async (
 	};
 
 	return prisma.user.upsert({
-		where: { fortytwo_user_id: me.id },
+		where: {
+			email: me.email,
+		},
 		create: {
 			fortytwo_user_id: me.id,
 			email: me.email,
@@ -26,6 +28,7 @@ const createOrUpdateFortyTwoUser = async (
 			fortytwo_oauth: { create: { ...token_body } },
 		},
 		update: {
+			fortytwo_user_id: me.id,
 			fortytwo_oauth: {
 				upsert: {
 					update: { ...token_body },

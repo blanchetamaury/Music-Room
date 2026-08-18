@@ -1,5 +1,5 @@
 import { getCode } from '../../../../prisma/database/resetPassword';
-import { updateUserPassword } from '../../../../prisma/database/user';
+import { existUserByMail, updateUserPassword } from '../../../../prisma/database/user';
 import { ResetPasswordVerifySchema } from '../../../schema/ResetPasswordVerifySchema';
 import { ResetPasswordVerify } from '../../../types/auth/ResetPasswordVerify';
 import { errorHandler } from '../../../utils/error';
@@ -11,7 +11,17 @@ export async function POST(req: Request): Promise<Response> {
     
     console.log('Password reset verified for:', body.mail, 'with code:', body.code);
     const value = await getCode(body.mail, body.code);
-    if (value == null)
+    const mail = await existUserByMail(body.mail);
+    if (value?.created_at) {
+      const elapsed = Date.now() - new Date(value.created_at).getTime();
+      if (elapsed > 10 * 60 * 1000) {
+        return Response.json(
+          { success: false, message: 'Code expired' },
+          { status: 400 }
+        );
+      }
+    }
+    if (value == null || mail == false)
       return Response.json({ success: true, message: 'Error, code or mail is not good' }, { status: 400 });
     await updateUserPassword(body.mail, body.password);
     return Response.json({ success: true, message: 'Password has been reset' }, { status: 200 });
