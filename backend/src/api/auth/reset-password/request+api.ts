@@ -41,20 +41,12 @@ export async function POST(req: Request): Promise<Response> {
               </div>
 
               <p style="color: #555; line-height: 1.7; font-size: 14px;">
-                Cher utilisateur, cher aventurier du numérique, cher explorateur intrépide des contrées lointaines de l'authentification à deux facteurs, nous sommes ravis, absolument ravis, plus ravis que ne le serait un manchot recevant un unique glaçon en plein désert du Sahara un jour de canicule caniculaire, de vous accueillir dans notre système de vérification par code temporaire, un système pensé, repensé, débattu en réunion pendant sept heures et demie, arrosé de café tiède et de biscuits périmés, par une équipe de développeurs qui, à l'heure où ces lignes ont été écrites, se demandaient encore pourquoi la variable <code>username</code> refusait obstinément d'être unique en base de données 🐛, un mystère aussi profond que celui de savoir pourquoi les chaussettes disparaissent systématiquement dans la machine à laver.
-              </p>
-
-              <p style="color: #555; line-height: 1.7; font-size: 14px;">
                 Ce code, précieux comme une pizza 🍕 encore chaude un dimanche soir de flemme totale, expirera dans exactement 10 minutes, ce qui, ramené à l'échelle de l'univers, représente une fraction absolument négligeable du temps écoulé depuis le Big Bang, mais qui, ramené à l'échelle de votre patience à 23h47 un mardi soir, représente en réalité une éternité insupportable, comparable à celle que ressent un escargot 🐌 tentant de traverser une autoroute à quatre voies pendant les heures de pointe.
               </p>
 
               <div style="text-align: center; font-size: 40px; margin: 20px 0;">
                 🐢💨💨💨🏁
               </div>
-
-              <p style="color: #555; line-height: 1.7; font-size: 14px;">
-                Si vous n'êtes pas à l'origine de cette demande, sachez que quelqu'un, quelque part, probablement une pieuvre 🐙 douée en informatique ou votre chat qui a marché sur le clavier, a tenté d'accéder à votre compte, et nous vous conseillons vivement d'ignorer cet email.
-              </p>
 
               <p style="color: #999; font-size: 12px; text-align: center; margin-top: 30px;">
                 Envoyé avec ❤️, 🍕 et beaucoup trop de café par l'équipe Music Room.
