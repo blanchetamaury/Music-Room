@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { Prisma } from './generated/client';
+import { FortyTwoCursusUserDetails } from '../../src/types/fortytwo/FortyTwoCursusUserDetails';
+import { FortyTwoOauthToken } from '../../src/types/fortytwo/FortyTwoOauthToken';
+import { GoogleOauthResponse } from '../../src/types/google/GoogleOauthResponse';
+import { GoogleOauthToken } from '../../src/types/google/GoogleOauthToken';
+import { Prisma } from '../generated/client';
 import { prisma } from './prisma';
-import { FortyTwoCursusUserDetails } from '../types/fortytwo/FortyTwoCursusUserDetails';
-import { FortyTwoOauthToken } from '../types/fortytwo/FortyTwoOauthToken';
-import { GoogleOauthResponse } from '../types/google/GoogleOauthResponse';
-import { GoogleOauthToken } from '../types/google/GoogleOauthToken';
 
 const createOrUpdateFortyTwoUser = async (
 	me: FortyTwoCursusUserDetails,
@@ -103,8 +103,20 @@ const createUser = async (
 	});
 };
 
+const updateUserPassword = async (
+	mail: string,
+	password: string,
+): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
+	return prisma.user.update({
+		where: {email: mail},
+		data: {
+			passwordHash: await bcrypt.hash(password, 10),
+		},
+	});
+};
+
 const existUserByMail = async (mail: string): Promise<boolean> => {
 	return (await getUserByMail(mail, {})) !== null;
 };
 
-export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserByMail };
+export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserByMail, updateUserPassword };

@@ -69,18 +69,30 @@ app.get('/health', (req, res) => {
 });
 
 createApiRouter().then(apiRouter => {
-  app.use('/api', (req, res, next) => {
-    console.log(`API router received: ${req.method} ${req.path}`);
-    next();
-  }, apiRouter);
-  
-  app.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
-    console.log(`API available at http://localhost:${PORT}/api`);
-    console.log(`Swagger UI at http://localhost:${PORT}/api/docs`);
-    console.log(`OpenAPI spec at http://localhost:${PORT}/api/openapi.yaml`);
-  });
-}).catch(err => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
+  app.use('/api', apiRouter);
+
+  // Debug : affiche toutes les routes montées
+  const printRoutes = (stack: any[], prefix = '') => {
+  stack.forEach((layer: any) => {
+    if (layer.route) {
+      const methods = Object.keys(layer.route.methods)
+        .map(m => m.toUpperCase())
+        .join(',');
+      console.log(`${methods.padEnd(8)} ${prefix}${layer.route.path}`);
+    } else if (layer.handle?.stack) {
+      // Reconstruit le préfixe depuis la regexp du layer
+      const seg = layer.regexp?.source
+        ?.replace('^\\/', '/')
+        ?.replace('\\/?(?=\\/|$)', '')
+        ?.replace(/\\\//g, '/') ?? '';
+      printRoutes(layer.handle.stack, prefix + (seg.startsWith('/') ? seg : ''));
+      }
+    });
+  };
+
+  const router = (app as any).router ?? (app as any)._router;
+  console.log('--- Routes ---');
+  printRoutes(router.stack);
+
+  app.listen(PORT, () => { /* ... */ });
 });

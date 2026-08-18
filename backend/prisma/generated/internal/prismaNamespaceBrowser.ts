@@ -59,6 +59,7 @@ export const ModelName = {
   Playlist: 'Playlist',
   PlaylistTrack: 'PlaylistTrack',
   ratelimit_login: 'ratelimit_login',
+  ResetPassword: 'ResetPassword',
   Track: 'Track',
   User: 'User'
 } as const
@@ -164,6 +165,16 @@ export const Ratelimit_loginScalarFieldEnum = {
 } as const
 
 export type Ratelimit_loginScalarFieldEnum = (typeof Ratelimit_loginScalarFieldEnum)[keyof typeof Ratelimit_loginScalarFieldEnum]
+
+
+export const ResetPasswordScalarFieldEnum = {
+  id: 'id',
+  mail: 'mail',
+  code: 'code',
+  created_at: 'created_at'
+} as const
+
+export type ResetPasswordScalarFieldEnum = (typeof ResetPasswordScalarFieldEnum)[keyof typeof ResetPasswordScalarFieldEnum]
 
 
 export const TrackScalarFieldEnum = {

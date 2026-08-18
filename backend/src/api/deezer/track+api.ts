@@ -1,4 +1,4 @@
-import { getTrack } from "../../prisma/deezer"
+import { getTrack } from "../../../prisma/database/deezer"
 
 export async function GET(
   _req: Request,

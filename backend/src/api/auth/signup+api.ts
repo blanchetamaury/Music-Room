@@ -1,6 +1,6 @@
+import { createUser, existUserByMail } from '../../../prisma/database/user';
 import { createCsrfCookie } from '../../lib/csrf';
 import { createAndSetSession } from '../../lib/session';
-import { createUser, existUserByMail } from '../../prisma/user';
 import { SignUpParametersSchema } from '../../schema/SignUpParametersSchema';
 import { SignUpParameters } from '../../types/auth/SignUpParameters';
 import { errorHandler, ERRORS_DETAILS } from '../../utils/error';

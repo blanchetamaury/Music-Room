@@ -1,12 +1,12 @@
 import * as bcrypt from 'bcrypt';
+import { countRateLimitLoginByIp, countRateLimitLoginByUserId, createRateLimitLogin } from '../../../prisma/database/ratelimitLogin';
+import { getUserByMail } from '../../../prisma/database/user';
 import { createCsrfCookie } from '../../lib/csrf';
 import { createAndSetSession } from '../../lib/session';
-import { countRateLimitLoginByIp, countRateLimitLoginByUserId, createRateLimitLogin } from '../../prisma/ratelimitLogin';
-import { getUserByMail } from '../../prisma/user';
 import { LoginParametersSchema } from '../../schema/LoginParamtersSchema';
+import { LoginParameters } from '../../types/auth/LoginParameters';
 import { errorHandler, ERRORS_DETAILS } from '../../utils/error';
 import { parseBody } from '../../utils/parsing';
-import { LoginParameters } from '../../types/auth/LoginParameters';
 
 const MAX_ATTEMPTS_PER_ACCOUNT = 5;
 const MAX_ATTEMPTS_PER_IP = 20;

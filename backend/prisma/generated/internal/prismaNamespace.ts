@@ -405,6 +405,7 @@ export const ModelName = {
   Playlist: 'Playlist',
   PlaylistTrack: 'PlaylistTrack',
   ratelimit_login: 'ratelimit_login',
+  ResetPassword: 'ResetPassword',
   Track: 'Track',
   User: 'User'
 } as const
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "follow" | "fortytwo_oauth" | "google_oauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "track" | "user"
+    modelProps: "follow" | "fortytwo_oauth" | "google_oauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "resetPassword" | "track" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1018,6 +1019,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ResetPassword: {
+      payload: Prisma.$ResetPasswordPayload<ExtArgs>
+      fields: Prisma.ResetPasswordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResetPasswordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResetPasswordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        findFirst: {
+          args: Prisma.ResetPasswordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResetPasswordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        findMany: {
+          args: Prisma.ResetPasswordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>[]
+        }
+        create: {
+          args: Prisma.ResetPasswordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        createMany: {
+          args: Prisma.ResetPasswordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResetPasswordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>[]
+        }
+        delete: {
+          args: Prisma.ResetPasswordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        update: {
+          args: Prisma.ResetPasswordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        deleteMany: {
+          args: Prisma.ResetPasswordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResetPasswordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResetPasswordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>[]
+        }
+        upsert: {
+          args: Prisma.ResetPasswordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResetPasswordPayload>
+        }
+        aggregate: {
+          args: Prisma.ResetPasswordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResetPassword>
+        }
+        groupBy: {
+          args: Prisma.ResetPasswordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResetPasswordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResetPasswordCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResetPasswordCountAggregateOutputType> | number
+        }
+      }
+    }
     Track: {
       payload: Prisma.$TrackPayload<ExtArgs>
       fields: Prisma.TrackFieldRefs
@@ -1290,6 +1365,16 @@ export const Ratelimit_loginScalarFieldEnum = {
 } as const
 
 export type Ratelimit_loginScalarFieldEnum = (typeof Ratelimit_loginScalarFieldEnum)[keyof typeof Ratelimit_loginScalarFieldEnum]
+
+
+export const ResetPasswordScalarFieldEnum = {
+  id: 'id',
+  mail: 'mail',
+  code: 'code',
+  created_at: 'created_at'
+} as const
+
+export type ResetPasswordScalarFieldEnum = (typeof ResetPasswordScalarFieldEnum)[keyof typeof ResetPasswordScalarFieldEnum]
 
 
 export const TrackScalarFieldEnum = {
@@ -1587,6 +1672,7 @@ export type GlobalOmitConfig = {
   playlist?: Prisma.PlaylistOmit
   playlistTrack?: Prisma.PlaylistTrackOmit
   ratelimit_login?: Prisma.ratelimit_loginOmit
+  resetPassword?: Prisma.ResetPasswordOmit
   track?: Prisma.TrackOmit
   user?: Prisma.UserOmit
 }

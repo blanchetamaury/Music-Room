@@ -1,4 +1,4 @@
-import { Prisma } from "./generated/client";
+import { Prisma } from "../generated/client";
 import { prisma } from "./prisma";
 
 const createRateLimitLogin = async (
@@ -37,4 +37,4 @@ const countRateLimitLoginByIp = async (ip: string, success: boolean, windowMs: n
 	});
 };
 
-export { createRateLimitLogin, countRateLimitLoginByUserId, countRateLimitLoginByIp };
+export { countRateLimitLoginByIp, countRateLimitLoginByUserId, createRateLimitLogin };
