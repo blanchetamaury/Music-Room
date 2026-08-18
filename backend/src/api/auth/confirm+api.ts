@@ -1,13 +1,14 @@
-import { getCode } from '../../../../prisma/database/resetPassword';
-import { existUserByMail, updateUserPassword } from '../../../../prisma/database/user';
-import { ResetPasswordVerifySchema } from '../../../schema/ResetPasswordVerifySchema';
-import { ResetPasswordVerify } from '../../../types/auth/ResetPasswordVerify';
-import { errorHandler } from '../../../utils/error';
-import { parseBody } from '../../../utils/parsing';
+import { ConfirmMailSchema } from "@/schema/ConfirmMailSchema";
+import { ConfirmMail } from "@/types/auth/ConfirmMail";
+import { errorHandler } from "@/utils/error";
+import { parseBody } from "@/utils/parsing";
+import { getCode } from "../../../prisma/database/resetPassword";
+import { existUserByMail } from "../../../prisma/database/user";
+
 
 export async function POST(req: Request): Promise<Response> {
   return errorHandler(async () => {
-    const body = await parseBody<ResetPasswordVerify>(req, ResetPasswordVerifySchema);
+    const body = await parseBody<ConfirmMail>(req, ConfirmMailSchema);
     
     const value = await getCode(body.mail, body.code);
     const mail = await existUserByMail(body.mail);
@@ -20,9 +21,8 @@ export async function POST(req: Request): Promise<Response> {
         );
       }
     }
-    if (value == null || mail == false)
+    if (value == null || mail == true)
       return Response.json({ success: false, message: 'Error, code or mail is not good' }, { status: 400 });
-    await updateUserPassword(body.mail, body.password);
     return Response.json({ success: true, message: 'Password has been reset' }, { status: 200 });
   });
 

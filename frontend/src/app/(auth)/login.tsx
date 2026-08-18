@@ -46,18 +46,15 @@ function LoginScreenInner({
 function RegisterScreenInner({
   onBack,
   onRegisterComplete,
-  onGoogle,
 }: {
   onBack: () => void;
   onRegisterComplete: () => void;
-  onGoogle: () => void;
 }) {
   return (
     <View style={styles.authContainer}>
       <Register
         onBack={onBack}
         onRegisterComplete={onRegisterComplete}
-        onGoogle={onGoogle}
       />
     </View>
   );
@@ -168,7 +165,6 @@ export default function LoginScreen() {
         <RegisterScreenInner
           onBack={() => handleModeChange('login')}
           onRegisterComplete={handleRegisterComplete}
-          onGoogle={handleGoogleAuth}
         />
       </Animated.View>
 

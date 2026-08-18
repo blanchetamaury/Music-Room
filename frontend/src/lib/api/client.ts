@@ -78,6 +78,12 @@ export const api = {
         method: 'POST',
       }),
 
+    confirmMailAccount: (email: string, code: string) => {
+      return fetchApi<{ success: boolean }>('/auth/confirm', {
+        method: 'POST',
+        body: JSON.stringify({ mail: email, code: code }),
+    })},
+
     resetPassword: {
       request: (email: string) =>
         fetchApi<void>('/auth/reset-password/request', {

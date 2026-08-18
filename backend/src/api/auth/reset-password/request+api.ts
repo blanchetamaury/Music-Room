@@ -9,7 +9,6 @@ export async function POST(req: Request): Promise<Response> {
   return errorHandler(async () => {
     const body = await parseBody<ResetPasswordRequest>(req, ResetPasswordRequestSchema);
     
-    console.log('Password reset requested for:', body.mail);
     const randomNum = Math.floor(Math.random() * 900000) + 100000;
     await sendMail({
       to: body.mail,
