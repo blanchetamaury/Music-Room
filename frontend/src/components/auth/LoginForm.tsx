@@ -2,21 +2,21 @@ import { Link } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    StyleSheet,
-    TextInput,
-    View
+	ActivityIndicator,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	StyleSheet,
+	TextInput,
+	View
 } from 'react-native';
-import LiquidGlass from './LiquidGlass';
-import { ThemedText } from './themed-text';
-import { FTIcon } from './ui/42-icon';
-import { GoogleIcon } from './ui/google-icon';
-import { generateGoogleAuthorizationUrl } from '../rest/google';
-import { useThemeColor } from '../hooks/use-theme-color';
-import { generateFortyTwoAuthorizationUrl } from '../rest/fortytwo';
+import { useThemeColor } from '../../hooks/use-theme-color';
+import { generateFortyTwoAuthorizationUrl } from '../../rest/fortytwo';
+import { generateGoogleAuthorizationUrl } from '../../rest/google';
+import LiquidGlass from '../LiquidGlass';
+import { ThemedText } from '../themed-text';
+import { FTIcon } from '../ui/42-icon';
+import { GoogleIcon } from '../ui/google-icon';
 
 export function LoginForm({
   onLogin,

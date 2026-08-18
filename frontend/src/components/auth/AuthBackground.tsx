@@ -1,7 +1,8 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
+import { api } from '../../lib/api/client';
+import DotGrid from './DotGrid';
 import { MusicPreview } from './MusicPreview';
-import { api } from '../lib/api/client';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
@@ -40,7 +41,7 @@ type AnimationConfig = {
   color: string
 }
 
-const DENSITY = 20;
+const DENSITY = SCREEN_W / 40;
 const FALLBACK_COLORS = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#6A4C93', '#1A936F'];
 
 function makeAnimationConfig(): AnimationConfig {
@@ -95,18 +96,31 @@ const AuthBackground = memo(function AuthBackground() {
 
   return (
     <View style={styles.fullOverlay} pointerEvents="none">
+		<DotGrid
+      minSize={1}
+      maxSize={3}
+      spacing={24}
+      colors={[
+        '#FF6B6B',
+        '#4ECDC4',
+        '#6A4C93',
+      ]}
+      pulseDuration={3000}
+      pulseIntensity={0.8}
+    />
       {configsRef.current.map((animCfg, i) => {
         const track = tracks[i % tracks.length];
         if (!track) return null;
 
         return (
           <MusicPreview
-            key={`anim-${track.id}-${i}`} // <-- key stable basée sur l'id
+            key={`anim-${track.id}-${i}`}
             color={animCfg.color}
             title={track.title}
             artist={track.artist?.name ?? 'Unknown'}
             cover={track.album?.cover_medium}
             animationConfig={animCfg}
+            tracks={tracks}
           />
         );
       })}

@@ -1,10 +1,10 @@
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import LiquidGlass from './LiquidGlass';
-import { ThemedText } from './themed-text';
-import { useThemeColor } from '../hooks/use-theme-color';
-import { api } from '../lib/api/client';
+import { useThemeColor } from '../../hooks/use-theme-color';
+import { api } from '../../lib/api/client';
+import LiquidGlass from '../LiquidGlass';
+import { ThemedText } from '../themed-text';
 
 function checkRules(pw: string) {
   const hasUpper = /[A-Z]/.test(pw);

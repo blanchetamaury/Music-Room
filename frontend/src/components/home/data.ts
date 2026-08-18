@@ -22,6 +22,7 @@ export const playlistSongs = [
   { title: 'Sunset Tapes', artist: 'Mirror Run', cover: '#fb7185' },
   { title: 'Golden Loop', artist: 'Wave Theory', cover: '#f59e0b' },
   { title: 'Moonlit Signal', artist: 'Luma Blue', cover: '#38bdf8' },
+  
 ] as const;
 
 export type Track = (typeof playlistSongs)[number];

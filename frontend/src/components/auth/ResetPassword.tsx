@@ -2,10 +2,10 @@ import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import LiquidGlass from './LiquidGlass';
-import { ThemedText } from './themed-text';
-import { useThemeColor } from '../hooks/use-theme-color';
-import { api } from '../lib/api/client';
+import { useThemeColor } from '../../hooks/use-theme-color';
+import { api } from '../../lib/api/client';
+import LiquidGlass from '../LiquidGlass';
+import { ThemedText } from '../themed-text';
 
 export function ResetPassword({
   onBack,
