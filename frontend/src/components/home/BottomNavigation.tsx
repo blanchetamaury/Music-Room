@@ -1,11 +1,11 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 
-import { homeStyles } from '@/src/components/home/home.styles';
-import { HomeIcon, MusicIcon } from 'lucide-react';
+import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react';
 import LiquidGlass from '../LiquidGlass';
+import { homeStyles } from './home.styles';
 
-export type TabKey = 'home' | 'playlist' | 'profile';
+export type TabKey = 'home' | 'search' | 'profile';
 
 export function BottomNavigation({
   activeTab,
@@ -14,6 +14,12 @@ export function BottomNavigation({
   activeTab: TabKey;
   onSelect: (tab: TabKey) => void;
 }) {
+  const tabs: Array<{ key: TabKey; icon: React.ReactNode }> = [
+    { key: 'search', icon: <SearchIcon size={22} color="#fff" /> },
+    { key: 'home', icon: <HomeIcon size={22} color="#fff" /> },
+    { key: 'profile', icon: <UserIcon size={22} color="#fff" /> },
+  ];
+
   return (
     <LiquidGlass
       style={homeStyles.navBar}
@@ -25,26 +31,19 @@ export function BottomNavigation({
       bottomLeftRadius={0}
       bottomRightRadius={0}
     >
-      <Pressable
-        style={[homeStyles.navButton, activeTab === 'playlist' && homeStyles.navButtonActive]}
-        onPress={() => onSelect('playlist')}
-      >
-        <MusicIcon style={{color: "#ffff"}}></MusicIcon>
-      </Pressable>
-
-      <Pressable
-        style={[homeStyles.navButton, activeTab === 'home' && homeStyles.navButtonActive]}
-        onPress={() => onSelect('home')}
-      >
-        <HomeIcon style={{ color: "#ffff" }}></HomeIcon>
-      </Pressable>
-
-      <Pressable
-        style={[homeStyles.navButton, activeTab === 'profile' && homeStyles.navButtonActive]}
-        onPress={() => onSelect('profile')}
-      >
-        <View style={[homeStyles.navGlyph, { backgroundColor: '#9b59b6' }]} />
-      </Pressable>
+      {tabs.map(({ key, icon }) => (
+        <Pressable
+          key={key}
+          style={[
+            homeStyles.navButton,
+            activeTab === key && homeStyles.navButtonActive,
+          ]}
+          onPress={() => onSelect(key)}
+        >
+          {icon}
+          {activeTab === key && <View style={homeStyles.navIndicator} />}
+        </Pressable>
+      ))}
     </LiquidGlass>
   );
 }

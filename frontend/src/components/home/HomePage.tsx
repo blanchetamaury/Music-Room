@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { BottomNavigation, TabKey } from './BottomNavigation';
 import { HeaderSection } from './HeaderSection';
@@ -9,6 +9,34 @@ import { SongList } from './SongList';
 import { UserStrip } from './UserStrip';
 import { playlistSongs } from './data';
 import { homeStyles } from './home.styles';
+
+function HomeContent({ currentTrack, activeTrack, onSelectTrack }: { currentTrack: any; activeTrack: number; onSelectTrack: (n: number) => void }) {
+  return (
+    <View style={homeStyles.homeContent}>
+      <HeaderSection currentTrack={currentTrack} />
+      <View style={homeStyles.separator} />
+      <UserStrip />
+      <View style={homeStyles.separator} />
+      <SongList activeTrack={activeTrack} onSelect={onSelectTrack} />
+    </View>
+  );
+}
+
+function SearchContent() {
+  return (
+    <View style={styles.pageContent}>
+      <Text style={styles.pageTitle}>Search</Text>
+    </View>
+  );
+}
+
+function ProfileContent() {
+  return (
+    <View style={styles.pageContent}>
+      <Text style={styles.pageTitle}>Profile</Text>
+    </View>
+  );
+}
 
 export function HomePage() {
   const [activeTab, setActiveTab] = useState<TabKey>('home');
@@ -25,18 +53,30 @@ export function HomePage() {
       />
       <View style={homeStyles.backgroundOverlay} />
 
-      <View style={homeStyles.homeContent}>
-        <HeaderSection currentTrack={currentTrack} />
-        <View style={homeStyles.separator} />
-        <UserStrip />
-        <View style={homeStyles.separator} />
-        <SongList activeTrack={activeTrack} onSelect={setActiveTrack} />
-      </View>
+      {activeTab === 'home' && (
+        <HomeContent currentTrack={currentTrack} activeTrack={activeTrack} onSelectTrack={setActiveTrack} />
+      )}
+      {activeTab === 'search' && <SearchContent />}
+      {activeTab === 'profile' && <ProfileContent />}
 
-	  <View style={homeStyles.homeFooter}>
-		<PlayerCard currentTrack={currentTrack} />
-		<BottomNavigation activeTab={activeTab} onSelect={setActiveTab} />
-	  </View>
+      <View style={homeStyles.homeFooter}>
+        <PlayerCard currentTrack={currentTrack} />
+        <BottomNavigation activeTab={activeTab} onSelect={setActiveTab} />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  pageContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  pageTitle: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: '700',
+  },
+});
