@@ -1,17 +1,17 @@
-import AuthBackground from '@/src/components/AuthBackground';
-import { LoginForm } from '@/src/components/LoginForm';
-import { Register } from '@/src/components/Register';
-import { ResetPassword } from '@/src/components/ResetPassword';
+import AuthBackground from '@/src/components/auth/AuthBackground';
+import { LoginForm } from '@/src/components/auth/LoginForm';
+import { Register } from '@/src/components/auth/Register';
+import { ResetPassword } from '@/src/components/auth/ResetPassword';
 import { ThemedView } from '@/src/components/themed-view';
 import { api } from '@/src/lib/api/client';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
 } from 'react-native-reanimated';
 
 export type AuthMode = 'login' | 'register' | 'reset-password';

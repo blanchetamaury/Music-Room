@@ -41,6 +41,10 @@ type Props = {
   shimmer?: boolean
   /** Aberration chromatique sur les bords */
   chromatic?: boolean
+  /** Épaisseur de la bordure extérieure */
+  borderWidth?: number
+  /** Couleur de la bordure extérieure */
+  borderColor?: string
 }
 
 export default function LiquidGlass({
@@ -60,6 +64,8 @@ export default function LiquidGlass({
   tint = 'dark',
   shimmer = true,
   chromatic = true,
+  borderWidth,
+  borderColor,
 }: Props) {
   const progress = useSharedValue(0)
 
@@ -181,7 +187,10 @@ export default function LiquidGlass({
           style={[
             styles.border,
             outerRadius,
-            { borderColor: isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)' },
+            {
+              borderColor: borderColor ?? (isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)'),
+              borderWidth: borderWidth ?? StyleSheet.hairlineWidth * 1.5,
+            },
           ]}
           pointerEvents="none"
         />
