@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 
 import { homeStyles } from '@/src/components/home/home.styles';
+import { HomeIcon, MusicIcon } from 'lucide-react';
 import LiquidGlass from '../LiquidGlass';
 
 export type TabKey = 'home' | 'playlist' | 'profile';
@@ -28,14 +29,14 @@ export function BottomNavigation({
         style={[homeStyles.navButton, activeTab === 'playlist' && homeStyles.navButtonActive]}
         onPress={() => onSelect('playlist')}
       >
-        <View style={[homeStyles.navGlyph, { backgroundColor: '#ffb26b' }]} />
+        <MusicIcon style={{color: "#ffff"}}></MusicIcon>
       </Pressable>
 
       <Pressable
         style={[homeStyles.navButton, activeTab === 'home' && homeStyles.navButtonActive]}
         onPress={() => onSelect('home')}
       >
-        <View style={[homeStyles.navGlyph, { backgroundColor: '#7ec8e3' }]} />
+        <HomeIcon style={{ color: "#ffff" }}></HomeIcon>
       </Pressable>
 
       <Pressable
