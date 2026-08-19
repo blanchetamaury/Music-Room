@@ -86,6 +86,16 @@ CREATE TABLE "ratelimit_login" (
 );
 
 -- CreateTable
+CREATE TABLE "ResetPassword" (
+    "id" TEXT NOT NULL,
+    "mail" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ResetPassword_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "tracks" (
     "id" TEXT NOT NULL,
     "deezerId" TEXT NOT NULL,
@@ -151,6 +161,9 @@ CREATE INDEX "ratelimit_login_user_id_created_at_idx" ON "ratelimit_login"("user
 CREATE INDEX "ratelimit_login_ip_created_at_idx" ON "ratelimit_login"("ip", "created_at");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ResetPassword_mail_code_key" ON "ResetPassword"("mail", "code");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "tracks_deezerId_key" ON "tracks"("deezerId");
 
 -- CreateIndex
@@ -164,9 +177,6 @@ CREATE INDEX "tracks_title_idx" ON "tracks"("title");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_deezerUserId_key" ON "users"("deezerUserId");

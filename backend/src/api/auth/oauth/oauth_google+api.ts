@@ -1,7 +1,7 @@
-import { getGoogleMe, getGoogleOauthToken } from '../../../../../frontend/src/rest/google';
+import { createOrUpdateGoogleUser } from '../../../../prisma/database/user';
 import { createCsrfCookie } from '../../../lib/csrf';
 import { createSession } from '../../../lib/session';
-import { createOrUpdateGoogleUser } from '../../../prisma/user';
+import { getGoogleMe, getGoogleOauthToken } from '../../../oauth/google';
 import { errorHandler } from '../../../utils/error';
 
 export async function GET(request: Request): Promise<Response> {

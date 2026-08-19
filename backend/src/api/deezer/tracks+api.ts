@@ -1,4 +1,4 @@
-import { searchTracks } from "../../prisma/deezer"
+import { searchTracks } from "../../../prisma/database/deezer";
 
 export async function GET(req: Request) {
 	const url = new URL(req.url);

@@ -297,7 +297,6 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  username?: string
   deezerUserId?: string
   fortytwo_oauth_id?: string
   fortytwo_user_id?: number
@@ -305,6 +304,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
+  username?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   deezerAccessToken?: Prisma.StringNullableFilter<"User"> | string | null
@@ -316,7 +316,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   followers?: Prisma.FollowListRelationFilter
   fortytwo_oauth?: Prisma.XOR<Prisma.Fortytwo_oauthNullableScalarRelationFilter, Prisma.fortytwo_oauthWhereInput> | null
   google_oauth?: Prisma.XOR<Prisma.Google_oauthNullableScalarRelationFilter, Prisma.Google_oauthWhereInput> | null
-}, "id" | "email" | "username" | "deezerUserId" | "fortytwo_oauth_id" | "fortytwo_user_id" | "google_oauth_id">
+}, "id" | "email" | "deezerUserId" | "fortytwo_oauth_id" | "fortytwo_user_id" | "google_oauth_id">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

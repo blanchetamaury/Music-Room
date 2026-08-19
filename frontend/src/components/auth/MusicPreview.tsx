@@ -45,25 +45,27 @@ export function MusicPreview({
 	};
 	tracks?: DeezerTrack[];
 }) {
-	
 	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 	const progress = useSharedValue(0);
 	const [currentTrack, setCurrentTrack] = React.useState<DeezerTrack | null>(null);
-	
+
 	useEffect(() => {
 		if (!animationConfig) return;
 		const cfg = animationConfig;
-		
+
 		progress.value = withDelay(
 			cfg.delay,
 			withRepeat(
-				withSequence(withTiming(1, { duration: cfg.duration, easing: Easing.linear }), withTiming(0, { duration: 0 })),
+				withSequence(
+					withTiming(1, { duration: cfg.duration, easing: Easing.linear }),
+					withTiming(0, { duration: 0 })
+				),
 				-1,
 				false
 			)
 		);
 	}, [animationConfig]);
-	
+
 	useAnimatedReaction(
 		() => progress.value,
 		(current, previous) => {
@@ -74,9 +76,13 @@ export function MusicPreview({
 		},
 		[tracks.length]
 	);
-	
-	const displayTrack = currentTrack || { title, artist: { name: artist }, album: { cover_medium: cover } };
-	
+
+	const displayTrack = currentTrack || {
+		title,
+		artist: { name: artist },
+		album: { cover_medium: cover },
+	};
+
 	const animatedStyle = useAnimatedStyle(() => {
 		if (!animationConfig) return {} as any;
 		const cfg = animationConfig;
@@ -88,38 +94,41 @@ export function MusicPreview({
 			opacity,
 		} as any;
 	});
-	
+
 	const OuterView = animationConfig ? Animated.View : View;
-	
+
 	return (
-		<OuterView style={[styles.container, animationConfig ? styles.animatedContainer : null, animatedStyle]} pointerEvents="none">
-		<LiquidGlass
-		radius={16}
-		topLeftRadius={16}
-		topRightRadius={16}
-		bottomLeftRadius={16}
-		bottomRightRadius={16}
-		intensity={40}
-		tint="dark"
-		shimmer={true}
-		chromatic={true}
-		style={[StyleSheet.absoluteFillObject, { backgroundColor: glassBg }]}
-		contentStyle={styles.content}
+		<OuterView
+			style={[styles.container, animationConfig ? styles.animatedContainer : null, animatedStyle]}
+			pointerEvents="none"
 		>
-		{displayTrack.album?.cover_medium ? (
-			<Image source={{ uri: displayTrack.album.cover_medium }} style={styles.cover} resizeMode="cover" />
-		) : (
-			<View style={[styles.cover, { backgroundColor: color }]} />
-		)}
-		<View style={styles.meta}>
-		<ThemedText type="defaultSemiBold" numberOfLines={1}>
-		{displayTrack.title}
-		</ThemedText>
-		<ThemedText type="default" style={styles.artist} numberOfLines={1}>
-		{displayTrack.artist?.name ?? 'Unknown'}
-		</ThemedText>
-		</View>
-		</LiquidGlass>
+			<LiquidGlass
+				radius={16}
+				topLeftRadius={16}
+				topRightRadius={16}
+				bottomLeftRadius={16}
+				bottomRightRadius={16}
+				intensity={40}
+				tint="dark"
+				shimmer={true}
+				chromatic={true}
+				style={[StyleSheet.absoluteFillObject, { backgroundColor: glassBg }]}
+				contentStyle={styles.content}
+			>
+				{displayTrack.album?.cover_medium ? (
+					<Image source={{ uri: displayTrack.album.cover_medium }} style={styles.cover} resizeMode="cover" />
+				) : (
+					<View style={[styles.cover, { backgroundColor: color }]} />
+				)}
+				<View style={styles.meta}>
+					<ThemedText type="defaultSemiBold" numberOfLines={1}>
+						{displayTrack.title}
+					</ThemedText>
+					<ThemedText type="default" style={styles.artist} numberOfLines={1}>
+						{displayTrack.artist?.name ?? 'Unknown'}
+					</ThemedText>
+				</View>
+			</LiquidGlass>
 		</OuterView>
 	);
 }

@@ -1,109 +1,113 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface ApiResponse<T> {
-  success: boolean;
-  message?: string;
-  data?: T;
+	success: boolean;
+	message?: string;
+	data?: T;
 }
 
 type DeezerTrack = {
-  id: string | number
-  title: string
-  title_short?: string
-  duration: string | number
-  isrc?: string
-  explicit_lyrics?: boolean
-  preview?: string
-  release_date?: string
-  rank?: string | number
-  track_position?: number
-  disk_number?: number
-  artist: { id: string | number; name: string; picture_medium?: string }
-  album: {
-    id: string | number
-    title: string
-    cover_medium?: string
-    cover_big?: string
-  }
-}
+	id: string | number;
+	title: string;
+	title_short?: string;
+	duration: string | number;
+	isrc?: string;
+	explicit_lyrics?: boolean;
+	preview?: string;
+	release_date?: string;
+	rank?: string | number;
+	track_position?: number;
+	disk_number?: number;
+	artist: { id: string | number; name: string; picture_medium?: string };
+	album: {
+		id: string | number;
+		title: string;
+		cover_medium?: string;
+		cover_big?: string;
+	};
+};
 
-async function fetchApi<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<ApiResponse<T>> {
-  const url = `${API_BASE_URL}${endpoint}`;
-  
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
+async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+	const url = `${API_BASE_URL}${endpoint}`;
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-    credentials: 'include',
-  });
+	const headers: HeadersInit = {
+		'Content-Type': 'application/json',
+		...options.headers,
+	};
 
-  const data = await response.json().catch(() => ({}));
+	const response = await fetch(url, {
+		...options,
+		headers,
+		credentials: 'include',
+	});
 
-  if (!response.ok) {
-    return {
-      success: false,
-      message: data.message || `HTTP error ${response.status}`,
-    };
-  }
+	const data = await response.json().catch(() => ({}));
 
-  return {
-    success: true,
-    data: data as T,
-  };
+	if (!response.ok) {
+		return {
+			success: false,
+			message: data.message || `HTTP error ${response.status}`,
+		};
+	}
+
+	return {
+		success: true,
+		data: data as T,
+	};
 }
 
 export const api = {
-  auth: {
-    login: (email: string, password: string) =>
-      fetchApi<{ user_id: string }>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ mail: email, password }),
-      }),
+	auth: {
+		login: (email: string, password: string) =>
+			fetchApi<{ user_id: string }>('/auth/login', {
+				method: 'POST',
+				body: JSON.stringify({ mail: email, password }),
+			}),
 
-    signup: (email: string, password: string, username: string) =>
-      fetchApi<{ user_id: string }>('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({ mail: email, password, username }),
-      }),
+		signup: (email: string, password: string, username: string) =>
+			fetchApi<{ user_id: string }>('/auth/signup', {
+				method: 'POST',
+				body: JSON.stringify({ mail: email, password, username }),
+			}),
 
-    logout: () =>
-      fetchApi<void>('/auth/logout', {
-        method: 'POST',
-      }),
+		logout: () =>
+			fetchApi<void>('/auth/logout', {
+				method: 'POST',
+			}),
 
-    resetPassword: {
-      request: (email: string) =>
-        fetchApi<void>('/auth/reset-password/request', {
-          method: 'POST',
-          body: JSON.stringify({ mail: email }),
-        }),
+		confirmMailAccount: (email: string, code: string) => {
+			return fetchApi<{ success: boolean }>('/auth/confirm', {
+				method: 'POST',
+				body: JSON.stringify({ mail: email, code: code }),
+			});
+		},
 
-      verify: (email: string, code: string, password: string) =>
-        fetchApi<void>('/auth/reset-password/verify', {
-          method: 'POST',
-          body: JSON.stringify({ mail: email, code, password }),
-        }),
-    },
+		resetPassword: {
+			request: (email: string) =>
+				fetchApi<void>('/auth/reset-password/request', {
+					method: 'POST',
+					body: JSON.stringify({ mail: email }),
+				}),
 
-    oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
-  },
-  deezer: {
-    tracks: (q: string) => {
-      return fetchApi<DeezerTrack[]>(`/deezer/tracks?q=${encodeURIComponent(q)}`);
-    },
-    chart: () => {
-      return fetchApi<DeezerTrack[]>(`/deezer/chartsfirts`);
-    }
-  }
+			verify: (email: string, code: string, password: string) =>
+				fetchApi<void>('/auth/reset-password/verify', {
+					method: 'POST',
+					body: JSON.stringify({ mail: email, code, password }),
+				}),
+		},
+
+		oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
+	},
+	deezer: {
+		tracks: (q: string) => {
+			return fetchApi<DeezerTrack[]>(`/deezer/tracks?q=${encodeURIComponent(q)}`);
+		},
+		chart: () => {
+			return fetchApi<DeezerTrack[]>(`/deezer/chartsfirts`);
+		},
+	},
 };
 
 export function getApiBaseUrl(): string {
-  return API_BASE_URL;
+	return API_BASE_URL;
 }

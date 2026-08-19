@@ -1,7 +1,7 @@
-import { getFortyTwoMe, getFortyTwoOauthToken } from '../../../../../frontend/src/rest/fortytwo';
+import { createOrUpdateFortyTwoUser } from '../../../../prisma/database/user';
 import { createCsrfCookie } from '../../../lib/csrf';
 import { createSession } from '../../../lib/session';
-import { createOrUpdateFortyTwoUser } from '../../../prisma/user';
+import { getFortyTwoMe, getFortyTwoOauthToken } from '../../../oauth/fortytwo';
 import { errorHandler } from '../../../utils/error';
 
 export async function GET(request: Request): Promise<Response> {

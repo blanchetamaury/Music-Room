@@ -305,10 +305,10 @@ export const homeStyles = StyleSheet.create({
 		right: 0,
 		top: 12,
 		height: 44,
-		
+
 		alignItems: 'center',
 		justifyContent: 'center',
-		
+
 		pointerEvents: 'none',
 	},
 	searchRoot: {
@@ -405,32 +405,32 @@ export const homeStyles = StyleSheet.create({
 		fontWeight: '600',
 	},
 	playlistFadeContainer: {
-  position: 'absolute',
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
 
-  zIndex: 10,
+		zIndex: 10,
 
-  pointerEvents: 'none',
-},
+		pointerEvents: 'none',
+	},
 
-playlistFadeLeft: {
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  bottom: 0,
+	playlistFadeLeft: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		bottom: 0,
 
-  width: 24,
-},
+		width: 24,
+	},
 
-playlistFadeRight: {
-  position: 'absolute',
-  right: 0,
-  top: 0,
-  bottom: 0,
+	playlistFadeRight: {
+		position: 'absolute',
+		right: 0,
+		top: 0,
+		bottom: 0,
 
-  width: 24,
-},
+		width: 24,
+	},
 });
