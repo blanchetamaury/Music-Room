@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BottomNavigation, TabKey } from '@/src/components/home/BottomNavigation';
@@ -9,6 +9,9 @@ import { PlayerCard } from '@/src/components/home/PlayerCard';
 import { SearchPage } from '@/src/components/home/SearchPage';
 import { SongList } from '@/src/components/home/SongList';
 import { UserStrip } from '@/src/components/home/UserStrip';
+import { api } from '@/src/lib/api/client';
+import { useAuth } from '@/src/context/AuthContext';
+import { useRouter } from 'expo-router';
 
 function HomeContent({
 	currentTrack,
@@ -50,6 +53,22 @@ export default function HomeScreen() {
 	const [activeTab, setActiveTab] = useState<TabKey>('home');
 	const [activeTrack, setActiveTrack] = useState(0);
 	const currentTrack = playlistSongs[activeTrack] ?? playlistSongs[0];
+	const { token, loading } = useAuth();
+	const router = useRouter();
+
+	useEffect(() => {
+        if (!loading && !token) {
+            router.replace('/(auth)/login');
+        }
+    }, [loading, token]);
+
+	if (loading) {
+        return null;
+    }
+
+    if (!token) {
+        return null;
+    }
 
 	return (
 		<View style={homeStyles.homeRoot}>

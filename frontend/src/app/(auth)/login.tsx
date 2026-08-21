@@ -3,6 +3,7 @@ import { LoginForm } from '@/src/components/auth/LoginForm';
 import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
 import { ThemedView } from '@/src/components/themed-view';
+import { useAuth } from '@/src/context/AuthContext';
 import { api } from '@/src/lib/api/client';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -53,10 +54,16 @@ export default function LoginScreen() {
 	const router = useRouter();
 	const searchParams = useLocalSearchParams<{ mode?: string }>();
 	const [mode, setMode] = useState<AuthMode>('login');
-	const [isAuthed, setIsAuthed] = useState(false);
+	const { token, loading, login } = useAuth();
 
 	const modeIndex = mode === 'register' ? 0 : mode === 'login' ? 1 : 2;
 	const progress = useSharedValue(modeIndex - 1);
+
+	useEffect(() => {
+        if (!loading && token) {
+            router.replace('/(tabs)/home');
+        }
+    }, [loading, token]);
 
 	useEffect(() => {
 		const target = modeIndex - 1;
@@ -89,17 +96,13 @@ export default function LoginScreen() {
 	});
 
 	const handleLogin = async (email: string, password: string) => {
-		try {
-			const response = await api.auth.login(email, password);
-			if (!response.success) {
-				throw new Error(response.message || 'Login failed');
-			}
-			handleAuthComplete();
-		} catch (err) {
-			// Error is handled in LoginForm component
-			console.error('Login error:', err);
-		}
-	};
+        try {
+            await login(email, password);
+            router.replace('/(tabs)/home');
+        } catch (err) {
+            console.error('Login error:', err);
+        }
+    };
 
 	const handleRegisterComplete = () => {
 		handleAuthComplete();
@@ -110,9 +113,8 @@ export default function LoginScreen() {
 	};
 
 	const handleAuthComplete = () => {
-		setIsAuthed(true);
-		router.replace('/(tabs)/home');
-	};
+        router.replace('/(tabs)/home');
+    };
 
 	const handleGoogleAuth = () => {
 		const url = api.auth.oauthFortyTwo();
@@ -123,9 +125,13 @@ export default function LoginScreen() {
 		setMode(newMode);
 	};
 
-	if (isAuthed) {
-		return null;
-	}
+	if (loading) {
+        return null;
+    }
+
+    if (token) {
+        return null;
+    }
 
 	return (
 		<ThemedView style={styles.container}>

@@ -122,4 +122,14 @@ const existUserByMail = async (mail: string): Promise<boolean> => {
 	return (await getUserByMail(mail, {})) !== null;
 };
 
-export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserByMail, updateUserPassword };
+const getUserById = async <T extends Prisma.UserInclude>(
+	id: string,
+	include: T
+): Promise<Prisma.UserGetPayload<{ include: T }> | null> => {
+	return prisma.user.findUnique({
+		where: { id },
+		include: include,
+	});
+};
+
+export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserByMail, updateUserPassword, getUserById };

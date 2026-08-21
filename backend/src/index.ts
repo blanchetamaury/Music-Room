@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yamljs';
 import { createApiRouter } from './router';
+import { getSession } from './lib/session';
 
 dotenv.config();
 
@@ -13,7 +14,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8081';
 
-// Allow both localhost and ngrok URLs
 const allowedOrigins = [
   CLIENT_URL,
   'http://localhost:8081',
@@ -35,10 +35,8 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Load OpenAPI spec
 const swaggerDocument = yaml.load(path.join(__dirname, 'swagger.yaml'));
 
-// Swagger UI
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Music Room API Documentation',
@@ -52,15 +50,22 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
   },
 }));
 
-// Raw OpenAPI spec endpoint
 app.get('/api/openapi.yaml', (req, res) => {
   res.setHeader('Content-Type', 'application/x-yaml');
   res.send(fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8'));
 });
 
-// Debug middleware
-app.use((req, res, next) => {
+const publicPaths = ['/api/deezer/chartsfirts', '/api/auth/logout'];
+
+app.use(async (req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.path}`);
+  //const session = await getSession(req);
+  //console.log(req.path, session);
+  /*if (!publicPaths.includes(req.path)) {
+    if (session === null) {
+      return res.redirect('/api/auth/logout');
+    }
+  }*/
   next();
 });
 
@@ -71,7 +76,6 @@ app.get('/health', (req, res) => {
 createApiRouter().then(apiRouter => {
   app.use('/api', apiRouter);
 
-  // Debug : affiche toutes les routes montées
   const printRoutes = (stack: any[], prefix = '') => {
   stack.forEach((layer: any) => {
     if (layer.route) {
@@ -80,7 +84,6 @@ createApiRouter().then(apiRouter => {
         .join(',');
       console.log(`${methods.padEnd(8)} ${prefix}${layer.route.path}`);
     } else if (layer.handle?.stack) {
-      // Reconstruit le préfixe depuis la regexp du layer
       const seg = layer.regexp?.source
         ?.replace('^\\/', '/')
         ?.replace('\\/?(?=\\/|$)', '')
@@ -95,4 +98,6 @@ createApiRouter().then(apiRouter => {
   printRoutes(router.stack);
 
   app.listen(PORT, () => { /* ... */ });
+}).catch(err => {
+  console.error('Failed to create API router:', err); // 👈 ajoute ça
 });
