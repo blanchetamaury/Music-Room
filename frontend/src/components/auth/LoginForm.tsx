@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import {
@@ -17,11 +17,11 @@ import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FTIcon } from '../ui/42-icon';
 import { GoogleIcon } from '../ui/google-icon';
+import { useAuth } from '@/src/context/AuthContext';
 
 export function LoginForm({
 	onLogin,
 	onForgot,
-	onGoogle,
 	onRegister,
 }: {
 	onLogin?: (email: string, password: string) => Promise<void>;
@@ -34,9 +34,10 @@ export function LoginForm({
 	const [touchedEmail, setTouchedEmail] = useState(false);
 	const [emailFocused, setEmailFocused] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
-	const [passwordFocused, setPasswordFocused] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const { oauthFortyTwo, oauthGoogle } = useAuth();
+	const router = useRouter();
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const isEmailValid = emailRegex.test(email);
@@ -44,7 +45,6 @@ export function LoginForm({
 	const canSubmit = isEmailValid && isPasswordValid;
 
 	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
-	const inputTextColor = useThemeColor({}, 'text');
 
 	const handleSubmit = async () => {
 		if (!canSubmit || isLoading) return;
@@ -60,6 +60,24 @@ export function LoginForm({
 			setIsLoading(false);
 		}
 	};
+
+	const handleoauthFortyTwo = async () => {
+        try {
+            await oauthFortyTwo();
+            router.replace('/(tabs)/home');
+        } catch (err) {
+            console.error('Login error:', err);
+        }
+    };
+
+	const handleoauthGoogle = async () => {
+        try {
+            await oauthGoogle();
+            router.replace('/(tabs)/home');
+        } catch (err) {
+            console.error('Login error:', err);
+        }
+    };
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.wrapper}>
@@ -137,8 +155,6 @@ export function LoginForm({
 							setPassword(text);
 							setError(null);
 						}}
-						onFocus={() => setPasswordFocused(true)}
-						onBlur={() => setPasswordFocused(false)}
 						secureTextEntry={!showPassword}
 						underlineColorAndroid="transparent"
 						style={[
@@ -188,18 +204,18 @@ export function LoginForm({
 					<View style={styles.separatorLine} />
 				</View>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button">
+				<Pressable style={styles.googleBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
 					<FTIcon></FTIcon>
-					<Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>
+					<ThemedText>
 						Log in with 42
-					</Link>
+					</ThemedText>
 				</Pressable>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button">
+				<Pressable style={styles.googleBtn} accessibilityRole="button" onPress={handleoauthGoogle}>
 					<GoogleIcon></GoogleIcon>
-					<Link href={generateGoogleAuthorizationUrl()} style={{ color: '#fff' }}>
+					<ThemedText>
 						Log in with Google
-					</Link>
+					</ThemedText>
 				</Pressable>
 
 				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">

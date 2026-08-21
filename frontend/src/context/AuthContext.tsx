@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import axios from 'axios';
 import { storage } from '../lib/storage';
+import { generateFortyTwoAuthorizationUrl, performFortyTwoOAuth } from '../rest/fortytwo';
+import { generateGoogleAuthorizationUrl, performGoogleOAuth } from '../rest/google';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -16,6 +18,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  oauthFortyTwo: () => Promise<void>;
+  oauthGoogle: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -66,6 +70,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(res.data.user);
   };
 
+  const oauthFortyTwo = async () => {
+    const token = await performFortyTwoOAuth();
+    if (!token) throw new Error('OAuth failed');
+
+    await storage.setItem('session', token);
+    setToken(token);
+  };
+
+  const oauthGoogle = async () => {
+    const token = await performGoogleOAuth();
+    if (!token) throw new Error('OAuth failed');
+
+    await storage.setItem('session', token);
+    setToken(token);
+  };
+
   const register = async (mail: string, password: string) => {
     const res = await axios.post(`${API_URL}/auth/register`, { mail, password });
     await storage.setItem('session', res.data.token);
@@ -80,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ token, user, loading, login, register, logout, oauthFortyTwo, oauthGoogle }}>
       {children}
     </AuthContext.Provider>
   );

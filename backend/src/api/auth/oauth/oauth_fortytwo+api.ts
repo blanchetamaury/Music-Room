@@ -16,22 +16,20 @@ export async function GET(request: Request): Promise<Response> {
         const me = await getFortyTwoMe(authorization.access_token);
         const user = await createOrUpdateFortyTwoUser(me, authorization);
 
-        const session = await createSession({
-            user_id: user.id
-        });
-
+        const session = await createSession({ user_id: user.id });
         const { cookie: csrfCookie } = createCsrfCookie();
 
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:8081';
-        
+
+        const redirectUrl = `${clientUrl}/oauth-callback?token=${encodeURIComponent(session.body)}`;
+
         const headers = new Headers();
-        headers.append('Location', `${clientUrl}/(tabs)/home`);
+        headers.append('Location', redirectUrl);
         headers.append('Set-Cookie', csrfCookie);
         headers.append(
             'Set-Cookie',
             `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`
         );
-        headers.append('Content-Type', 'application/json');
 
         return new Response(
             JSON.stringify({
@@ -40,7 +38,7 @@ export async function GET(request: Request): Promise<Response> {
                 user: { id: user.id, email: user.email, username: user.username },
             }),
             {
-                status: 200,
+                status: 302,
                 headers,
             }
         );

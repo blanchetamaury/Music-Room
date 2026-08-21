@@ -4,7 +4,6 @@ import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
 import { ThemedView } from '@/src/components/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
-import { api } from '@/src/lib/api/client';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -17,18 +16,16 @@ const { width: SCREEN_W } = Dimensions.get('window');
 function LoginScreenInner({
 	onLogin,
 	onForgot,
-	onGoogle,
 	onRegister,
 }: {
 	onLogin: (email: string, password: string) => Promise<void>;
 	onForgot: () => void;
-	onGoogle: () => void;
 	onRegister: () => void;
 }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.center}>
-				<LoginForm onLogin={onLogin} onForgot={onForgot} onGoogle={onGoogle} onRegister={onRegister} />
+				<LoginForm onLogin={onLogin} onForgot={onForgot} onRegister={onRegister} />
 			</View>
 		</View>
 	);
@@ -116,11 +113,6 @@ export default function LoginScreen() {
         router.replace('/(tabs)/home');
     };
 
-	const handleGoogleAuth = () => {
-		const url = api.auth.oauthFortyTwo();
-		window.location.href = url;
-	};
-
 	const handleModeChange = (newMode: AuthMode) => {
 		setMode(newMode);
 	};
@@ -150,7 +142,6 @@ export default function LoginScreen() {
 				<LoginScreenInner
 					onLogin={handleLogin}
 					onForgot={() => handleModeChange('reset-password')}
-					onGoogle={handleGoogleAuth}
 					onRegister={() => handleModeChange('register')}
 				/>
 			</Animated.View>

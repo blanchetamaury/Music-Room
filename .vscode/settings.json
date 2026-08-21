@@ -4,7 +4,7 @@
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit",
     "editor.tabSize": 4,
-    "editor.insertSpaces": false,
-    "editor.detectIndentation": false
+    "editor.insertSpaces": "never",
+    "editor.detectIndentation": "never"
   }
 }

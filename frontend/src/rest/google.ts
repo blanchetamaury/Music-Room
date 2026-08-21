@@ -1,10 +1,9 @@
-import { GoogleOauthResponse } from '@/src/types/google/GoogleOauthResponse';
-import { GoogleOauthToken } from '@/src/types/google/GoogleOauthToken';
 import { RelativePathString } from 'expo-router';
-import { ERRORS_DETAILS } from '../utils/error';
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
+import { Platform } from 'react-native';
 
 const AUTHORIZATION_GOOGLE_BASE_URL = 'https://accounts.google.com';
-const TOKEN_GOOGLE_BASE_URL = 'https://oauth2.googleapis.com';
 
 export function generateGoogleAuthorizationUrl(): RelativePathString {
 	const url: URL = new URL(`${AUTHORIZATION_GOOGLE_BASE_URL}/o/oauth2/v2/auth`);
@@ -20,4 +19,42 @@ export function generateGoogleAuthorizationUrl(): RelativePathString {
 	url.searchParams.set('response_type', 'code');
 
 	return url.toString() as RelativePathString;
+}
+
+export async function performGoogleOAuth(): Promise<string | null> {
+	const authUrl = generateGoogleAuthorizationUrl();
+
+	if (Platform.OS === 'web') {
+			return new Promise((resolve) => {
+				const popup = window.open(authUrl, 'oauth', 'width=500,height=700');
+	
+				const listener = (event: MessageEvent) => {
+					if (event.origin !== window.location.origin) return;
+					if (event.data?.type === 'oauth-success') {
+						window.removeEventListener('message', listener);
+						resolve(event.data.token);
+					}
+				};
+	
+				window.addEventListener('message', listener);
+	
+				const checkClosed = setInterval(() => {
+					if (popup?.closed) {
+						clearInterval(checkClosed);
+						window.removeEventListener('message', listener);
+						resolve(null);
+					}
+				}, 500);
+			});
+		}
+	
+		const redirectUrl = Linking.createURL('oauth-callback');
+		const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
+	
+		if (result.type === 'success' && result.url) {
+			const parsed = Linking.parse(result.url);
+			return (parsed.queryParams?.token as string) ?? null;
+		}
+	
+		return null;
 }
