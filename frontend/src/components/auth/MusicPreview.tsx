@@ -35,9 +35,10 @@ export function MusicPreview({
 	cover?: string;
 	title: string;
 	artist: string;
-	animationConfig?: {
+	animationConfig: {
 		startX: number;
 		startY: number;
+		endX: number;
 		endY: number;
 		drift: number;
 		duration: number;
@@ -83,17 +84,15 @@ export function MusicPreview({
 		album: { cover_medium: cover },
 	};
 
-	const animatedStyle = useAnimatedStyle(() => {
-		if (!animationConfig) return {} as any;
-		const cfg = animationConfig;
-		const translateY = interpolate(progress.value, [0, 1], [cfg.startY, cfg.endY]);
-		const translateX = cfg.startX + cfg.drift * progress.value;
-		const opacity = interpolate(progress.value, [0, 0.12, 0.88, 1], [0, 1, 1, 0]);
-		return {
-			transform: [{ translateX }, { translateY }],
-			opacity,
-		} as any;
-	});
+	const animatedStyle = useAnimatedStyle(() => ({
+		transform: [
+			{ translateX: animationConfig.startX + animationConfig.drift * progress.value },
+			{ translateY: interpolate(progress.value, [0, 1], [animationConfig.endX, animationConfig.endY]) },
+			{ scale: interpolate(progress.value, [0, 0.12, 0.88, 1], [0.8, 1, 1, 0.5]) },
+		],
+		opacity: interpolate(progress.value, [0, 0.12, 0.88, 1], [0, 1, 1, 0]),
+		filter: `blur(${interpolate(progress.value, [0, 0.12, 0.88, 1], [10, 0, 0, 10])}px)`,
+	}));
 
 	const OuterView = animationConfig ? Animated.View : View;
 

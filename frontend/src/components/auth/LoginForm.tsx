@@ -1,4 +1,4 @@
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import {
@@ -11,12 +11,9 @@ import {
 	View,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { generateFortyTwoAuthorizationUrl } from '../../rest/fortytwo';
-import { generateGoogleAuthorizationUrl } from '../../rest/google';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-import { FTIcon } from '../ui/42-icon';
-import { GoogleIcon } from '../ui/google-icon';
+import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
 import { useAuth } from '@/src/context/AuthContext';
 
 export function LoginForm({
@@ -205,7 +202,7 @@ export function LoginForm({
 				</View>
 
 				<Pressable style={styles.googleBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
-					<FTIcon></FTIcon>
+					<FortyTwoIcon></FortyTwoIcon>
 					<ThemedText>
 						Log in with 42
 					</ThemedText>

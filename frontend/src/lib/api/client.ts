@@ -108,6 +108,6 @@ export const api = {
 	},
 };
 
-export function getApiBaseUrl(): string {
+function getApiBaseUrl(): string {
 	return API_BASE_URL;
 }
