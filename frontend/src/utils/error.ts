@@ -39,4 +39,4 @@ const errorHandler = async (fn: () => Promise<Response>): Promise<Response> => {
 	}
 };
 
-export { ERRORS_DETAILS, errorHandler };
+export { ERRORS_DETAILS };

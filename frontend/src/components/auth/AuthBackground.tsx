@@ -1,10 +1,9 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
+
 import { api } from '../../lib/api/client';
 import DotGrid from './DotGrid';
 import { MusicPreview } from './MusicPreview';
-
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 function rnd(min: number, max: number) {
 	return Math.random() * (max - min) + min;
@@ -13,16 +12,13 @@ function rnd(min: number, max: number) {
 type DeezerTrack = {
 	id: string | number;
 	title: string;
-	title_short?: string;
-	duration: string | number;
-	isrc?: string;
-	explicit_lyrics?: boolean;
-	preview?: string;
-	release_date?: string;
-	rank?: string | number;
-	track_position?: number;
-	disk_number?: number;
-	artist: { id: string | number; name: string; picture_medium?: string };
+
+	artist: {
+		id: string | number;
+		name: string;
+		picture_medium?: string;
+	};
+
 	album: {
 		id: string | number;
 		title: string;
@@ -34,6 +30,7 @@ type DeezerTrack = {
 type AnimationConfig = {
 	startX: number;
 	startY: number;
+	endX: number;
 	endY: number;
 	drift: number;
 	duration: number;
@@ -41,79 +38,155 @@ type AnimationConfig = {
 	color: string;
 };
 
-const DENSITY = SCREEN_W / 40;
 const FALLBACK_COLORS = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#6A4C93', '#1A936F'];
 
-function makeAnimationConfig(): AnimationConfig {
+function getPreviewCount(width: number) {
+	if (width < 500) {
+		return 5;
+	}
+
+	if (width < 900) {
+		return 8;
+	}
+
+	return 30;
+}
+
+function makeAnimationConfig(width: number, height: number): AnimationConfig {
+	const startX = rnd(50, width - 120);
+	const startY = rnd(50, width - 70);
+
 	return {
-		startX: rnd(0, SCREEN_W * 0.9),
-		startY: SCREEN_H + rnd(10, 20),
-		endY: -200,
-		drift: rnd(-180, 180),
-		duration: Math.floor(rnd(7000, 16000)),
+		startX,
+
+		startY,
+
+		endX: startX + rnd(-50, 50),
+
+		endY: startY + rnd(-50, 50),
+
+		drift: rnd(-width * 0.2, width * 0.2),
+
+		duration: Math.floor(rnd(5, 6) * 1000),
+
 		delay: Math.floor(rnd(0, 6000)),
+
 		color: FALLBACK_COLORS[Math.floor(Math.random() * FALLBACK_COLORS.length)],
 	};
 }
 
 const AuthBackground = memo(function AuthBackground() {
+	const { width, height } = useWindowDimensions();
+
 	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
-	const [ready, setReady] = useState(false); // <-- nouveau
-	const isMounted = useRef(true);
+
+	const [imagesReady, setImagesReady] = useState(false);
+
+	const configsRef = useRef<AnimationConfig[]>([]);
+
+	const count = getPreviewCount(width);
+
+	const previousCountRef = useRef(0);
 
 	useEffect(() => {
-		isMounted.current = true;
+		if (previousCountRef.current === count) {
+			return;
+		}
+
+		previousCountRef.current = count;
+
+		configsRef.current = Array.from({ length: count }, () => makeAnimationConfig(width, height));
+	}, [count, width, height]);
+
+	useEffect(() => {
+		let mounted = true;
 
 		const fetchTracks = async () => {
 			try {
 				const value = await api.deezer.chart();
-				if (!value?.data) return;
 
-				// Si ta route renvoie encore { data: [...] } imbriqué, déballe ici :
+				if (!value?.data) {
+					return;
+				}
+
 				const list = Array.isArray(value.data) ? value.data : (value.data as any).data;
 
-				if (isMounted.current && Array.isArray(list) && list.length > 0) {
-					setTracks(list);
-					setReady(true); // <-- signale que c'est prêt
+				if (!mounted || !Array.isArray(list) || list.length === 0) {
+					return;
 				}
-			} catch (err) {
-				console.error('[AuthBackground] failed to fetch tracks', err);
+
+				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover_medium === 'string');
+
+				setTracks(validTracks);
+			} catch (error) {
+				console.error('[AuthBackground] failed to fetch tracks', error);
 			}
 		};
 
 		fetchTracks();
 
 		return () => {
-			isMounted.current = false;
+			mounted = false;
 		};
 	}, []);
 
-	const configsRef = useRef<AnimationConfig[]>(Array.from({ length: DENSITY }).map(makeAnimationConfig));
+	useEffect(() => {
+		if (tracks.length === 0) {
+			return;
+		}
 
-	if (!ready || tracks.length === 0) return null; // <-- attend explicitement "ready"
+		let mounted = true;
+
+		const preloadImages = async () => {
+			try {
+				const covers = [
+					...new Set(
+						tracks
+							.map((track) => track.album?.cover_medium)
+							.filter((url): url is string => typeof url === 'string' && url.length > 0)
+					),
+				];
+
+				await Promise.all(covers.map((url) => import('react-native').then(({ Image }) => Image.prefetch(url))));
+
+				if (mounted) {
+					setImagesReady(true);
+				}
+			} catch (error) {
+				console.warn('[AuthBackground] image preload failed', error);
+
+				if (mounted) {
+					setImagesReady(true);
+				}
+			}
+		};
+
+		preloadImages();
+
+		return () => {
+			mounted = false;
+		};
+	}, [tracks]);
+
+	if (!imagesReady || tracks.length === 0) {
+		return null;
+	}
 
 	return (
 		<View style={styles.fullOverlay} pointerEvents="none">
-			<DotGrid
-				minSize={1}
-				maxSize={3}
-				spacing={24}
-				colors={['#FF6B6B', '#4ECDC4', '#6A4C93']}
-				pulseDuration={3000}
-				pulseIntensity={0.8}
-			/>
-			{configsRef.current.map((animCfg, i) => {
-				const track = tracks[i % tracks.length];
-				if (!track) return null;
+			<DotGrid minSize={1} maxSize={2} colors={['#FF6B6B', '#4ECDC4', '#6A4C93']} opacity={0.35} />
+
+			{configsRef.current.map((config, index) => {
+				const track = tracks[index % tracks.length];
 
 				return (
 					<MusicPreview
-						key={`anim-${track.id}-${i}`}
-						color={animCfg.color}
+						key={`anim-${index}`}
+						color={config.color}
 						title={track.title}
 						artist={track.artist?.name ?? 'Unknown'}
 						cover={track.album?.cover_medium}
-						animationConfig={animCfg}
+						animationConfig={config}
 						tracks={tracks}
 					/>
 				);

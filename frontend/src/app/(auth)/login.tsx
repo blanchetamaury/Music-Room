@@ -96,7 +96,6 @@ export default function LoginScreen() {
 			}
 			handleAuthComplete();
 		} catch (err) {
-			// Error is handled in LoginForm component
 			console.error('Login error:', err);
 		}
 	};

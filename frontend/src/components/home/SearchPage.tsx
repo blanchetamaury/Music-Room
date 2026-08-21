@@ -7,7 +7,7 @@ import { ThemedText } from '../themed-text';
 import { playlistSongs } from './data';
 import { homeStyles } from './home.styles';
 
-export const searchPlaylists = [
+const searchPlaylists = [
 	{ id: 1, title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
 	{ id: 2, title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
 	{ id: 3, title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
@@ -22,7 +22,7 @@ export const searchPlaylists = [
 	{ id: 6, title: 'Focus Flow', cover: '#f9a8d4', songs: 16 },
 ] as const;
 
-export type SearchPlaylist = (typeof searchPlaylists)[number];
+type SearchPlaylist = (typeof searchPlaylists)[number];
 
 interface SearchPageProps {
 	onNavigateHome?: (playlistId: number) => void;
