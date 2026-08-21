@@ -1,8 +1,8 @@
 import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import axios from 'axios';
 import { storage } from '../lib/storage';
-import { generateFortyTwoAuthorizationUrl, performFortyTwoOAuth } from '../rest/fortytwo';
-import { generateGoogleAuthorizationUrl, performGoogleOAuth } from '../rest/google';
+import { performFortyTwoOAuth } from '../rest/fortytwo';
+import { performGoogleOAuth } from '../rest/google';
 
 const API_URL = 'http://localhost:3000/api';
 

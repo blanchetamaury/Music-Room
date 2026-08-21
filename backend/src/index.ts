@@ -6,17 +6,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yamljs';
 import { createApiRouter } from './router';
-import { getSession } from './lib/session';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8081';
+const CLIENT_URL = process.env.CLIENT_URL || 'http://10.18.239.241:8081';
 
 const allowedOrigins = [
   CLIENT_URL,
-  'http://localhost:8081',
+  'http://10.18.239.241:8081',
   'http://localhost:19006',
   'https://ambulance-eggshell-preamble.ngrok-free.dev',
 ];

@@ -1,5 +1,6 @@
+import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'expo-router';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
 	ActivityIndicator,
@@ -14,7 +15,6 @@ import { useThemeColor } from '../../hooks/use-theme-color';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
-import { useAuth } from '@/src/context/AuthContext';
 
 export function LoginForm({
 	onLogin,
@@ -172,8 +172,8 @@ export function LoginForm({
 						style={styles.showBtn}
 						accessibilityRole="button"
 					>
-						{showPassword != true && <EyeOff style={{ color: '#ffffff' }}></EyeOff>}
-						{showPassword == true && <Eye style={{ color: '#ffffff' }}></Eye>}
+						{showPassword != true && <EyeOff color={"#ffff"}></EyeOff>}
+						{showPassword == true && <Eye color={"#ffff"}></Eye>}
 					</Pressable>
 				</View>
 

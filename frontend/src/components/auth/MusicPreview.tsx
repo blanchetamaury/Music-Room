@@ -91,7 +91,7 @@ export function MusicPreview({
 			{ scale: interpolate(progress.value, [0, 0.12, 0.88, 1], [0.8, 1, 1, 0.5]) },
 		],
 		opacity: interpolate(progress.value, [0, 0.12, 0.88, 1], [0, 1, 1, 0]),
-		filter: `blur(${interpolate(progress.value, [0, 0.12, 0.88, 1], [10, 0, 0, 10])}px)`,
+		filter: [{ blur: interpolate(progress.value, [0, 0.12, 0.88, 1], [10, 0, 0, 10]) }],
 	}));
 
 	const OuterView = animationConfig ? Animated.View : View;

@@ -1,11 +1,11 @@
-import { ChevronRight, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, Eye, EyeOff } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
 import { api } from '../../lib/api/client';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-import { ConfirmMail } from './confirmMail';
+import { ConfirmMail } from './ConfirmMail';
 
 function checkRules(pw: string) {
 	const hasUpper = /[A-Z]/.test(pw);
@@ -76,7 +76,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 			{page == false && (
 				<>
 					<Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
-						<ChevronRight style={{ color: '#ffff' }}></ChevronRight>
+						<ChevronRight color={'#ffff'}></ChevronRight>
 					</Pressable>
 
 					<ThemedText type="title" style={[styles.title, { color: '#fff' }]}>
@@ -178,8 +178,8 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 							style={styles.pwToggle}
 							accessibilityRole="button"
 						>
-							{showPw != true && <EyeOff style={{ color: '#ffffff' }}></EyeOff>}
-							{showPw == true && <Eye style={{ color: '#ffffff' }}></Eye>}
+							{showPw != true && <EyeOff color={"#ffff"}></EyeOff>}
+							{showPw == true && <Eye color={"#ffff"}></Eye>}
 						</Pressable>
 					</View>
 
@@ -235,8 +235,8 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 							style={styles.pwToggle}
 							accessibilityRole="button"
 						>
-							{showConfirm != true && <EyeOff style={{ color: '#ffffff' }}></EyeOff>}
-							{showConfirm == true && <Eye style={{ color: '#ffffff' }}></Eye>}
+							{showConfirm != true && <EyeOff color={"#ffff"}></EyeOff>}
+							{showConfirm == true && <Eye color={"#ffff"}></Eye>}
 						</Pressable>
 					</View>
 					{touchedConfirm && confirm !== pw && (

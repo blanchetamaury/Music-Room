@@ -1,4 +1,4 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -115,7 +115,7 @@ export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void
 		>
 			<View style={styles.headerRow}>
 				<Pressable onPress={() => onBack?.()} style={styles.backBtn} accessibilityRole="button">
-					<ChevronLeft style={{ color: '#ffff' }}></ChevronLeft>
+					<ChevronLeft color={"#ffff"}></ChevronLeft>
 				</Pressable>
 				<ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>
 					Reset password
