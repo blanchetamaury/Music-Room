@@ -15,8 +15,7 @@ import { generateFortyTwoAuthorizationUrl } from '../../rest/fortytwo';
 import { generateGoogleAuthorizationUrl } from '../../rest/google';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-import { FTIcon } from '../ui/42-icon';
-import { GoogleIcon } from '../ui/google-icon';
+import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
 
 export function LoginForm({
 	onLogin,
@@ -189,7 +188,7 @@ export function LoginForm({
 				</View>
 
 				<Pressable style={styles.googleBtn} accessibilityRole="button">
-					<FTIcon></FTIcon>
+					<FortyTwoIcon></FortyTwoIcon>
 					<Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>
 						Log in with 42
 					</Link>
