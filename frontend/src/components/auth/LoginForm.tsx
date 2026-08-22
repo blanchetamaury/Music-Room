@@ -9,6 +9,7 @@ import {
 	Pressable,
 	StyleSheet,
 	TextInput,
+	useColorScheme,
 	View,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
@@ -35,6 +36,7 @@ export function LoginForm({
 	const [error, setError] = useState<string | null>(null);
 	const { oauthFortyTwo, oauthGoogle } = useAuth();
 	const router = useRouter();
+	const colorScheme = useColorScheme();
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const isEmailValid = emailRegex.test(email);
@@ -86,20 +88,20 @@ export function LoginForm({
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
+				<ThemedText type="title" style={[styles.title, { color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}`, height: 40 }]}>
+					Log in
+				</ThemedText>
+
 				<Pressable
 					onPress={() => onRegister?.()}
 					style={styles.topRightBtn}
 					accessibilityRole="button"
 					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 				>
-					<ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>
+					<ThemedText type="defaultSemiBold" style={{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` }}>
 						Sign in
 					</ThemedText>
 				</Pressable>
-
-				<ThemedText type="title" style={[styles.title, { color: '#fff' }]}>
-					Log in
-				</ThemedText>
 
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
@@ -111,7 +113,7 @@ export function LoginForm({
 				>
 					<TextInput
 						placeholder="Email"
-						placeholderTextColor="#D1D5D8"
+						placeholderTextColor={colorScheme === 'light' ? "#48494b" : "#D1D5D8"}
 						value={email}
 						onChangeText={(text) => {
 							setEmail(text);
@@ -127,7 +129,7 @@ export function LoginForm({
 						underlineColorAndroid="transparent"
 						style={[
 							styles.input,
-							{ color: '#fff' },
+							{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` },
 							Platform.OS === 'web'
 								? ({
 										outlineWidth: 0,
@@ -146,7 +148,7 @@ export function LoginForm({
 				<View style={[styles.inputWrapper, styles.inputDistinct]}>
 					<TextInput
 						placeholder="Password"
-						placeholderTextColor="#D1D5D8"
+						placeholderTextColor={colorScheme === 'light' ? "#48494b" : "#D1D5D8"}
 						value={password}
 						onChangeText={(text) => {
 							setPassword(text);
@@ -156,7 +158,7 @@ export function LoginForm({
 						underlineColorAndroid="transparent"
 						style={[
 							styles.input,
-							{ paddingRight: 48, color: '#fff' },
+							{ paddingRight: 48, color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` },
 							Platform.OS === 'web'
 								? ({
 										outlineWidth: 0,
@@ -172,8 +174,8 @@ export function LoginForm({
 						style={styles.showBtn}
 						accessibilityRole="button"
 					>
-						{showPassword != true && <EyeOff color={"#ffff"}></EyeOff>}
-						{showPassword == true && <Eye color={"#ffff"}></Eye>}
+						{showPassword != true && <EyeOff color={colorScheme === 'light' ? "#000000" : "#ffffff"}></EyeOff>}
+						{showPassword == true && <Eye color={colorScheme === 'light' ? "#000000" : "#ffffff"}></Eye>}
 					</Pressable>
 				</View>
 
@@ -201,22 +203,22 @@ export function LoginForm({
 					<View style={styles.separatorLine} />
 				</View>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
+				<Pressable style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
 					<FortyTwoIcon></FortyTwoIcon>
-					<ThemedText>
+					<ThemedText darkColor='#0000' lightColor='#ffff'>
 						Log in with 42
 					</ThemedText>
 				</Pressable>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button" onPress={handleoauthGoogle}>
+				<Pressable style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn} accessibilityRole="button" onPress={handleoauthGoogle}>
 					<GoogleIcon></GoogleIcon>
-					<ThemedText>
+					<ThemedText darkColor='#0000' lightColor='#ffff'>
 						Log in with Google
 					</ThemedText>
 				</Pressable>
 
 				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
-					<ThemedText type="link" style={{ color: '#fff' }}>
+					<ThemedText type="link" style={{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` }}>
 						Forgot password?
 					</ThemedText>
 				</Pressable>
@@ -307,12 +309,26 @@ const styles = StyleSheet.create({
 	separatorText: {
 		opacity: 0.8,
 	},
-	googleBtn: {
+	darkBtn: {
+		paddingLeft: 10,
+		paddingRight: 10,
 		marginTop: 12,
 		paddingVertical: 10,
 		borderRadius: 12,
 		alignItems: 'center',
 		backgroundColor: 'rgba(0, 0, 0, 0.69)',
+		flexDirection: 'row',
+		gap: 10,
+		justifyContent: 'center',
+	},
+	ligthBtn: {
+		paddingLeft: 10,
+		paddingRight: 10,
+		marginTop: 12,
+		paddingVertical: 10,
+		borderRadius: 12,
+		alignItems: 'center',
+		backgroundColor: 'rgba(255, 255, 255, 0.69)',
 		flexDirection: 'row',
 		gap: 10,
 		justifyContent: 'center',

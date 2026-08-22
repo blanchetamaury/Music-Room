@@ -30,6 +30,7 @@ export async function getGoogleOauthToken(code: string): Promise<GoogleOauthToke
 
     if (authorize_fetch.status === 401) throw ERRORS_DETAILS.invalid_oauth_error();
 
+    console.error(baseUrl);
     if (!authorize_fetch.ok) {
         const errBody = await authorize_fetch.text();
         console.error('Google token error:', errBody);

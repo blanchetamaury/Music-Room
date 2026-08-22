@@ -30,7 +30,6 @@ export async function GET(request: Request): Promise<Response> {
             'Set-Cookie',
             `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`
         );
-        headers.append('Content-Type', 'application/json');
 
         return new Response(
             JSON.stringify({
