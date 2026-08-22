@@ -88,8 +88,9 @@ export default function LiquidGlass({
 			<BlurView
 				intensity={intensity}
 				tint={tint}
-				experimentalBlurMethod="dimezisBlurView" // Android (SDK 52+)
+				experimentalBlurMethod="dimezisBlurView"
 				style={StyleSheet.absoluteFill}
+				pointerEvents="none"
 			/>
 
 			{/* 4. TEINTE : dégradé diagonal, plus clair en haut à gauche */}

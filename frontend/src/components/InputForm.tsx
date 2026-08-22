@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Platform, StyleSheet, TextInput, useColorScheme, View } from 'react-native';
 import { ThemedText } from './themed-text';
 
@@ -9,7 +9,7 @@ type InputFormProps = {
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-export function InputMailForm(props: InputFormProps) {
+export function InputForm(props: InputFormProps) {
 	const colorScheme = useColorScheme();
 	const [touchedEmail, setTouchedEmail] = useState(false);
 	const [emailFocused, setEmailFocused] = useState(false);

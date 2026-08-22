@@ -1,11 +1,13 @@
 import { ChevronRight, Eye, EyeOff } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, useColorScheme, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
 import { api } from '../../lib/api/client';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { ConfirmMail } from './ConfirmMail';
+import { InputPasswordForm } from '../InputPasswordForm';
+import { InputForm } from '../InputForm';
 
 function checkRules(pw: string) {
 	const hasUpper = /[A-Z]/.test(pw);
@@ -21,21 +23,16 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 	const [username, setUsername] = useState('');
 	const [pw, setPw] = useState('');
 	const [confirm, setConfirm] = useState('');
-	const [touchedEmail, setTouchedEmail] = useState(false);
-	const [emailFocused, setEmailFocused] = useState(false);
-	const [touchUsername, setTouchUsername] = useState(false);
-	const [usernameFocused, setUsernameFocused] = useState(false);
 	const [touchedConfirm, setTouchedConfirm] = useState(false);
 	const [showPw, setShowPw] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const rules = useMemo(() => checkRules(pw), [pw]);
+	const colorScheme = useColorScheme();
 	const completed = [rules.hasUpper, rules.hasNumber, rules.hasSpecial].filter(Boolean).length;
 
 	const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	const isEmailValid = emailRegex.test(email);
 	const isPasswordValid = pw.length >= 6 && confirm === pw && completed === 3;
 
 	useEffect(() => {
@@ -76,112 +73,36 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 			{page == false && (
 				<>
 					<Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
-						<ChevronRight color={'#ffff'}></ChevronRight>
+						<ChevronRight color={`${colorScheme === 'light' ? '#000000' : '#ffffff'}`}></ChevronRight>
 					</Pressable>
 
-					<ThemedText type="title" style={[styles.title, { color: '#fff' }]}>
+					<ThemedText type="title" style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }]}>
 						Create account
 					</ThemedText>
 
 					{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-					<View
-						style={[
-							styles.inputWrapper,
-							touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
-						]}
+					<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
+					<InputForm placeholder="Username" inputValue={username} setInputValue={setUsername} setError={setError} />
+
+					<InputPasswordForm
+						placeholder="Password"
+						inputValue={pw}
+						showInputValue={showPw}
+						setInputValue={setPw}
+						setError={setError}
 					>
-						<TextInput
-							placeholder="Email"
-							placeholderTextColor="#D1D5D8"
-							value={email}
-							onChangeText={(v) => {
-								setEmail(v);
-								setError(null);
-							}}
-							onFocus={() => setEmailFocused(true)}
-							onBlur={() => {
-								setEmailFocused(false);
-								setTouchedEmail(true);
-							}}
-							keyboardType="email-address"
-							autoCapitalize="none"
-							underlineColorAndroid="transparent"
-							style={[
-								styles.input,
-								{ color: '#fff' },
-								Platform.OS === 'web'
-									? ({
-											outlineWidth: 0,
-											outlineColor: 'transparent',
-											outlineStyle: 'none',
-										} as any)
-									: null,
-							]}
-						/>
-					</View>
-					{touchedEmail && !isEmailValid && !emailFocused && (
-						<ThemedText style={styles.error}>Invalid email address</ThemedText>
-					)}
-
-					<View style={[styles.inputWrapper, styles.inputDistinct]}>
-						<TextInput
-							placeholder="Username"
-							placeholderTextColor="#D1D5D8"
-							value={username}
-							onChangeText={(v) => setUsername(v)}
-							onFocus={() => setUsernameFocused(true)}
-							onBlur={() => {
-								setUsernameFocused(false);
-								setTouchUsername(true);
-							}}
-							underlineColorAndroid="transparent"
-							style={[
-								styles.input,
-								{ color: '#fff' },
-								Platform.OS === 'web'
-									? ({
-											outlineWidth: 0,
-											outlineColor: 'transparent',
-											outlineStyle: 'none',
-										} as any)
-									: null,
-							]}
-						/>
-					</View>
-
-					<View style={[styles.inputWrapper, styles.inputDistinct]}>
-						<TextInput
-							placeholder="Password"
-							placeholderTextColor="#D1D5D8"
-							value={pw}
-							onChangeText={(v) => {
-								setPw(v.replace(/\s/g, ''));
-								setError(null);
-							}}
-							secureTextEntry={!showPw}
-							underlineColorAndroid="transparent"
-							style={[
-								styles.input,
-								{ color: '#fff', paddingRight: 48 },
-								Platform.OS === 'web'
-									? ({
-											outlineWidth: 0,
-											outlineColor: 'transparent',
-											outlineStyle: 'none',
-										} as any)
-									: null,
-							]}
-						/>
 						<Pressable
-							onPress={() => setShowPw((s) => !s)}
-							style={styles.pwToggle}
+							onPress={() => setShowPw((v) => !v)}
+							style={styles.showBtn}
 							accessibilityRole="button"
 						>
-							{showPw != true && <EyeOff color={'#ffff'}></EyeOff>}
-							{showPw == true && <Eye color={'#ffff'}></Eye>}
+							{showPw != true && (
+								<EyeOff color={colorScheme === 'light' ? '#000000' : '#ffffff'}></EyeOff>
+							)}
+							{showPw == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
 						</Pressable>
-					</View>
+					</InputPasswordForm>
 
 					<View style={styles.rulesRow}>
 						<View
@@ -195,57 +116,43 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						/>
 					</View>
 					<View style={styles.rulesList}>
-						<ThemedText style={{ color: rules.hasUpper ? '#fff' : '#ddd' }}>
+						<ThemedText style={{ color: rules.hasUpper ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
 							{rules.hasUpper ? '✓' : '•'} One uppercase letter
 						</ThemedText>
-						<ThemedText style={{ color: rules.hasNumber ? '#fff' : '#ddd' }}>
+						<ThemedText style={{ color: rules.hasNumber ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
 							{rules.hasNumber ? '✓' : '•'} One number
 						</ThemedText>
-						<ThemedText style={{ color: rules.hasSpecial ? '#fff' : '#ddd' }}>
+						<ThemedText style={{ color: rules.hasSpecial ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
 							{rules.hasSpecial ? '✓' : '•'} One special character
 						</ThemedText>
 					</View>
 
-					<View style={[styles.inputWrapper, styles.inputDistinct]}>
-						<TextInput
-							placeholder="Confirm password"
-							placeholderTextColor="#D1D5D8"
-							value={confirm}
-							onChangeText={(v) => {
-								setConfirm(v.replace(/\s/g, ''));
-								setError(null);
-							}}
-							secureTextEntry={!showConfirm}
-							underlineColorAndroid="transparent"
-							onBlur={() => setTouchedConfirm(true)}
-							style={[
-								styles.input,
-								{ color: '#fff', paddingRight: 48 },
-								Platform.OS === 'web'
-									? ({
-											outlineWidth: 0,
-											outlineColor: 'transparent',
-											outlineStyle: 'none',
-										} as any)
-									: null,
-							]}
-						/>
+					<InputPasswordForm
+						placeholder="Confirm password"
+						inputValue={confirm}
+						showInputValue={showConfirm}
+						setInputValue={setConfirm}
+						setError={setError}
+					>
 						<Pressable
-							onPress={() => setShowConfirm((s) => !s)}
-							style={styles.pwToggle}
+							onPress={() => setShowConfirm((v) => !v)}
+							style={styles.showBtn}
 							accessibilityRole="button"
 						>
-							{showConfirm != true && <EyeOff color={'#ffff'}></EyeOff>}
-							{showConfirm == true && <Eye color={'#ffff'}></Eye>}
+							{showConfirm != true && (
+								<EyeOff color={colorScheme === 'light' ? '#000000' : '#ffffff'}></EyeOff>
+							)}
+							{showConfirm == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
 						</Pressable>
-					</View>
+					</InputPasswordForm>
+
 					{touchedConfirm && confirm !== pw && (
 						<ThemedText style={styles.error}>Passwords do not match</ThemedText>
 					)}
 
 					<View style={styles.separatorRow}>
 						<View style={styles.separatorLine} />
-						<ThemedText style={{ color: '#fff' }}>or</ThemedText>
+						<ThemedText style={{ color: colorScheme === 'light' ? '#000000' : '#ffffff' }}>or</ThemedText>
 						<View style={styles.separatorLine} />
 					</View>
 
@@ -256,14 +163,14 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						disabled={!isPasswordValid || isLoading}
 					>
 						{isLoading ? (
-							<ActivityIndicator color="#fff" size="small" />
+							<ActivityIndicator color={colorScheme === 'light' ? '#000000' : '#ffffff'} size="small" />
 						) : (
 							<ThemedText style={{ color: '#ffffff', fontWeight: '600' }}>Create account</ThemedText>
 						)}
 					</Pressable>
 
 					<Pressable onPress={() => onBack?.()} style={styles.signInLink} accessibilityRole="button">
-						<ThemedText style={{ color: '#fff', fontSize: 13 }}>
+						<ThemedText style={{ color: colorScheme === 'light' ? '#000000' : '#ffffff', fontSize: 13 }}>
 							Already have an account ? <ThemedText type="defaultSemiBold">Log in</ThemedText>
 						</ThemedText>
 					</Pressable>
@@ -286,8 +193,8 @@ const styles = StyleSheet.create({
 	},
 	topRightBtn: {
 		position: 'absolute',
-		right: 12,
-		top: 12,
+		right: 10,
+		top: 0,
 	},
 	title: {
 		marginTop: 8,
@@ -306,6 +213,13 @@ const styles = StyleSheet.create({
 		height: 44,
 	},
 	pwToggle: {
+		position: 'absolute',
+		right: 12,
+		top: 0,
+		bottom: 0,
+		justifyContent: 'center',
+	},
+	showBtn: {
 		position: 'absolute',
 		right: 12,
 		top: 0,
@@ -332,7 +246,7 @@ const styles = StyleSheet.create({
 	},
 	rulesRow: {
 		height: 8,
-		backgroundColor: 'rgba(255,255,255,0.08)',
+		backgroundColor: 'rgba(255, 255, 255, 0.2)',
 		borderRadius: 6,
 		marginTop: 10,
 		overflow: 'hidden',

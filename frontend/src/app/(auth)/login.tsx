@@ -13,40 +13,6 @@ export type AuthMode = 'login' | 'register' | 'reset-password';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
-function LoginScreenInner({
-	onLogin,
-	onForgot,
-	onRegister,
-}: {
-	onLogin: (email: string, password: string) => Promise<void>;
-	onForgot: () => void;
-	onRegister: () => void;
-}) {
-	return (
-		<View style={styles.container}>
-			<View style={styles.center}>
-				<LoginForm onLogin={onLogin} onForgot={onForgot} onRegister={onRegister} />
-			</View>
-		</View>
-	);
-}
-
-function RegisterScreenInner({ onBack, onRegisterComplete }: { onBack: () => void; onRegisterComplete: () => void }) {
-	return (
-		<View style={styles.authContainer}>
-			<Register onBack={onBack} onRegisterComplete={onRegisterComplete} />
-		</View>
-	);
-}
-
-function ResetPasswordScreenInner({ onBack, onResetComplete }: { onBack: () => void; onResetComplete: () => void }) {
-	return (
-		<View style={styles.authContainer}>
-			<ResetPassword onBack={onBack} onResetComplete={onResetComplete} />
-		</View>
-	);
-}
-
 export default function LoginScreen() {
 	const router = useRouter();
 	const searchParams = useLocalSearchParams<{ mode?: string }>();
@@ -101,14 +67,6 @@ export default function LoginScreen() {
 		}
 	};
 
-	const handleRegisterComplete = () => {
-		handleAuthComplete();
-	};
-
-	const handleResetComplete = () => {
-		handleAuthComplete();
-	};
-
 	const handleAuthComplete = () => {
 		router.replace('/(tabs)/home');
 	};
@@ -117,11 +75,7 @@ export default function LoginScreen() {
 		setMode(newMode);
 	};
 
-	if (loading) {
-		return null;
-	}
-
-	if (token) {
+	if (loading || token) {
 		return null;
 	}
 
@@ -132,28 +86,26 @@ export default function LoginScreen() {
 				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, registerStyle]}
 				pointerEvents={mode === 'register' ? 'auto' : 'none'}
 			>
-				<RegisterScreenInner
-					onBack={() => handleModeChange('login')}
-					onRegisterComplete={handleRegisterComplete}
-				/>
+				<View style={styles.authContainer}>
+					<Register onBack={() => handleModeChange('login')} onRegisterComplete={handleAuthComplete} />
+				</View>
 			</Animated.View>
 
 			<Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
-				<LoginScreenInner
-					onLogin={handleLogin}
-					onForgot={() => handleModeChange('reset-password')}
-					onRegister={() => handleModeChange('register')}
-				/>
+				<View style={styles.container}>
+					<View style={styles.center}>
+						<LoginForm onLogin={handleLogin} onForgot={() => handleModeChange('reset-password')} onRegister={() => handleModeChange('register')} />
+					</View>
+				</View>
 			</Animated.View>
 
 			<Animated.View
 				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, resetStyle]}
 				pointerEvents={mode === 'reset-password' ? 'auto' : 'none'}
 			>
-				<ResetPasswordScreenInner
-					onBack={() => handleModeChange('login')}
-					onResetComplete={handleResetComplete}
-				/>
+				<View style={styles.authContainer}>
+					<ResetPassword onBack={() => handleModeChange('login')} onResetComplete={handleAuthComplete} />
+				</View>
 			</Animated.View>
 		</ThemedView>
 	);

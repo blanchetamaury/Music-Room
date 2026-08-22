@@ -16,7 +16,7 @@ import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
 import { InputPasswordForm } from '../InputPasswordForm';
-import { InputMailForm } from '../InputMailForm';
+import { InputForm } from '../InputForm';
 
 export function LoginForm({
 	onLogin,
@@ -108,7 +108,7 @@ export function LoginForm({
 
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-				<InputMailForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
+				<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
 
 				<InputPasswordForm
 					placeholder="Password"
@@ -163,7 +163,7 @@ export function LoginForm({
 						style={{
 							color: Platform.select({
 								web: '#000000',
-								default: colorScheme === 'light' ? '#0000' : '#ffff',
+								default: colorScheme === 'dark' ? '#0000' : '#ffff',
 							}),
 						}}
 					>
@@ -181,7 +181,7 @@ export function LoginForm({
 						style={{
 							color: Platform.select({
 								web: '#000000',
-								default: colorScheme === 'light' ? '#0000' : '#ffff',
+								default: colorScheme === 'dark' ? '#0000' : '#ffff',
 							}),
 						}}
 					>
