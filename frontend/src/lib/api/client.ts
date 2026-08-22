@@ -99,15 +99,19 @@ export const api = {
 		oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
 	},
 	deezer: {
-		tracks: (q: string) => {
-			return fetchApi<DeezerTrack[]>(`/deezer/tracks?q=${encodeURIComponent(q)}`);
+		music: {
+			top_music: (count: number) => {
+				return fetchApi<DeezerTrack[]>(`/deezer/music/top_music?count=${count}`);
+			},
+			music: (music_deezer_id: number) => {
+				return fetchApi<DeezerTrack[]>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
+			},
 		},
-		chart: () => {
-			return fetchApi<DeezerTrack[]>(`/deezer/chartsfirts`);
+		album: {
+
+		},
+		search: (search: string, limit: number) => {
+			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
 		},
 	},
 };
-
-function getApiBaseUrl(): string {
-	return API_BASE_URL;
-}

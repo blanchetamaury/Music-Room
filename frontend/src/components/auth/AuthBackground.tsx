@@ -103,7 +103,7 @@ const AuthBackground = memo(function AuthBackground() {
 
 		const fetchTracks = async () => {
 			try {
-				const value = await api.deezer.chart();
+				const value = await api.deezer.music.top_music(200);
 
 				if (!value?.data) {
 					return;

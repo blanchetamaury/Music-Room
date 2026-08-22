@@ -1,11 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { playlistSongs } from './data';
 import { homeStyles } from './home.styles';
+import { api } from '@/src/lib/api/client';
 
 const searchPlaylists = [
 	{ id: 1, title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
@@ -29,8 +30,19 @@ interface SearchPageProps {
 }
 
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
-	const [searchText, setSearchText] = React.useState('');
+	const [ query, setQuery ] = useState<string | null>(null);
 
+	useEffect(() => {
+		const searchBar = async () => {
+			if (query == null)
+				return ;
+			const data = await api.deezer.search(query, 20);
+			console.log(data);
+		}
+
+		searchBar();
+
+	}, [query]);
 	return (
 		<View style={homeStyles.searchRoot}>
 			<View style={homeStyles.searchContent}>
@@ -49,8 +61,8 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					<TextInput
 						placeholder="Search..."
 						placeholderTextColor="rgba(255,255,255,0.5)"
-						value={searchText}
-						onChangeText={setSearchText}
+						value={query ?? ''}
+						onChangeText={setQuery}
 						style={[
 							homeStyles.searchInput,
 							{ color: '#fff' },
