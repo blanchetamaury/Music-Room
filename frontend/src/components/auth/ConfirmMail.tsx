@@ -137,7 +137,7 @@ export function ConfirmMail({
 						<ActivityIndicator color="#fff" size="small" />
 					) : (
 						<ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>
-							Reset password
+							Valid mail
 						</ThemedText>
 					)}
 				</Pressable>

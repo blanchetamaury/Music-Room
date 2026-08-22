@@ -1,5 +1,6 @@
-import { Link } from 'expo-router';
-import { Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '@/src/context/AuthContext';
+import { useRouter } from 'expo-router';
+import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
 	ActivityIndicator,
@@ -7,20 +8,19 @@ import {
 	Platform,
 	Pressable,
 	StyleSheet,
-	TextInput,
+	useColorScheme,
 	View,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { generateFortyTwoAuthorizationUrl } from '../../rest/fortytwo';
-import { generateGoogleAuthorizationUrl } from '../../rest/google';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
+import { InputPasswordForm } from '../InputPasswordForm';
+import { InputForm } from '../InputForm';
 
 export function LoginForm({
 	onLogin,
 	onForgot,
-	onGoogle,
 	onRegister,
 }: {
 	onLogin?: (email: string, password: string) => Promise<void>;
@@ -30,20 +30,17 @@ export function LoginForm({
 }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [touchedEmail, setTouchedEmail] = useState(false);
-	const [emailFocused, setEmailFocused] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
-	const [passwordFocused, setPasswordFocused] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const { oauthFortyTwo, oauthGoogle } = useAuth();
+	const router = useRouter();
+	const colorScheme = useColorScheme();
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	const isEmailValid = emailRegex.test(email);
-	const isPasswordValid = password.length >= 6;
-	const canSubmit = isEmailValid && isPasswordValid;
+	const canSubmit = emailRegex.test(email) && password.length >= 6;
 
 	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
-	const inputTextColor = useThemeColor({}, 'text');
 
 	const handleSubmit = async () => {
 		if (!canSubmit || isLoading) return;
@@ -60,6 +57,24 @@ export function LoginForm({
 		}
 	};
 
+	const handleoauthFortyTwo = async () => {
+		try {
+			await oauthFortyTwo();
+			router.replace('/(tabs)/home');
+		} catch (err) {
+			console.error('Login error:', err);
+		}
+	};
+
+	const handleoauthGoogle = async () => {
+		try {
+			await oauthGoogle();
+			router.replace('/(tabs)/home');
+		} catch (err) {
+			console.error('Login error:', err);
+		}
+	};
+
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.wrapper}>
 			<LiquidGlass
@@ -70,98 +85,49 @@ export function LoginForm({
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
+				<ThemedText
+					type="title"
+					style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}`, height: 40 }]}
+				>
+					Log in
+				</ThemedText>
+
 				<Pressable
 					onPress={() => onRegister?.()}
 					style={styles.topRightBtn}
 					accessibilityRole="button"
 					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 				>
-					<ThemedText type="defaultSemiBold" style={{ color: '#fff' }}>
+					<ThemedText
+						type="defaultSemiBold"
+						style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}
+					>
 						Sign in
 					</ThemedText>
 				</Pressable>
 
-				<ThemedText type="title" style={[styles.title, { color: '#fff' }]}>
-					Log in
-				</ThemedText>
-
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-				<View
-					style={[
-						styles.inputWrapper,
-						touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
-					]}
-				>
-					<TextInput
-						placeholder="Email"
-						placeholderTextColor="#D1D5D8"
-						value={email}
-						onChangeText={(text) => {
-							setEmail(text);
-							setError(null);
-						}}
-						onFocus={() => setEmailFocused(true)}
-						onBlur={() => {
-							setEmailFocused(false);
-							setTouchedEmail(true);
-						}}
-						keyboardType="email-address"
-						autoCapitalize="none"
-						underlineColorAndroid="transparent"
-						style={[
-							styles.input,
-							{ color: '#fff' },
-							Platform.OS === 'web'
-								? ({
-										outlineWidth: 0,
-										outlineColor: 'transparent',
-										outlineStyle: 'none',
-									} as any)
-								: null,
-						]}
-						accessibilityLabel="email"
-					/>
-				</View>
-				{touchedEmail && !isEmailValid && !emailFocused && (
-					<ThemedText style={styles.error}>Invalid email address</ThemedText>
-				)}
+				<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
 
-				<View style={[styles.inputWrapper, styles.inputDistinct]}>
-					<TextInput
-						placeholder="Password"
-						placeholderTextColor="#D1D5D8"
-						value={password}
-						onChangeText={(text) => {
-							setPassword(text);
-							setError(null);
-						}}
-						onFocus={() => setPasswordFocused(true)}
-						onBlur={() => setPasswordFocused(false)}
-						secureTextEntry={!showPassword}
-						underlineColorAndroid="transparent"
-						style={[
-							styles.input,
-							{ paddingRight: 48, color: '#fff' },
-							Platform.OS === 'web'
-								? ({
-										outlineWidth: 0,
-										outlineColor: 'transparent',
-										outlineStyle: 'none',
-									} as any)
-								: null,
-						]}
-						accessibilityLabel="password"
-					/>
+				<InputPasswordForm
+					placeholder="Password"
+					inputValue={password}
+					showInputValue={showPassword}
+					setInputValue={setPassword}
+					setError={setError}
+				>
 					<Pressable
 						onPress={() => setShowPassword((v) => !v)}
 						style={styles.showBtn}
 						accessibilityRole="button"
 					>
-						{showPassword != true && <EyeOff style={{ color: '#ffffff' }}></EyeOff>}
-						{showPassword == true && <Eye style={{ color: '#ffffff' }}></Eye>}
+						{showPassword != true && (
+							<EyeOff color={colorScheme === 'light' ? '#000000' : '#ffffff'}></EyeOff>
+						)}
+						{showPassword == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
 					</Pressable>
-				</View>
+				</InputPasswordForm>
 
 				<Pressable
 					onPress={handleSubmit}
@@ -187,22 +153,44 @@ export function LoginForm({
 					<View style={styles.separatorLine} />
 				</View>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button">
+				<Pressable
+					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
+					accessibilityRole="button"
+					onPress={handleoauthFortyTwo}
+				>
 					<FortyTwoIcon></FortyTwoIcon>
-					<Link href={generateFortyTwoAuthorizationUrl()} style={{ color: '#fff' }}>
+					<ThemedText
+						style={{
+							color: Platform.select({
+								web: '#000000',
+								default: colorScheme === 'dark' ? '#0000' : '#ffff',
+							}),
+						}}
+					>
 						Log in with 42
-					</Link>
+					</ThemedText>
 				</Pressable>
 
-				<Pressable style={styles.googleBtn} accessibilityRole="button">
+				<Pressable
+					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
+					accessibilityRole="button"
+					onPress={handleoauthGoogle}
+				>
 					<GoogleIcon></GoogleIcon>
-					<Link href={generateGoogleAuthorizationUrl()} style={{ color: '#fff' }}>
+					<ThemedText
+						style={{
+							color: Platform.select({
+								web: '#000000',
+								default: colorScheme === 'dark' ? '#0000' : '#ffff',
+							}),
+						}}
+					>
 						Log in with Google
-					</Link>
+					</ThemedText>
 				</Pressable>
 
 				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
-					<ThemedText type="link" style={{ color: '#fff' }}>
+					<ThemedText type="link" style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}>
 						Forgot password?
 					</ThemedText>
 				</Pressable>
@@ -230,28 +218,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		marginBottom: 12,
-	},
-	inputWrapper: {
-		marginTop: 8,
-		borderRadius: 12,
-		borderWidth: 1,
-		borderColor: 'rgba(255,255,255,0.12)',
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-	},
-	inputDistinct: {
-		backgroundColor: 'rgba(255,255,255,0.03)',
-	},
-	inputInvalid: {
-		borderColor: '#ff6b6b',
-	},
-	input: {
-		height: 44,
-	},
-	glassOverlayInner: {
-		position: 'absolute',
-		inset: 0,
-		backgroundColor: 'rgba(255,255,255,0.02)',
 	},
 	error: {
 		marginTop: 6,
@@ -293,7 +259,9 @@ const styles = StyleSheet.create({
 	separatorText: {
 		opacity: 0.8,
 	},
-	googleBtn: {
+	darkBtn: {
+		paddingLeft: 10,
+		paddingRight: 10,
 		marginTop: 12,
 		paddingVertical: 10,
 		borderRadius: 12,
@@ -303,11 +271,17 @@ const styles = StyleSheet.create({
 		gap: 10,
 		justifyContent: 'center',
 	},
-	googleLogoPlaceholder: {
-		width: 20,
-		height: 20,
-		backgroundColor: 'rgba(0,0,0,0.12)',
-		borderRadius: 4,
+	ligthBtn: {
+		paddingLeft: 10,
+		paddingRight: 10,
+		marginTop: 12,
+		paddingVertical: 10,
+		borderRadius: 12,
+		alignItems: 'center',
+		backgroundColor: 'rgba(255, 255, 255, 0.69)',
+		flexDirection: 'row',
+		gap: 10,
+		justifyContent: 'center',
 	},
 	topRightBtn: {
 		position: 'absolute',
@@ -321,12 +295,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		zIndex: 20,
 		elevation: 6,
-	},
-	iconPlaceholder: {
-		width: 20,
-		height: 20,
-		backgroundColor: 'rgba(255,255,255,0.2)',
-		borderRadius: 4,
 	},
 	forgotBtn: {
 		marginTop: 10,

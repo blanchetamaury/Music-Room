@@ -2,7 +2,7 @@
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
-import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, useColorScheme, View, ViewStyle } from 'react-native';
 import { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 type Tint = 'light' | 'dark' | 'default';
@@ -55,6 +55,7 @@ export default function LiquidGlass({
 	borderColor,
 }: Props) {
 	const progress = useSharedValue(0);
+	const colorScheme = useColorScheme();
 
 	useEffect(() => {
 		if (!shimmer) return;
@@ -65,8 +66,6 @@ export default function LiquidGlass({
 		transform: [{ rotate: '18deg' }, { translateX: interpolate(progress.value, [0, 1], [-320, 320]) }],
 		opacity: interpolate(progress.value, [0, 0.15, 0.5, 0.85, 1], [0, 0.6, 0.9, 0.6, 0]),
 	}));
-
-	const isLight = tint === 'light';
 
 	const outerRadius = {
 		borderTopLeftRadius: topLeftRadius ?? radius,
@@ -89,14 +88,15 @@ export default function LiquidGlass({
 			<BlurView
 				intensity={intensity}
 				tint={tint}
-				experimentalBlurMethod="dimezisBlurView" // Android (SDK 52+)
+				experimentalBlurMethod="dimezisBlurView"
 				style={StyleSheet.absoluteFill}
+				pointerEvents="none"
 			/>
 
 			{/* 4. TEINTE : dégradé diagonal, plus clair en haut à gauche */}
 			<LinearGradient
 				colors={
-					isLight
+					colorScheme === 'light'
 						? ['rgba(255,255,255,0.40)', 'rgba(255,255,255,0.12)', 'rgba(255,255,255,0.18)']
 						: ['rgba(255,255,255,0.12)', 'rgba(255,255,255,0.03)', 'rgba(255,255,255,0.08)']
 				}
@@ -168,7 +168,9 @@ export default function LiquidGlass({
 					styles.border,
 					outerRadius,
 					{
-						borderColor: borderColor ?? (isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)'),
+						borderColor:
+							borderColor ??
+							(colorScheme === 'light' ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)'),
 						borderWidth: borderWidth ?? StyleSheet.hairlineWidth * 1.5,
 					},
 				]}
@@ -196,6 +198,7 @@ const styles = StyleSheet.create({
 	clip: {
 		overflow: 'hidden',
 		backgroundColor: 'transparent',
+		minWidth: 0,
 	},
 	specular: {
 		position: 'absolute',
@@ -238,5 +241,7 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		padding: 20,
+		width: '100%',
+		minWidth: 0,
 	},
 });

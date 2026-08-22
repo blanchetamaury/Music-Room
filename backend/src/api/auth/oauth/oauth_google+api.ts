@@ -16,23 +16,31 @@ export async function GET(request: Request): Promise<Response> {
         const me = await getGoogleMe(authorization.access_token);
         const user = await createOrUpdateGoogleUser(me, authorization);
 
-        const session = await createSession({
-            user_id: user.id
-        });
-
+        const session = await createSession({ user_id: user.id });
         const { cookie: csrfCookie } = createCsrfCookie();
-        const sessionCookie = `session=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
-
+    
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:8081';
         
-        const headers = new Headers();
-        headers.append('Location', `${clientUrl}/(tabs)/home`);
-        headers.append('Set-Cookie', sessionCookie);
-        headers.append('Set-Cookie', csrfCookie);
+        const redirectUrl = `${clientUrl}/oauth-callback?token=${encodeURIComponent(session.body)}`;
 
-        return new Response(null, {
-            status: 302,
-            headers,
-        });
+        const headers = new Headers();
+        headers.append('Location', redirectUrl);
+        headers.append('Set-Cookie', csrfCookie);
+        headers.append(
+            'Set-Cookie',
+            `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`
+        );
+
+        return new Response(
+            JSON.stringify({
+                success: true,
+                token: session.body,
+                user: { id: user.id, email: user.email, username: user.username },
+            }),
+            {
+                status: 302,
+                headers,
+            }
+        );
     });
 }

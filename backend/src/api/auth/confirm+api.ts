@@ -21,6 +21,7 @@ export async function POST(req: Request): Promise<Response> {
         );
       }
     }
+    console.log(value, "tets :", mail);
     if (value == null || mail == true)
       return Response.json({ success: false, message: 'Error, code or mail is not good' }, { status: 400 });
     return Response.json({ success: true, message: 'Password has been reset' }, { status: 200 });

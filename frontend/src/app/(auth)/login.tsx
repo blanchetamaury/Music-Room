@@ -3,7 +3,7 @@ import { LoginForm } from '@/src/components/auth/LoginForm';
 import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
 import { ThemedView } from '@/src/components/themed-view';
-import { api } from '@/src/lib/api/client';
+import { useAuth } from '@/src/context/AuthContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -13,50 +13,20 @@ export type AuthMode = 'login' | 'register' | 'reset-password';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
-function LoginScreenInner({
-	onLogin,
-	onForgot,
-	onGoogle,
-	onRegister,
-}: {
-	onLogin: (email: string, password: string) => Promise<void>;
-	onForgot: () => void;
-	onGoogle: () => void;
-	onRegister: () => void;
-}) {
-	return (
-		<View style={styles.container}>
-			<View style={styles.center}>
-				<LoginForm onLogin={onLogin} onForgot={onForgot} onGoogle={onGoogle} onRegister={onRegister} />
-			</View>
-		</View>
-	);
-}
-
-function RegisterScreenInner({ onBack, onRegisterComplete }: { onBack: () => void; onRegisterComplete: () => void }) {
-	return (
-		<View style={styles.authContainer}>
-			<Register onBack={onBack} onRegisterComplete={onRegisterComplete} />
-		</View>
-	);
-}
-
-function ResetPasswordScreenInner({ onBack, onResetComplete }: { onBack: () => void; onResetComplete: () => void }) {
-	return (
-		<View style={styles.authContainer}>
-			<ResetPassword onBack={onBack} onResetComplete={onResetComplete} />
-		</View>
-	);
-}
-
 export default function LoginScreen() {
 	const router = useRouter();
 	const searchParams = useLocalSearchParams<{ mode?: string }>();
 	const [mode, setMode] = useState<AuthMode>('login');
-	const [isAuthed, setIsAuthed] = useState(false);
+	const { token, loading, login } = useAuth();
 
 	const modeIndex = mode === 'register' ? 0 : mode === 'login' ? 1 : 2;
 	const progress = useSharedValue(modeIndex - 1);
+
+	useEffect(() => {
+		if (!loading && token) {
+			router.replace('/(tabs)/home');
+		}
+	}, [loading, token]);
 
 	useEffect(() => {
 		const target = modeIndex - 1;
@@ -90,39 +60,22 @@ export default function LoginScreen() {
 
 	const handleLogin = async (email: string, password: string) => {
 		try {
-			const response = await api.auth.login(email, password);
-			if (!response.success) {
-				throw new Error(response.message || 'Login failed');
-			}
-			handleAuthComplete();
+			await login(email, password);
+			router.replace('/(tabs)/home');
 		} catch (err) {
 			console.error('Login error:', err);
 		}
 	};
 
-	const handleRegisterComplete = () => {
-		handleAuthComplete();
-	};
-
-	const handleResetComplete = () => {
-		handleAuthComplete();
-	};
-
 	const handleAuthComplete = () => {
-		setIsAuthed(true);
 		router.replace('/(tabs)/home');
-	};
-
-	const handleGoogleAuth = () => {
-		const url = api.auth.oauthFortyTwo();
-		window.location.href = url;
 	};
 
 	const handleModeChange = (newMode: AuthMode) => {
 		setMode(newMode);
 	};
 
-	if (isAuthed) {
+	if (loading || token) {
 		return null;
 	}
 
@@ -133,29 +86,30 @@ export default function LoginScreen() {
 				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, registerStyle]}
 				pointerEvents={mode === 'register' ? 'auto' : 'none'}
 			>
-				<RegisterScreenInner
-					onBack={() => handleModeChange('login')}
-					onRegisterComplete={handleRegisterComplete}
-				/>
+				<View style={styles.authContainer}>
+					<Register onBack={() => handleModeChange('login')} onRegisterComplete={handleAuthComplete} />
+				</View>
 			</Animated.View>
 
 			<Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
-				<LoginScreenInner
-					onLogin={handleLogin}
-					onForgot={() => handleModeChange('reset-password')}
-					onGoogle={handleGoogleAuth}
-					onRegister={() => handleModeChange('register')}
-				/>
+				<View style={styles.container}>
+					<View style={styles.center}>
+						<LoginForm
+							onLogin={handleLogin}
+							onForgot={() => handleModeChange('reset-password')}
+							onRegister={() => handleModeChange('register')}
+						/>
+					</View>
+				</View>
 			</Animated.View>
 
 			<Animated.View
 				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, resetStyle]}
 				pointerEvents={mode === 'reset-password' ? 'auto' : 'none'}
 			>
-				<ResetPasswordScreenInner
-					onBack={() => handleModeChange('login')}
-					onResetComplete={handleResetComplete}
-				/>
+				<View style={styles.authContainer}>
+					<ResetPassword onBack={() => handleModeChange('login')} onResetComplete={handleAuthComplete} />
+				</View>
 			</Animated.View>
 		</ThemedView>
 	);

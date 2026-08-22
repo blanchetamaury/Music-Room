@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { HapticTab } from '@/src/components/haptic-tab';
+import { HapticTab } from '@/src/components/Haptic-tab';
 import { useColorScheme } from '@/src/hooks/use-color-scheme.web';
 import { Colors } from '@/src/constants/theme';
 import { SharedTabBackground } from '@/src/components/tabs/SharedTabBackground';

@@ -7,8 +7,6 @@ export default function AuthLayout() {
 				headerShown: false,
 				presentation: 'transparentModal',
 			}}
-		>
-			<Stack.Screen name="[mode]" />
-		</Stack>
+		/>
 	);
 }
