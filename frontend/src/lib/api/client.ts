@@ -187,55 +187,19 @@ export const api = {
 	},
 
 	deezer: {
-		tracks: (q: string) =>
-			fetchApi<DeezerTrack[]>(
-				`/deezer/tracks?q=${encodeURIComponent(q)}`,
-			),
+		music: {
+			top_music: (count: number) => {
+				return fetchApi<DeezerTrack[]>(`/deezer/music/top_music?count=${count}`);
+			},
+			music: (music_deezer_id: number) => {
+				return fetchApi<DeezerTrack[]>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
+			},
+		},
+		album: {
 
-		chart: () =>
-			fetchApi<DeezerTrack[]>(
-				'/deezer/chartsfirts',
-			),
-
-
-		track: (id: string | number) =>
-			fetchApi<DeezerTrack>(
-				`/deezer/track/${id}`,
-			),
-
-		artist: (id: string | number) =>
-			fetchApi<DeezerArtist>(
-				`/deezer/artist/${id}`,
-			),
-
-		artistTopTracks: (
-			id: string | number,
-		) =>
-			fetchApi<DeezerTrack[]>(
-				`/deezer/artist/${id}/top`,
-			),
-
-		artistAlbums: (
-			id: string | number,
-		) =>
-			fetchApi<DeezerAlbum[]>(
-				`/deezer/artist/${id}/albums`,
-			),
-
-		album: (id: string | number) =>
-			fetchApi<DeezerAlbum>(
-				`/deezer/album/${id}`,
-			),
-
-		albumTracks: (
-			id: string | number,
-		) =>
-			fetchApi<DeezerTrack[]>(
-				`/deezer/album/${id}/tracks`,
-			),
+		},
+		search: (search: string, limit: number) => {
+			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
+		},
 	},
 };
-
-export function getApiBaseUrl(): string {
-	return API_BASE_URL;
-}

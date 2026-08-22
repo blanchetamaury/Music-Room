@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-native';
 
-import { api } from '@/src/lib/api/client';
+import { api, DeezerTrack } from '@/src/lib/api/client';
 
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
@@ -12,8 +12,14 @@ import { SeparatorFull } from '../ui/separator';
 import { AlbumProfile } from './AlbumProfile';
 import { ArtistProfile } from './ArtisteProfile';
 import { homeStyles } from './home.styles';
-import { DeezerTrack, SongDisplay } from './SongDisplay';
+import { SongDisplay } from './SongDisplay';
 import { SongProfile } from './SongProfile';
+
+interface ApiResponse<T> {
+	success: boolean;
+	message?: string;
+	data?: T;
+}
 
 const searchPlaylists = [
 	{
@@ -110,41 +116,44 @@ type PopupState =
 	| null;
 
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
-	const [searchText, setSearchText] = useState('');
+	const [ query, setQuery ] = useState<string | null>(null);
 	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
 
 	const [popup, setPopup] = useState<PopupState>(null);
-
+	
 	useEffect(() => {
-		const fetchTracks = async () => {
+
+		const timeout = setTimeout(async () => {
 			try {
 				setTracksLoading(true);
+				const value = query?.trim() ?? '';
 
-				const value = await api.deezer.chart();
-
-				if (!value?.data) {
-					return;
+				let data: ApiResponse<DeezerTrack[]>;
+				if (value.length < 2) {
+					data = await api.deezer.music.top_music(50);
 				}
-
-				const list = Array.isArray(value.data) ? value.data : (value.data as any).data;
+				else
+					data = await api.deezer.search(value, 20);
+				const list = Array.isArray(data.data) ? data.data : (data.data as any).data;
 
 				if (!Array.isArray(list) || list.length === 0) {
 					return;
 				}
-
 				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover_medium === 'string');
 
 				setTracks(validTracks);
 			} catch (error) {
-				console.error('[SearchPage] failed to fetch tracks', error);
+				console.error('[SearchPage] search failed', error);
 			} finally {
 				setTracksLoading(false);
 			}
-		};
+		}, 400);
 
-		fetchTracks();
-	}, []);
+		return () => {
+			clearTimeout(timeout);
+		};
+	}, [query]);
 
 	return (
 		<View style={homeStyles.searchRoot}>
@@ -164,8 +173,8 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					<TextInput
 						placeholder="Search..."
 						placeholderTextColor="rgba(255,255,255,0.5)"
-						value={searchText}
-						onChangeText={setSearchText}
+						value={query ?? ''}
+						onChangeText={setQuery}
 						style={[
 							homeStyles.searchInput,
 							{ color: '#fff' },
@@ -255,7 +264,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							<ScrollView
 								style={homeStyles.songListScroll}
 								contentContainerStyle={homeStyles.songListContent}
-								showsVerticalScrollIndicator={true}
+								showsVerticalScrollIndicator={false}
 								bounces={true}
 							>
 								{tracks.map((song, index) => (
