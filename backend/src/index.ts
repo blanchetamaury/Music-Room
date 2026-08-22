@@ -11,14 +11,10 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://10.18.239.241:8081';
+const CLIENT_URL = process.env.CLIENT_URL;
 
 const allowedOrigins = [
   CLIENT_URL,
-  'http://10.18.239.241:8081',
-  'http://localhost:8081',
-  'http://localhost:19006',
-  'https://ambulance-eggshell-preamble.ngrok-free.dev',
 ];
 
 app.use(cors({

@@ -1,0 +1,61 @@
+services:
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - app
+
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app
+    restart: on-failure
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    env_file:
+      - .env
+
+  backend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+    command: sh -c "npm i && npm run start"
+    networks:
+      - app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    command: sh -c "npm i && npm run start"
+    networks:
+      - app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  caddy_data:
+  caddy_config:
+  postgres_data:
+
+networks:
+  app:

@@ -1,0 +1,7 @@
+music-room.amblanch.com {
+    reverse_proxy frontend:8081
+}
+
+music-room-api.amblanch.com {
+    reverse_proxy backend:3000
+}

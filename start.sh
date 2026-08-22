@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd backend && npm i && npm run dev &
-cd frontend && npm i && npm run start
+cd docker
+docker compose -f docker-compose.yml up --build -d
