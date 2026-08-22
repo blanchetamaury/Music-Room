@@ -76,14 +76,22 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						<ChevronRight color={`${colorScheme === 'light' ? '#000000' : '#ffffff'}`}></ChevronRight>
 					</Pressable>
 
-					<ThemedText type="title" style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }]}>
+					<ThemedText
+						type="title"
+						style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }]}
+					>
 						Create account
 					</ThemedText>
 
 					{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
 					<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
-					<InputForm placeholder="Username" inputValue={username} setInputValue={setUsername} setError={setError} />
+					<InputForm
+						placeholder="Username"
+						inputValue={username}
+						setInputValue={setUsername}
+						setError={setError}
+					/>
 
 					<InputPasswordForm
 						placeholder="Password"
@@ -116,13 +124,31 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						/>
 					</View>
 					<View style={styles.rulesList}>
-						<ThemedText style={{ color: rules.hasUpper ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
+						<ThemedText
+							style={{
+								color: rules.hasUpper
+									? `${colorScheme === 'light' ? '#000000' : '#ffffff'}`
+									: `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}`,
+							}}
+						>
 							{rules.hasUpper ? '✓' : '•'} One uppercase letter
 						</ThemedText>
-						<ThemedText style={{ color: rules.hasNumber ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
+						<ThemedText
+							style={{
+								color: rules.hasNumber
+									? `${colorScheme === 'light' ? '#000000' : '#ffffff'}`
+									: `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}`,
+							}}
+						>
 							{rules.hasNumber ? '✓' : '•'} One number
 						</ThemedText>
-						<ThemedText style={{ color: rules.hasSpecial ? `${colorScheme === 'light' ? '#000000' : '#ffffff'}` : `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}` }}>
+						<ThemedText
+							style={{
+								color: rules.hasSpecial
+									? `${colorScheme === 'light' ? '#000000' : '#ffffff'}`
+									: `${colorScheme === 'light' ? '#1e1e1e91' : '#ddd'}`,
+							}}
+						>
 							{rules.hasSpecial ? '✓' : '•'} One special character
 						</ThemedText>
 					</View>
@@ -200,14 +226,6 @@ const styles = StyleSheet.create({
 		marginTop: 8,
 		marginBottom: 12,
 		color: '#fff',
-	},
-	inputWrapper: {
-		marginTop: 8,
-		borderRadius: 12,
-		borderWidth: 1,
-		borderColor: 'rgba(255,255,255,0.12)',
-		paddingHorizontal: 12,
-		paddingVertical: 8,
 	},
 	input: {
 		height: 44,

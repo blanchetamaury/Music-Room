@@ -22,6 +22,10 @@ export function InputForm(props: InputFormProps) {
 				style={[
 					styles.inputWrapper,
 					touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
+					{
+						maxWidth: Platform.OS === 'android' ? 200 : 'auto',
+						minWidth: Platform.OS === 'android' ? 200 : 'auto',
+					},
 				]}
 			>
 				<TextInput

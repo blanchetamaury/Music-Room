@@ -14,7 +14,16 @@ export function InputPasswordForm(props: InputFormProps) {
 	const colorScheme = useColorScheme();
 
 	return (
-		<View style={[styles.inputWrapper, styles.inputDistinct]}>
+		<View
+			style={[
+				styles.inputWrapper,
+				styles.inputDistinct,
+				{
+					maxWidth: Platform.OS === 'android' ? 200 : 'auto',
+					minWidth: Platform.OS === 'android' ? 200 : 'auto',
+				},
+			]}
+		>
 			<TextInput
 				placeholder={props.placeholder}
 				placeholderTextColor={colorScheme === 'light' ? '#48494b' : '#D1D5D8'}
@@ -50,6 +59,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		paddingHorizontal: 12,
 		paddingVertical: 8,
+		overflow: 'hidden',
 	},
 	inputDistinct: {
 		backgroundColor: 'rgba(255,255,255,0.03)',

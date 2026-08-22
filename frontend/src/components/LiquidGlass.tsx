@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
 	clip: {
 		overflow: 'hidden',
 		backgroundColor: 'transparent',
+		minWidth: 0,
 	},
 	specular: {
 		position: 'absolute',
@@ -240,5 +241,7 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		padding: 20,
+		width: '100%',
+		minWidth: 0,
 	},
 });

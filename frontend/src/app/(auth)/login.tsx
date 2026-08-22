@@ -94,7 +94,11 @@ export default function LoginScreen() {
 			<Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
 				<View style={styles.container}>
 					<View style={styles.center}>
-						<LoginForm onLogin={handleLogin} onForgot={() => handleModeChange('reset-password')} onRegister={() => handleModeChange('register')} />
+						<LoginForm
+							onLogin={handleLogin}
+							onForgot={() => handleModeChange('reset-password')}
+							onRegister={() => handleModeChange('register')}
+						/>
 					</View>
 				</View>
 			</Animated.View>
