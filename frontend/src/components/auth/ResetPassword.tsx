@@ -115,7 +115,7 @@ export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void
 		>
 			<View style={styles.headerRow}>
 				<Pressable onPress={() => onBack?.()} style={styles.backBtn} accessibilityRole="button">
-					<ChevronLeft color={"#ffff"}></ChevronLeft>
+					<ChevronLeft color={'#ffff'}></ChevronLeft>
 				</Pressable>
 				<ThemedText type="title" style={[styles.title, { color: '#fff', marginLeft: 8 }]}>
 					Reset password

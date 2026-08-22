@@ -8,7 +8,6 @@ import {
 	Platform,
 	Pressable,
 	StyleSheet,
-	TextInput,
 	useColorScheme,
 	View,
 } from 'react-native';
@@ -16,6 +15,8 @@ import { useThemeColor } from '../../hooks/use-theme-color';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
+import { InputPasswordForm } from '../InputPasswordForm';
+import { InputMailForm } from '../InputMailForm';
 
 export function LoginForm({
 	onLogin,
@@ -29,8 +30,6 @@ export function LoginForm({
 }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [touchedEmail, setTouchedEmail] = useState(false);
-	const [emailFocused, setEmailFocused] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -39,9 +38,7 @@ export function LoginForm({
 	const colorScheme = useColorScheme();
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	const isEmailValid = emailRegex.test(email);
-	const isPasswordValid = password.length >= 6;
-	const canSubmit = isEmailValid && isPasswordValid;
+	const canSubmit = emailRegex.test(email) && password.length >= 6;
 
 	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 
@@ -61,22 +58,22 @@ export function LoginForm({
 	};
 
 	const handleoauthFortyTwo = async () => {
-        try {
-            await oauthFortyTwo();
-            router.replace('/(tabs)/home');
-        } catch (err) {
-            console.error('Login error:', err);
-        }
-    };
+		try {
+			await oauthFortyTwo();
+			router.replace('/(tabs)/home');
+		} catch (err) {
+			console.error('Login error:', err);
+		}
+	};
 
 	const handleoauthGoogle = async () => {
-        try {
-            await oauthGoogle();
-            router.replace('/(tabs)/home');
-        } catch (err) {
-            console.error('Login error:', err);
-        }
-    };
+		try {
+			await oauthGoogle();
+			router.replace('/(tabs)/home');
+		} catch (err) {
+			console.error('Login error:', err);
+		}
+	};
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.wrapper}>
@@ -88,7 +85,10 @@ export function LoginForm({
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
-				<ThemedText type="title" style={[styles.title, { color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}`, height: 40 }]}>
+				<ThemedText
+					type="title"
+					style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}`, height: 40 }]}
+				>
 					Log in
 				</ThemedText>
 
@@ -98,86 +98,36 @@ export function LoginForm({
 					accessibilityRole="button"
 					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 				>
-					<ThemedText type="defaultSemiBold" style={{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` }}>
+					<ThemedText
+						type="defaultSemiBold"
+						style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}
+					>
 						Sign in
 					</ThemedText>
 				</Pressable>
 
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-				<View
-					style={[
-						styles.inputWrapper,
-						touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
-					]}
-				>
-					<TextInput
-						placeholder="Email"
-						placeholderTextColor={colorScheme === 'light' ? "#48494b" : "#D1D5D8"}
-						value={email}
-						onChangeText={(text) => {
-							setEmail(text);
-							setError(null);
-						}}
-						onFocus={() => setEmailFocused(true)}
-						onBlur={() => {
-							setEmailFocused(false);
-							setTouchedEmail(true);
-						}}
-						keyboardType="email-address"
-						autoCapitalize="none"
-						underlineColorAndroid="transparent"
-						style={[
-							styles.input,
-							{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` },
-							Platform.OS === 'web'
-								? ({
-										outlineWidth: 0,
-										outlineColor: 'transparent',
-										outlineStyle: 'none',
-									} as any)
-								: null,
-						]}
-						accessibilityLabel="email"
-					/>
-				</View>
-				{touchedEmail && !isEmailValid && !emailFocused && (
-					<ThemedText style={styles.error}>Invalid email address</ThemedText>
-				)}
+				<InputMailForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
 
-				<View style={[styles.inputWrapper, styles.inputDistinct]}>
-					<TextInput
-						placeholder="Password"
-						placeholderTextColor={colorScheme === 'light' ? "#48494b" : "#D1D5D8"}
-						value={password}
-						onChangeText={(text) => {
-							setPassword(text);
-							setError(null);
-						}}
-						secureTextEntry={!showPassword}
-						underlineColorAndroid="transparent"
-						style={[
-							styles.input,
-							{ paddingRight: 48, color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` },
-							Platform.OS === 'web'
-								? ({
-										outlineWidth: 0,
-										outlineColor: 'transparent',
-										outlineStyle: 'none',
-									} as any)
-								: null,
-						]}
-						accessibilityLabel="password"
-					/>
+				<InputPasswordForm
+					placeholder="Password"
+					inputValue={password}
+					showInputValue={showPassword}
+					setInputValue={setPassword}
+					setError={setError}
+				>
 					<Pressable
 						onPress={() => setShowPassword((v) => !v)}
 						style={styles.showBtn}
 						accessibilityRole="button"
 					>
-						{showPassword != true && <EyeOff color={colorScheme === 'light' ? "#000000" : "#ffffff"}></EyeOff>}
-						{showPassword == true && <Eye color={colorScheme === 'light' ? "#000000" : "#ffffff"}></Eye>}
+						{showPassword != true && (
+							<EyeOff color={colorScheme === 'light' ? '#000000' : '#ffffff'}></EyeOff>
+						)}
+						{showPassword == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
 					</Pressable>
-				</View>
+				</InputPasswordForm>
 
 				<Pressable
 					onPress={handleSubmit}
@@ -203,22 +153,44 @@ export function LoginForm({
 					<View style={styles.separatorLine} />
 				</View>
 
-				<Pressable style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
+				<Pressable
+					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
+					accessibilityRole="button"
+					onPress={handleoauthFortyTwo}
+				>
 					<FortyTwoIcon></FortyTwoIcon>
-					<ThemedText darkColor='#0000' lightColor='#ffff'>
+					<ThemedText
+						style={{
+							color: Platform.select({
+								web: '#000000',
+								default: colorScheme === 'light' ? '#0000' : '#ffff',
+							}),
+						}}
+					>
 						Log in with 42
 					</ThemedText>
 				</Pressable>
 
-				<Pressable style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn} accessibilityRole="button" onPress={handleoauthGoogle}>
+				<Pressable
+					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
+					accessibilityRole="button"
+					onPress={handleoauthGoogle}
+				>
 					<GoogleIcon></GoogleIcon>
-					<ThemedText darkColor='#0000' lightColor='#ffff'>
+					<ThemedText
+						style={{
+							color: Platform.select({
+								web: '#000000',
+								default: colorScheme === 'light' ? '#0000' : '#ffff',
+							}),
+						}}
+					>
 						Log in with Google
 					</ThemedText>
 				</Pressable>
 
 				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
-					<ThemedText type="link" style={{ color: `${colorScheme === 'light' ? "#000000" : "#ffffff"}` }}>
+					<ThemedText type="link" style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}>
 						Forgot password?
 					</ThemedText>
 				</Pressable>
@@ -246,28 +218,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		marginBottom: 12,
-	},
-	inputWrapper: {
-		marginTop: 8,
-		borderRadius: 12,
-		borderWidth: 1,
-		borderColor: 'rgba(255,255,255,0.12)',
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-	},
-	inputDistinct: {
-		backgroundColor: 'rgba(255,255,255,0.03)',
-	},
-	inputInvalid: {
-		borderColor: '#ff6b6b',
-	},
-	input: {
-		height: 44,
-	},
-	glassOverlayInner: {
-		position: 'absolute',
-		inset: 0,
-		backgroundColor: 'rgba(255,255,255,0.02)',
 	},
 	error: {
 		marginTop: 6,
@@ -333,12 +283,6 @@ const styles = StyleSheet.create({
 		gap: 10,
 		justifyContent: 'center',
 	},
-	googleLogoPlaceholder: {
-		width: 20,
-		height: 20,
-		backgroundColor: 'rgba(0,0,0,0.12)',
-		borderRadius: 4,
-	},
 	topRightBtn: {
 		position: 'absolute',
 		right: 12,
@@ -351,12 +295,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		zIndex: 20,
 		elevation: 6,
-	},
-	iconPlaceholder: {
-		width: 20,
-		height: 20,
-		backgroundColor: 'rgba(255,255,255,0.2)',
-		borderRadius: 4,
 	},
 	forgotBtn: {
 		marginTop: 10,

@@ -178,8 +178,8 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 							style={styles.pwToggle}
 							accessibilityRole="button"
 						>
-							{showPw != true && <EyeOff color={"#ffff"}></EyeOff>}
-							{showPw == true && <Eye color={"#ffff"}></Eye>}
+							{showPw != true && <EyeOff color={'#ffff'}></EyeOff>}
+							{showPw == true && <Eye color={'#ffff'}></Eye>}
 						</Pressable>
 					</View>
 
@@ -235,8 +235,8 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 							style={styles.pwToggle}
 							accessibilityRole="button"
 						>
-							{showConfirm != true && <EyeOff color={"#ffff"}></EyeOff>}
-							{showConfirm == true && <Eye color={"#ffff"}></Eye>}
+							{showConfirm != true && <EyeOff color={'#ffff'}></EyeOff>}
+							{showConfirm == true && <Eye color={'#ffff'}></Eye>}
 						</Pressable>
 					</View>
 					{touchedConfirm && confirm !== pw && (

@@ -25,36 +25,36 @@ export async function performGoogleOAuth(): Promise<string | null> {
 	const authUrl = generateGoogleAuthorizationUrl();
 
 	if (Platform.OS === 'web') {
-			return new Promise((resolve) => {
-				const popup = window.open(authUrl, 'oauth', 'width=500,height=700');
-	
-				const listener = (event: MessageEvent) => {
-					if (event.origin !== window.location.origin) return;
-					if (event.data?.type === 'oauth-success') {
-						window.removeEventListener('message', listener);
-						resolve(event.data.token);
-					}
-				};
-	
-				window.addEventListener('message', listener);
-	
-				const checkClosed = setInterval(() => {
-					if (popup?.closed) {
-						clearInterval(checkClosed);
-						window.removeEventListener('message', listener);
-						resolve(null);
-					}
-				}, 500);
-			});
-		}
-	
-		const redirectUrl = Linking.createURL('oauth-callback');
-		const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
-	
-		if (result.type === 'success' && result.url) {
-			const parsed = Linking.parse(result.url);
-			return (parsed.queryParams?.token as string) ?? null;
-		}
-	
-		return null;
+		return new Promise((resolve) => {
+			const popup = window.open(authUrl, 'oauth', 'width=500,height=700');
+
+			const listener = (event: MessageEvent) => {
+				if (event.origin !== window.location.origin) return;
+				if (event.data?.type === 'oauth-success') {
+					window.removeEventListener('message', listener);
+					resolve(event.data.token);
+				}
+			};
+
+			window.addEventListener('message', listener);
+
+			const checkClosed = setInterval(() => {
+				if (popup?.closed) {
+					clearInterval(checkClosed);
+					window.removeEventListener('message', listener);
+					resolve(null);
+				}
+			}, 500);
+		});
+	}
+
+	const redirectUrl = Linking.createURL('oauth-callback');
+	const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
+
+	if (result.type === 'success' && result.url) {
+		const parsed = Linking.parse(result.url);
+		return (parsed.queryParams?.token as string) ?? null;
+	}
+
+	return null;
 }

@@ -57,10 +57,10 @@ export default function LoginScreen() {
 	const progress = useSharedValue(modeIndex - 1);
 
 	useEffect(() => {
-        if (!loading && token) {
-            router.replace('/(tabs)/home');
-        }
-    }, [loading, token]);
+		if (!loading && token) {
+			router.replace('/(tabs)/home');
+		}
+	}, [loading, token]);
 
 	useEffect(() => {
 		const target = modeIndex - 1;
@@ -93,13 +93,13 @@ export default function LoginScreen() {
 	});
 
 	const handleLogin = async (email: string, password: string) => {
-        try {
-            await login(email, password);
-            router.replace('/(tabs)/home');
-        } catch (err) {
-            console.error('Login error:', err);
-        }
-    };
+		try {
+			await login(email, password);
+			router.replace('/(tabs)/home');
+		} catch (err) {
+			console.error('Login error:', err);
+		}
+	};
 
 	const handleRegisterComplete = () => {
 		handleAuthComplete();
@@ -110,20 +110,20 @@ export default function LoginScreen() {
 	};
 
 	const handleAuthComplete = () => {
-        router.replace('/(tabs)/home');
-    };
+		router.replace('/(tabs)/home');
+	};
 
 	const handleModeChange = (newMode: AuthMode) => {
 		setMode(newMode);
 	};
 
 	if (loading) {
-        return null;
-    }
+		return null;
+	}
 
-    if (token) {
-        return null;
-    }
+	if (token) {
+		return null;
+	}
 
 	return (
 		<ThemedView style={styles.container}>

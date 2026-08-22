@@ -57,18 +57,18 @@ export default function HomeScreen() {
 	const router = useRouter();
 
 	useEffect(() => {
-        if (!loading && !token) {
-            router.replace('/(auth)/login');
-        }
-    }, [loading, token]);
+		if (!loading && !token) {
+			router.replace('/(auth)/login');
+		}
+	}, [loading, token]);
 
 	if (loading) {
-        return null;
-    }
+		return null;
+	}
 
-    if (!token) {
-        return null;
-    }
+	if (!token) {
+		return null;
+	}
 
 	return (
 		<View style={homeStyles.homeRoot}>

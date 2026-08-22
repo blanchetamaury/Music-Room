@@ -167,7 +167,9 @@ export default function LiquidGlass({
 					styles.border,
 					outerRadius,
 					{
-						borderColor: borderColor ?? (colorScheme === 'light' ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)'),
+						borderColor:
+							borderColor ??
+							(colorScheme === 'light' ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)'),
 						borderWidth: borderWidth ?? StyleSheet.hairlineWidth * 1.5,
 					},
 				]}
