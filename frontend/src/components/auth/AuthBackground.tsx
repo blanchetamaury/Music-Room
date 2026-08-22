@@ -54,7 +54,7 @@ function getPreviewCount(width: number) {
 
 function makeAnimationConfig(width: number, height: number): AnimationConfig {
 	const startX = rnd(50, width - 120);
-	const startY = rnd(50, width - 70);
+	const startY = rnd(50, height - 70);
 
 	return {
 		startX,

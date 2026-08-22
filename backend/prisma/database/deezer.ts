@@ -124,4 +124,4 @@ async function getChart(limit = 100) {
   return data
 }
 
-export { getTrack, searchTracks, refreshStaleTracks, getChart }
+export { getChart, getTrack, refreshStaleTracks, searchTracks }

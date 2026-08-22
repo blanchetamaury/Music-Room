@@ -6,6 +6,7 @@ const FORTY_TWO_BASE_URL = 'https://api.intra.42.fr';
 
 export async function getFortyTwoOauthToken(code: string): Promise<FortyTwoOauthToken> {
 	const baseUrl = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:3000';
+	console.error(baseUrl);
 	const authorize_fetch: Response = await fetch(`${FORTY_TWO_BASE_URL}/oauth/token`, {
 		method: 'POST',
 		body: JSON.stringify({

@@ -5,23 +5,23 @@ import { ThemedText } from './themed-text';
 type InputFormProps = {
 	placeholder: string;
 	inputValue: string;
+	isEmail: boolean;
 	setInputValue: React.Dispatch<React.SetStateAction<string>>;
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export function InputForm(props: InputFormProps) {
 	const colorScheme = useColorScheme();
-	const [touchedEmail, setTouchedEmail] = useState(false);
+	const [touched, settouched] = useState(false);
 	const [emailFocused, setEmailFocused] = useState(false);
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const isEmailValid = emailRegex.test(props.inputValue);
-
 	return (
 		<>
 			<View
 				style={[
 					styles.inputWrapper,
-					touchedEmail && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
+					props.isEmail && touched && !isEmailValid && !emailFocused ? styles.inputInvalid : null,
 					{
 						maxWidth: Platform.OS === 'android' ? 200 : 'auto',
 						minWidth: Platform.OS === 'android' ? 200 : 'auto',
@@ -39,7 +39,7 @@ export function InputForm(props: InputFormProps) {
 					onFocus={() => setEmailFocused(true)}
 					onBlur={() => {
 						setEmailFocused(false);
-						setTouchedEmail(true);
+						settouched(true);
 					}}
 					keyboardType="email-address"
 					autoCapitalize="none"
@@ -58,7 +58,7 @@ export function InputForm(props: InputFormProps) {
 					accessibilityLabel="email"
 				/>
 			</View>
-			{touchedEmail && !isEmailValid && !emailFocused && (
+			{touched && !isEmailValid && !emailFocused && props.isEmail && (
 				<ThemedText style={styles.error}>Invalid email address</ThemedText>
 			)}
 		</>

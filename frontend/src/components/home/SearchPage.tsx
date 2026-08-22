@@ -1,35 +1,150 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
-import { Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-native';
+
+import { api } from '@/src/lib/api/client';
 
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-import { playlistSongs } from './data';
+import { Popup } from '../ui/Popup';
+
+import { SeparatorFull } from '../ui/separator';
+import { AlbumProfile } from './AlbumProfile';
+import { ArtistProfile } from './ArtisteProfile';
 import { homeStyles } from './home.styles';
+import { DeezerTrack, SongDisplay } from './SongDisplay';
+import { SongProfile } from './SongProfile';
 
 const searchPlaylists = [
-	{ id: 1, title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
-	{ id: 2, title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
-	{ id: 3, title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
-	{ id: 4, title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
-	{ id: 5, title: 'Road Trip', cover: '#5eead4', songs: 20 },
-	{ id: 6, title: 'Focus Flow', cover: '#f9a8d4', songs: 16 },
-	{ id: 1, title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
-	{ id: 2, title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
-	{ id: 3, title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
-	{ id: 4, title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
-	{ id: 5, title: 'Road Trip', cover: '#5eead4', songs: 20 },
-	{ id: 6, title: 'Focus Flow', cover: '#f9a8d4', songs: 16 },
+	{
+		id: 1,
+		title: 'Chill Vibes',
+		cover: '#f6b26b',
+		songs: 12,
+	},
+	{
+		id: 2,
+		title: 'Workout Energy',
+		cover: '#7ec8e3',
+		songs: 18,
+	},
+	{
+		id: 3,
+		title: 'Late Night Coding',
+		cover: '#9b59b6',
+		songs: 24,
+	},
+	{
+		id: 4,
+		title: 'Morning Coffee',
+		cover: '#ff7f50',
+		songs: 15,
+	},
+	{
+		id: 5,
+		title: 'Road Trip',
+		cover: '#5eead4',
+		songs: 20,
+	},
+	{
+		id: 6,
+		title: 'Focus Flow',
+		cover: '#f9a8d4',
+		songs: 16,
+	},
+	{
+		id: 7,
+		title: 'Chill Vibes',
+		cover: '#f6b26b',
+		songs: 12,
+	},
+	{
+		id: 8,
+		title: 'Workout Energy',
+		cover: '#7ec8e3',
+		songs: 18,
+	},
+	{
+		id: 9,
+		title: 'Late Night Coding',
+		cover: '#9b59b6',
+		songs: 24,
+	},
+	{
+		id: 10,
+		title: 'Morning Coffee',
+		cover: '#ff7f50',
+		songs: 15,
+	},
+	{
+		id: 11,
+		title: 'Road Trip',
+		cover: '#5eead4',
+		songs: 20,
+	},
+	{
+		id: 12,
+		title: 'Focus Flow',
+		cover: '#f9a8d4',
+		songs: 16,
+	},
 ] as const;
-
-type SearchPlaylist = (typeof searchPlaylists)[number];
 
 interface SearchPageProps {
 	onNavigateHome?: (playlistId: number) => void;
 }
 
+type PopupState =
+	| {
+			type: 'song';
+			song: DeezerTrack;
+	  }
+	| {
+			type: 'artist';
+			id: string;
+	  }
+	| {
+			type: 'album';
+			id: string;
+	  }
+	| null;
+
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
-	const [searchText, setSearchText] = React.useState('');
+	const [searchText, setSearchText] = useState('');
+	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
+	const [tracksLoading, setTracksLoading] = useState(true);
+
+	const [popup, setPopup] = useState<PopupState>(null);
+
+	useEffect(() => {
+		const fetchTracks = async () => {
+			try {
+				setTracksLoading(true);
+
+				const value = await api.deezer.chart();
+
+				if (!value?.data) {
+					return;
+				}
+
+				const list = Array.isArray(value.data) ? value.data : (value.data as any).data;
+
+				if (!Array.isArray(list) || list.length === 0) {
+					return;
+				}
+
+				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover_medium === 'string');
+
+				setTracks(validTracks);
+			} catch (error) {
+				console.error('[SearchPage] failed to fetch tracks', error);
+			} finally {
+				setTracksLoading(false);
+			}
+		};
+
+		fetchTracks();
+	}, []);
 
 	return (
 		<View style={homeStyles.searchRoot}>
@@ -68,9 +183,10 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					/>
 				</LiquidGlass>
 
-				<View style={homeStyles.separator} />
+				<SeparatorFull />
 
 				<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
+
 				<View style={homeStyles.playlistListShell}>
 					<View style={homeStyles.playlistFadeContainer} pointerEvents="none">
 						<LinearGradient
@@ -89,6 +205,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							style={homeStyles.playlistFadeRight}
 						/>
 					</View>
+
 					<ScrollView
 						horizontal
 						style={homeStyles.playlistListScroll}
@@ -97,11 +214,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						bounces={false}
 					>
 						{searchPlaylists.map((playlist) => (
-							<Pressable
-								key={playlist.id}
-								onPress={() => onNavigateHome?.(playlist.id)}
-								style={homeStyles.playlistCardWrapper}
-							>
+							<React.Fragment key={playlist.id}>
 								<LiquidGlass
 									style={homeStyles.playlistCard}
 									contentStyle={homeStyles.playlistCardContent}
@@ -113,32 +226,16 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 									bottomRightRadius={16}
 								>
 									<ThemedText style={homeStyles.playlistTitle}>{playlist.title}</ThemedText>
-									<View style={homeStyles.playlistBottomRow}>
-										<View style={[homeStyles.playlistCover, { backgroundColor: playlist.cover }]} />
-										<View style={homeStyles.playlistMeta}>
-											<ThemedText style={homeStyles.playlistSongCount}>
-												{playlist.songs} songs
-											</ThemedText>
-										</View>
-										<Pressable
-											onPress={(e) => {
-												e.stopPropagation();
-											}}
-											style={homeStyles.editButton}
-											accessibilityLabel="Edit playlist"
-										>
-											<ThemedText style={homeStyles.editButtonText}>Edit</ThemedText>
-										</Pressable>
-									</View>
 								</LiquidGlass>
-							</Pressable>
+							</React.Fragment>
 						))}
 					</ScrollView>
 				</View>
 
-				<View style={homeStyles.separator} />
+				<SeparatorFull />
 
 				<ThemedText style={homeStyles.sectionTitle}>Songs</ThemedText>
+
 				<View style={homeStyles.songSection}>
 					<View style={homeStyles.songListShell}>
 						<LinearGradient
@@ -147,39 +244,125 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							style={homeStyles.songListFade}
 							pointerEvents="none"
 						/>
-						<ScrollView
-							style={homeStyles.songListScroll}
-							contentContainerStyle={homeStyles.songListContent}
-							showsVerticalScrollIndicator={false}
-							bounces={false}
-						>
-							{playlistSongs.map((song, index) => (
-								<Pressable key={`${song.title}-${index}`} onPress={() => {}}>
-									<LiquidGlass
-										style={homeStyles.songCard}
-										contentStyle={homeStyles.songCardContent}
-										intensity={18}
-										radius={20}
-										topLeftRadius={20}
-										topRightRadius={20}
-										bottomLeftRadius={20}
-										bottomRightRadius={20}
-									>
-										<View style={[homeStyles.songCover, { backgroundColor: song.cover }]} />
-										<View style={homeStyles.songInfo}>
-											<ThemedText style={homeStyles.songTitle}>{song.title}</ThemedText>
-											<ThemedText style={homeStyles.songArtist}>{song.artist}</ThemedText>
-										</View>
-										<View style={homeStyles.reorderBtn}>
-											<ThemedText style={homeStyles.reorderIcon}>≡</ThemedText>
-										</View>
-									</LiquidGlass>
-								</Pressable>
-							))}
-						</ScrollView>
+
+						{tracksLoading ? (
+							<View style={styles.loadingContainer}>
+								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
+
+								<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
+							</View>
+						) : (
+							<ScrollView
+								style={homeStyles.songListScroll}
+								contentContainerStyle={homeStyles.songListContent}
+								showsVerticalScrollIndicator={true}
+								bounces={true}
+							>
+								{tracks.map((song, index) => (
+									<SongDisplay
+										key={`${song.id}-${index}`}
+										song={song}
+										onPress={() => {
+											setPopup({
+												type: 'song',
+												song,
+											});
+										}}
+										onArtistPress={(artistId) => {
+											setPopup({
+												type: 'artist',
+												id: String(artistId),
+											});
+										}}
+										onAlbumPress={(albumId) => {
+											setPopup({
+												type: 'album',
+												id: String(albumId),
+											});
+										}}
+									/>
+								))}
+							</ScrollView>
+						)}
 					</View>
 				</View>
 			</View>
+
+			{popup && (
+				<Popup onClose={() => setPopup(null)}>
+					{/* SONG */}
+					{popup.type === 'song' && (
+						<SongProfile
+							song={popup.song}
+							onArtistPress={(artistId) => {
+								setPopup({
+									type: 'artist',
+									id: String(artistId),
+								});
+							}}
+							onAlbumPress={(albumId) => {
+								setPopup({
+									type: 'album',
+									id: String(albumId),
+								});
+							}}
+						/>
+					)}
+
+					{/* ARTIST */}
+					{popup.type === 'artist' && (
+						<ArtistProfile
+							id={popup.id}
+							onSongPress={(song) => {
+								setPopup({
+									type: 'song',
+									song,
+								});
+							}}
+							onAlbumPress={(album) => {
+								setPopup({
+									type: 'album',
+									id: String(album.id),
+								});
+							}}
+						/>
+					)}
+
+					{/* ALBUM */}
+					{popup.type === 'album' && (
+						<AlbumProfile
+							id={popup.id}
+							onSongPress={(song) => {
+								setPopup({
+									type: 'song',
+									song,
+								});
+							}}
+							onArtistPress={(artistId) => {
+								setPopup({
+									type: 'artist',
+									id: String(artistId),
+								});
+							}}
+						/>
+					)}
+				</Popup>
+			)}
 		</View>
 	);
 }
+
+const styles = {
+	loadingContainer: {
+		flex: 1,
+		alignItems: 'center' as const,
+		justifyContent: 'center' as const,
+		gap: 10,
+		minHeight: 180,
+	},
+
+	loadingText: {
+		fontSize: 13,
+		color: 'rgba(255,255,255,0.5)',
+	},
+};
