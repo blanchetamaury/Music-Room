@@ -1,4 +1,4 @@
-model Google_oauth {
+model GoogleOauth {
 	id				String			@id			@default(uuid())
 
 	access_token	String?

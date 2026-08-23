@@ -29,8 +29,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Follows
- * const follows = await prisma.follow.findMany()
+ * // Fetch zero or more Albums
+ * const albums = await prisma.album.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -40,20 +40,35 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model Album
+ * 
+ */
+export type Album = Prisma.AlbumModel
+/**
+ * Model Artist
+ * 
+ */
+export type Artist = Prisma.ArtistModel
+/**
  * Model Follow
  * 
  */
 export type Follow = Prisma.FollowModel
 /**
- * Model fortytwo_oauth
+ * Model FortytwoOauth
  * 
  */
-export type fortytwo_oauth = Prisma.fortytwo_oauthModel
+export type FortytwoOauth = Prisma.FortytwoOauthModel
 /**
- * Model Google_oauth
+ * Model Genre
  * 
  */
-export type Google_oauth = Prisma.Google_oauthModel
+export type Genre = Prisma.GenreModel
+/**
+ * Model GoogleOauth
+ * 
+ */
+export type GoogleOauth = Prisma.GoogleOauthModel
 /**
  * Model Like
  * 

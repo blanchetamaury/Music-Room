@@ -397,9 +397,12 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  Album: 'Album',
+  Artist: 'Artist',
   Follow: 'Follow',
-  fortytwo_oauth: 'fortytwo_oauth',
-  Google_oauth: 'Google_oauth',
+  FortytwoOauth: 'FortytwoOauth',
+  Genre: 'Genre',
+  GoogleOauth: 'GoogleOauth',
   Like: 'Like',
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
@@ -423,10 +426,158 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "follow" | "fortytwo_oauth" | "google_oauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "resetPassword" | "track" | "user"
+    modelProps: "album" | "artist" | "follow" | "fortytwoOauth" | "genre" | "googleOauth" | "like" | "playHistory" | "playlist" | "playlistTrack" | "ratelimit_login" | "resetPassword" | "track" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    Album: {
+      payload: Prisma.$AlbumPayload<ExtArgs>
+      fields: Prisma.AlbumFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AlbumFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AlbumFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        findFirst: {
+          args: Prisma.AlbumFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AlbumFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        findMany: {
+          args: Prisma.AlbumFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        create: {
+          args: Prisma.AlbumCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        createMany: {
+          args: Prisma.AlbumCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AlbumCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        delete: {
+          args: Prisma.AlbumDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        update: {
+          args: Prisma.AlbumUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        deleteMany: {
+          args: Prisma.AlbumDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AlbumUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AlbumUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        upsert: {
+          args: Prisma.AlbumUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        aggregate: {
+          args: Prisma.AlbumAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAlbum>
+        }
+        groupBy: {
+          args: Prisma.AlbumGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AlbumCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumCountAggregateOutputType> | number
+        }
+      }
+    }
+    Artist: {
+      payload: Prisma.$ArtistPayload<ExtArgs>
+      fields: Prisma.ArtistFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArtistFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArtistFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        findFirst: {
+          args: Prisma.ArtistFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArtistFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        findMany: {
+          args: Prisma.ArtistFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>[]
+        }
+        create: {
+          args: Prisma.ArtistCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        createMany: {
+          args: Prisma.ArtistCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArtistCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>[]
+        }
+        delete: {
+          args: Prisma.ArtistDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        update: {
+          args: Prisma.ArtistUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArtistDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArtistUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArtistUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArtistUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArtistPayload>
+        }
+        aggregate: {
+          args: Prisma.ArtistAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArtist>
+        }
+        groupBy: {
+          args: Prisma.ArtistGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArtistGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArtistCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArtistCountAggregateOutputType> | number
+        }
+      }
+    }
     Follow: {
       payload: Prisma.$FollowPayload<ExtArgs>
       fields: Prisma.FollowFieldRefs
@@ -501,151 +652,225 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    fortytwo_oauth: {
-      payload: Prisma.$fortytwo_oauthPayload<ExtArgs>
-      fields: Prisma.fortytwo_oauthFieldRefs
+    FortytwoOauth: {
+      payload: Prisma.$FortytwoOauthPayload<ExtArgs>
+      fields: Prisma.FortytwoOauthFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.fortytwo_oauthFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload> | null
+          args: Prisma.FortytwoOauthFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.fortytwo_oauthFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         findFirst: {
-          args: Prisma.fortytwo_oauthFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload> | null
+          args: Prisma.FortytwoOauthFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.fortytwo_oauthFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         findMany: {
-          args: Prisma.fortytwo_oauthFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>[]
+          args: Prisma.FortytwoOauthFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>[]
         }
         create: {
-          args: Prisma.fortytwo_oauthCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         createMany: {
-          args: Prisma.fortytwo_oauthCreateManyArgs<ExtArgs>
+          args: Prisma.FortytwoOauthCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.fortytwo_oauthCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>[]
+          args: Prisma.FortytwoOauthCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>[]
         }
         delete: {
-          args: Prisma.fortytwo_oauthDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         update: {
-          args: Prisma.fortytwo_oauthUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         deleteMany: {
-          args: Prisma.fortytwo_oauthDeleteManyArgs<ExtArgs>
+          args: Prisma.FortytwoOauthDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.fortytwo_oauthUpdateManyArgs<ExtArgs>
+          args: Prisma.FortytwoOauthUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.fortytwo_oauthUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>[]
+          args: Prisma.FortytwoOauthUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>[]
         }
         upsert: {
-          args: Prisma.fortytwo_oauthUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$fortytwo_oauthPayload>
+          args: Prisma.FortytwoOauthUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FortytwoOauthPayload>
         }
         aggregate: {
-          args: Prisma.Fortytwo_oauthAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateFortytwo_oauth>
+          args: Prisma.FortytwoOauthAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFortytwoOauth>
         }
         groupBy: {
-          args: Prisma.fortytwo_oauthGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Fortytwo_oauthGroupByOutputType>[]
+          args: Prisma.FortytwoOauthGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FortytwoOauthGroupByOutputType>[]
         }
         count: {
-          args: Prisma.fortytwo_oauthCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Fortytwo_oauthCountAggregateOutputType> | number
+          args: Prisma.FortytwoOauthCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FortytwoOauthCountAggregateOutputType> | number
         }
       }
     }
-    Google_oauth: {
-      payload: Prisma.$Google_oauthPayload<ExtArgs>
-      fields: Prisma.Google_oauthFieldRefs
+    Genre: {
+      payload: Prisma.$GenrePayload<ExtArgs>
+      fields: Prisma.GenreFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.Google_oauthFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload> | null
+          args: Prisma.GenreFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.Google_oauthFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         findFirst: {
-          args: Prisma.Google_oauthFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload> | null
+          args: Prisma.GenreFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.Google_oauthFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         findMany: {
-          args: Prisma.Google_oauthFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+          args: Prisma.GenreFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>[]
         }
         create: {
-          args: Prisma.Google_oauthCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         createMany: {
-          args: Prisma.Google_oauthCreateManyArgs<ExtArgs>
+          args: Prisma.GenreCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.Google_oauthCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+          args: Prisma.GenreCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>[]
         }
         delete: {
-          args: Prisma.Google_oauthDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         update: {
-          args: Prisma.Google_oauthUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         deleteMany: {
-          args: Prisma.Google_oauthDeleteManyArgs<ExtArgs>
+          args: Prisma.GenreDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.Google_oauthUpdateManyArgs<ExtArgs>
+          args: Prisma.GenreUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.Google_oauthUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>[]
+          args: Prisma.GenreUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>[]
         }
         upsert: {
-          args: Prisma.Google_oauthUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$Google_oauthPayload>
+          args: Prisma.GenreUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenrePayload>
         }
         aggregate: {
-          args: Prisma.Google_oauthAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateGoogle_oauth>
+          args: Prisma.GenreAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGenre>
         }
         groupBy: {
-          args: Prisma.Google_oauthGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Google_oauthGroupByOutputType>[]
+          args: Prisma.GenreGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GenreGroupByOutputType>[]
         }
         count: {
-          args: Prisma.Google_oauthCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Google_oauthCountAggregateOutputType> | number
+          args: Prisma.GenreCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GenreCountAggregateOutputType> | number
+        }
+      }
+    }
+    GoogleOauth: {
+      payload: Prisma.$GoogleOauthPayload<ExtArgs>
+      fields: Prisma.GoogleOauthFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GoogleOauthFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GoogleOauthFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        findFirst: {
+          args: Prisma.GoogleOauthFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GoogleOauthFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        findMany: {
+          args: Prisma.GoogleOauthFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>[]
+        }
+        create: {
+          args: Prisma.GoogleOauthCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        createMany: {
+          args: Prisma.GoogleOauthCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GoogleOauthCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>[]
+        }
+        delete: {
+          args: Prisma.GoogleOauthDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        update: {
+          args: Prisma.GoogleOauthUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        deleteMany: {
+          args: Prisma.GoogleOauthDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GoogleOauthUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GoogleOauthUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>[]
+        }
+        upsert: {
+          args: Prisma.GoogleOauthUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleOauthPayload>
+        }
+        aggregate: {
+          args: Prisma.GoogleOauthAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGoogleOauth>
+        }
+        groupBy: {
+          args: Prisma.GoogleOauthGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleOauthGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GoogleOauthCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleOauthCountAggregateOutputType> | number
         }
       }
     }
@@ -1280,6 +1505,43 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const AlbumScalarFieldEnum = {
+  id: 'id',
+  DeezerCUID: 'DeezerCUID',
+  title: 'title',
+  cover: 'cover',
+  coverMedium: 'coverMedium',
+  coverBig: 'coverBig',
+  label: 'label',
+  recordType: 'recordType',
+  nbTracks: 'nbTracks',
+  fans: 'fans',
+  duration: 'duration',
+  explicitLyrics: 'explicitLyrics',
+  explicitContentCover: 'explicitContentCover',
+  releaseDate: 'releaseDate',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
+
+
+export const ArtistScalarFieldEnum = {
+  id: 'id',
+  deezerCUID: 'deezerCUID',
+  name: 'name',
+  pictureSmall: 'pictureSmall',
+  pictureMedium: 'pictureMedium',
+  pictureBig: 'pictureBig',
+  nbFan: 'nbFan',
+  nbAlbum: 'nbAlbum',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArtistScalarFieldEnum = (typeof ArtistScalarFieldEnum)[keyof typeof ArtistScalarFieldEnum]
+
+
 export const FollowScalarFieldEnum = {
   followerId: 'followerId',
   followingId: 'followingId',
@@ -1289,17 +1551,29 @@ export const FollowScalarFieldEnum = {
 export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
-export const Fortytwo_oauthScalarFieldEnum = {
+export const FortytwoOauthScalarFieldEnum = {
   id: 'id',
   access_token: 'access_token',
   refresh_token: 'refresh_token',
   valid_until: 'valid_until'
 } as const
 
-export type Fortytwo_oauthScalarFieldEnum = (typeof Fortytwo_oauthScalarFieldEnum)[keyof typeof Fortytwo_oauthScalarFieldEnum]
+export type FortytwoOauthScalarFieldEnum = (typeof FortytwoOauthScalarFieldEnum)[keyof typeof FortytwoOauthScalarFieldEnum]
 
 
-export const Google_oauthScalarFieldEnum = {
+export const GenreScalarFieldEnum = {
+  id: 'id',
+  deezerCUID: 'deezerCUID',
+  name: 'name',
+  pictureSmall: 'pictureSmall',
+  pictureMedium: 'pictureMedium',
+  pictureBig: 'pictureBig'
+} as const
+
+export type GenreScalarFieldEnum = (typeof GenreScalarFieldEnum)[keyof typeof GenreScalarFieldEnum]
+
+
+export const GoogleOauthScalarFieldEnum = {
   id: 'id',
   access_token: 'access_token',
   refresh_token: 'refresh_token',
@@ -1307,7 +1581,7 @@ export const Google_oauthScalarFieldEnum = {
   expires_in: 'expires_in'
 } as const
 
-export type Google_oauthScalarFieldEnum = (typeof Google_oauthScalarFieldEnum)[keyof typeof Google_oauthScalarFieldEnum]
+export type GoogleOauthScalarFieldEnum = (typeof GoogleOauthScalarFieldEnum)[keyof typeof GoogleOauthScalarFieldEnum]
 
 
 export const LikeScalarFieldEnum = {
@@ -1333,12 +1607,11 @@ export type PlayHistoryScalarFieldEnum = (typeof PlayHistoryScalarFieldEnum)[key
 export const PlaylistScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
-  coverUrl: 'coverUrl',
-  isPublic: 'isPublic',
   ownerId: 'ownerId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  cover: 'cover',
+  description: 'description',
+  private: 'private',
+  created_at: 'created_at'
 } as const
 
 export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum]
@@ -1346,11 +1619,11 @@ export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typ
 
 export const PlaylistTrackScalarFieldEnum = {
   id: 'id',
-  playlistId: 'playlistId',
-  trackId: 'trackId',
   position: 'position',
   addedAt: 'addedAt',
-  addedById: 'addedById'
+  addedById: 'addedById',
+  playlistId: 'playlistId',
+  trackId: 'trackId'
 } as const
 
 export type PlaylistTrackScalarFieldEnum = (typeof PlaylistTrackScalarFieldEnum)[keyof typeof PlaylistTrackScalarFieldEnum]
@@ -1379,25 +1652,19 @@ export type ResetPasswordScalarFieldEnum = (typeof ResetPasswordScalarFieldEnum)
 
 export const TrackScalarFieldEnum = {
   id: 'id',
-  deezerId: 'deezerId',
+  deezerCUID: 'deezerCUID',
   title: 'title',
   titleShort: 'titleShort',
   duration: 'duration',
-  isrc: 'isrc',
   explicit: 'explicit',
   previewUrl: 'previewUrl',
   releaseDate: 'releaseDate',
   rank: 'rank',
   trackPosition: 'trackPosition',
   diskNumber: 'diskNumber',
-  artistDeezerId: 'artistDeezerId',
-  artistName: 'artistName',
-  artistPicture: 'artistPicture',
-  albumDeezerId: 'albumDeezerId',
-  albumTitle: 'albumTitle',
-  albumCover: 'albumCover',
-  albumCoverBig: 'albumCoverBig',
-  fetchedAt: 'fetchedAt',
+  bpm: 'bpm',
+  explicitContentCover: 'explicitContentCover',
+  albumId: 'albumId',
   updatedAt: 'updatedAt'
 } as const
 
@@ -1412,9 +1679,9 @@ export const UserScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   deezerUserId: 'deezerUserId',
   deezerAccessToken: 'deezerAccessToken',
-  fortytwo_oauth_id: 'fortytwo_oauth_id',
-  fortytwo_user_id: 'fortytwo_user_id',
-  google_oauth_id: 'google_oauth_id',
+  fortytwoOauthId: 'fortytwoOauthId',
+  fortytwoUserId: 'fortytwoUserId',
+  googleOauthId: 'googleOauthId',
   createdAt: 'createdAt'
 } as const
 
@@ -1466,20 +1733,6 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -1497,6 +1750,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -1664,9 +1931,12 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
  */
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
+  album?: Prisma.AlbumOmit
+  artist?: Prisma.ArtistOmit
   follow?: Prisma.FollowOmit
-  fortytwo_oauth?: Prisma.fortytwo_oauthOmit
-  google_oauth?: Prisma.Google_oauthOmit
+  fortytwoOauth?: Prisma.FortytwoOauthOmit
+  genre?: Prisma.GenreOmit
+  googleOauth?: Prisma.GoogleOauthOmit
   like?: Prisma.LikeOmit
   playHistory?: Prisma.PlayHistoryOmit
   playlist?: Prisma.PlaylistOmit

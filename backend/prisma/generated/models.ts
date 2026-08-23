@@ -8,9 +8,12 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Album'
+export type * from './models/Artist'
 export type * from './models/Follow'
-export type * from './models/fortytwo_oauth'
-export type * from './models/Google_oauth'
+export type * from './models/FortytwoOauth'
+export type * from './models/Genre'
+export type * from './models/GoogleOauth'
 export type * from './models/Like'
 export type * from './models/PlayHistory'
 export type * from './models/Playlist'

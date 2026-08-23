@@ -1,18 +1,16 @@
 model Playlist {
-  id          String   @id @default(cuid())
-  name        String
+  id         String   @id @default(cuid())
+  
+  name       String
+  ownerId    String
+  cover      String?
   description String?
-  coverUrl    String?
-  isPublic    Boolean  @default(true)
+  private    Boolean  @default(true)
 
-  ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  created_at  DateTime @default(now())
 
-  tracks      PlaylistTrack[]
+  music      PlaylistTrack[]
+  user       User[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([ownerId])
-  @@map("playlists")
+  @@unique([name, ownerId])
 }

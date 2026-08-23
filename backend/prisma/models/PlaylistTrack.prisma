@@ -1,17 +1,12 @@
 model PlaylistTrack {
-  id         String   @id @default(cuid())
-
-  playlistId String
-  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
-
-  trackId    String
-  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
 
   position   Int
   addedAt    DateTime @default(now())
   addedById  String?
+  playlistId  String
+  trackId     String
 
-  @@unique([playlistId, trackId])
-  @@index([playlistId, position])
-  @@map("playlist_tracks")
+  track     Track   @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  playlist  Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
 }
