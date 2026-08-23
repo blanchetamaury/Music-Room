@@ -1,3 +1,5 @@
+import { DeezerTrack } from "@/src/types/deezer/deezer";
+
 const API_BASE_URL =
 	process.env.EXPO_PUBLIC_API_URL ||
 	'http://localhost:3000/api';
@@ -7,33 +9,6 @@ interface ApiResponse<T> {
 	message?: string;
 	data?: T;
 }
-
-export type DeezerTrack = {
-	id: string | number;
-	title: string;
-	title_short?: string;
-	duration: string | number;
-	isrc?: string;
-	explicit_lyrics?: boolean;
-	preview?: string;
-	release_date?: string;
-	rank?: string | number;
-	track_position?: number;
-	disk_number?: number;
-
-	artist: {
-		id: string | number;
-		name: string;
-		picture_medium?: string;
-	};
-
-	album: {
-		id: string | number;
-		title: string;
-		cover_medium?: string;
-		cover_big?: string;
-	};
-};
 
 export type DeezerArtist = {
 	id: string | number;
@@ -192,7 +167,7 @@ export const api = {
 				return fetchApi<DeezerTrack[]>(`/deezer/music/top_music?count=${count}`);
 			},
 			music: (music_deezer_id: number) => {
-				return fetchApi<DeezerTrack[]>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
+				return fetchApi<DeezerTrack>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
 		album: {

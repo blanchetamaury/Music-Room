@@ -17,7 +17,7 @@ export async function POST(req: Request): Promise<Response> {
         const body = await parseBody<LoginParameters>(req, LoginParametersSchema);
         const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown';
 
-        const user = await getUserByMail(body.mail, { fortytwo_oauth: true });
+        const user = await getUserByMail(body.mail, { fortytwoOauth: true });
 
         const ipAttempts = await countRateLimitLoginByIp(ip, false, WINDOW_MS);
         if (ipAttempts >= MAX_ATTEMPTS_PER_IP) {
@@ -39,7 +39,7 @@ export async function POST(req: Request): Promise<Response> {
             throw ERRORS_DETAILS.invalid_mail_password();
         }
 
-        if (user.fortytwo_oauth) {
+        if (user.fortytwoOauth) {
             await createRateLimitLogin(user.id, ip, false);
             throw ERRORS_DETAILS.two_factor_auth_required();
         }

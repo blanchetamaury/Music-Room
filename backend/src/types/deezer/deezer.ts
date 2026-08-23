@@ -85,5 +85,5 @@ export interface OutputAlbumDeezer {
   duration: number;
   explicitLyrics: boolean;
   explicitContentCover: number;
-  releaseDate: Date;
+  releaseDate: string;
 }

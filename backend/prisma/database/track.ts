@@ -1,4 +1,4 @@
-import { createAllDataTrack, createTrack } from "@/types/track/track";
+import { createAllDataTrack } from "@/types/track/track";
 import { Prisma } from "../generated/client";
 import { prisma } from "./prisma";
 
@@ -51,4 +51,4 @@ const updatePreviewTrack = async (
 	});
 };
 
-export { createOrUpdateAllDataTrack, updatePreviewTrack }
+export { createOrUpdateAllDataTrack, updatePreviewTrack };

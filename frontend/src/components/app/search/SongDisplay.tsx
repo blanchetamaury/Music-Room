@@ -1,7 +1,7 @@
 import { Banana, EllipsisVertical, Heart } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-import { DeezerTrack } from '@/src/lib/api/client';
+import { DeezerTrack } from '@/src/types/deezer/deezer';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
@@ -31,7 +31,7 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 			>
 				<Image
 					source={{
-						uri: song.album.cover_medium,
+						uri: song.album?.cover!,
 					}}
 					resizeMode="cover"
 					style={style.songCover}
@@ -41,7 +41,7 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 					<View style={style.songTitleRow}>
 						<ThemedText style={style.songTitle}>{song.title}</ThemedText>
 
-						{song.explicit_lyrics === true && <Banana size={15} color="rgba(255,255,255,0.7)" />}
+						{song.explicit === true && <Banana size={15} color="rgba(255,255,255,0.7)" />}
 					</View>
 
 					<HoverText
@@ -49,10 +49,10 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 						onPress={(event) => {
 							event.stopPropagation();
 
-							onArtistPress?.(song.artist.id);
+							onArtistPress?.(song.albumId!);
 						}}
 					>
-						{song.artist.name}
+						{song.title}
 					</HoverText>
 				</View>
 
@@ -61,10 +61,10 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 						onPress={(event) => {
 							event.stopPropagation();
 
-							onAlbumPress?.(song.album.id);
+							onAlbumPress?.(song.album?.deezerCUID!);
 						}}
 					>
-						{song.album.title}
+						{song.album?.title}
 					</HoverText>
 				</View>
 
@@ -78,7 +78,6 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 					onPress={(event) => {
 						event.stopPropagation();
 
-						console.log('More options:', song.title);
 					}}
 					accessibilityLabel="More options"
 				>
@@ -102,16 +101,19 @@ function formatDuration(duration?: string | number) {
 
 const style = StyleSheet.create({
 	songCard: {
-		borderRadius: 20,
-		minHeight: 74,
-	},
+        width: '100%',
+        minHeight: 74,
+        borderRadius: 20,
+    },
 
-	songCardContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		paddingHorizontal: 12,
-		paddingVertical: 10,
-	},
+    songCardContent: {
+        width: '100%',
+        minHeight: 74,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+    },
 
 	songCover: {
 		width: 52,

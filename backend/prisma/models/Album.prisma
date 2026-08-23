@@ -20,6 +20,6 @@ model Album {
   artists           Artist[]
   genres            Genre[]
 
-  releaseDate DateTime
+  releaseDate String
   updatedAt   DateTime @updatedAt
 }

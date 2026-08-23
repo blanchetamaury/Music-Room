@@ -11,5 +11,5 @@ export interface CreateOrUpdateAlbum {
   duration: number;
   explicitLyrics: boolean;
   explicitContentCover: number;
-  releaseDate: Date;
+  releaseDate: string;
 }

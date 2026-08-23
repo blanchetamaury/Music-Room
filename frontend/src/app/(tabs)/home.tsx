@@ -55,12 +55,6 @@ function ProfileContent() {
 	);
 }
 
-/*
- * ------------------------------------------------------------
- * Couleurs du background pour chaque tab
- * ------------------------------------------------------------
- */
-
 const tabColors: Record<TabKey, FluidColors> = {
 	home: {
 		colour1: [0.05, 0.10, 0.30, 1],

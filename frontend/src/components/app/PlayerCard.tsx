@@ -21,11 +21,7 @@ export function PlayerCard({ currentTrack }: PlayerCardProps) {
 	const [isPlaying, setIsPlaying] = useState(false);
 
 	const player = useAudioPlayer(currentUrl);
-
-	/*
-	 * Quand currentTrack change, on change la source
-	 * du player.
-	 */
+	
 	useEffect(() => {
 		const url = currentTrack.preview ?? null;
 

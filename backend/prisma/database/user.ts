@@ -25,11 +25,11 @@ const createOrUpdateFortyTwoUser = async (
 			email: me.email,
 			username: me.usual_full_name,
 			avatarUrl: me.image.versions.medium,
-			fortytwoOauth: { create: { ...token_body } },
+			FortytwoOauth: { create: { ...token_body } },
 		},
 		update: {
 			fortytwoUserId: me.id,
-			fortytwOauth: {
+			FortytwoOauth: {
 				upsert: {
 					update: { ...token_body },
 					create: { ...token_body },
@@ -96,11 +96,11 @@ const createUser = async (
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
 	return prisma.user.create({
 		data: {
-			fortytwo_user_id: null,
+			fortytwoUserId: null,
 			email: mail,
 			passwordHash: await bcrypt.hash(password, 10),
-			fortytwo_oauth: undefined,
-			fortytwo_oauth_id: null,
+			fortytwoOauth: undefined,
+			fortytwoOauthId: null,
 			username: username,
 		},
 	});

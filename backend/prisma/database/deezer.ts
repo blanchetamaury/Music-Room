@@ -1,9 +1,9 @@
 import { DeezerTrack, OutputAlbumDeezer, OutputArtistDeezer, OutputTrackDeezer } from '@/types/deezer/deezer'
-import { prisma } from './prisma'
 import { createAllDataTrack } from '@/types/track/track'
-import { createOrUpdateAllDataTrack, updatePreviewTrack } from './track'
-import { findArtist } from './artist'
 import { findAlbum } from './album'
+import { findArtist } from './artist'
+import { prisma } from './prisma'
+import { createOrUpdateAllDataTrack, updatePreviewTrack } from './track'
 
 const DEEZER_API = 'https://api.deezer.com'
 
@@ -62,7 +62,7 @@ function mapAlbum(dz: any): OutputAlbumDeezer {
     label:         dz.label,
     recordType:    dz.record_type,
     nbTracks:      dz.nb_tracks,
-    fans:          dz.nb_fan,
+    fans:          dz.fans,
     duration:      dz.duration,
     explicitLyrics: dz.explicit_lyrics,
     explicitContentCover: dz.explicit_content_cover,

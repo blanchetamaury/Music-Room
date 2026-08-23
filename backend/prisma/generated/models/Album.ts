@@ -54,7 +54,7 @@ export type AlbumMinAggregateOutputType = {
   duration: number | null
   explicitLyrics: boolean | null
   explicitContentCover: number | null
-  releaseDate: Date | null
+  releaseDate: string | null
   updatedAt: Date | null
 }
 
@@ -72,7 +72,7 @@ export type AlbumMaxAggregateOutputType = {
   duration: number | null
   explicitLyrics: boolean | null
   explicitContentCover: number | null
-  releaseDate: Date | null
+  releaseDate: string | null
   updatedAt: Date | null
 }
 
@@ -265,7 +265,7 @@ export type AlbumGroupByOutputType = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date
+  releaseDate: string
   updatedAt: Date
   _count: AlbumCountAggregateOutputType | null
   _avg: AlbumAvgAggregateOutputType | null
@@ -306,7 +306,7 @@ export type AlbumWhereInput = {
   duration?: Prisma.IntFilter<"Album"> | number
   explicitLyrics?: Prisma.BoolFilter<"Album"> | boolean
   explicitContentCover?: Prisma.IntFilter<"Album"> | number
-  releaseDate?: Prisma.DateTimeFilter<"Album"> | Date | string
+  releaseDate?: Prisma.StringFilter<"Album"> | string
   updatedAt?: Prisma.DateTimeFilter<"Album"> | Date | string
   tracks?: Prisma.TrackListRelationFilter
   artists?: Prisma.ArtistListRelationFilter
@@ -351,7 +351,7 @@ export type AlbumWhereUniqueInput = Prisma.AtLeast<{
   duration?: Prisma.IntFilter<"Album"> | number
   explicitLyrics?: Prisma.BoolFilter<"Album"> | boolean
   explicitContentCover?: Prisma.IntFilter<"Album"> | number
-  releaseDate?: Prisma.DateTimeFilter<"Album"> | Date | string
+  releaseDate?: Prisma.StringFilter<"Album"> | string
   updatedAt?: Prisma.DateTimeFilter<"Album"> | Date | string
   tracks?: Prisma.TrackListRelationFilter
   artists?: Prisma.ArtistListRelationFilter
@@ -398,7 +398,7 @@ export type AlbumScalarWhereWithAggregatesInput = {
   duration?: Prisma.IntWithAggregatesFilter<"Album"> | number
   explicitLyrics?: Prisma.BoolWithAggregatesFilter<"Album"> | boolean
   explicitContentCover?: Prisma.IntWithAggregatesFilter<"Album"> | number
-  releaseDate?: Prisma.DateTimeWithAggregatesFilter<"Album"> | Date | string
+  releaseDate?: Prisma.StringWithAggregatesFilter<"Album"> | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Album"> | Date | string
 }
 
@@ -416,7 +416,7 @@ export type AlbumCreateInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackCreateNestedManyWithoutAlbumInput
   artists?: Prisma.ArtistCreateNestedManyWithoutAlbumInput
@@ -437,7 +437,7 @@ export type AlbumUncheckedCreateInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackUncheckedCreateNestedManyWithoutAlbumInput
   artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutAlbumInput
@@ -458,7 +458,7 @@ export type AlbumUpdateInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUpdateManyWithoutAlbumNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutAlbumNestedInput
@@ -479,7 +479,7 @@ export type AlbumUncheckedUpdateInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUncheckedUpdateManyWithoutAlbumNestedInput
   artists?: Prisma.ArtistUncheckedUpdateManyWithoutAlbumNestedInput
@@ -500,7 +500,7 @@ export type AlbumCreateManyInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
 }
 
@@ -518,7 +518,7 @@ export type AlbumUpdateManyMutationInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -536,7 +536,7 @@ export type AlbumUncheckedUpdateManyInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -753,7 +753,7 @@ export type AlbumCreateWithoutArtistsInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackCreateNestedManyWithoutAlbumInput
   genres?: Prisma.GenreCreateNestedManyWithoutAlbumInput
@@ -773,7 +773,7 @@ export type AlbumUncheckedCreateWithoutArtistsInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackUncheckedCreateNestedManyWithoutAlbumInput
   genres?: Prisma.GenreUncheckedCreateNestedManyWithoutAlbumInput
@@ -817,7 +817,7 @@ export type AlbumScalarWhereInput = {
   duration?: Prisma.IntFilter<"Album"> | number
   explicitLyrics?: Prisma.BoolFilter<"Album"> | boolean
   explicitContentCover?: Prisma.IntFilter<"Album"> | number
-  releaseDate?: Prisma.DateTimeFilter<"Album"> | Date | string
+  releaseDate?: Prisma.StringFilter<"Album"> | string
   updatedAt?: Prisma.DateTimeFilter<"Album"> | Date | string
 }
 
@@ -835,7 +835,7 @@ export type AlbumCreateWithoutGenresInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackCreateNestedManyWithoutAlbumInput
   artists?: Prisma.ArtistCreateNestedManyWithoutAlbumInput
@@ -855,7 +855,7 @@ export type AlbumUncheckedCreateWithoutGenresInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   tracks?: Prisma.TrackUncheckedCreateNestedManyWithoutAlbumInput
   artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutAlbumInput
@@ -896,7 +896,7 @@ export type AlbumCreateWithoutTracksInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   artists?: Prisma.ArtistCreateNestedManyWithoutAlbumInput
   genres?: Prisma.GenreCreateNestedManyWithoutAlbumInput
@@ -916,7 +916,7 @@ export type AlbumUncheckedCreateWithoutTracksInput = {
   duration: number
   explicitLyrics: boolean
   explicitContentCover: number
-  releaseDate: Date | string
+  releaseDate: string
   updatedAt?: Date | string
   artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutAlbumInput
   genres?: Prisma.GenreUncheckedCreateNestedManyWithoutAlbumInput
@@ -952,7 +952,7 @@ export type AlbumUpdateWithoutTracksInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artists?: Prisma.ArtistUpdateManyWithoutAlbumNestedInput
   genres?: Prisma.GenreUpdateManyWithoutAlbumNestedInput
@@ -972,7 +972,7 @@ export type AlbumUncheckedUpdateWithoutTracksInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artists?: Prisma.ArtistUncheckedUpdateManyWithoutAlbumNestedInput
   genres?: Prisma.GenreUncheckedUpdateManyWithoutAlbumNestedInput
@@ -992,7 +992,7 @@ export type AlbumUpdateWithoutArtistsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUpdateManyWithoutAlbumNestedInput
   genres?: Prisma.GenreUpdateManyWithoutAlbumNestedInput
@@ -1012,7 +1012,7 @@ export type AlbumUncheckedUpdateWithoutArtistsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUncheckedUpdateManyWithoutAlbumNestedInput
   genres?: Prisma.GenreUncheckedUpdateManyWithoutAlbumNestedInput
@@ -1032,7 +1032,7 @@ export type AlbumUncheckedUpdateManyWithoutArtistsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1050,7 +1050,7 @@ export type AlbumUpdateWithoutGenresInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUpdateManyWithoutAlbumNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutAlbumNestedInput
@@ -1070,7 +1070,7 @@ export type AlbumUncheckedUpdateWithoutGenresInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tracks?: Prisma.TrackUncheckedUpdateManyWithoutAlbumNestedInput
   artists?: Prisma.ArtistUncheckedUpdateManyWithoutAlbumNestedInput
@@ -1090,7 +1090,7 @@ export type AlbumUncheckedUpdateManyWithoutGenresInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   explicitLyrics?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
-  releaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1250,7 +1250,7 @@ export type $AlbumPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     duration: number
     explicitLyrics: boolean
     explicitContentCover: number
-    releaseDate: Date
+    releaseDate: string
     updatedAt: Date
   }, ExtArgs["result"]["album"]>
   composites: {}
@@ -1691,7 +1691,7 @@ export interface AlbumFieldRefs {
   readonly duration: Prisma.FieldRef<"Album", 'Int'>
   readonly explicitLyrics: Prisma.FieldRef<"Album", 'Boolean'>
   readonly explicitContentCover: Prisma.FieldRef<"Album", 'Int'>
-  readonly releaseDate: Prisma.FieldRef<"Album", 'DateTime'>
+  readonly releaseDate: Prisma.FieldRef<"Album", 'String'>
   readonly updatedAt: Prisma.FieldRef<"Album", 'DateTime'>
 }
     

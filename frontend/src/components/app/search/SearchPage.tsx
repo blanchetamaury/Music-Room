@@ -2,12 +2,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-native';
 
-import { api, DeezerTrack } from '@/src/lib/api/client';
+import { api } from '@/src/lib/api/client';
 
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 
+import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { SeparatorFull } from '../../ui/separator';
 import { AlbumProfile } from '../AlbumProfile';
 import { ArtistProfile } from '../ArtisteProfile';
@@ -83,18 +84,6 @@ const searchPlaylists = [
 		cover: '#ff7f50',
 		songs: 15,
 	},
-	{
-		id: "10",
-		title: 'Road Trip',
-		cover: '#5eead4',
-		songs: 20,
-	},
-	{
-		id: "10",
-		title: 'Focus Flow',
-		cover: '#f9a8d4',
-		songs: 16,
-	},
 ] as const;
 
 interface SearchPageProps {
@@ -141,7 +130,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 				if (!Array.isArray(list) || list.length === 0) {
 					return;
 				}
-				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover_medium === 'string');
+				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover === 'string');
 
 				setTracks(validTracks);
 			} catch (error) {
@@ -224,7 +213,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						bounces={false}
 					>
 						{searchPlaylists.map((playlist) => (
-							<PlaylistDisplay id={playlist.id}></PlaylistDisplay>
+							<PlaylistDisplay key={playlist.id} id={playlist.id}></PlaylistDisplay>
 						))}
 					</ScrollView>
 				</View>
@@ -257,7 +246,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							>
 								{tracks.map((song, index) => (
 									<SongDisplay
-										key={`${song.id}-${index}`}
+										key={`${song.deezerCUID}`}
 										song={song}
 										onPress={() => {
 											setPopup({
