@@ -1,9 +1,9 @@
 export interface CreateOrUpdateAlbum {  
   deezerCUID: string;
   title: string;
-  cover?: string;
-  coverMedium?: string;
-  coverBig?: string;
+  cover: string | null;
+  coverMedium: string | null;
+  coverBig: string | null;
   label: string;
   recordType: string;
   nbTracks: number;

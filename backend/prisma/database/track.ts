@@ -1,9 +1,9 @@
-import { createTrack } from "@/types/track/track";
+import { createAllDataTrack, createTrack } from "@/types/track/track";
 import { Prisma } from "../generated/client";
 import { prisma } from "./prisma";
 
-const createOrUpdateTrack = async (
-	data: createTrack
+const createOrUpdateAllDataTrack = async (
+	data: createAllDataTrack
 ): Promise<Prisma.TrackGetPayload<Prisma.TrackDefaultArgs>> => {
 	const { artist, album, albumId, ...value } = data;
 	return prisma.track.upsert({
@@ -37,4 +37,18 @@ const createOrUpdateTrack = async (
 	});
 };
 
-export { createOrUpdateTrack }
+const updatePreviewTrack = async (
+	preview: string,
+	deezerCUID: string,
+): Promise<Prisma.TrackGetPayload<Prisma.TrackDefaultArgs>> => {
+	return prisma.track.update({
+		where: {
+			deezerCUID: deezerCUID,
+		},
+		data: {
+			previewUrl: preview,
+		}
+	});
+};
+
+export { createOrUpdateAllDataTrack, updatePreviewTrack }

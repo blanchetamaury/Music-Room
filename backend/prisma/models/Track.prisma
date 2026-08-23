@@ -24,7 +24,7 @@ model Track {
   plays          PlayHistory[]
   artists        Artist[]
 
-  album          Album?   @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  album          Album?   @relation(fields: [albumId], references: [deezerCUID], onDelete: Cascade)
 
   @@index([albumId])
   @@index([title])
