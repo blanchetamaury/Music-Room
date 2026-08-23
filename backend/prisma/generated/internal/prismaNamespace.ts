@@ -1507,7 +1507,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const AlbumScalarFieldEnum = {
   id: 'id',
-  DeezerCUID: 'DeezerCUID',
+  deezerCUID: 'deezerCUID',
   title: 'title',
   cover: 'cover',
   coverMedium: 'coverMedium',
@@ -1621,7 +1621,6 @@ export const PlaylistTrackScalarFieldEnum = {
   id: 'id',
   position: 'position',
   addedAt: 'addedAt',
-  addedById: 'addedById',
   playlistId: 'playlistId',
   trackId: 'trackId'
 } as const

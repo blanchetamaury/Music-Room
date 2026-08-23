@@ -42,7 +42,7 @@ export type AlbumSumAggregateOutputType = {
 
 export type AlbumMinAggregateOutputType = {
   id: string | null
-  DeezerCUID: string | null
+  deezerCUID: string | null
   title: string | null
   cover: string | null
   coverMedium: string | null
@@ -60,7 +60,7 @@ export type AlbumMinAggregateOutputType = {
 
 export type AlbumMaxAggregateOutputType = {
   id: string | null
-  DeezerCUID: string | null
+  deezerCUID: string | null
   title: string | null
   cover: string | null
   coverMedium: string | null
@@ -78,7 +78,7 @@ export type AlbumMaxAggregateOutputType = {
 
 export type AlbumCountAggregateOutputType = {
   id: number
-  DeezerCUID: number
+  deezerCUID: number
   title: number
   cover: number
   coverMedium: number
@@ -112,7 +112,7 @@ export type AlbumSumAggregateInputType = {
 
 export type AlbumMinAggregateInputType = {
   id?: true
-  DeezerCUID?: true
+  deezerCUID?: true
   title?: true
   cover?: true
   coverMedium?: true
@@ -130,7 +130,7 @@ export type AlbumMinAggregateInputType = {
 
 export type AlbumMaxAggregateInputType = {
   id?: true
-  DeezerCUID?: true
+  deezerCUID?: true
   title?: true
   cover?: true
   coverMedium?: true
@@ -148,7 +148,7 @@ export type AlbumMaxAggregateInputType = {
 
 export type AlbumCountAggregateInputType = {
   id?: true
-  DeezerCUID?: true
+  deezerCUID?: true
   title?: true
   cover?: true
   coverMedium?: true
@@ -253,7 +253,7 @@ export type AlbumGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type AlbumGroupByOutputType = {
   id: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover: string | null
   coverMedium: string | null
@@ -294,7 +294,7 @@ export type AlbumWhereInput = {
   OR?: Prisma.AlbumWhereInput[]
   NOT?: Prisma.AlbumWhereInput | Prisma.AlbumWhereInput[]
   id?: Prisma.StringFilter<"Album"> | string
-  DeezerCUID?: Prisma.StringFilter<"Album"> | string
+  deezerCUID?: Prisma.StringFilter<"Album"> | string
   title?: Prisma.StringFilter<"Album"> | string
   cover?: Prisma.StringNullableFilter<"Album"> | string | null
   coverMedium?: Prisma.StringNullableFilter<"Album"> | string | null
@@ -315,7 +315,7 @@ export type AlbumWhereInput = {
 
 export type AlbumOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  DeezerCUID?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   cover?: Prisma.SortOrderInput | Prisma.SortOrder
   coverMedium?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -336,10 +336,10 @@ export type AlbumOrderByWithRelationInput = {
 
 export type AlbumWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  deezerCUID?: string
   AND?: Prisma.AlbumWhereInput | Prisma.AlbumWhereInput[]
   OR?: Prisma.AlbumWhereInput[]
   NOT?: Prisma.AlbumWhereInput | Prisma.AlbumWhereInput[]
-  DeezerCUID?: Prisma.StringFilter<"Album"> | string
   title?: Prisma.StringFilter<"Album"> | string
   cover?: Prisma.StringNullableFilter<"Album"> | string | null
   coverMedium?: Prisma.StringNullableFilter<"Album"> | string | null
@@ -356,11 +356,11 @@ export type AlbumWhereUniqueInput = Prisma.AtLeast<{
   tracks?: Prisma.TrackListRelationFilter
   artists?: Prisma.ArtistListRelationFilter
   genres?: Prisma.GenreListRelationFilter
-}, "id">
+}, "id" | "deezerCUID">
 
 export type AlbumOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  DeezerCUID?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   cover?: Prisma.SortOrderInput | Prisma.SortOrder
   coverMedium?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -386,7 +386,7 @@ export type AlbumScalarWhereWithAggregatesInput = {
   OR?: Prisma.AlbumScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AlbumScalarWhereWithAggregatesInput | Prisma.AlbumScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Album"> | string
-  DeezerCUID?: Prisma.StringWithAggregatesFilter<"Album"> | string
+  deezerCUID?: Prisma.StringWithAggregatesFilter<"Album"> | string
   title?: Prisma.StringWithAggregatesFilter<"Album"> | string
   cover?: Prisma.StringNullableWithAggregatesFilter<"Album"> | string | null
   coverMedium?: Prisma.StringNullableWithAggregatesFilter<"Album"> | string | null
@@ -404,7 +404,7 @@ export type AlbumScalarWhereWithAggregatesInput = {
 
 export type AlbumCreateInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -425,7 +425,7 @@ export type AlbumCreateInput = {
 
 export type AlbumUncheckedCreateInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -446,7 +446,7 @@ export type AlbumUncheckedCreateInput = {
 
 export type AlbumUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -467,7 +467,7 @@ export type AlbumUpdateInput = {
 
 export type AlbumUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,7 +488,7 @@ export type AlbumUncheckedUpdateInput = {
 
 export type AlbumCreateManyInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -506,7 +506,7 @@ export type AlbumCreateManyInput = {
 
 export type AlbumUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -524,7 +524,7 @@ export type AlbumUpdateManyMutationInput = {
 
 export type AlbumUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -542,7 +542,7 @@ export type AlbumUncheckedUpdateManyInput = {
 
 export type AlbumCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  DeezerCUID?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   cover?: Prisma.SortOrder
   coverMedium?: Prisma.SortOrder
@@ -567,7 +567,7 @@ export type AlbumAvgOrderByAggregateInput = {
 
 export type AlbumMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  DeezerCUID?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   cover?: Prisma.SortOrder
   coverMedium?: Prisma.SortOrder
@@ -585,7 +585,7 @@ export type AlbumMaxOrderByAggregateInput = {
 
 export type AlbumMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  DeezerCUID?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   cover?: Prisma.SortOrder
   coverMedium?: Prisma.SortOrder
@@ -741,7 +741,7 @@ export type AlbumUpdateOneWithoutTracksNestedInput = {
 
 export type AlbumCreateWithoutArtistsInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -761,7 +761,7 @@ export type AlbumCreateWithoutArtistsInput = {
 
 export type AlbumUncheckedCreateWithoutArtistsInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -805,7 +805,7 @@ export type AlbumScalarWhereInput = {
   OR?: Prisma.AlbumScalarWhereInput[]
   NOT?: Prisma.AlbumScalarWhereInput | Prisma.AlbumScalarWhereInput[]
   id?: Prisma.StringFilter<"Album"> | string
-  DeezerCUID?: Prisma.StringFilter<"Album"> | string
+  deezerCUID?: Prisma.StringFilter<"Album"> | string
   title?: Prisma.StringFilter<"Album"> | string
   cover?: Prisma.StringNullableFilter<"Album"> | string | null
   coverMedium?: Prisma.StringNullableFilter<"Album"> | string | null
@@ -823,7 +823,7 @@ export type AlbumScalarWhereInput = {
 
 export type AlbumCreateWithoutGenresInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -843,7 +843,7 @@ export type AlbumCreateWithoutGenresInput = {
 
 export type AlbumUncheckedCreateWithoutGenresInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -884,7 +884,7 @@ export type AlbumUpdateManyWithWhereWithoutGenresInput = {
 
 export type AlbumCreateWithoutTracksInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -904,7 +904,7 @@ export type AlbumCreateWithoutTracksInput = {
 
 export type AlbumUncheckedCreateWithoutTracksInput = {
   id?: string
-  DeezerCUID: string
+  deezerCUID: string
   title: string
   cover?: string | null
   coverMedium?: string | null
@@ -940,7 +940,7 @@ export type AlbumUpdateToOneWithWhereWithoutTracksInput = {
 
 export type AlbumUpdateWithoutTracksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -960,7 +960,7 @@ export type AlbumUpdateWithoutTracksInput = {
 
 export type AlbumUncheckedUpdateWithoutTracksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,7 +980,7 @@ export type AlbumUncheckedUpdateWithoutTracksInput = {
 
 export type AlbumUpdateWithoutArtistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1000,7 +1000,7 @@ export type AlbumUpdateWithoutArtistsInput = {
 
 export type AlbumUncheckedUpdateWithoutArtistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1020,7 +1020,7 @@ export type AlbumUncheckedUpdateWithoutArtistsInput = {
 
 export type AlbumUncheckedUpdateManyWithoutArtistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1038,7 +1038,7 @@ export type AlbumUncheckedUpdateManyWithoutArtistsInput = {
 
 export type AlbumUpdateWithoutGenresInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1058,7 +1058,7 @@ export type AlbumUpdateWithoutGenresInput = {
 
 export type AlbumUncheckedUpdateWithoutGenresInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1078,7 +1078,7 @@ export type AlbumUncheckedUpdateWithoutGenresInput = {
 
 export type AlbumUncheckedUpdateManyWithoutGenresInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  DeezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1145,7 +1145,7 @@ export type AlbumCountOutputTypeCountGenresArgs<ExtArgs extends runtime.Types.Ex
 
 export type AlbumSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  DeezerCUID?: boolean
+  deezerCUID?: boolean
   title?: boolean
   cover?: boolean
   coverMedium?: boolean
@@ -1167,7 +1167,7 @@ export type AlbumSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 
 export type AlbumSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  DeezerCUID?: boolean
+  deezerCUID?: boolean
   title?: boolean
   cover?: boolean
   coverMedium?: boolean
@@ -1185,7 +1185,7 @@ export type AlbumSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type AlbumSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  DeezerCUID?: boolean
+  deezerCUID?: boolean
   title?: boolean
   cover?: boolean
   coverMedium?: boolean
@@ -1203,7 +1203,7 @@ export type AlbumSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type AlbumSelectScalar = {
   id?: boolean
-  DeezerCUID?: boolean
+  deezerCUID?: boolean
   title?: boolean
   cover?: boolean
   coverMedium?: boolean
@@ -1219,7 +1219,7 @@ export type AlbumSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AlbumOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "DeezerCUID" | "title" | "cover" | "coverMedium" | "coverBig" | "label" | "recordType" | "nbTracks" | "fans" | "duration" | "explicitLyrics" | "explicitContentCover" | "releaseDate" | "updatedAt", ExtArgs["result"]["album"]>
+export type AlbumOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deezerCUID" | "title" | "cover" | "coverMedium" | "coverBig" | "label" | "recordType" | "nbTracks" | "fans" | "duration" | "explicitLyrics" | "explicitContentCover" | "releaseDate" | "updatedAt", ExtArgs["result"]["album"]>
 export type AlbumInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tracks?: boolean | Prisma.Album$tracksArgs<ExtArgs>
   artists?: boolean | Prisma.Album$artistsArgs<ExtArgs>
@@ -1238,7 +1238,7 @@ export type $AlbumPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    DeezerCUID: string
+    deezerCUID: string
     title: string
     cover: string | null
     coverMedium: string | null
@@ -1679,7 +1679,7 @@ export interface Prisma__AlbumClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface AlbumFieldRefs {
   readonly id: Prisma.FieldRef<"Album", 'String'>
-  readonly DeezerCUID: Prisma.FieldRef<"Album", 'String'>
+  readonly deezerCUID: Prisma.FieldRef<"Album", 'String'>
   readonly title: Prisma.FieldRef<"Album", 'String'>
   readonly cover: Prisma.FieldRef<"Album", 'String'>
   readonly coverMedium: Prisma.FieldRef<"Album", 'String'>

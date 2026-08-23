@@ -281,10 +281,10 @@ export type ArtistOrderByWithRelationInput = {
 
 export type ArtistWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  deezerCUID?: string
   AND?: Prisma.ArtistWhereInput | Prisma.ArtistWhereInput[]
   OR?: Prisma.ArtistWhereInput[]
   NOT?: Prisma.ArtistWhereInput | Prisma.ArtistWhereInput[]
-  deezerCUID?: Prisma.StringFilter<"Artist"> | string
   name?: Prisma.StringFilter<"Artist"> | string
   pictureSmall?: Prisma.StringNullableFilter<"Artist"> | string | null
   pictureMedium?: Prisma.StringNullableFilter<"Artist"> | string | null
@@ -295,7 +295,7 @@ export type ArtistWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Artist"> | Date | string
   tracks?: Prisma.TrackListRelationFilter
   album?: Prisma.AlbumListRelationFilter
-}, "id">
+}, "id" | "deezerCUID">
 
 export type ArtistOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

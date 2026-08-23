@@ -205,16 +205,16 @@ export type GenreOrderByWithRelationInput = {
 
 export type GenreWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  deezerCUID?: string
   AND?: Prisma.GenreWhereInput | Prisma.GenreWhereInput[]
   OR?: Prisma.GenreWhereInput[]
   NOT?: Prisma.GenreWhereInput | Prisma.GenreWhereInput[]
-  deezerCUID?: Prisma.StringFilter<"Genre"> | string
   name?: Prisma.StringFilter<"Genre"> | string
   pictureSmall?: Prisma.StringNullableFilter<"Genre"> | string | null
   pictureMedium?: Prisma.StringNullableFilter<"Genre"> | string | null
   pictureBig?: Prisma.StringNullableFilter<"Genre"> | string | null
   album?: Prisma.AlbumListRelationFilter
-}, "id">
+}, "id" | "deezerCUID">
 
 export type GenreOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

@@ -1,7 +1,7 @@
 model Genre {
 	id          		String   @id @default(cuid())
 	
-	deezerCUID   		String
+	deezerCUID   		String	@unique
 	name     			String
 	pictureSmall  		String?
 	pictureMedium  		String?
