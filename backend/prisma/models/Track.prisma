@@ -1,37 +1,31 @@
 model Track {
   id            String   @id @default(cuid())
 
-  deezerId      String   @unique
+  deezerCUID      String   @unique
 
   title         String
   titleShort    String?
   duration      Int                       
-  isrc          String?
   explicit      Boolean  @default(false)
   previewUrl    String?
   releaseDate   DateTime?
   rank          Int?                      
   trackPosition Int?
   diskNumber    Int?
+  bpm           Int?
+  explicitContentCover  Int
 
-  artistDeezerId String
-  artistName     String
-  artistPicture  String?
+  albumId        String?
 
-  albumDeezerId  String
-  albumTitle     String
-  albumCover     String?
-  albumCoverBig  String?
-
-  fetchedAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   playlistTracks PlaylistTrack[]
   likes          Like[]
   plays          PlayHistory[]
+  artists        Artist[]
 
-  @@index([artistDeezerId])
-  @@index([albumDeezerId])
+  album          Album?   @relation(fields: [albumId], references: [deezerCUID], onDelete: Cascade)
+
+  @@index([albumId])
   @@index([title])
-  @@map("tracks")
 }

@@ -1,0 +1,11 @@
+model Genre {
+	id          		String   @id @default(cuid())
+	
+	deezerCUID   		String	@unique
+	name     			String
+	pictureSmall  		String?
+	pictureMedium  		String?
+	pictureBig  		String?
+
+	album				Album[]
+}

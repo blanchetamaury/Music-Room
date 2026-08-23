@@ -1,4 +1,4 @@
-model fortytwo_oauth {
+model FortytwoOauth {
 	id				String			@id			@default(uuid())
 
 	access_token	String?

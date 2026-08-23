@@ -1,0 +1,17 @@
+model Artist {
+	id          		String   @id @default(cuid())
+	
+	deezerCUID   		String	@unique
+	name     			String
+	pictureSmall  		String?
+	pictureMedium 		String?
+	pictureBig  		String?
+	nbFan				Int
+	nbAlbum				Int
+
+	tracks      		Track[]
+	album				Album[]
+
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}

@@ -1,0 +1,25 @@
+model Album {
+  id          String   @id @default(cuid())
+  
+  deezerCUID        String  @unique
+
+  title             String
+  cover             String?
+  coverMedium       String?
+  coverBig          String?
+  label             String
+
+  recordType        String
+  nbTracks          Int
+  fans              Int
+  duration          Int
+  explicitLyrics    Boolean
+  explicitContentCover Int
+
+  tracks            Track[]
+  artists           Artist[]
+  genres            Genre[]
+
+  releaseDate DateTime
+  updatedAt   DateTime @updatedAt
+}
