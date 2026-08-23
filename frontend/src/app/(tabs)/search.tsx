@@ -1,7 +1,7 @@
-import React from 'react';
 import { useRouter } from 'expo-router';
+import React from 'react';
 
-import { SearchPage } from '@/src/components/home/SearchPage';
+import { SearchPage } from '@/src/components/app/search/SearchPage';
 import { ThemedView } from '@/src/components/themed-view';
 
 export default function SearchScreen() {

@@ -1,10 +1,10 @@
-import { Banana, EllipsisVertical } from 'lucide-react-native';
+import { Banana, EllipsisVertical, Heart } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { DeezerTrack } from '@/src/lib/api/client';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
-import { HoverText } from '../ui/hoverText';
+import LiquidGlass from '../../LiquidGlass';
+import { ThemedText } from '../../themed-text';
+import { HoverText } from '../../ui/hoverText';
 
 interface SongDisplayProps {
 	song: DeezerTrack;
@@ -22,7 +22,7 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 			<LiquidGlass
 				style={style.songCard}
 				contentStyle={style.songCardContent}
-				intensity={18}
+				intensity={30}
 				radius={20}
 				topLeftRadius={20}
 				topRightRadius={20}
@@ -69,6 +69,10 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 				</View>
 
 				<ThemedText style={style.songDuration}>{formatDuration(song.duration)}</ThemedText>
+
+				<Pressable>
+					<Heart color={"#ffff"}></Heart>
+				</Pressable>
 
 				<Pressable
 					onPress={(event) => {

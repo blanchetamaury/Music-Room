@@ -4,16 +4,17 @@ import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-
 
 import { api, DeezerTrack } from '@/src/lib/api/client';
 
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
-import { Popup } from '../ui/Popup';
+import LiquidGlass from '../../LiquidGlass';
+import { ThemedText } from '../../themed-text';
+import { Popup } from '../../ui/Popup';
 
-import { SeparatorFull } from '../ui/separator';
-import { AlbumProfile } from './AlbumProfile';
-import { ArtistProfile } from './ArtisteProfile';
-import { homeStyles } from './home.styles';
+import { SeparatorFull } from '../../ui/separator';
+import { AlbumProfile } from '../AlbumProfile';
+import { ArtistProfile } from '../ArtisteProfile';
+import { homeStyles } from '../home.styles';
+import { SongProfile } from '../SongProfile';
+import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplay } from './SongDisplay';
-import { SongProfile } from './SongProfile';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -23,73 +24,73 @@ interface ApiResponse<T> {
 
 const searchPlaylists = [
 	{
-		id: 1,
+		id: "1",
 		title: 'Chill Vibes',
 		cover: '#f6b26b',
 		songs: 12,
 	},
 	{
-		id: 2,
+		id: "2",
 		title: 'Workout Energy',
 		cover: '#7ec8e3',
 		songs: 18,
 	},
 	{
-		id: 3,
+		id: "3",
 		title: 'Late Night Coding',
 		cover: '#9b59b6',
 		songs: 24,
 	},
 	{
-		id: 4,
+		id: "4",
 		title: 'Morning Coffee',
 		cover: '#ff7f50',
 		songs: 15,
 	},
 	{
-		id: 5,
+		id: "5",
 		title: 'Road Trip',
 		cover: '#5eead4',
 		songs: 20,
 	},
 	{
-		id: 6,
+		id: "6",
 		title: 'Focus Flow',
 		cover: '#f9a8d4',
 		songs: 16,
 	},
 	{
-		id: 7,
+		id: "7",
 		title: 'Chill Vibes',
 		cover: '#f6b26b',
 		songs: 12,
 	},
 	{
-		id: 8,
+		id: "8",
 		title: 'Workout Energy',
 		cover: '#7ec8e3',
 		songs: 18,
 	},
 	{
-		id: 9,
+		id: "9",
 		title: 'Late Night Coding',
 		cover: '#9b59b6',
 		songs: 24,
 	},
 	{
-		id: 10,
+		id: "10",
 		title: 'Morning Coffee',
 		cover: '#ff7f50',
 		songs: 15,
 	},
 	{
-		id: 11,
+		id: "10",
 		title: 'Road Trip',
 		cover: '#5eead4',
 		songs: 20,
 	},
 	{
-		id: 12,
+		id: "10",
 		title: 'Focus Flow',
 		cover: '#f9a8d4',
 		songs: 16,
@@ -148,7 +149,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 			} finally {
 				setTracksLoading(false);
 			}
-		}, 400);
+		}, 200);
 
 		return () => {
 			clearTimeout(timeout);
@@ -223,27 +224,14 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						bounces={false}
 					>
 						{searchPlaylists.map((playlist) => (
-							<React.Fragment key={playlist.id}>
-								<LiquidGlass
-									style={homeStyles.playlistCard}
-									contentStyle={homeStyles.playlistCardContent}
-									intensity={18}
-									radius={16}
-									topLeftRadius={16}
-									topRightRadius={16}
-									bottomLeftRadius={16}
-									bottomRightRadius={16}
-								>
-									<ThemedText style={homeStyles.playlistTitle}>{playlist.title}</ThemedText>
-								</LiquidGlass>
-							</React.Fragment>
+							<PlaylistDisplay id={playlist.id}></PlaylistDisplay>
 						))}
 					</ScrollView>
 				</View>
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>Songs</ThemedText>
+				<ThemedText style={homeStyles.sectionTitle}>Songs:</ThemedText>
 
 				<View style={homeStyles.songSection}>
 					<View style={homeStyles.songListShell}>
@@ -262,8 +250,8 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							</View>
 						) : (
 							<ScrollView
-								style={homeStyles.songListScroll}
-								contentContainerStyle={homeStyles.songListContent}
+								style={styles.songListScroll}
+								contentContainerStyle={styles.songListContent}
 								showsVerticalScrollIndicator={false}
 								bounces={true}
 							>
@@ -299,7 +287,6 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 
 			{popup && (
 				<Popup onClose={() => setPopup(null)}>
-					{/* SONG */}
 					{popup.type === 'song' && (
 						<SongProfile
 							song={popup.song}
@@ -318,7 +305,6 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						/>
 					)}
 
-					{/* ARTIST */}
 					{popup.type === 'artist' && (
 						<ArtistProfile
 							id={popup.id}
@@ -337,7 +323,6 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						/>
 					)}
 
-					{/* ALBUM */}
 					{popup.type === 'album' && (
 						<AlbumProfile
 							id={popup.id}
@@ -362,6 +347,25 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 }
 
 const styles = {
+	songListScroll: {
+		flex: 1,
+	},
+	songListContent: {
+		gap: 10,
+		paddingTop: 10,
+		paddingBottom: 170,
+		paddingLeft: 10,
+		paddingRight: 10,
+		borderRadius: 15,
+	},
+	songListFade: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		height: 50,
+		zIndex: 2,
+	},
 	loadingContainer: {
 		flex: 1,
 		alignItems: 'center' as const,

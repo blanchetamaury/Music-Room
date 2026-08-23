@@ -50,15 +50,6 @@ function getRankIcon(rank?: string | number) {
 	return <FaceSlightlySmilingPlus size={17} color="rgba(255,255,255,0.9)" />;
 }
 
-function formatRank(rank?: string | number) {
-	if (!rank) {
-		return '—';
-	}
-
-	const n = Number(rank);
-	return n.toLocaleString();
-}
-
 function formatReleaseDate(date?: string) {
 	if (!date) {
 		return 'Unknown date';

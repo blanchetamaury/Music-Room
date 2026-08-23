@@ -6,7 +6,7 @@ import { api, DeezerAlbum, DeezerTrack, } from '@/src/lib/api/client';
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
 import { SeparatorFull } from '../ui/separator';
-import { SongDisplay } from './SongDisplay';
+import { SongDisplay } from './search/SongDisplay';
 
 interface AlbumProfileProps {
 	id: string;
