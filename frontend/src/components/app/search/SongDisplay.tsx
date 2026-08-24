@@ -4,85 +4,104 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
-import { HoverText } from '../../ui/hoverText';
 
 interface SongDisplayProps {
 	song: DeezerTrack;
-
 	onPress?: () => void;
-
 	onArtistPress?: (artistId: string | number) => void;
-
 	onAlbumPress?: (albumId: string | number) => void;
 }
 
-export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: SongDisplayProps) {
+export function SongDisplay({
+	song,
+	onPress,
+	onArtistPress,
+	onAlbumPress,
+}: SongDisplayProps) {
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable onPress={onPress} style={styles.wrapper}>
 			<LiquidGlass
-				style={style.songCard}
-				contentStyle={style.songCardContent}
-				intensity={30}
-				radius={20}
+				style={styles.songCard}
+				contentStyle={styles.songCardContent}
+				intensity={10}
+				radius={22}
 				topLeftRadius={20}
 				topRightRadius={20}
 				bottomLeftRadius={20}
 				bottomRightRadius={20}
 			>
 				<Image
-					source={{
-						uri: song.album?.cover!,
-					}}
+					source={{ uri: song.album?.cover! }}
 					resizeMode="cover"
-					style={style.songCover}
+					style={styles.songCover}
 				/>
 
-				<View style={style.songInfo}>
-					<View style={style.songTitleRow}>
-						<ThemedText style={style.songTitle}>{song.title}</ThemedText>
+				<View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+					<View style={styles.songInfo}>
+						<View style={styles.songTitleRow}>
+							<ThemedText
+								style={styles.songTitle}
+								numberOfLines={1}
+								ellipsizeMode="tail"
+							>
+								{song.title}
+							</ThemedText>
 
-						{song.explicit_lyrics === true && <Banana size={15} color="rgba(255,255,255,0.7)" />}
+							{song.explicit_lyrics === true && (
+								<Banana
+									size={14}
+									color="rgba(255,255,255,0.7)"
+									style={styles.explicitIcon}
+								/>
+							)}
+						</View>
+
+						<View style={styles.artistAlbumRow}>
+							<ThemedText
+								style={styles.songArtist}
+								numberOfLines={1}
+								ellipsizeMode="tail"
+							>
+								{song.artist.name}
+							</ThemedText>
+
+							<View style={styles.separator} />
+
+							<ThemedText
+								style={styles.albumText}
+								numberOfLines={1}
+								ellipsizeMode="tail"
+							>
+								{song.album?.title}
+							</ThemedText>
+						</View>
 					</View>
 
-					<HoverText
-						style={style.songArtist}
-						onPress={(event) => {
-							event.stopPropagation();
+					<View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '40%', alignItems: 'center', gap: 3}}>
+						<ThemedText style={styles.songDuration}>
+							{formatDuration(song.duration)}
+						</ThemedText>
 
-							onArtistPress?.(song.artist.deezerCUID);
-						}}
-					>
-						{song.artist.name}
-					</HoverText>
+						<Pressable
+							style={styles.iconButton}
+							onPress={(event) => {
+								event.stopPropagation();
+							}}
+						>
+							<Heart color="#fff" size={19} />
+						</Pressable>
+
+						<Pressable
+							style={styles.iconButton}
+							onPress={(event) => {
+								event.stopPropagation();
+							}}
+							accessibilityLabel="More options"
+						>
+							<EllipsisVertical color="#fff" size={20} />
+						</Pressable>
+					</View>
 				</View>
-
-				<View style={style.songAlbum}>
-					<HoverText
-						onPress={(event) => {
-							event.stopPropagation();
-
-							onAlbumPress?.(song.album?.deezerCUID!);
-						}}
-					>
-						{song.album?.title}
-					</HoverText>
-				</View>
-
-				<ThemedText style={style.songDuration}>{formatDuration(song.duration)}</ThemedText>
-
-				<Pressable>
-					<Heart color={"#ffff"}></Heart>
-				</Pressable>
-
-				<Pressable
-					onPress={(event) => {
-						event.stopPropagation();
-
-					}}
-					accessibilityLabel="More options"
-				>
-					<EllipsisVertical color="#fff" />
-				</Pressable>
 			</LiquidGlass>
 		</Pressable>
 	);
@@ -93,66 +112,110 @@ function formatDuration(duration?: string | number) {
 		return '--:--';
 	}
 
-	const minutes = Math.floor(Number(duration) / 60);
-	const seconds = Number(duration) % 60;
+	const totalSeconds = Number(duration);
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
 
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-const style = StyleSheet.create({
-	songCard: {
-        width: '100%',
-        minHeight: 74,
-        borderRadius: 20,
-    },
+const styles = StyleSheet.create({
+	wrapper: {
+		width: '100%',
+	},
 
-    songCardContent: {
-        width: '100%',
-        minHeight: 74,
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-    },
+	songCard: {
+		width: '100%',
+		minHeight: 74,
+	},
+
+	songCardContent: {
+		width: '100%',
+		minHeight: 74,
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 12,
+		paddingVertical: 10,
+		gap: 10,
+	},
 
 	songCover: {
 		width: 52,
 		height: 52,
 		borderRadius: 14,
-		marginRight: 12,
+		flexShrink: 0,
 	},
 
 	songInfo: {
 		flex: 1,
-		justifyContent: 'center',
-	},
-
-	songTitle: {
-		color: '#fff',
-		fontSize: 14,
-		fontWeight: '600',
+		minWidth: 0,
+		maxWidth: '40%',
+		justifyContent: 'flex-start',
 	},
 
 	songTitleRow: {
+		flex: 1,
+		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 6,
-		marginBottom: 2,
+		minWidth: 0,
+		marginBottom: 3,
+	},
+
+	songTitle: {
+		minWidth: 0,
+		color: '#fff',
+		fontSize: 15,
+		fontWeight: '600',
+	},
+
+	explicitIcon: {
+		marginLeft: 5,
+	},
+
+	artistAlbumRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		width: '100%',
+		minWidth: 0,
 	},
 
 	songArtist: {
+		width: '40%',
+		flexShrink: 0,
 		color: 'rgba(255,255,255,0.72)',
 		fontSize: 11,
+		lineHeight: 15,
 	},
 
-	songAlbum: {
+	separator: {
+		width: 1,
+		height: 10,
+		marginHorizontal: 8,
+		flexShrink: 0,
+		backgroundColor: 'rgba(255,255,255,0.25)',
+	},
+
+	albumText: {
 		flex: 1,
-		justifyContent: 'center',
+		minWidth: 0,
+		flexShrink: 1,
+		color: 'rgba(255,255,255,0.48)',
+		fontSize: 10,
+		lineHeight: 13,
 	},
 
 	songDuration: {
 		color: '#fff',
-		fontSize: 14,
-		marginRight: 12,
+		fontSize: 12,
+		marginLeft: 2,
+	},
+
+	iconButton: {
+		width: 26,
+		height: 34,
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexShrink: 0,
 	},
 });

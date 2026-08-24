@@ -33,7 +33,7 @@ export function PlayerCard({ currentTrack }: PlayerCardProps) {
 	 * Lance le morceau courant.
 	 */
 	const handlePlay = () => {
-		if (!currentUrl) {
+		if (!currentTrack.preview) {
 			console.warn('[PlayerCard] No preview URL');
 			return;
 		}

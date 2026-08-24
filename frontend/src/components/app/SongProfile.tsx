@@ -6,8 +6,7 @@ import {
 	FaceSlightlyFrowningIcon,
 	FaceSlightlySmiling,
 	FaceSlightlySmilingPlus,
-	Headphones,
-	TrendingUp,
+	TrendingUp
 } from 'lucide-react-native';
 import { Image, StyleSheet, View } from 'react-native';
 
@@ -189,13 +188,6 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
 
                     <View style={styles.stats}>
                         <View style={styles.statItem}>
-                            <Headphones size={15} color="rgba(255,255,255,0.6)" />
-                            <ThemedText style={styles.stat}>{music.bpm}</ThemedText>
-                        </View>
-
-                        <ThemedText style={styles.dot}>●</ThemedText>
-
-                        <View style={styles.statItem}>
                             <Clock3 size={15} color="rgba(255,255,255,0.6)" />
                             <ThemedText style={styles.stat}>{formatDuration(music.duration)}</ThemedText>
                         </View>
@@ -207,6 +199,11 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
                             <ThemedText style={styles.stat}>{'Popularity: '}</ThemedText>
                             {getRankIcon(music.rank)}
                         </View>
+
+						<View style={styles.statItem}>
+                            <TrendingUp size={15} color="rgba(255,255,255,0.6)" />
+                            <ThemedText style={styles.stat}>{'Genre: '}</ThemedText>
+						</View>
                     </View>
                 </View>
             </View>

@@ -170,7 +170,7 @@ export const homeStyles = StyleSheet.create({
 	},
 	songTitle: {
 		color: '#fff',
-		fontSize: 14,
+		fontSize: 12,
 		fontWeight: '600',
 		marginBottom: 2,
 	},
@@ -312,6 +312,7 @@ export const homeStyles = StyleSheet.create({
 		pointerEvents: 'none',
 	},
 	searchRoot: {
+		paddingTop: 40,
 		flex: 1,
 		width: '100%',
 		backgroundColor: '#080b1a00',

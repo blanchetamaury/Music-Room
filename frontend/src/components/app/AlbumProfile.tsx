@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
-import { api, DeezerAlbum, DeezerTrack, } from '@/src/lib/api/client';
+import { api } from '@/src/lib/api/client';
 
-import { setProfile, setTracks as setDebugTracks } from '@/src/utils/debug';
+import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 
+import { DeezerAlbum, DeezerTrack } from '@/src/types/deezer/deezer';
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
 import { SeparatorFull } from '../ui/separator';
@@ -31,7 +32,7 @@ export function AlbumProfile({
 			try {
 				setLoading(true);
 
-				const response = await api.deezer.album(id);
+				const response = await api.deezer.album();
 
 				if (!response) {
 					return;

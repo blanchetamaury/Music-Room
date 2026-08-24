@@ -7,7 +7,7 @@ import {
 	useRef,
 } from 'react';
 import {
-	StyleSheet
+	StyleSheet,
 } from 'react-native';
 
 import fluidFragmentShader from './shader/fluid.frag';
@@ -67,13 +67,13 @@ function createProgram(
 	vertexSource: string,
 	fragmentSource: string,
 ): WebGLProgram {
-	const vertexShaderObject = compileShader(
+	const vertexShader = compileShader(
 		gl,
 		gl.VERTEX_SHADER,
 		vertexSource,
 	);
 
-	const fragmentShaderObject = compileShader(
+	const fragmentShader = compileShader(
 		gl,
 		gl.FRAGMENT_SHADER,
 		fragmentSource,
@@ -82,6 +82,9 @@ function createProgram(
 	const program = gl.createProgram();
 
 	if (!program) {
+		gl.deleteShader(vertexShader);
+		gl.deleteShader(fragmentShader);
+
 		throw new Error(
 			'Unable to create WebGL program',
 		);
@@ -89,12 +92,12 @@ function createProgram(
 
 	gl.attachShader(
 		program,
-		vertexShaderObject,
+		vertexShader,
 	);
 
 	gl.attachShader(
 		program,
-		fragmentShaderObject,
+		fragmentShader,
 	);
 
 	gl.linkProgram(program);
@@ -103,16 +106,16 @@ function createProgram(
 		const error = gl.getProgramInfoLog(program);
 
 		gl.deleteProgram(program);
-		gl.deleteShader(vertexShaderObject);
-		gl.deleteShader(fragmentShaderObject);
+		gl.deleteShader(vertexShader);
+		gl.deleteShader(fragmentShader);
 
 		throw new Error(
 			`Program linking failed:\n${error}`,
 		);
 	}
 
-	gl.deleteShader(vertexShaderObject);
-	gl.deleteShader(fragmentShaderObject);
+	gl.deleteShader(vertexShader);
+	gl.deleteShader(fragmentShader);
 
 	return program;
 }
@@ -149,6 +152,7 @@ function onContextCreate(
 	colorsRef: React.MutableRefObject<FluidColors>,
 	currentColorsRef: React.MutableRefObject<FluidColors>,
 	resolutionRef: React.MutableRefObject<Resolution>,
+	animationRef: React.MutableRefObject<number | null>,
 ) {
 	const program = createProgram(
 		gl,
@@ -157,12 +161,6 @@ function onContextCreate(
 	);
 
 	gl.useProgram(program);
-
-	/*
-	 * ------------------------------------------------------------
-	 * Fullscreen quad
-	 * ------------------------------------------------------------
-	 */
 
 	const vertices = new Float32Array([
 		-1, -1,
@@ -215,21 +213,17 @@ function onContextCreate(
 		0,
 	);
 
-	/*
-	 * ------------------------------------------------------------
-	 * Uniforms
-	 * ------------------------------------------------------------
-	 */
+	const resolution =
+		gl.getUniformLocation(
+			program,
+			'u_resolution',
+		);
 
-	const resolution = gl.getUniformLocation(
-		program,
-		'u_resolution',
-	);
-
-	const time = gl.getUniformLocation(
-		program,
-		'u_time',
-	);
+	const time =
+		gl.getUniformLocation(
+			program,
+			'u_time',
+		);
 
 	const spinRotationSpeed =
 		gl.getUniformLocation(
@@ -285,12 +279,6 @@ function onContextCreate(
 			'u_pixelFilter',
 		);
 
-	/*
-	 * ------------------------------------------------------------
-	 * Initial viewport
-	 * ------------------------------------------------------------
-	 */
-
 	const updateResolution = () => {
 		const width =
 			gl.drawingBufferWidth;
@@ -298,10 +286,7 @@ function onContextCreate(
 		const height =
 			gl.drawingBufferHeight;
 
-		if (
-			width <= 0 ||
-			height <= 0
-		) {
+		if (width <= 0 || height <= 0) {
 			return;
 		}
 
@@ -325,12 +310,6 @@ function onContextCreate(
 	};
 
 	updateResolution();
-
-	/*
-	 * ------------------------------------------------------------
-	 * Static uniforms
-	 * ------------------------------------------------------------
-	 */
 
 	gl.uniform1f(
 		spinRotationSpeed,
@@ -359,30 +338,25 @@ function onContextCreate(
 
 	gl.uniform1f(
 		pixelFilter,
-		500.0,
+		350.0,
 	);
 
-	/*
-	 * ------------------------------------------------------------
-	 * Animation
-	 * ------------------------------------------------------------
-	 */
+	const TARGET_FPS = 15;
+	const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
-	const startTime = Date.now();
+	let lastFrame = 0;
 
-	const render = () => {
-		const elapsed =
-			(Date.now() - startTime) / 1000;
+	const render = (timestamp: number) => {
+		if (
+			timestamp - lastFrame < FRAME_INTERVAL
+		) {
+			animationRef.current =
+				requestAnimationFrame(render);
 
-		/*
-		 * --------------------------------------------------------
-		 * Resolution
-		 * --------------------------------------------------------
-		 *
-		 * drawingBufferWidth / drawingBufferHeight peuvent changer
-		 * lorsque le GLView est redimensionné.
-		 * --------------------------------------------------------
-		 */
+			return;
+		}
+
+		lastFrame = timestamp;
 
 		const width =
 			gl.drawingBufferWidth;
@@ -391,12 +365,18 @@ function onContextCreate(
 			gl.drawingBufferHeight;
 
 		if (
-			width > 0 &&
-			height > 0 &&
-			(
-				width !== resolutionRef.current.width ||
-				height !== resolutionRef.current.height
-			)
+			width <= 0 ||
+			height <= 0
+		) {
+			animationRef.current =
+				requestAnimationFrame(render);
+
+			return;
+		}
+
+		if (
+			width !== resolutionRef.current.width ||
+			height !== resolutionRef.current.height
 		) {
 			gl.viewport(
 				0,
@@ -417,22 +397,10 @@ function onContextCreate(
 			};
 		}
 
-		/*
-		 * --------------------------------------------------------
-		 * Time
-		 * --------------------------------------------------------
-		 */
-
 		gl.uniform1f(
 			time,
-			elapsed,
+			timestamp * 0.001,
 		);
-
-		/*
-		 * --------------------------------------------------------
-		 * Smooth colors
-		 * --------------------------------------------------------
-		 */
 
 		currentColorsRef.current.colour1 =
 			lerpColor(
@@ -464,12 +432,6 @@ function onContextCreate(
 		const c3 =
 			currentColorsRef.current.colour3;
 
-		/*
-		 * --------------------------------------------------------
-		 * Colors → GPU
-		 * --------------------------------------------------------
-		 */
-
 		gl.uniform4f(
 			colour1,
 			c1[0],
@@ -494,25 +456,20 @@ function onContextCreate(
 			c3[3],
 		);
 
-		/*
-		 * --------------------------------------------------------
-		 * Render
-		 * --------------------------------------------------------
-		 */
-
 		gl.drawArrays(
 			gl.TRIANGLES,
 			0,
 			6,
 		);
 
-		gl.flush();
 		gl.endFrameEXP();
 
-		requestAnimationFrame(render);
+		animationRef.current =
+			requestAnimationFrame(render);
 	};
 
-	render();
+	animationRef.current =
+		requestAnimationFrame(render);
 }
 
 export default function FluidBackground({
@@ -530,9 +487,24 @@ export default function FluidBackground({
 			height: 0,
 		});
 
+	const animationRef =
+		useRef<number | null>(null);
+
 	useEffect(() => {
 		colorsRef.current = colors;
 	}, [colors]);
+
+	useEffect(() => {
+		return () => {
+			if (animationRef.current !== null) {
+				cancelAnimationFrame(
+					animationRef.current,
+				);
+
+				animationRef.current = null;
+			}
+		};
+	}, []);
 
 	return (
 		<GLView
@@ -543,8 +515,10 @@ export default function FluidBackground({
 					colorsRef,
 					currentColorsRef,
 					resolutionRef,
+					animationRef,
 				)
 			}
+			pointerEvents='none'
 		/>
 	);
 }

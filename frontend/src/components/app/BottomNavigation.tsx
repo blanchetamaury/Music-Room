@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 
-import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react';
+import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';
 

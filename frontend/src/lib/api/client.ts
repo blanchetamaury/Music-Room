@@ -175,7 +175,6 @@ export const api = {
 			},
 		},
 		album: {
-
 		},
 		search: (search: string, limit: number) => {
 			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);

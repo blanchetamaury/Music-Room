@@ -1,6 +1,12 @@
 {
-	"plugins": ["expo-secure-store", "expo-web-browser"],
-	"expo": {
-		"userInterfaceStyle": "automatic"
-	}
+  "plugins": [
+    "expo-secure-store",
+    "expo-web-browser"
+  ],
+  "expo": {
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-audio"
+    ]
+  }
 }
