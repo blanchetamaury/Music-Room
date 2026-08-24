@@ -3,6 +3,8 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { api, DeezerAlbum, DeezerTrack, } from '@/src/lib/api/client';
 
+import { setProfile, setTracks as setDebugTracks } from '@/src/utils/debug';
+
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
 import { SeparatorFull } from '../ui/separator';
@@ -36,10 +38,9 @@ export function AlbumProfile({
 				}
 
 				setAlbum(response.data);
+				setDebugTracks(response.data?.tracks?.data || []);
 
-				if (response.data?.tracks?.data) {
-					setTracks(response.data.tracks.data);
-				}
+				setProfile(response.data);
 			} catch (error) {
 				console.error(
 					'[AlbumProfile] failed to fetch album',
@@ -52,34 +53,6 @@ export function AlbumProfile({
 
 		fetchAlbum();
 	}, [id]);
-
-	if (loading) {
-		return (
-			<View style={styles.loadingContainer}>
-				<ThemedText style={styles.loading}>
-					Loading...
-				</ThemedText>
-			</View>
-		);
-	}
-
-	if (!album) {
-		return (
-			<View style={styles.loadingContainer}>
-				<ThemedText style={styles.loading}>
-					Album not found
-				</ThemedText>
-			</View>
-		);
-	}
-
-	const artistName = album.artist?.name ?? 'Unknown artist';
-	const artistId = album.artist?.id;
-
-	const genres =
-		album.genres?.data
-			?.map((genre) => genre.name)
-			.join(', ') ?? null;
 
 	return (
 		<View style={styles.container}>
@@ -109,12 +82,12 @@ export function AlbumProfile({
 						<HoverText
 							style={styles.artist}
 							onPress={() => {
-								if (artistId) {
-									onArtistPress?.(artistId);
+								if (album.artist?.id) {
+									onArtistPress?.(album.artist.id);
 								}
 							}}
 						>
-							{artistName}
+							{album.artist?.name ?? 'Unknown artist'}
 						</HoverText>
 					)}
 
@@ -200,10 +173,23 @@ export function AlbumProfile({
 				{album.nb_fans && (
 					<View style={styles.statItem}>
 						<ThemedText style={styles.stat}>
-							{album.nb_fans.toLocaleString()}{' '}
-							fans
+							{album.nb_fans.toLocaleString()}{' '} fans
 						</ThemedText>
 					</View>
+				)}
+
+				{album.nb_tracks && (
+					<View style={styles.statItem}>
+						<ThemedText style={styles.stat}>
+							{album.nb_tracks.toLocaleString()}
+						</ThemedText>
+					</View>
+				)}
+
+				{album.nb_fans && album.nb_tracks && (
+					<ThemedText style={styles.dot}>
+						●
+					</ThemedText>
 				)}
 			</View>
 
@@ -304,16 +290,16 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flexWrap: 'wrap',
 		gap: 8,
-	},
 
-	metadataText: {
-		fontSize: 14,
-		color: 'rgba(255,255,255,0.55)',
-	},
+		metadataText: {
+			fontSize: 14,
+			color: 'rgba(255,255,255,0.55)',
+		},
 
-	dot: {
-		fontSize: 6,
-		color: 'rgba(255,255,255,0.35)',
+		dot: {
+			fontSize: 6,
+			color: 'rgba(255,255,255,0.35)',
+		},
 	},
 
 	stats: {

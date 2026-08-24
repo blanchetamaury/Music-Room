@@ -4,11 +4,13 @@ import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-
 
 import { api } from '@/src/lib/api/client';
 
+
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 
 import { DeezerTrack } from '@/src/types/deezer/deezer';
+import { mountDebugGlobals, setTracks } from '@/src/utils/debug';
 import { SeparatorFull } from '../../ui/separator';
 import { AlbumProfile } from '../AlbumProfile';
 import { ArtistProfile } from '../ArtisteProfile';
@@ -107,7 +109,7 @@ type PopupState =
 
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
 	const [ query, setQuery ] = useState<string | null>(null);
-	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
+	const [tracks, setTracksState] = useState<DeezerTrack[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
 
 	const [popup, setPopup] = useState<PopupState>(null);
@@ -132,6 +134,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 				}
 				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover === 'string');
 
+				setTracksState(validTracks);
 				setTracks(validTracks);
 			} catch (error) {
 				console.error('[SearchPage] search failed', error);
@@ -144,6 +147,10 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 			clearTimeout(timeout);
 		};
 	}, [query]);
+
+	useEffect(() => {
+		mountDebugGlobals();
+	}, []);
 
 	return (
 		<View style={homeStyles.searchRoot}>
@@ -231,7 +238,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							pointerEvents="none"
 						/>
 
-						{tracksLoading ? (
+						{tracksLoading && !tracks ? (
 							<View style={styles.loadingContainer}>
 								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
 
@@ -246,7 +253,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							>
 								{tracks.map((song, index) => (
 									<SongDisplay
-										key={`${song.deezerCUID}`}
+										key={`${song.deezerCUID}+${song.albumId}+${index}`}
 										song={song}
 										onPress={() => {
 											setPopup({
@@ -288,7 +295,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 							onAlbumPress={(albumId) => {
 								setPopup({
 									type: 'album',
-									id: String(albumId),
+									id: String(album.id),
 								});
 							}}
 						/>
@@ -367,4 +374,4 @@ const styles = {
 		fontSize: 13,
 		color: 'rgba(255,255,255,0.5)',
 	},
-};
+}

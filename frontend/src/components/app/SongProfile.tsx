@@ -97,7 +97,6 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
                     await api.deezer.music.music(Number(song.id));
 					
 					const track = data.data?.track;
-					console.log(track);
 
                 if (!track) {
                     console.warn('[SongProfile] No track returned');
@@ -141,6 +140,7 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
 
     const albumName = music.album?.title ?? 'Album';
 
+	console.log("Song Profile: ", music);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -155,14 +155,17 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
                     </View>
 
                     <View style={styles.metadata}>
-                        <HoverText
-                            style={styles.artist}
-                            onPress={() => {
-                                onArtistPress?.(music.artist?.[0]?.deezerCUID ?? '');
-                            }}
-                        >
-                            {music.artist?.[0]?.name ?? 'Unknown artist'}
-                        </HoverText>
+						{music.artists.map((artist, index) => (
+							<HoverText
+								key={`${artist.deezerCUID}+${index}`}
+								style={styles.artist}
+								onPress={() => {
+									onArtistPress?.(artist.deezerCUID ?? '');
+								}}
+							>
+								{artist.name}
+							</HoverText>
+						))}
 
                         <ThemedText style={styles.dot}>●</ThemedText>
 

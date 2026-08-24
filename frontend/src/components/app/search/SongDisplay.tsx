@@ -41,7 +41,7 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 					<View style={style.songTitleRow}>
 						<ThemedText style={style.songTitle}>{song.title}</ThemedText>
 
-						{song.explicit === true && <Banana size={15} color="rgba(255,255,255,0.7)" />}
+						{song.explicit_lyrics === true && <Banana size={15} color="rgba(255,255,255,0.7)" />}
 					</View>
 
 					<HoverText
@@ -49,10 +49,10 @@ export function SongDisplay({ song, onPress, onArtistPress, onAlbumPress }: Song
 						onPress={(event) => {
 							event.stopPropagation();
 
-							onArtistPress?.(song.albumId!);
+							onArtistPress?.(song.artist.deezerCUID);
 						}}
 					>
-						{song.title}
+						{song.artist.name}
 					</HoverText>
 				</View>
 
