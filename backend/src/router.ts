@@ -1,11 +1,8 @@
 import { Router, Request as ExpressRequest, Response as ExpressResponse, NextFunction } from 'express';
-import { dirname, join, resolve } from 'path';
+import { join, resolve } from 'path';
 import { readdirSync } from 'fs';
-import { createRequire } from 'module';
 
-const require = createRequire(import.meta.url);
-const __filename = require.resolve('.');
-const __dirname = dirname(__filename);
+const __dirname = resolve(process.cwd(), 'dist/src');
 
 interface WebResponse {
   status: number;
@@ -14,20 +11,27 @@ interface WebResponse {
   json(): Promise<any>;
 }
 
+type WebHandler = (req: Request) => Promise<WebResponse>;
+type ExpressRouteHandler = (
+  expressReq: ExpressRequest,
+  expressRes: ExpressResponse,
+  next: NextFunction
+) => Promise<void>;
+
 interface RouteHandler {
-  GET?: (req: Request) => Promise<WebResponse>;
-  POST?: (req: Request) => Promise<WebResponse>;
-  PUT?: (req: Request) => Promise<WebResponse>;
-  DELETE?: (req: Request) => Promise<WebResponse>;
-  PATCH?: (req: Request) => Promise<WebResponse>;
+  GET?: ExpressRouteHandler;
+  POST?: ExpressRouteHandler;
+  PUT?: ExpressRouteHandler;
+  DELETE?: ExpressRouteHandler;
+  PATCH?: ExpressRouteHandler;
 }
 
-function convertToExpressHandler(handler: (req: Request) => Promise<WebResponse>) {
-  return async (expressReq: ExpressRequest, expressRes: ExpressResponse, next: NextFunction) => {
+function convertToExpressHandler(handler: WebHandler): ExpressRouteHandler {
+  return async (expressReq, expressRes, next) => {
     try {
       const webReq = createWebRequest(expressReq);
       const webRes = await handler(webReq);
-      
+
       expressRes.status(webRes.status);
       webRes.headers.forEach((value, key) => {
         expressRes.setHeader(key, value);
@@ -47,7 +51,7 @@ function convertToExpressHandler(handler: (req: Request) => Promise<WebResponse>
 function createWebRequest(expressReq: ExpressRequest): Request {
   const url = `${expressReq.protocol}://${expressReq.get('host')}${expressReq.originalUrl}`;
   const headers = new Headers();
-  
+
   for (const [key, value] of Object.entries(expressReq.headers)) {
     if (value !== undefined) {
       headers.append(key, Array.isArray(value) ? value.join(', ') : value);
@@ -69,27 +73,27 @@ async function loadRoutes(dir: string, prefix = ''): Promise<Router> {
 
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
-    
+
     if (entry.isDirectory()) {
       const subRouter = await loadRoutes(fullPath, join(prefix, entry.name));
       console.log(`Mounting sub-router at /${entry.name} with prefix ${join(prefix, entry.name)}`);
       router.use(`/${entry.name}`, subRouter);
     } else if (entry.name.endsWith('+api.ts') || entry.name.endsWith('+api.js')) {
       const methodName = entry.name.replace('+api.ts', '').replace('+api.js', '');
-      
+
       try {
         const modulePath = resolve(fullPath);
         const module = await import(modulePath);
         const handlers: RouteHandler = {};
-        
+
         for (const [httpMethod, handler] of Object.entries(module)) {
           if (['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(httpMethod.toUpperCase())) {
-            handlers[httpMethod.toUpperCase() as keyof RouteHandler] = convertToExpressHandler(handler as (req: Request) => Promise<WebResponse>);
+            handlers[httpMethod.toUpperCase() as keyof RouteHandler] = convertToExpressHandler(handler as WebHandler);
           }
         }
 
         const finalPath = methodName === 'index' ? '/' : `/${methodName}`;
-        
+
         for (const [httpMethod, handler] of Object.entries(handlers)) {
           if (handler) {
             (router as any)[httpMethod.toLowerCase()](finalPath, handler);
@@ -103,7 +107,6 @@ async function loadRoutes(dir: string, prefix = ''): Promise<Router> {
     }
   }
 
-  // Debug: print all routes in this router
   router.stack.forEach((layer: any) => {
     if (layer.route) {
       const methods = Object.keys(layer.route.methods).join(', ').toUpperCase();
