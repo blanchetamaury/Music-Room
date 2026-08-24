@@ -119,10 +119,12 @@ async function getTrack(deezerId: string) {
         const res = await fetch(`${DEEZER_API}/artist/${row.deezerCUID}`);
         if (!res.ok) throw new Error(`Deezer artist ${res.status}`);
         const artistJson = await res.json();
-        trackData.artist.push(mapArtist(artistJson));
+        if (trackData.artist.find((e) => e.deezerCUID == artistJson.id) == undefined)
+          trackData.artist.push(mapArtist(artistJson));
       } else {
         const { id, updatedAt, createdAt, ...toPush } = artistToDb;
-        trackData.artist.push(toPush);
+        if (trackData.artist.find((e) => e.deezerCUID == toPush.deezerCUID) == undefined)
+          trackData.artist.push(toPush);
       }
     }
     const albumToDb = await findAlbum(data.album.deezerCUID);
@@ -135,6 +137,7 @@ async function getTrack(deezerId: string) {
       const { id, updatedAt, ...toPush } = albumToDb;
       trackData.album = toPush;
     }
+    console.log(trackData);
     return await createOrUpdateAllDataTrack({album: true, artists: true}, trackData);
   }
 }
