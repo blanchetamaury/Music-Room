@@ -86,4 +86,13 @@ export interface OutputAlbumDeezer {
   explicitLyrics: boolean;
   explicitContentCover: number;
   releaseDate: string;
+  genre: OutputGenreDeezer;
+}
+
+export interface OutputGenreDeezer {
+    deezerCUID: string;
+    name: string;
+	pictureSmall: string | null;
+    pictureMedium: string | null;
+    pictureBig: string | null;
 }

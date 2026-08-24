@@ -1,3 +1,5 @@
+import { CreateOrUpdateGenre } from "../genre/genre";
+
 export interface CreateOrUpdateAlbum {  
   deezerCUID: string;
   title: string;
@@ -12,4 +14,5 @@ export interface CreateOrUpdateAlbum {
   explicitLyrics: boolean;
   explicitContentCover: number;
   releaseDate: string;
+  genre: CreateOrUpdateGenre;
 }

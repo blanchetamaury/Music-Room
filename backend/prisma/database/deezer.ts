@@ -1,144 +1,43 @@
 import { DeezerTrack, OutputAlbumDeezer, OutputArtistDeezer, OutputTrackDeezer } from '@/types/deezer/deezer'
 import { createAllDataTrack } from '@/types/track/track'
-import { findAlbum } from './album'
-import { findArtist } from './artist'
-import { prisma } from './prisma'
 import { createOrUpdateAllDataTrack, updatePreviewTrack } from './track'
+import { findTrackToDb, getAlbumToDeezer, getDeezerTrack, listArtist } from './deezerFindTrack'
 
 const DEEZER_API = 'https://api.deezer.com'
 
-function mapTrack(dz: any): OutputTrackDeezer {
-  return {
-    deezerCUID:    String(dz.id),
-    title:         dz.title,
-    titleShort:    dz.title_short ?? null,
-    duration:      Number(dz.duration),
-    explicit:      Boolean(dz.explicit_lyrics),
-    previewUrl:    dz.preview ?? null,
-    releaseDate:   dz.release_date ? new Date(dz.release_date) : null,
-    rank:          dz.rank ? Number(dz.rank) : null,
-    trackPosition: dz.track_position ?? null,
-    diskNumber:    dz.disk_number ?? null,
-    bpm:           dz.bpm ?? null,
-    explicitContentCover: dz.explicit_content_cover ?? null,
-
-    artist: dz.contributors.map((row: any) => ({
-      deezerCUID: row.id,
-      name: row.name,
-      pictureSmall: row.picture_small,
-      pictureMedium: row.picture_medium,
-      pictureBig: row.picture_big,
-    })),
-
-    album: {
-      deezerCUID:  String(dz.album.id),
-      title:     dz.album.title,
-      coverSmall:     dz.album.cover_small ?? null,
-      CoverMedium:  dz.album.cover_medium ?? null,
-      CoverBig:  dz.album.cover_big ?? null,
-    }
-  }
-}
-
-function mapArtist(dz: any): OutputArtistDeezer {
-  return {
-    deezerCUID:    String(dz.id),
-    name:          dz.name,
-    pictureSmall:  dz.picture_small,
-    pictureMedium: dz.picture_medium,
-    pictureBig:    dz.picture_big,
-    nbFan:         dz.nb_fan,
-    nbAlbum:       dz.nb_album,
-  }
-}
-
-function mapAlbum(dz: any): OutputAlbumDeezer {
-  return {
-    deezerCUID:    String(dz.id),
-    title:         dz.title,
-    cover:         dz.cover_small,
-    coverMedium:   dz.cover_medium,
-    coverBig:      dz.cover_big,
-    label:         dz.label,
-    recordType:    dz.record_type,
-    nbTracks:      dz.nb_tracks,
-    fans:          dz.fans,
-    duration:      dz.duration,
-    explicitLyrics: dz.explicit_lyrics,
-    explicitContentCover: dz.explicit_content_cover,
-    releaseDate:       dz.release_date,
-  }
-}
-
 async function getTrack(deezerId: string) {
-  const cached = await prisma.track.findUnique({ include: { album: true, artists: true }, where: { deezerCUID: deezerId } })
+  const [ trackToDb, checkToDb ] = await findTrackToDb(deezerId);
+  if (trackToDb != null) return trackToDb;
 
-  if (cached?.previewUrl) {
-    const match = cached.previewUrl.match(/exp=(\d+)/);
-    const exp = match ? parseInt(match[1], 10) : null;
+  const track = await getDeezerTrack(deezerId);
 
-    if (Date.now() < Number(exp)) return cached;
-  }
-
-  const res = await fetch(`${DEEZER_API}/track/${deezerId}`)
-  if (!res.ok) {
-    throw new Error(`Deezer ${res.status}`)
-  }
-
-  const json = await res.json()
-  if (json.error) {
-    throw new Error(`Deezer error: ${json.error.message ?? 'unknown'}`)
-  }
-  
-  const data = mapTrack(json);
-
-  if (cached) {
-    return (updatePreviewTrack( {album: true, artists: true}, data.previewUrl!, data.deezerCUID));
+  if (checkToDb == true) {
+    return (updatePreviewTrack( {album: true, artists: true}, track.previewUrl!, track.deezerCUID));
   } else {
     let trackData: createAllDataTrack = {
-      deezerCUID: data.deezerCUID,
-      title: data.title,
-      titleShort: data.titleShort,
-      duration: data.duration,
-      explicit: data.explicit,
-      previewUrl: data.previewUrl,
-      releaseDate: data.releaseDate,
-      rank: data.rank,
-      trackPosition: data.trackPosition,
-      diskNumber: data.diskNumber,
-      bpm: data.bpm,
-      explicitContentCover: data.explicitContentCover,
+      deezerCUID: track.deezerCUID,
+      title: track.title,
+      titleShort: track.titleShort,
+      duration: track.duration,
+      explicit: track.explicit,
+      previewUrl: track.previewUrl,
+      releaseDate: track.releaseDate,
+      rank: track.rank,
+      trackPosition: track.trackPosition,
+      diskNumber: track.diskNumber,
+      bpm: track.bpm,
+      explicitContentCover: track.explicitContentCover,
       artist: [],
       albumId: null,
       album: null,
     };
 
-    for ( const row of data.artist) {
-      const artistToDb = await findArtist(row.deezerCUID.toString());
-      if (!artistToDb) {
-        const res = await fetch(`${DEEZER_API}/artist/${row.deezerCUID}`);
-        if (!res.ok) throw new Error(`Deezer artist ${res.status}`);
-        const artistJson = await res.json();
-        if (trackData.artist.find((e) => e.deezerCUID == artistJson.id) == undefined)
-          trackData.artist.push(mapArtist(artistJson));
-      } else {
-        const { id, updatedAt, createdAt, ...toPush } = artistToDb;
-        if (trackData.artist.find((e) => e.deezerCUID == toPush.deezerCUID) == undefined)
-          trackData.artist.push(toPush);
-      }
-    }
-    const albumToDb = await findAlbum(data.album.deezerCUID);
-    if (!albumToDb) {
-      const res = await fetch(`${DEEZER_API}/album/${data.album.deezerCUID}`);
-      if (!res.ok) throw new Error(`Deezer album ${res.status}`);
-      const albumJson = await res.json();
-      trackData.album = mapAlbum(albumJson);
-    } else {
-      const { id, updatedAt, ...toPush } = albumToDb;
-      trackData.album = toPush;
-    }
-    console.log(trackData);
-    return await createOrUpdateAllDataTrack({album: true, artists: true}, trackData);
+    const newTrack = await listArtist(track, trackData);
+
+    const finalTrack = await getAlbumToDeezer(track, newTrack);
+
+    console.log(finalTrack);
+    return await createOrUpdateAllDataTrack({album: true, artists: true}, finalTrack);
   }
 }
 
