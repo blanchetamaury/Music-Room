@@ -264,13 +264,13 @@ export type UserWhereInput = {
   fortytwoUserId?: Prisma.IntNullableFilter<"User"> | number | null
   googleOauthId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  playlist?: Prisma.PlaylistListRelationFilter
-  likes?: Prisma.LikeListRelationFilter
-  plays?: Prisma.PlayHistoryListRelationFilter
   follows?: Prisma.FollowListRelationFilter
   followers?: Prisma.FollowListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
+  plays?: Prisma.PlayHistoryListRelationFilter
   fortytwoOauth?: Prisma.XOR<Prisma.FortytwoOauthNullableScalarRelationFilter, Prisma.FortytwoOauthWhereInput> | null
   googleOauth?: Prisma.XOR<Prisma.GoogleOauthNullableScalarRelationFilter, Prisma.GoogleOauthWhereInput> | null
+  playlist?: Prisma.PlaylistListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -285,13 +285,13 @@ export type UserOrderByWithRelationInput = {
   fortytwoUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleOauthId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  playlist?: Prisma.PlaylistOrderByRelationAggregateInput
-  likes?: Prisma.LikeOrderByRelationAggregateInput
-  plays?: Prisma.PlayHistoryOrderByRelationAggregateInput
   follows?: Prisma.FollowOrderByRelationAggregateInput
   followers?: Prisma.FollowOrderByRelationAggregateInput
+  likes?: Prisma.LikeOrderByRelationAggregateInput
+  plays?: Prisma.PlayHistoryOrderByRelationAggregateInput
   fortytwoOauth?: Prisma.FortytwoOauthOrderByWithRelationInput
   googleOauth?: Prisma.GoogleOauthOrderByWithRelationInput
+  playlist?: Prisma.PlaylistOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -309,13 +309,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   deezerAccessToken?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  playlist?: Prisma.PlaylistListRelationFilter
-  likes?: Prisma.LikeListRelationFilter
-  plays?: Prisma.PlayHistoryListRelationFilter
   follows?: Prisma.FollowListRelationFilter
   followers?: Prisma.FollowListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
+  plays?: Prisma.PlayHistoryListRelationFilter
   fortytwoOauth?: Prisma.XOR<Prisma.FortytwoOauthNullableScalarRelationFilter, Prisma.FortytwoOauthWhereInput> | null
   googleOauth?: Prisma.XOR<Prisma.GoogleOauthNullableScalarRelationFilter, Prisma.GoogleOauthWhereInput> | null
+  playlist?: Prisma.PlaylistListRelationFilter
 }, "id" | "email" | "deezerUserId" | "fortytwoOauthId" | "fortytwoUserId" | "googleOauthId">
 
 export type UserOrderByWithAggregationInput = {
@@ -364,13 +364,13 @@ export type UserCreateInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -385,11 +385,11 @@ export type UserUncheckedCreateInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -402,13 +402,13 @@ export type UserUpdateInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -423,11 +423,11 @@ export type UserUncheckedUpdateInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -708,12 +708,12 @@ export type UserCreateWithoutFollowsInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
-  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFollowsInput = {
@@ -728,10 +728,10 @@ export type UserUncheckedCreateWithoutFollowsInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
-  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFollowsInput = {
@@ -749,12 +749,12 @@ export type UserCreateWithoutFollowersInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
+  follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
-  follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFollowersInput = {
@@ -769,10 +769,10 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
+  follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
-  follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFollowersInput = {
@@ -801,12 +801,12 @@ export type UserUpdateWithoutFollowsInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
-  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowsInput = {
@@ -821,10 +821,10 @@ export type UserUncheckedUpdateWithoutFollowsInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
-  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutFollowersInput = {
@@ -848,12 +848,12 @@ export type UserUpdateWithoutFollowersInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
+  follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
-  follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -868,10 +868,10 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
+  follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
-  follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFortytwoOauthInput = {
@@ -884,12 +884,12 @@ export type UserCreateWithoutFortytwoOauthInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFortytwoOauthInput = {
@@ -903,11 +903,11 @@ export type UserUncheckedCreateWithoutFortytwoOauthInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFortytwoOauthInput = {
@@ -936,12 +936,12 @@ export type UserUpdateWithoutFortytwoOauthInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFortytwoOauthInput = {
@@ -955,11 +955,11 @@ export type UserUncheckedUpdateWithoutFortytwoOauthInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoogleOauthInput = {
@@ -972,12 +972,12 @@ export type UserCreateWithoutGoogleOauthInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoogleOauthInput = {
@@ -991,11 +991,11 @@ export type UserUncheckedCreateWithoutGoogleOauthInput = {
   fortytwoOauthId?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoogleOauthInput = {
@@ -1024,12 +1024,12 @@ export type UserUpdateWithoutGoogleOauthInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleOauthInput = {
@@ -1043,11 +1043,11 @@ export type UserUncheckedUpdateWithoutGoogleOauthInput = {
   fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikesInput = {
@@ -1060,12 +1060,12 @@ export type UserCreateWithoutLikesInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -1080,10 +1080,10 @@ export type UserUncheckedCreateWithoutLikesInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -1112,12 +1112,12 @@ export type UserUpdateWithoutLikesInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -1132,10 +1132,10 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPlaysInput = {
@@ -1148,12 +1148,12 @@ export type UserCreateWithoutPlaysInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
+  playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPlaysInput = {
@@ -1168,10 +1168,10 @@ export type UserUncheckedCreateWithoutPlaysInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
-  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPlaysInput = {
@@ -1200,12 +1200,12 @@ export type UserUpdateWithoutPlaysInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPlaysInput = {
@@ -1220,10 +1220,10 @@ export type UserUncheckedUpdateWithoutPlaysInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
-  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPlaylistInput = {
@@ -1236,10 +1236,10 @@ export type UserCreateWithoutPlaylistInput = {
   deezerAccessToken?: string | null
   fortytwoUserId?: number | null
   createdAt?: Date | string
-  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput
   fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput
   googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput
 }
@@ -1256,10 +1256,10 @@ export type UserUncheckedCreateWithoutPlaylistInput = {
   fortytwoUserId?: number | null
   googleOauthId?: string | null
   createdAt?: Date | string
-  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
-  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
   follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPlaylistInput = {
@@ -1310,10 +1310,10 @@ export type UserUpdateWithoutPlaylistInput = {
   deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput
   fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput
   googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput
 }
@@ -1330,10 +1330,10 @@ export type UserUncheckedUpdateWithoutPlaylistInput = {
   fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
-  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
   follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPlaylistInput = {
@@ -1356,19 +1356,19 @@ export type UserUncheckedUpdateManyWithoutPlaylistInput = {
  */
 
 export type UserCountOutputType = {
-  playlist: number
-  likes: number
-  plays: number
   follows: number
   followers: number
+  likes: number
+  plays: number
+  playlist: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  playlist?: boolean | UserCountOutputTypeCountPlaylistArgs
-  likes?: boolean | UserCountOutputTypeCountLikesArgs
-  plays?: boolean | UserCountOutputTypeCountPlaysArgs
   follows?: boolean | UserCountOutputTypeCountFollowsArgs
   followers?: boolean | UserCountOutputTypeCountFollowersArgs
+  likes?: boolean | UserCountOutputTypeCountLikesArgs
+  plays?: boolean | UserCountOutputTypeCountPlaysArgs
+  playlist?: boolean | UserCountOutputTypeCountPlaylistArgs
 }
 
 /**
@@ -1384,8 +1384,15 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountPlaylistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PlaylistWhereInput
+export type UserCountOutputTypeCountFollowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FollowWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFollowersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FollowWhereInput
 }
 
 /**
@@ -1405,15 +1412,8 @@ export type UserCountOutputTypeCountPlaysArgs<ExtArgs extends runtime.Types.Exte
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountFollowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FollowWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountFollowersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FollowWhereInput
+export type UserCountOutputTypeCountPlaylistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlaylistWhereInput
 }
 
 
@@ -1429,13 +1429,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fortytwoUserId?: boolean
   googleOauthId?: boolean
   createdAt?: boolean
-  playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>
-  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
-  plays?: boolean | Prisma.User$playsArgs<ExtArgs>
   follows?: boolean | Prisma.User$followsArgs<ExtArgs>
   followers?: boolean | Prisma.User$followersArgs<ExtArgs>
+  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
+  plays?: boolean | Prisma.User$playsArgs<ExtArgs>
   fortytwoOauth?: boolean | Prisma.User$fortytwoOauthArgs<ExtArgs>
   googleOauth?: boolean | Prisma.User$googleOauthArgs<ExtArgs>
+  playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1487,13 +1487,13 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "passwordHash" | "avatarUrl" | "deezerUserId" | "deezerAccessToken" | "fortytwoOauthId" | "fortytwoUserId" | "googleOauthId" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>
-  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
-  plays?: boolean | Prisma.User$playsArgs<ExtArgs>
   follows?: boolean | Prisma.User$followsArgs<ExtArgs>
   followers?: boolean | Prisma.User$followersArgs<ExtArgs>
+  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
+  plays?: boolean | Prisma.User$playsArgs<ExtArgs>
   fortytwoOauth?: boolean | Prisma.User$fortytwoOauthArgs<ExtArgs>
   googleOauth?: boolean | Prisma.User$googleOauthArgs<ExtArgs>
+  playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1508,13 +1508,13 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    playlist: Prisma.$PlaylistPayload<ExtArgs>[]
-    likes: Prisma.$LikePayload<ExtArgs>[]
-    plays: Prisma.$PlayHistoryPayload<ExtArgs>[]
     follows: Prisma.$FollowPayload<ExtArgs>[]
     followers: Prisma.$FollowPayload<ExtArgs>[]
+    likes: Prisma.$LikePayload<ExtArgs>[]
+    plays: Prisma.$PlayHistoryPayload<ExtArgs>[]
     fortytwoOauth: Prisma.$FortytwoOauthPayload<ExtArgs> | null
     googleOauth: Prisma.$GoogleOauthPayload<ExtArgs> | null
+    playlist: Prisma.$PlaylistPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1922,13 +1922,13 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  playlist<T extends Prisma.User$playlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playlistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  plays<T extends Prisma.User$playsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   follows<T extends Prisma.User$followsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   followers<T extends Prisma.User$followersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  plays<T extends Prisma.User$playsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fortytwoOauth<T extends Prisma.User$fortytwoOauthArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fortytwoOauthArgs<ExtArgs>>): Prisma.Prisma__FortytwoOauthClient<runtime.Types.Result.GetResult<Prisma.$FortytwoOauthPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   googleOauth<T extends Prisma.User$googleOauthArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleOauthArgs<ExtArgs>>): Prisma.Prisma__GoogleOauthClient<runtime.Types.Result.GetResult<Prisma.$GoogleOauthPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  playlist<T extends Prisma.User$playlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playlistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2370,27 +2370,51 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.playlist
+ * User.follows
  */
-export type User$playlistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$followsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Playlist
+   * Select specific fields to fetch from the Follow
    */
-  select?: Prisma.PlaylistSelect<ExtArgs> | null
+  select?: Prisma.FollowSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Playlist
+   * Omit specific fields from the Follow
    */
-  omit?: Prisma.PlaylistOmit<ExtArgs> | null
+  omit?: Prisma.FollowOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PlaylistInclude<ExtArgs> | null
-  where?: Prisma.PlaylistWhereInput
-  orderBy?: Prisma.PlaylistOrderByWithRelationInput | Prisma.PlaylistOrderByWithRelationInput[]
-  cursor?: Prisma.PlaylistWhereUniqueInput
+  include?: Prisma.FollowInclude<ExtArgs> | null
+  where?: Prisma.FollowWhereInput
+  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
+  cursor?: Prisma.FollowWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PlaylistScalarFieldEnum | Prisma.PlaylistScalarFieldEnum[]
+  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
+}
+
+/**
+ * User.followers
+ */
+export type User$followersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Follow
+   */
+  select?: Prisma.FollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Follow
+   */
+  omit?: Prisma.FollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FollowInclude<ExtArgs> | null
+  where?: Prisma.FollowWhereInput
+  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
+  cursor?: Prisma.FollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
 }
 
 /**
@@ -2442,54 +2466,6 @@ export type User$playsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 }
 
 /**
- * User.follows
- */
-export type User$followsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Follow
-   */
-  select?: Prisma.FollowSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Follow
-   */
-  omit?: Prisma.FollowOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FollowInclude<ExtArgs> | null
-  where?: Prisma.FollowWhereInput
-  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
-  cursor?: Prisma.FollowWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
-}
-
-/**
- * User.followers
- */
-export type User$followersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Follow
-   */
-  select?: Prisma.FollowSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Follow
-   */
-  omit?: Prisma.FollowOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FollowInclude<ExtArgs> | null
-  where?: Prisma.FollowWhereInput
-  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
-  cursor?: Prisma.FollowWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
-}
-
-/**
  * User.fortytwoOauth
  */
 export type User$fortytwoOauthArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2525,6 +2501,30 @@ export type User$googleOauthArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.GoogleOauthInclude<ExtArgs> | null
   where?: Prisma.GoogleOauthWhereInput
+}
+
+/**
+ * User.playlist
+ */
+export type User$playlistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Playlist
+   */
+  select?: Prisma.PlaylistSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Playlist
+   */
+  omit?: Prisma.PlaylistOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlaylistInclude<ExtArgs> | null
+  where?: Prisma.PlaylistWhereInput
+  orderBy?: Prisma.PlaylistOrderByWithRelationInput | Prisma.PlaylistOrderByWithRelationInput[]
+  cursor?: Prisma.PlaylistWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlaylistScalarFieldEnum | Prisma.PlaylistScalarFieldEnum[]
 }
 
 /**

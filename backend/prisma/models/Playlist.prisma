@@ -1,16 +1,13 @@
 model Playlist {
-  id         String   @id @default(cuid())
-  
-  name       String
-  ownerId    String
-  cover      String?
+  id          String          @id @default(cuid())
+  name        String
+  ownerId     String
+  cover       String?
   description String?
-  private    Boolean  @default(true)
-
-  created_at  DateTime @default(now())
-
-  music      PlaylistTrack[]
-  user       User[]
+  private     Boolean         @default(true)
+  created_at  DateTime        @default(now())
+  music       PlaylistTrack[]
+  user        User[]          @relation("PlaylistToUser")
 
   @@unique([name, ownerId])
 }

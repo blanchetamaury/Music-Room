@@ -317,10 +317,10 @@ export type TrackWhereInput = {
   albumId?: Prisma.StringNullableFilter<"Track"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
   playlistTracks?: Prisma.PlaylistTrackListRelationFilter
+  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
   likes?: Prisma.LikeListRelationFilter
   plays?: Prisma.PlayHistoryListRelationFilter
   artists?: Prisma.ArtistListRelationFilter
-  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
 }
 
 export type TrackOrderByWithRelationInput = {
@@ -340,10 +340,10 @@ export type TrackOrderByWithRelationInput = {
   albumId?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   playlistTracks?: Prisma.PlaylistTrackOrderByRelationAggregateInput
+  album?: Prisma.AlbumOrderByWithRelationInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
   plays?: Prisma.PlayHistoryOrderByRelationAggregateInput
   artists?: Prisma.ArtistOrderByRelationAggregateInput
-  album?: Prisma.AlbumOrderByWithRelationInput
 }
 
 export type TrackWhereUniqueInput = Prisma.AtLeast<{
@@ -366,10 +366,10 @@ export type TrackWhereUniqueInput = Prisma.AtLeast<{
   albumId?: Prisma.StringNullableFilter<"Track"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
   playlistTracks?: Prisma.PlaylistTrackListRelationFilter
+  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
   likes?: Prisma.LikeListRelationFilter
   plays?: Prisma.PlayHistoryListRelationFilter
   artists?: Prisma.ArtistListRelationFilter
-  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
 }, "id" | "deezerCUID">
 
 export type TrackOrderByWithAggregationInput = {
@@ -432,10 +432,10 @@ export type TrackCreateInput = {
   explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
   artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
-  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
 }
 
 export type TrackUncheckedCreateInput = {
@@ -476,10 +476,10 @@ export type TrackUpdateInput = {
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
-  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateInput = {
@@ -875,9 +875,9 @@ export type TrackCreateWithoutArtistsInput = {
   explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
-  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutArtistsInput = {
@@ -938,9 +938,9 @@ export type TrackCreateWithoutLikesInput = {
   explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
   artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
-  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutLikesInput = {
@@ -996,9 +996,9 @@ export type TrackUpdateWithoutLikesInput = {
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
-  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutLikesInput = {
@@ -1038,9 +1038,9 @@ export type TrackCreateWithoutPlaysInput = {
   explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
-  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutPlaysInput = {
@@ -1096,9 +1096,9 @@ export type TrackUpdateWithoutPlaysInput = {
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
-  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutPlaysInput = {
@@ -1137,10 +1137,10 @@ export type TrackCreateWithoutPlaylistTracksInput = {
   bpm?: number | null
   explicitContentCover: number
   updatedAt?: Date | string
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
   artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
-  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutPlaylistTracksInput = {
@@ -1195,10 +1195,10 @@ export type TrackUpdateWithoutPlaylistTracksInput = {
   bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
   artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
-  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutPlaylistTracksInput = {
@@ -1314,9 +1314,9 @@ export type TrackUpdateWithoutArtistsInput = {
   explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
-  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutArtistsInput = {
@@ -1433,10 +1433,10 @@ export type TrackSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   albumId?: boolean
   updatedAt?: boolean
   playlistTracks?: boolean | Prisma.Track$playlistTracksArgs<ExtArgs>
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   likes?: boolean | Prisma.Track$likesArgs<ExtArgs>
   plays?: boolean | Prisma.Track$playsArgs<ExtArgs>
   artists?: boolean | Prisma.Track$artistsArgs<ExtArgs>
-  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   _count?: boolean | Prisma.TrackCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["track"]>
 
@@ -1499,10 +1499,10 @@ export type TrackSelectScalar = {
 export type TrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deezerCUID" | "title" | "titleShort" | "duration" | "explicit" | "previewUrl" | "releaseDate" | "rank" | "trackPosition" | "diskNumber" | "bpm" | "explicitContentCover" | "albumId" | "updatedAt", ExtArgs["result"]["track"]>
 export type TrackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playlistTracks?: boolean | Prisma.Track$playlistTracksArgs<ExtArgs>
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   likes?: boolean | Prisma.Track$likesArgs<ExtArgs>
   plays?: boolean | Prisma.Track$playsArgs<ExtArgs>
   artists?: boolean | Prisma.Track$artistsArgs<ExtArgs>
-  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   _count?: boolean | Prisma.TrackCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TrackIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1516,10 +1516,10 @@ export type $TrackPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Track"
   objects: {
     playlistTracks: Prisma.$PlaylistTrackPayload<ExtArgs>[]
+    album: Prisma.$AlbumPayload<ExtArgs> | null
     likes: Prisma.$LikePayload<ExtArgs>[]
     plays: Prisma.$PlayHistoryPayload<ExtArgs>[]
     artists: Prisma.$ArtistPayload<ExtArgs>[]
-    album: Prisma.$AlbumPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1932,10 +1932,10 @@ readonly fields: TrackFieldRefs;
 export interface Prisma__TrackClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   playlistTracks<T extends Prisma.Track$playlistTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$playlistTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistTrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  album<T extends Prisma.Track$albumArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$albumArgs<ExtArgs>>): Prisma.Prisma__AlbumClient<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   likes<T extends Prisma.Track$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   plays<T extends Prisma.Track$playsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$playsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   artists<T extends Prisma.Track$artistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$artistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArtistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  album<T extends Prisma.Track$albumArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$albumArgs<ExtArgs>>): Prisma.Prisma__AlbumClient<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2405,6 +2405,25 @@ export type Track$playlistTracksArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
+ * Track.album
+ */
+export type Track$albumArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Album
+   */
+  select?: Prisma.AlbumSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Album
+   */
+  omit?: Prisma.AlbumOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AlbumInclude<ExtArgs> | null
+  where?: Prisma.AlbumWhereInput
+}
+
+/**
  * Track.likes
  */
 export type Track$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2474,25 +2493,6 @@ export type Track$artistsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ArtistScalarFieldEnum | Prisma.ArtistScalarFieldEnum[]
-}
-
-/**
- * Track.album
- */
-export type Track$albumArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Album
-   */
-  select?: Prisma.AlbumSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Album
-   */
-  omit?: Prisma.AlbumOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AlbumInclude<ExtArgs> | null
-  where?: Prisma.AlbumWhereInput
 }
 
 /**

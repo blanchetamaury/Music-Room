@@ -10,6 +10,10 @@ interface ApiResponse<T> {
 	data?: T;
 }
 
+interface TrackPayload {
+    track: DeezerTrack;
+}
+
 export type DeezerArtist = {
 	id: string | number;
 	name: string;
@@ -167,7 +171,7 @@ export const api = {
 				return fetchApi<DeezerTrack[]>(`/deezer/music/top_music?count=${count}`);
 			},
 			music: (music_deezer_id: number) => {
-				return fetchApi<DeezerTrack>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
+				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
 		album: {

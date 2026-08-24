@@ -71,7 +71,7 @@ function mapAlbum(dz: any): OutputAlbumDeezer {
 }
 
 async function getTrack(deezerId: string) {
-  const cached = await prisma.track.findUnique({ where: { deezerCUID: deezerId } })
+  const cached = await prisma.track.findUnique({ include: { album: true, artists: true }, where: { deezerCUID: deezerId } })
 
   if (cached?.previewUrl) {
     const match = cached.previewUrl.match(/exp=(\d+)/);
@@ -93,7 +93,7 @@ async function getTrack(deezerId: string) {
   const data = mapTrack(json);
 
   if (cached) {
-    return (updatePreviewTrack(data.previewUrl!, data.deezerCUID));
+    return (updatePreviewTrack( {album: true, artists: true}, data.previewUrl!, data.deezerCUID));
   } else {
     let trackData: createAllDataTrack = {
       deezerCUID: data.deezerCUID,
@@ -135,7 +135,7 @@ async function getTrack(deezerId: string) {
       const { id, updatedAt, ...toPush } = albumToDb;
       trackData.album = toPush;
     }
-    return await createOrUpdateAllDataTrack(trackData);
+    return await createOrUpdateAllDataTrack({album: true, artists: true}, trackData);
   }
 }
 

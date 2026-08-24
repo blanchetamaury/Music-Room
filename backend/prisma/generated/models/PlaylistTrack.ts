@@ -216,8 +216,8 @@ export type PlaylistTrackWhereInput = {
   addedAt?: Prisma.DateTimeFilter<"PlaylistTrack"> | Date | string
   playlistId?: Prisma.StringFilter<"PlaylistTrack"> | string
   trackId?: Prisma.StringFilter<"PlaylistTrack"> | string
-  track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>
+  track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
 }
 
 export type PlaylistTrackOrderByWithRelationInput = {
@@ -226,8 +226,8 @@ export type PlaylistTrackOrderByWithRelationInput = {
   addedAt?: Prisma.SortOrder
   playlistId?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
-  track?: Prisma.TrackOrderByWithRelationInput
   playlist?: Prisma.PlaylistOrderByWithRelationInput
+  track?: Prisma.TrackOrderByWithRelationInput
 }
 
 export type PlaylistTrackWhereUniqueInput = Prisma.AtLeast<{
@@ -240,8 +240,8 @@ export type PlaylistTrackWhereUniqueInput = Prisma.AtLeast<{
   addedAt?: Prisma.DateTimeFilter<"PlaylistTrack"> | Date | string
   playlistId?: Prisma.StringFilter<"PlaylistTrack"> | string
   trackId?: Prisma.StringFilter<"PlaylistTrack"> | string
-  track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>
+  track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
 }, "id" | "playlistId_trackId">
 
 export type PlaylistTrackOrderByWithAggregationInput = {
@@ -272,8 +272,8 @@ export type PlaylistTrackCreateInput = {
   id?: string
   position?: number
   addedAt?: Date | string
-  track: Prisma.TrackCreateNestedOneWithoutPlaylistTracksInput
   playlist: Prisma.PlaylistCreateNestedOneWithoutMusicInput
+  track: Prisma.TrackCreateNestedOneWithoutPlaylistTracksInput
 }
 
 export type PlaylistTrackUncheckedCreateInput = {
@@ -288,8 +288,8 @@ export type PlaylistTrackUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  track?: Prisma.TrackUpdateOneRequiredWithoutPlaylistTracksNestedInput
   playlist?: Prisma.PlaylistUpdateOneRequiredWithoutMusicNestedInput
+  track?: Prisma.TrackUpdateOneRequiredWithoutPlaylistTracksNestedInput
 }
 
 export type PlaylistTrackUncheckedUpdateInput = {
@@ -608,8 +608,8 @@ export type PlaylistTrackSelect<ExtArgs extends runtime.Types.Extensions.Interna
   addedAt?: boolean
   playlistId?: boolean
   trackId?: boolean
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playlistTrack"]>
 
 export type PlaylistTrackSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -618,8 +618,8 @@ export type PlaylistTrackSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   addedAt?: boolean
   playlistId?: boolean
   trackId?: boolean
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playlistTrack"]>
 
 export type PlaylistTrackSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -628,8 +628,8 @@ export type PlaylistTrackSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   addedAt?: boolean
   playlistId?: boolean
   trackId?: boolean
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playlistTrack"]>
 
 export type PlaylistTrackSelectScalar = {
@@ -642,23 +642,23 @@ export type PlaylistTrackSelectScalar = {
 
 export type PlaylistTrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "position" | "addedAt" | "playlistId" | "trackId", ExtArgs["result"]["playlistTrack"]>
 export type PlaylistTrackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }
 export type PlaylistTrackIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }
 export type PlaylistTrackIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>
+  track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
 }
 
 export type $PlaylistTrackPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PlaylistTrack"
   objects: {
-    track: Prisma.$TrackPayload<ExtArgs>
     playlist: Prisma.$PlaylistPayload<ExtArgs>
+    track: Prisma.$TrackPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1060,8 +1060,8 @@ readonly fields: PlaylistTrackFieldRefs;
  */
 export interface Prisma__PlaylistTrackClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  track<T extends Prisma.TrackDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackDefaultArgs<ExtArgs>>): Prisma.Prisma__TrackClient<runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   playlist<T extends Prisma.PlaylistDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PlaylistDefaultArgs<ExtArgs>>): Prisma.Prisma__PlaylistClient<runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  track<T extends Prisma.TrackDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackDefaultArgs<ExtArgs>>): Prisma.Prisma__TrackClient<runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

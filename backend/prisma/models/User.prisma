@@ -1,27 +1,22 @@
 model User {
-  id                    String      @id @default(uuid())
-  email                 String      @unique
-  username              String
-  passwordHash          String?
-  avatarUrl             String?
-
-  deezerUserId          String?     @unique
-  deezerAccessToken     String?
-  
-  fortytwoOauthId			String?			@unique
-  fortytwoUserId      Int?        @unique
-
-  googleOauthId			  String?			@unique
-
-  createdAt             DateTime    @default(now())
-
-  playlist                Playlist[]
-  likes                   Like[]
-  plays                   PlayHistory[]
-  follows                 Follow[]            @relation("follower")
-  followers               Follow[]            @relation("following")
-  fortytwoOauth				    FortytwoOauth?			@relation(fields: [fortytwoOauthId], references: [id], onDelete: Cascade)
-  googleOauth				      GoogleOauth?			  @relation(fields: [googleOauthId], references: [id], onDelete: Cascade)
+  id                String         @id @default(uuid())
+  email             String         @unique
+  username          String
+  passwordHash      String?
+  avatarUrl         String?
+  deezerUserId      String?        @unique
+  deezerAccessToken String?
+  fortytwoOauthId   String?        @unique
+  fortytwoUserId    Int?           @unique
+  googleOauthId     String?        @unique
+  createdAt         DateTime       @default(now())
+  follows           Follow[]       @relation("follower")
+  followers         Follow[]       @relation("following")
+  likes             Like[]
+  plays             PlayHistory[]
+  fortytwoOauth     FortytwoOauth? @relation(fields: [fortytwoOauthId], references: [id], onDelete: Cascade)
+  googleOauth       GoogleOauth?   @relation(fields: [googleOauthId], references: [id], onDelete: Cascade)
+  playlist          Playlist[]     @relation("PlaylistToUser")
 
   @@map("users")
 }

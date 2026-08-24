@@ -27,9 +27,13 @@ interface SongProfileProps {
 }
 
 interface ApiResponse<T> {
-	success: boolean;
-	message?: string;
-	data?: T;
+    success: boolean;
+    message?: string;
+    data?: T;
+}
+
+interface TrackPayload {
+    track: DeezerTrack;
 }
 
 function getRankIcon(rank?: number | null) {
@@ -77,120 +81,134 @@ function formatReleaseDate(date?: string) {
 }
 
 export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfileProps) {
-	const albumName = song.album?.title ?? 'Album';
-	const [ music, setMusic ] = useState<DeezerTrack | null>(null);
-	const [ load, setLoad ] = useState<boolean>(true);
+    const [music, setMusic] = useState<DeezerTrack | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const loadMusic = async () => {
-			try {
-				setLoad(true);
+    useEffect(() => {
+        let isMounted = true;
 
-				const data: ApiResponse<DeezerTrack> =
-					await api.deezer.music.music(Number(song.id));
+        const loadMusic = async () => {
+            try {
+                setLoading(true);
+                setError(null);
 
-				const track = data.data;
+                const data: ApiResponse<TrackPayload> =
+                    await api.deezer.music.music(Number(song.id));
+					
+					const track = data.data?.track;
+					console.log(track);
 
-				if (!track) {
-					console.warn('[SongProfile] No track returned');
-					return;
-				}
+                if (!track) {
+                    console.warn('[SongProfile] No track returned');
+                    if (isMounted) setError('No track returned');
+                    return;
+                }
 
-				if (typeof track.album?.cover !== 'string') {
-					console.warn('[SongProfile] Track has no album cover', track);
-					return;
-				}
+                if (isMounted) {
+                    setMusic(track);
+                }
+            } catch (err) {
+                console.error('[SongProfile] failed to load track:', err);
+                if (isMounted) setError('Failed to load track');
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
 
-				setMusic(track);
-			} catch (error) {
-				console.error('[SongProfile] failed to load track:', error);
-			} finally {
-				setLoad(false);
-			}
-		};
+        loadMusic();
 
-		loadMusic();
-		console.log("caca: ", music?.album)
-	}, [song.id]);
+        return () => {
+            isMounted = false; // évite un setState après unmount
+        };
+    }, [song.id]);
 
-	return (
-		<View style={styles.container}>
-			{ load == false && music != null &&
-				<View style={styles.header}>
-					{music?.album?.coverBig && (
-						<Image
-							source={{
-								uri: music.album.coverBig,
-							}}
-							style={styles.cover}
-						/>
-					)}
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <ThemedText>Chargement...</ThemedText>
+            </View>
+        );
+    }
 
-					<View style={styles.info}>
-						<View style={styles.titleRow}>
-							<ThemedText style={styles.title}>{song.title}</ThemedText>
+    if (error || !music) {
+        return (
+            <View style={styles.container}>
+                <ThemedText>{error ?? 'Aucune donnée'}</ThemedText>
+            </View>
+        );
+    }
 
-							{song.explicit === true && <Banana size={20} color="rgba(255,255,255,0.7)" />}
-						</View>
+    const albumName = music.album?.title ?? 'Album';
 
-						<View style={styles.metadata}>
-							<HoverText
-								style={styles.artist}
-								onPress={() => {
-									onArtistPress?.(song.artist[0].name);
-								}}
-							>
-								{"hello"}
-							</HoverText>
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                {music.album?.coverBig && (
+                    <Image source={{ uri: music.album.coverBig }} style={styles.cover} />
+                )}
 
-							<ThemedText style={styles.dot}>●</ThemedText>
+                <View style={styles.info}>
+                    <View style={styles.titleRow}>
+                        <ThemedText style={styles.title}>{music.title}</ThemedText>
+                        {music.explicit === true && <Banana size={20} color="rgba(255,255,255,0.7)" />}
+                    </View>
 
-							<HoverText
-								style={styles.album}
-								onPress={() => {
-									onAlbumPress?.(song.albumId);
-								}}
-							>
-								{albumName}
-							</HoverText>
+                    <View style={styles.metadata}>
+                        <HoverText
+                            style={styles.artist}
+                            onPress={() => {
+                                onArtistPress?.(music.artist?.[0]?.deezerCUID ?? '');
+                            }}
+                        >
+                            {music.artist?.[0]?.name ?? 'Unknown artist'}
+                        </HoverText>
 
-							<ThemedText style={styles.dot}>●</ThemedText>
+                        <ThemedText style={styles.dot}>●</ThemedText>
 
-							<ThemedText style={styles.releaseDate}>{formatReleaseDate(song.releaseDate?.toISOString())}</ThemedText>
-						</View>
+                        <HoverText
+                            style={styles.album}
+                            onPress={() => {
+                                onAlbumPress?.(music.album?.deezerCUID ?? null);
+                            }}
+                        >
+                            {albumName}
+                        </HoverText>
 
-						<SeparatorFull />
+                        <ThemedText style={styles.dot}>●</ThemedText>
 
-						<View style={styles.stats}>
-							<View style={styles.statItem}>
-								<Headphones size={15} color="rgba(255,255,255,0.6)" />
+                        <ThemedText style={styles.releaseDate}>
+                            {formatReleaseDate(music.releaseDate?.toString())}
+                        </ThemedText>
+                    </View>
 
-								<ThemedText style={styles.stat}>{song.bpm}</ThemedText>
-							</View>
+                    <SeparatorFull />
 
-							<ThemedText style={styles.dot}>●</ThemedText>
+                    <View style={styles.stats}>
+                        <View style={styles.statItem}>
+                            <Headphones size={15} color="rgba(255,255,255,0.6)" />
+                            <ThemedText style={styles.stat}>{music.bpm}</ThemedText>
+                        </View>
 
-							<View style={styles.statItem}>
-								<Clock3 size={15} color="rgba(255,255,255,0.6)" />
+                        <ThemedText style={styles.dot}>●</ThemedText>
 
-								<ThemedText style={styles.stat}>{formatDuration(song.duration)}</ThemedText>
-							</View>
+                        <View style={styles.statItem}>
+                            <Clock3 size={15} color="rgba(255,255,255,0.6)" />
+                            <ThemedText style={styles.stat}>{formatDuration(music.duration)}</ThemedText>
+                        </View>
 
-							<ThemedText style={styles.dot}>●</ThemedText>
+                        <ThemedText style={styles.dot}>●</ThemedText>
 
-							<View style={styles.statItem}>
-								<TrendingUp size={15} color="rgba(255,255,255,0.6)" />
-
-								<ThemedText style={styles.stat}>{'Popularity: '}</ThemedText>
-
-								{getRankIcon(song.rank)}
-							</View>
-						</View>
-					</View>
-				</View>
-			}
-		</View>
-	);
+                        <View style={styles.statItem}>
+                            <TrendingUp size={15} color="rgba(255,255,255,0.6)" />
+                            <ThemedText style={styles.stat}>{'Popularity: '}</ThemedText>
+                            {getRankIcon(music.rank)}
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
 }
 
 function formatDuration(duration?: string | number) {

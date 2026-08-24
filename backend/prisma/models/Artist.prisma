@@ -1,17 +1,14 @@
 model Artist {
-	id          		String   @id @default(cuid())
-	
-	deezerCUID   		String	@unique
-	name     			String
-	pictureSmall  		String?
-	pictureMedium 		String?
-	pictureBig  		String?
-	nbFan				Int
-	nbAlbum				Int
-
-	tracks      		Track[]
-	album				Album[]
-
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  deezerCUID    String   @unique
+  name          String
+  pictureSmall  String?
+  pictureMedium String?
+  pictureBig    String?
+  nbFan         Int
+  nbAlbum       Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  album         Album[]  @relation("AlbumToArtist")
+  tracks        Track[]  @relation("ArtistToTrack")
 }

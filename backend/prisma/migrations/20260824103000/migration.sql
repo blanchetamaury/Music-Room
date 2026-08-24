@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "Album" (
     "id" TEXT NOT NULL,
-    "DeezerCUID" TEXT NOT NULL,
+    "deezerCUID" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "cover" TEXT,
     "coverMedium" TEXT,
@@ -13,7 +13,7 @@ CREATE TABLE "Album" (
     "duration" INTEGER NOT NULL,
     "explicitLyrics" BOOLEAN NOT NULL,
     "explicitContentCover" INTEGER NOT NULL,
-    "releaseDate" TIMESTAMP(3) NOT NULL,
+    "releaseDate" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Album_pkey" PRIMARY KEY ("id")
@@ -213,7 +213,13 @@ CREATE TABLE "_PlaylistToUser" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Album_deezerCUID_key" ON "Album"("deezerCUID");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Artist_deezerCUID_key" ON "Artist"("deezerCUID");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Genre_deezerCUID_key" ON "Genre"("deezerCUID");
 
 -- CreateIndex
 CREATE INDEX "likes_trackId_idx" ON "likes"("trackId");
@@ -297,7 +303,7 @@ ALTER TABLE "PlaylistTrack" ADD CONSTRAINT "PlaylistTrack_trackId_fkey" FOREIGN 
 ALTER TABLE "PlaylistTrack" ADD CONSTRAINT "PlaylistTrack_playlistId_fkey" FOREIGN KEY ("playlistId") REFERENCES "Playlist"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Track" ADD CONSTRAINT "Track_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Track" ADD CONSTRAINT "Track_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album"("deezerCUID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_fortytwoOauthId_fkey" FOREIGN KEY ("fortytwoOauthId") REFERENCES "FortytwoOauth"("id") ON DELETE CASCADE ON UPDATE CASCADE;
