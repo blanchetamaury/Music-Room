@@ -6,7 +6,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
 	include: T,
 	data: createAllDataTrack
 ): Promise<Prisma.TrackGetPayload<{ include: T }>> => {
-	const { artist, album, albumId, ...value } = data;
+	const { artist, album, albumId, deezerCUID, ...value } = data;
 	return prisma.track.upsert({
 		include: include,
 		where: {
@@ -14,6 +14,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
 		},
 		create: {
 			...value,
+			deezerCUID,
 			artists: {
 				create: artist,
 			},
