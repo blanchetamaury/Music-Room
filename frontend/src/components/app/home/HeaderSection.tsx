@@ -1,17 +1,17 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
-import { Track } from './data';
-import { homeStyles } from './home.styles';
+import LiquidGlass from '../../LiquidGlass';
+import { ThemedText } from '../../themed-text';
+import { Track } from '../data';
+import { homeStyles } from '../home.styles';
 
 export function HeaderSection({ currentTrack }: { currentTrack: Track }) {
 	return (
 		<View style={homeStyles.headerRow}>
 			<View style={homeStyles.headerTextWrap}>
 				<ThemedText type="title" style={homeStyles.welcomeText}>
-					Welcome Ntomé,
+					Welcome {},
 				</ThemedText>
 				<ThemedText style={homeStyles.subText}>
 					You are currently listening to{' '}

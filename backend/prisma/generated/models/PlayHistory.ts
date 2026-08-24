@@ -216,8 +216,8 @@ export type PlayHistoryWhereInput = {
   trackId?: Prisma.StringFilter<"PlayHistory"> | string
   playedAt?: Prisma.DateTimeFilter<"PlayHistory"> | Date | string
   duration?: Prisma.IntNullableFilter<"PlayHistory"> | number | null
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type PlayHistoryOrderByWithRelationInput = {
@@ -226,8 +226,8 @@ export type PlayHistoryOrderByWithRelationInput = {
   trackId?: Prisma.SortOrder
   playedAt?: Prisma.SortOrder
   duration?: Prisma.SortOrderInput | Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   track?: Prisma.TrackOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type PlayHistoryWhereUniqueInput = Prisma.AtLeast<{
@@ -239,8 +239,8 @@ export type PlayHistoryWhereUniqueInput = Prisma.AtLeast<{
   trackId?: Prisma.StringFilter<"PlayHistory"> | string
   playedAt?: Prisma.DateTimeFilter<"PlayHistory"> | Date | string
   duration?: Prisma.IntNullableFilter<"PlayHistory"> | number | null
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type PlayHistoryOrderByWithAggregationInput = {
@@ -271,8 +271,8 @@ export type PlayHistoryCreateInput = {
   id?: string
   playedAt?: Date | string
   duration?: number | null
-  user: Prisma.UserCreateNestedOneWithoutPlaysInput
   track: Prisma.TrackCreateNestedOneWithoutPlaysInput
+  user: Prisma.UserCreateNestedOneWithoutPlaysInput
 }
 
 export type PlayHistoryUncheckedCreateInput = {
@@ -287,8 +287,8 @@ export type PlayHistoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  user?: Prisma.UserUpdateOneRequiredWithoutPlaysNestedInput
   track?: Prisma.TrackUpdateOneRequiredWithoutPlaysNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutPlaysNestedInput
 }
 
 export type PlayHistoryUncheckedUpdateInput = {
@@ -602,8 +602,8 @@ export type PlayHistorySelect<ExtArgs extends runtime.Types.Extensions.InternalA
   trackId?: boolean
   playedAt?: boolean
   duration?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playHistory"]>
 
 export type PlayHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -612,8 +612,8 @@ export type PlayHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   trackId?: boolean
   playedAt?: boolean
   duration?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playHistory"]>
 
 export type PlayHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -622,8 +622,8 @@ export type PlayHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   trackId?: boolean
   playedAt?: boolean
   duration?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playHistory"]>
 
 export type PlayHistorySelectScalar = {
@@ -636,23 +636,23 @@ export type PlayHistorySelectScalar = {
 
 export type PlayHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "trackId" | "playedAt" | "duration", ExtArgs["result"]["playHistory"]>
 export type PlayHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type PlayHistoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type PlayHistoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $PlayHistoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PlayHistory"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
     track: Prisma.$TrackPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1054,8 +1054,8 @@ readonly fields: PlayHistoryFieldRefs;
  */
 export interface Prisma__PlayHistoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   track<T extends Prisma.TrackDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackDefaultArgs<ExtArgs>>): Prisma.Prisma__TrackClient<runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

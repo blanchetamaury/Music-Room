@@ -1,13 +1,14 @@
-import { ChevronRight, Eye, EyeOff } from 'lucide-react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
 import { api } from '../../lib/api/client';
+import { InputForm } from '../InputForm';
+import { InputPasswordForm } from '../InputPasswordForm';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
+import { SeparatorFull } from '../ui/separator';
 import { ConfirmMail } from './ConfirmMail';
-import { InputPasswordForm } from '../InputPasswordForm';
-import { InputForm } from '../InputForm';
 
 function checkRules(pw: string) {
 	const hasUpper = /[A-Z]/.test(pw);
@@ -72,21 +73,26 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 		>
 			{page == false && (
 				<>
-					<Pressable onPress={() => onBack?.()} style={styles.topRightBtn} accessibilityRole="button">
-						<ChevronRight color={`${colorScheme === 'light' ? '#000000' : '#ffffff'}`}></ChevronRight>
-					</Pressable>
-
 					<ThemedText
 						type="title"
 						style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }]}
 					>
-						Create account
+						Sign in
 					</ThemedText>
+
+					<SeparatorFull></SeparatorFull>
 
 					{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-					<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
 					<InputForm
+						isEmail={true}
+						placeholder="Email"
+						inputValue={email}
+						setInputValue={setEmail}
+						setError={setError}
+					/>
+					<InputForm
+						isEmail={false}
 						placeholder="Username"
 						inputValue={username}
 						setInputValue={setUsername}
@@ -176,12 +182,6 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						<ThemedText style={styles.error}>Passwords do not match</ThemedText>
 					)}
 
-					<View style={styles.separatorRow}>
-						<View style={styles.separatorLine} />
-						<ThemedText style={{ color: colorScheme === 'light' ? '#000000' : '#ffffff' }}>or</ThemedText>
-						<View style={styles.separatorLine} />
-					</View>
-
 					<Pressable
 						style={[styles.createBtn, !isPasswordValid ? { opacity: 0.55 } : null]}
 						onPress={() => setPage(true)}
@@ -195,11 +195,14 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						)}
 					</Pressable>
 
-					<Pressable onPress={() => onBack?.()} style={styles.signInLink} accessibilityRole="button">
-						<ThemedText style={{ color: colorScheme === 'light' ? '#000000' : '#ffffff', fontSize: 13 }}>
-							Already have an account ? <ThemedText type="defaultSemiBold">Log in</ThemedText>
-						</ThemedText>
-					</Pressable>
+					<SeparatorFull></SeparatorFull>
+
+					<ThemedText style={{ color: colorScheme === 'light' ? '#000000' : '#ffffff', fontSize: 13 }}>
+						Already have an account ?
+						<Pressable onPress={() => onBack?.()} style={styles.signInLink} accessibilityRole="button">
+							<ThemedText type="defaultSemiBold">Log in</ThemedText>
+						</Pressable>
+					</ThemedText>
 				</>
 			)}
 			{page == true && (
@@ -217,14 +220,22 @@ const styles = StyleSheet.create({
 		borderRadius: 16,
 		alignItems: 'stretch',
 	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 12,
+	},
 	topRightBtn: {
-		position: 'absolute',
-		right: 10,
-		top: 0,
+		width: 40,
+		height: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	title: {
 		marginTop: 8,
 		marginBottom: 12,
+		textAlign: 'center',
 		color: '#fff',
 	},
 	input: {
@@ -311,7 +322,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(58, 225, 255, 0.12)',
 	},
 	signInLink: {
-		marginTop: 12,
+		marginLeft: 12,
 		alignSelf: 'center',
 	},
 });

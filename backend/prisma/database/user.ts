@@ -21,15 +21,15 @@ const createOrUpdateFortyTwoUser = async (
 			email: me.email,
 		},
 		create: {
-			fortytwo_user_id: me.id,
+			fortytwoUserId: me.id,
 			email: me.email,
 			username: me.usual_full_name,
 			avatarUrl: me.image.versions.medium,
-			fortytwo_oauth: { create: { ...token_body } },
+			FortytwoOauth: { create: { ...token_body } },
 		},
 		update: {
-			fortytwo_user_id: me.id,
-			fortytwo_oauth: {
+			fortytwoUserId: me.id,
+			FortytwoOauth: {
 				upsert: {
 					update: { ...token_body },
 					create: { ...token_body },
@@ -50,7 +50,7 @@ const createOrUpdateGoogleUser = async (
             email: profile.email,
             username: profile.name ?? profile.given_name ?? 'Unknown',
             avatarUrl: profile.picture,
-            google_oauth: {
+            googleOauth: {
                 create: {
                     access_token: authorization.access_token,
                     refresh_token: authorization.refresh_token ?? null,
@@ -60,7 +60,7 @@ const createOrUpdateGoogleUser = async (
             },
         },
         update: {
-            google_oauth: {
+            googleOauth: {
                 upsert: {
                     update: {
                         access_token: authorization.access_token,
@@ -96,11 +96,11 @@ const createUser = async (
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
 	return prisma.user.create({
 		data: {
-			fortytwo_user_id: null,
+			fortytwoUserId: null,
 			email: mail,
 			passwordHash: await bcrypt.hash(password, 10),
-			fortytwo_oauth: undefined,
-			fortytwo_oauth_id: null,
+			fortytwoOauth: undefined,
+			fortytwoOauthId: null,
 			username: username,
 		},
 	});

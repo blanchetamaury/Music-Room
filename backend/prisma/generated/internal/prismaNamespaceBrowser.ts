@@ -51,9 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Album: 'Album',
+  Artist: 'Artist',
   Follow: 'Follow',
-  fortytwo_oauth: 'fortytwo_oauth',
-  Google_oauth: 'Google_oauth',
+  FortytwoOauth: 'FortytwoOauth',
+  Genre: 'Genre',
+  GoogleOauth: 'GoogleOauth',
   Like: 'Like',
   PlayHistory: 'PlayHistory',
   Playlist: 'Playlist',
@@ -80,6 +83,43 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const AlbumScalarFieldEnum = {
+  id: 'id',
+  deezerCUID: 'deezerCUID',
+  title: 'title',
+  cover: 'cover',
+  coverMedium: 'coverMedium',
+  coverBig: 'coverBig',
+  label: 'label',
+  recordType: 'recordType',
+  nbTracks: 'nbTracks',
+  fans: 'fans',
+  duration: 'duration',
+  explicitLyrics: 'explicitLyrics',
+  explicitContentCover: 'explicitContentCover',
+  releaseDate: 'releaseDate',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
+
+
+export const ArtistScalarFieldEnum = {
+  id: 'id',
+  deezerCUID: 'deezerCUID',
+  name: 'name',
+  pictureSmall: 'pictureSmall',
+  pictureMedium: 'pictureMedium',
+  pictureBig: 'pictureBig',
+  nbFan: 'nbFan',
+  nbAlbum: 'nbAlbum',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArtistScalarFieldEnum = (typeof ArtistScalarFieldEnum)[keyof typeof ArtistScalarFieldEnum]
+
+
 export const FollowScalarFieldEnum = {
   followerId: 'followerId',
   followingId: 'followingId',
@@ -89,17 +129,29 @@ export const FollowScalarFieldEnum = {
 export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
-export const Fortytwo_oauthScalarFieldEnum = {
+export const FortytwoOauthScalarFieldEnum = {
   id: 'id',
   access_token: 'access_token',
   refresh_token: 'refresh_token',
   valid_until: 'valid_until'
 } as const
 
-export type Fortytwo_oauthScalarFieldEnum = (typeof Fortytwo_oauthScalarFieldEnum)[keyof typeof Fortytwo_oauthScalarFieldEnum]
+export type FortytwoOauthScalarFieldEnum = (typeof FortytwoOauthScalarFieldEnum)[keyof typeof FortytwoOauthScalarFieldEnum]
 
 
-export const Google_oauthScalarFieldEnum = {
+export const GenreScalarFieldEnum = {
+  id: 'id',
+  deezerCUID: 'deezerCUID',
+  name: 'name',
+  pictureSmall: 'pictureSmall',
+  pictureMedium: 'pictureMedium',
+  pictureBig: 'pictureBig'
+} as const
+
+export type GenreScalarFieldEnum = (typeof GenreScalarFieldEnum)[keyof typeof GenreScalarFieldEnum]
+
+
+export const GoogleOauthScalarFieldEnum = {
   id: 'id',
   access_token: 'access_token',
   refresh_token: 'refresh_token',
@@ -107,7 +159,7 @@ export const Google_oauthScalarFieldEnum = {
   expires_in: 'expires_in'
 } as const
 
-export type Google_oauthScalarFieldEnum = (typeof Google_oauthScalarFieldEnum)[keyof typeof Google_oauthScalarFieldEnum]
+export type GoogleOauthScalarFieldEnum = (typeof GoogleOauthScalarFieldEnum)[keyof typeof GoogleOauthScalarFieldEnum]
 
 
 export const LikeScalarFieldEnum = {
@@ -133,12 +185,11 @@ export type PlayHistoryScalarFieldEnum = (typeof PlayHistoryScalarFieldEnum)[key
 export const PlaylistScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
-  coverUrl: 'coverUrl',
-  isPublic: 'isPublic',
   ownerId: 'ownerId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  cover: 'cover',
+  description: 'description',
+  private: 'private',
+  created_at: 'created_at'
 } as const
 
 export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum]
@@ -146,11 +197,10 @@ export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typ
 
 export const PlaylistTrackScalarFieldEnum = {
   id: 'id',
-  playlistId: 'playlistId',
-  trackId: 'trackId',
   position: 'position',
   addedAt: 'addedAt',
-  addedById: 'addedById'
+  playlistId: 'playlistId',
+  trackId: 'trackId'
 } as const
 
 export type PlaylistTrackScalarFieldEnum = (typeof PlaylistTrackScalarFieldEnum)[keyof typeof PlaylistTrackScalarFieldEnum]
@@ -179,25 +229,19 @@ export type ResetPasswordScalarFieldEnum = (typeof ResetPasswordScalarFieldEnum)
 
 export const TrackScalarFieldEnum = {
   id: 'id',
-  deezerId: 'deezerId',
+  deezerCUID: 'deezerCUID',
   title: 'title',
   titleShort: 'titleShort',
   duration: 'duration',
-  isrc: 'isrc',
   explicit: 'explicit',
   previewUrl: 'previewUrl',
   releaseDate: 'releaseDate',
   rank: 'rank',
   trackPosition: 'trackPosition',
   diskNumber: 'diskNumber',
-  artistDeezerId: 'artistDeezerId',
-  artistName: 'artistName',
-  artistPicture: 'artistPicture',
-  albumDeezerId: 'albumDeezerId',
-  albumTitle: 'albumTitle',
-  albumCover: 'albumCover',
-  albumCoverBig: 'albumCoverBig',
-  fetchedAt: 'fetchedAt',
+  bpm: 'bpm',
+  explicitContentCover: 'explicitContentCover',
+  albumId: 'albumId',
   updatedAt: 'updatedAt'
 } as const
 
@@ -212,9 +256,9 @@ export const UserScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   deezerUserId: 'deezerUserId',
   deezerAccessToken: 'deezerAccessToken',
-  fortytwo_oauth_id: 'fortytwo_oauth_id',
-  fortytwo_user_id: 'fortytwo_user_id',
-  google_oauth_id: 'google_oauth_id',
+  fortytwoOauthId: 'fortytwoOauthId',
+  fortytwoUserId: 'fortytwoUserId',
+  googleOauthId: 'googleOauthId',
   createdAt: 'createdAt'
 } as const
 

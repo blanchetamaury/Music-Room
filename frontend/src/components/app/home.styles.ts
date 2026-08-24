@@ -9,7 +9,7 @@ export const homeStyles = StyleSheet.create({
 	},
 	backgroundOverlay: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(4, 7, 18, 0.42)',
+		backgroundColor: 'rgba(4, 7, 18, 0.7)',
 	},
 	homeContent: {
 		flex: 1,
@@ -314,7 +314,7 @@ export const homeStyles = StyleSheet.create({
 	searchRoot: {
 		flex: 1,
 		width: '100%',
-		backgroundColor: '#080b1a',
+		backgroundColor: '#080b1a00',
 	},
 	searchContent: {
 		flex: 1,

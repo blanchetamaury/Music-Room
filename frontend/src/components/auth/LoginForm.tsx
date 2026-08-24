@@ -12,11 +12,12 @@ import {
 	View,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
+import { InputForm } from '../InputForm';
+import { InputPasswordForm } from '../InputPasswordForm';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
-import { InputPasswordForm } from '../InputPasswordForm';
-import { InputForm } from '../InputForm';
+import { Separator, SeparatorFull } from '../ui/separator';
 
 export function LoginForm({
 	onLogin,
@@ -92,23 +93,17 @@ export function LoginForm({
 					Log in
 				</ThemedText>
 
-				<Pressable
-					onPress={() => onRegister?.()}
-					style={styles.topRightBtn}
-					accessibilityRole="button"
-					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-				>
-					<ThemedText
-						type="defaultSemiBold"
-						style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}
-					>
-						Sign in
-					</ThemedText>
-				</Pressable>
+				<SeparatorFull></SeparatorFull>
 
 				{error && <ThemedText style={styles.error}>{error}</ThemedText>}
 
-				<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
+				<InputForm
+					isEmail={true}
+					placeholder="Email"
+					inputValue={email}
+					setInputValue={setEmail}
+					setError={setError}
+				/>
 
 				<InputPasswordForm
 					placeholder="Password"
@@ -128,6 +123,17 @@ export function LoginForm({
 						{showPassword == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
 					</Pressable>
 				</InputPasswordForm>
+				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
+					<ThemedText
+						type="link"
+						style={{
+							color: '#0fa6d8',
+							fontSize: 13,
+						}}
+					>
+						Forgot password ?
+					</ThemedText>
+				</Pressable>
 
 				<Pressable
 					onPress={handleSubmit}
@@ -147,11 +153,7 @@ export function LoginForm({
 					)}
 				</Pressable>
 
-				<View style={styles.separatorRow}>
-					<View style={styles.separatorLine} />
-					<ThemedText style={styles.separatorText}>or</ThemedText>
-					<View style={styles.separatorLine} />
-				</View>
+				<Separator sepText="or"></Separator>
 
 				<Pressable
 					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
@@ -189,11 +191,39 @@ export function LoginForm({
 					</ThemedText>
 				</Pressable>
 
-				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
-					<ThemedText type="link" style={{ color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}` }}>
-						Forgot password?
+				<SeparatorFull></SeparatorFull>
+
+				<View style={styles.registerContainer}>
+					<ThemedText
+						style={{
+							color: colorScheme === 'light' ? '#000000' : '#ffffff',
+							fontSize: 13,
+						}}
+					>
+						Don't have an account yet ?
 					</ThemedText>
-				</Pressable>
+
+					<Pressable
+						onPress={() => onRegister?.()}
+						accessibilityRole="button"
+						hitSlop={{
+							top: 6,
+							bottom: 6,
+							left: 6,
+							right: 6,
+						}}
+					>
+						<ThemedText
+							type="link"
+							style={{
+								color: colorScheme === 'light' ? '#000000' : '#ffffff',
+								fontWeight: '600',
+							}}
+						>
+							Sign up
+						</ThemedText>
+					</Pressable>
+				</View>
 			</LiquidGlass>
 		</KeyboardAvoidingView>
 	);
@@ -217,7 +247,7 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 	},
 	title: {
-		marginBottom: 12,
+		textAlign: 'center',
 	},
 	error: {
 		marginTop: 6,
@@ -285,7 +315,7 @@ const styles = StyleSheet.create({
 	},
 	topRightBtn: {
 		position: 'absolute',
-		right: 12,
+		right: 0,
 		top: 12,
 		paddingVertical: 6,
 		paddingHorizontal: 10,
@@ -297,7 +327,14 @@ const styles = StyleSheet.create({
 		elevation: 6,
 	},
 	forgotBtn: {
-		marginTop: 10,
-		alignSelf: 'center',
+		marginTop: 5,
+		alignSelf: 'flex-end',
+	},
+	registerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		gap: 5,
+		marginTop: 18,
 	},
 });

@@ -4,10 +4,10 @@ import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, useColor
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useThemeColor } from '../../hooks/use-theme-color';
 import { api } from '../../lib/api/client';
+import { InputForm } from '../InputForm';
+import { InputPasswordForm } from '../InputPasswordForm';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-import { InputPasswordForm } from '../InputPasswordForm';
-import { InputForm } from '../InputForm';
 
 export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void; onResetComplete?: () => void }) {
 	const [email, setEmail] = useState('');
@@ -137,7 +137,13 @@ export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void
 
 			{!codeSent ? (
 				<>
-					<InputForm placeholder="Email" inputValue={email} setInputValue={setEmail} setError={setError} />
+					<InputForm
+						isEmail={true}
+						placeholder="Email"
+						inputValue={email}
+						setInputValue={setEmail}
+						setError={setError}
+					/>
 
 					<Pressable
 						onPress={sendCode}
