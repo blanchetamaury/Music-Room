@@ -1,13 +1,7 @@
-import { DeezerTrack } from '@/src/types/deezer/deezer';
-
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
-
-interface ApiResponse<T> {
-	success: boolean;
-	message?: string;
-	data?: T;
-}
-
+import { ApiResponse } from "@/src/types/api/ApiResponse";
+import { DeezerTrack } from "@/src/types/deezer/deezer";
+import { privateUser } from "@/src/types/user/PrivateUser";
+import { auth } from "./auth";
 interface TrackPayload {
 	track: DeezerTrack;
 }
@@ -43,8 +37,11 @@ export type DeezerAlbum = {
 	tracks?: [DeezerTrack];
 };
 
-async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
-	const url = `${API_BASE_URL}${endpoint}`;
+export async function fetchApi<T>(
+	endpoint: string,
+	options: RequestInit = {},
+): Promise<ApiResponse<T>> {
+	const url = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
 
 	const headers: HeadersInit = {
 		'Content-Type': 'application/json',
@@ -73,64 +70,12 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 }
 
 export const api = {
-	auth: {
-		login: (email: string, password: string) =>
-			fetchApi<{ user_id: string }>('/auth/login', {
-				method: 'POST',
-				body: JSON.stringify({
-					mail: email,
-					password,
-				}),
-			}),
-
-		signup: (email: string, password: string, username: string) =>
-			fetchApi<{ user_id: string }>('/auth/signup', {
-				method: 'POST',
-				body: JSON.stringify({
-					mail: email,
-					password,
-					username,
-				}),
-			}),
-
-		logout: () =>
-			fetchApi<void>('/auth/logout', {
-				method: 'POST',
-			}),
-
-		confirmMailAccount: (email: string, code: string) => {
-			return fetchApi<{ success: boolean }>('/auth/confirm', {
-				method: 'POST',
-				body: JSON.stringify({
-					mail: email,
-					code,
-				}),
-			});
-		},
-
-		resetPassword: {
-			request: (email: string) =>
-				fetchApi<void>('/auth/reset-password/request', {
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-					}),
-				}),
-
-			verify: (email: string, code: string, password: string) =>
-				fetchApi<void>('/auth/reset-password/verify', {
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						code,
-						password,
-					}),
-				}),
-		},
-
-		oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
+	auth: auth,
+	user : {
+		me: () => {
+			return fetchApi<privateUser>(`/user/me`);
+		}
 	},
-
 	deezer: {
 		music: {
 			top_music: (count: number) => {

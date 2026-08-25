@@ -247,7 +247,7 @@ export type GenreCreateInput = {
   pictureSmall?: string | null
   pictureMedium?: string | null
   pictureBig?: string | null
-  album?: Prisma.AlbumCreateNestedManyWithoutGenresInput
+  album?: Prisma.AlbumCreateNestedManyWithoutGenreInput
 }
 
 export type GenreUncheckedCreateInput = {
@@ -257,7 +257,7 @@ export type GenreUncheckedCreateInput = {
   pictureSmall?: string | null
   pictureMedium?: string | null
   pictureBig?: string | null
-  album?: Prisma.AlbumUncheckedCreateNestedManyWithoutGenresInput
+  album?: Prisma.AlbumUncheckedCreateNestedManyWithoutGenreInput
 }
 
 export type GenreUpdateInput = {
@@ -267,7 +267,7 @@ export type GenreUpdateInput = {
   pictureSmall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pictureMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pictureBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  album?: Prisma.AlbumUpdateManyWithoutGenresNestedInput
+  album?: Prisma.AlbumUpdateManyWithoutGenreNestedInput
 }
 
 export type GenreUncheckedUpdateInput = {
@@ -277,7 +277,7 @@ export type GenreUncheckedUpdateInput = {
   pictureSmall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pictureMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pictureBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  album?: Prisma.AlbumUncheckedUpdateManyWithoutGenresNestedInput
+  album?: Prisma.AlbumUncheckedUpdateManyWithoutGenreNestedInput
 }
 
 export type GenreCreateManyInput = {
@@ -307,14 +307,9 @@ export type GenreUncheckedUpdateManyInput = {
   pictureBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type GenreListRelationFilter = {
-  every?: Prisma.GenreWhereInput
-  some?: Prisma.GenreWhereInput
-  none?: Prisma.GenreWhereInput
-}
-
-export type GenreOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type GenreNullableScalarRelationFilter = {
+  is?: Prisma.GenreWhereInput | null
+  isNot?: Prisma.GenreWhereInput | null
 }
 
 export type GenreCountOrderByAggregateInput = {
@@ -344,42 +339,20 @@ export type GenreMinOrderByAggregateInput = {
   pictureBig?: Prisma.SortOrder
 }
 
-export type GenreCreateNestedManyWithoutAlbumInput = {
-  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput> | Prisma.GenreCreateWithoutAlbumInput[] | Prisma.GenreUncheckedCreateWithoutAlbumInput[]
-  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput | Prisma.GenreCreateOrConnectWithoutAlbumInput[]
-  connect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
+export type GenreCreateNestedOneWithoutAlbumInput = {
+  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput>
+  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput
+  connect?: Prisma.GenreWhereUniqueInput
 }
 
-export type GenreUncheckedCreateNestedManyWithoutAlbumInput = {
-  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput> | Prisma.GenreCreateWithoutAlbumInput[] | Prisma.GenreUncheckedCreateWithoutAlbumInput[]
-  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput | Prisma.GenreCreateOrConnectWithoutAlbumInput[]
-  connect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-}
-
-export type GenreUpdateManyWithoutAlbumNestedInput = {
-  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput> | Prisma.GenreCreateWithoutAlbumInput[] | Prisma.GenreUncheckedCreateWithoutAlbumInput[]
-  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput | Prisma.GenreCreateOrConnectWithoutAlbumInput[]
-  upsert?: Prisma.GenreUpsertWithWhereUniqueWithoutAlbumInput | Prisma.GenreUpsertWithWhereUniqueWithoutAlbumInput[]
-  set?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  disconnect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  delete?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  connect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  update?: Prisma.GenreUpdateWithWhereUniqueWithoutAlbumInput | Prisma.GenreUpdateWithWhereUniqueWithoutAlbumInput[]
-  updateMany?: Prisma.GenreUpdateManyWithWhereWithoutAlbumInput | Prisma.GenreUpdateManyWithWhereWithoutAlbumInput[]
-  deleteMany?: Prisma.GenreScalarWhereInput | Prisma.GenreScalarWhereInput[]
-}
-
-export type GenreUncheckedUpdateManyWithoutAlbumNestedInput = {
-  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput> | Prisma.GenreCreateWithoutAlbumInput[] | Prisma.GenreUncheckedCreateWithoutAlbumInput[]
-  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput | Prisma.GenreCreateOrConnectWithoutAlbumInput[]
-  upsert?: Prisma.GenreUpsertWithWhereUniqueWithoutAlbumInput | Prisma.GenreUpsertWithWhereUniqueWithoutAlbumInput[]
-  set?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  disconnect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  delete?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  connect?: Prisma.GenreWhereUniqueInput | Prisma.GenreWhereUniqueInput[]
-  update?: Prisma.GenreUpdateWithWhereUniqueWithoutAlbumInput | Prisma.GenreUpdateWithWhereUniqueWithoutAlbumInput[]
-  updateMany?: Prisma.GenreUpdateManyWithWhereWithoutAlbumInput | Prisma.GenreUpdateManyWithWhereWithoutAlbumInput[]
-  deleteMany?: Prisma.GenreScalarWhereInput | Prisma.GenreScalarWhereInput[]
+export type GenreUpdateOneWithoutAlbumNestedInput = {
+  create?: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput>
+  connectOrCreate?: Prisma.GenreCreateOrConnectWithoutAlbumInput
+  upsert?: Prisma.GenreUpsertWithoutAlbumInput
+  disconnect?: Prisma.GenreWhereInput | boolean
+  delete?: Prisma.GenreWhereInput | boolean
+  connect?: Prisma.GenreWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GenreUpdateToOneWithWhereWithoutAlbumInput, Prisma.GenreUpdateWithoutAlbumInput>, Prisma.GenreUncheckedUpdateWithoutAlbumInput>
 }
 
 export type GenreCreateWithoutAlbumInput = {
@@ -405,32 +378,15 @@ export type GenreCreateOrConnectWithoutAlbumInput = {
   create: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput>
 }
 
-export type GenreUpsertWithWhereUniqueWithoutAlbumInput = {
-  where: Prisma.GenreWhereUniqueInput
+export type GenreUpsertWithoutAlbumInput = {
   update: Prisma.XOR<Prisma.GenreUpdateWithoutAlbumInput, Prisma.GenreUncheckedUpdateWithoutAlbumInput>
   create: Prisma.XOR<Prisma.GenreCreateWithoutAlbumInput, Prisma.GenreUncheckedCreateWithoutAlbumInput>
+  where?: Prisma.GenreWhereInput
 }
 
-export type GenreUpdateWithWhereUniqueWithoutAlbumInput = {
-  where: Prisma.GenreWhereUniqueInput
+export type GenreUpdateToOneWithWhereWithoutAlbumInput = {
+  where?: Prisma.GenreWhereInput
   data: Prisma.XOR<Prisma.GenreUpdateWithoutAlbumInput, Prisma.GenreUncheckedUpdateWithoutAlbumInput>
-}
-
-export type GenreUpdateManyWithWhereWithoutAlbumInput = {
-  where: Prisma.GenreScalarWhereInput
-  data: Prisma.XOR<Prisma.GenreUpdateManyMutationInput, Prisma.GenreUncheckedUpdateManyWithoutAlbumInput>
-}
-
-export type GenreScalarWhereInput = {
-  AND?: Prisma.GenreScalarWhereInput | Prisma.GenreScalarWhereInput[]
-  OR?: Prisma.GenreScalarWhereInput[]
-  NOT?: Prisma.GenreScalarWhereInput | Prisma.GenreScalarWhereInput[]
-  id?: Prisma.StringFilter<"Genre"> | string
-  deezerCUID?: Prisma.StringFilter<"Genre"> | string
-  name?: Prisma.StringFilter<"Genre"> | string
-  pictureSmall?: Prisma.StringNullableFilter<"Genre"> | string | null
-  pictureMedium?: Prisma.StringNullableFilter<"Genre"> | string | null
-  pictureBig?: Prisma.StringNullableFilter<"Genre"> | string | null
 }
 
 export type GenreUpdateWithoutAlbumInput = {
@@ -443,15 +399,6 @@ export type GenreUpdateWithoutAlbumInput = {
 }
 
 export type GenreUncheckedUpdateWithoutAlbumInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  pictureSmall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pictureMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pictureBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type GenreUncheckedUpdateManyWithoutAlbumInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string

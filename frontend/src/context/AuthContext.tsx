@@ -3,16 +3,12 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { storage } from '../lib/storage';
 import { performFortyTwoOAuth } from '../rest/fortytwo';
 import { performGoogleOAuth } from '../rest/google';
+import { privateUser } from '../types/user/PrivateUser';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-interface User {
-	id: string;
-	email: string;
-}
-
 interface AuthContextType {
-	user: User | null;
+	user: privateUser | null;
 	token: string | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<void>;
@@ -30,7 +26,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
 	const [token, setToken] = useState<string | null>(null);
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<privateUser | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -53,7 +49,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			});
 
 			setToken(storedToken);
-			setUser(res.data.user);
+			setUser(res.data.user.privateUser);
 		} catch (error) {
 			await storage.deleteItem('session');
 			setToken(null);
@@ -76,6 +72,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 		await storage.setItem('session', token);
 		setToken(token);
+		
+		const res = await axios.get(`${API_URL}/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+    	});
+		setUser(res.data.user);
 	};
 
 	const oauthGoogle = async () => {
@@ -84,6 +85,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 		await storage.setItem('session', token);
 		setToken(token);
+
+		const res = await axios.get(`${API_URL}/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+    	});
+		setUser(res.data.user);
 	};
 
 	const register = async (mail: string, password: string) => {

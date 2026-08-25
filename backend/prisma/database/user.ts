@@ -25,11 +25,11 @@ const createOrUpdateFortyTwoUser = async (
 			email: me.email,
 			username: me.usual_full_name,
 			avatarUrl: me.image.versions.medium,
-			FortytwoOauth: { create: { ...token_body } },
+			fortytwoOauth: { create: { ...token_body } },
 		},
 		update: {
 			fortytwoUserId: me.id,
-			FortytwoOauth: {
+			fortytwoOauth: {
 				upsert: {
 					update: { ...token_body },
 					create: { ...token_body },
@@ -132,4 +132,5 @@ const getUserById = async <T extends Prisma.UserInclude>(
 	});
 };
 
-export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserByMail, updateUserPassword, getUserById };
+export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserById, getUserByMail, updateUserPassword };
+

@@ -1,38 +1,23 @@
 import React from 'react';
-import { Pressable, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image, Pressable, View } from 'react-native';
 
+import { useAuth } from '@/src/context/AuthContext';
 import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';
 
 export type TabKey = 'home' | 'search' | 'profile';
 
-export function BottomNavigation({
-	activeTab,
-	onSelect,
-}: {
-	activeTab: TabKey;
-	onSelect: (tab: TabKey) => void;
-}) {
-	const insets = useSafeAreaInsets();
+export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; onSelect: (tab: TabKey) => void }) {
+	const { loading, user } = useAuth();
 
-	const tabs: Array<{
-		key: TabKey;
-		icon: React.ReactNode;
-	}> = [
-		{
-			key: 'search',
-			icon: <SearchIcon size={22} color="#fff" />,
-		},
-		{
-			key: 'home',
-			icon: <HomeIcon size={22} color="#fff" />,
-		},
-		{
-			key: 'profile',
-			icon: <UserIcon size={22} color="#fff" />,
-		},
+	const tabs: Array<{ key: TabKey; icon: React.ReactNode }> = [
+		{ key: 'search', icon: <SearchIcon size={22} color="#fff" /> },
+		{ key: 'home', icon: <HomeIcon size={22} color="#fff" /> },
+		{ key: 'profile', icon: user && !loading ? <Image 
+			source={{ uri: user.avatarUrl ?? undefined }} 
+			style={{ width: 22, height: 22, borderRadius: 11 }} 
+		/> : <UserIcon size={22} color="#fff"/>},
 	];
 
 	return (
@@ -51,7 +36,7 @@ export function BottomNavigation({
 			bottomLeftRadius={0}
 			bottomRightRadius={0}
 		>
-			{tabs.map(({ key, icon }) => (
+			{!loading && tabs.map(({ key, icon }) => (
 				<Pressable
 					key={key}
 					style={[
