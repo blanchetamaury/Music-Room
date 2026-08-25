@@ -1,20 +1,28 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import {
+	ActivityIndicator,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	TextInput,
+	View,
+} from 'react-native';
 
 import { api } from '@/src/lib/api/client';
-
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { setTracks } from '@/src/utils/debug';
+
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 import { SeparatorFull } from '../../ui/separator';
 import { homeStyles } from '../home.styles';
-import { SongProfileMobile } from '../SongProfileMobile';
+
 import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
+import { SongProfileMobile } from './SongProfileMobile';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -37,6 +45,7 @@ const searchPlaylists = [
 
 interface SearchPageProps {
 	onNavigateHome?: (playlistId: number) => void;
+	onPlayTrack?: (track: DeezerTrack) => void;
 }
 
 type PopupState =
@@ -54,7 +63,10 @@ type PopupState =
 	  }
 	| null;
 
-export function SearchPage({ onNavigateHome }: SearchPageProps) {
+export function SearchPage({
+	onNavigateHome,
+	onPlayTrack,
+}: SearchPageProps) {
 	const [query, setQuery] = useState('');
 	const [tracks, setTracksState] = useState<DeezerTrack[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
@@ -75,7 +87,9 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					data = await api.deezer.search(value, 20);
 				}
 
-				const list = Array.isArray(data.data) ? data.data : (data.data as any)?.data;
+				const list = Array.isArray(data.data)
+					? data.data
+					: (data.data as any)?.data;
 
 				if (!Array.isArray(list)) {
 					setTracksState([]);
@@ -83,12 +97,18 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					return;
 				}
 
-				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover === 'string');
+				const validTracks = list.filter(
+					(track: DeezerTrack) =>
+						typeof track.album?.cover === 'string',
+				);
 
 				setTracksState(validTracks);
 				setTracks(validTracks);
 			} catch (error) {
-				console.error('[SearchPage] search failed', error);
+				console.error(
+					'[SearchPage] search failed',
+					error,
+				);
 			} finally {
 				setTracksLoading(false);
 			}
@@ -132,7 +152,9 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
+				<ThemedText style={homeStyles.sectionTitle}>
+					Playlists
+				</ThemedText>
 
 				<View style={styles.playlistContainer}>
 					<ScrollView
@@ -142,15 +164,25 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						contentContainerStyle={styles.playlistContent}
 					>
 						{searchPlaylists.map((playlist) => (
-							<View key={playlist.id} style={styles.playlistItem}>
+							<View
+								key={playlist.id}
+								style={styles.playlistItem}
+							>
 								<PlaylistDisplay id={playlist.id} />
 							</View>
 						))}
 					</ScrollView>
 
-					<View style={styles.playlistFades} pointerEvents="none">
+					<View
+						style={styles.playlistFades}
+						pointerEvents="none"
+					>
 						<LinearGradient
-							colors={['rgba(8,11,26,0.65)', 'rgba(8,11,26,0.15)', 'transparent']}
+							colors={[
+								'rgba(8,11,26,0.65)',
+								'rgba(8,11,26,0.15)',
+								'transparent',
+							]}
 							locations={[0, 0.45, 1]}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 1, y: 0 }}
@@ -158,7 +190,11 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						/>
 
 						<LinearGradient
-							colors={['transparent', 'rgba(8,11,26,0.15)', 'rgba(8,11,26,0.65)']}
+							colors={[
+								'transparent',
+								'rgba(8,11,26,0.15)',
+								'rgba(8,11,26,0.65)',
+							]}
 							locations={[0, 0.55, 1]}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 1, y: 0 }}
@@ -169,20 +205,31 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>Songs</ThemedText>
+				<ThemedText style={homeStyles.sectionTitle}>
+					Songs
+				</ThemedText>
 
 				<View style={styles.songSection}>
 					<View style={styles.songListShell}>
 						{tracksLoading ? (
 							<View style={styles.loadingContainer}>
-								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
+								<ActivityIndicator
+									size="small"
+									color="rgba(255,255,255,0.7)"
+								/>
 
-								<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
+								<ThemedText
+									style={styles.loadingText}
+								>
+									Loading songs...
+								</ThemedText>
 							</View>
 						) : (
 							<ScrollView
 								style={styles.songListScroll}
-								contentContainerStyle={styles.songListContent}
+								contentContainerStyle={
+									styles.songListContent
+								}
 								showsVerticalScrollIndicator={false}
 								bounces
 							>
@@ -202,7 +249,11 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						)}
 
 						<LinearGradient
-							colors={['rgba(10,12,18,0.95)', 'rgba(10,12,18,0.4)', 'transparent']}
+							colors={[
+								'rgba(10,12,18,0.95)',
+								'rgba(10,12,18,0.4)',
+								'transparent',
+							]}
 							locations={[0, 0.45, 1]}
 							style={styles.songListFade}
 							pointerEvents="none"
@@ -216,6 +267,10 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					{popup.type === 'song' && (
 						<SongProfileMobile
 							song={popup.song}
+							onPlay={() => {
+								onPlayTrack?.(popup.song);
+								setPopup(null);
+							}}
 							onArtistPress={(artistId) =>
 								setPopup({
 									type: 'artist',
@@ -231,7 +286,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 						/>
 					)}
 
-					{popup.type === 'artist' && (
+					{/* {popup.type === 'artist' && (
 						<ArtistProfileMobile
 							id={popup.id}
 							onSongPress={(song) =>
@@ -247,7 +302,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 								})
 							}
 						/>
-					)}
+					)} */}
 
 					{popup.type === 'album' && (
 						<AlbumProfileMobile

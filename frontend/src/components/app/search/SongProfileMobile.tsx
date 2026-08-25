@@ -22,12 +22,13 @@ import {
 
 import { api } from '@/src/lib/api/client';
 import { DeezerTrack } from '@/src/types/deezer/deezer';
-import { ThemedText } from '../themed-text';
-import { HoverText } from '../ui/hoverText';
-import { SeparatorFull } from '../ui/separator';
+import { ThemedText } from '../../themed-text';
+import { HoverText } from '../../ui/hoverText';
+import { SeparatorFull } from '../../ui/separator';
 
 interface SongProfileProps {
 	song: DeezerTrack;
+	onPlay?: () => void;
 	onArtistPress?: (artistId: string | number) => void;
 	onAlbumPress?: (albumId: string | null) => void;
 }
@@ -58,6 +59,7 @@ const debugBox = (color: string) => {
 
 export function SongProfileMobile({
 	song,
+	onPlay,
 	onArtistPress,
 	onAlbumPress,
 }: SongProfileProps) {
@@ -74,7 +76,9 @@ export function SongProfileMobile({
 				setError(null);
 
 				const data: ApiResponse<TrackPayload> =
-					await api.deezer.music.music(Number(song.id));
+					await api.deezer.music.music(
+						Number(song.id),
+					);
 
 				const track = data.data?.track;
 
@@ -88,7 +92,12 @@ export function SongProfileMobile({
 				if (isMounted) {
 					setMusic(track);
 				}
-			} catch {
+			} catch (error) {
+				console.error(
+					'[SongProfile] Failed to load track:',
+					error,
+				);
+
 				if (isMounted) {
 					setError('Failed to load track');
 				}
@@ -104,11 +113,16 @@ export function SongProfileMobile({
 		return () => {
 			isMounted = false;
 		};
-	}, [song.id]);
+	}, [song.deezerCUID]);
 
 	if (loading) {
 		return (
-			<View style={[styles.container, debugBox('#ff0000')]}>
+			<View
+				style={[
+					styles.container,
+					debugBox('#ff0000'),
+				]}
+			>
 				<ThemedText>Chargement...</ThemedText>
 			</View>
 		);
@@ -116,7 +130,12 @@ export function SongProfileMobile({
 
 	if (error || !music) {
 		return (
-			<View style={[styles.container, debugBox('#ff0000')]}>
+			<View
+				style={[
+					styles.container,
+					debugBox('#ff0000'),
+				]}
+			>
 				<ThemedText>
 					{error ?? 'Aucune donnée'}
 				</ThemedText>
@@ -127,7 +146,12 @@ export function SongProfileMobile({
 	const albumName = music.album?.title ?? 'Album';
 
 	return (
-		<View style={[styles.container, debugBox('#ff0000')]}>
+		<View
+			style={[
+				styles.container,
+				debugBox('#ff0000'),
+			]}
+		>
 			<Pressable
 				style={[
 					styles.albumButton,
@@ -239,7 +263,10 @@ export function SongProfileMobile({
 						debugBox('#ff0000'),
 					]}
 					onPress={() => {
-						console.log('[SongProfile] Like:', music.id);
+						console.log(
+							'[SongProfile] Like:',
+							music.deezerCUID,
+						);
 					}}
 				>
 					<Heart
@@ -255,7 +282,12 @@ export function SongProfileMobile({
 						debugBox('#00ff00'),
 					]}
 					onPress={() => {
-						console.log('[SongProfile] Play:', music.id);
+						console.log(
+							'[SongProfile] Play:',
+							music.deezerCUID,
+						);
+
+						onPlay?.();
 					}}
 				>
 					<Play
@@ -274,7 +306,7 @@ export function SongProfileMobile({
 					onPress={() => {
 						console.log(
 							'[SongProfile] Add to playlist:',
-							music.id,
+							music.deezerCUID,
 						);
 					}}
 				>
@@ -437,7 +469,9 @@ function formatDuration(duration?: string | number) {
 	const minutes = Math.floor(totalSeconds / 60);
 	const seconds = totalSeconds % 60;
 
-	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+	return `${minutes}:${seconds
+		.toString()
+		.padStart(2, '0')}`;
 }
 
 function ScrollingTitle({
@@ -462,6 +496,7 @@ function ScrollingTitle({
 				x: 0,
 				animated: false,
 			});
+
 			return;
 		}
 
@@ -499,7 +534,8 @@ function ScrollingTitle({
 		<View
 			style={[
 				styles.scrollingTitleWrapper,
-				!isOverflowing && styles.scrollingTitleCentered,
+				!isOverflowing &&
+					styles.scrollingTitleCentered,
 			]}
 			onLayout={(event) => {
 				setContainerWidth(
@@ -514,7 +550,8 @@ function ScrollingTitle({
 				scrollEnabled={false}
 				contentContainerStyle={[
 					styles.titleScrollContent,
-					!isOverflowing && styles.titleScrollCentered,
+					!isOverflowing &&
+						styles.titleScrollCentered,
 				]}
 			>
 				<View

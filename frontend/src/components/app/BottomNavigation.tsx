@@ -3,6 +3,7 @@ import { Image, Pressable, View } from 'react-native';
 
 import { useAuth } from '@/src/context/AuthContext';
 import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';
 
@@ -10,6 +11,7 @@ export type TabKey = 'home' | 'search' | 'profile';
 
 export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; onSelect: (tab: TabKey) => void }) {
 	const { loading, user } = useAuth();
+	const insets = useSafeAreaInsets();
 
 	const tabs: Array<{ key: TabKey; icon: React.ReactNode }> = [
 		{ key: 'search', icon: <SearchIcon size={22} color="#fff" /> },

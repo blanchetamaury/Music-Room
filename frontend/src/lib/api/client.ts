@@ -85,6 +85,7 @@ export const api = {
 				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
+		
 		album: {},
 		
 		search: (search: string, limit: number) => {

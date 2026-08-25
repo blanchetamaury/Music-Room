@@ -94,5 +94,3 @@ export const playlistSongs = [
 		preview: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3',
 	},
 ] as const;
-
-export type Track = (typeof playlistSongs)[number];
