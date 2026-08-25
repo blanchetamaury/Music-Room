@@ -3,17 +3,24 @@ import { Prisma } from "../generated/client";
 import { prisma } from "./prisma";
 
 const createOrUpdatePlaylist = async (
-	data: CreatePlaylist
+	data: CreatePlaylist,
+	ownerId: string
 ): Promise<Prisma.PlaylistGetPayload<Prisma.PlaylistDefaultArgs>> => {
 	return prisma.playlist.upsert({
 		where: {
 			name_ownerId: {
 				name: data.name,
-				ownerId: data.ownerId,
+				ownerId: ownerId,
 			}
 		},
-		create: data,
-		update: data,
+		create: {
+			...data,
+			ownerId: ownerId,
+		},
+		update: {
+			...data,
+			ownerId: ownerId,
+		},
 	});
 };
 

@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
 
@@ -16,6 +16,9 @@ import { homeStyles } from '../home.styles';
 import { SongProfile } from '../SongProfile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
+import { InputForm } from '../../InputForm';
+import { EyeClosed, EyeIcon } from 'lucide-react-native';
+import { useAuth } from '@/src/context/AuthContext';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -53,6 +56,10 @@ type PopupState =
 			type: 'album';
 			id: string;
 	  }
+	| {
+			type: 'addPlaylist';
+			id: string;
+	  }
 	| null;
 
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
@@ -60,6 +67,11 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 	const [tracks, setTracksState] = useState<DeezerTrack[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
 	const [popup, setPopup] = useState<PopupState>(null);
+	const [ urlImage, setUrlImage ] = useState<string>('');
+	const [ visibilityPlaylist, setVisibilityPlaylist ] = useState<boolean>(false);
+	const [ playlistName, setPlaylistName ] = useState<string>('');
+	const [ playlistDescription, setPlaylistDescription ] = useState<string>('');
+	const { token } = useAuth();
 
 	useEffect(() => {
 		const timeout = setTimeout(async () => {
@@ -98,6 +110,15 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 		return () => clearTimeout(timeout);
 	}, [query]);
 
+	const addPlaylistToDb = async () => {
+		const data = await api.user.playlist(playlistName, urlImage, playlistDescription, visibilityPlaylist, token ?? '');
+		if (data.success) {
+			setUrlImage('');
+			setPlaylistName('');
+			setPlaylistDescription('');
+		}
+	}
+
 	return (
 		<View style={styles.searchRoot}>
 			<View style={styles.searchContent}>
@@ -133,8 +154,17 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
-
+				
+				<View style={{ display: 'flex', flexDirection: 'row', gap: 20 }}>
+					<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
+					<Pressable style={ homeStyles.sectionTitle} 
+						onPress={() =>
+							setPopup({
+								type: 'addPlaylist',
+								id: '',
+							})
+						}>Add playlist</Pressable>
+				</View>
 				<View style={styles.playlistContainer}>
 					<ScrollView
 						horizontal
@@ -266,6 +296,48 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 								})
 							}
 						/>
+					)}
+
+					{popup.type === 'addPlaylist' && (
+						<View style={{ padding: 20, flexDirection: 'row', gap: 25 }}>
+							<View style={{ width: 250, height: 250, backgroundColor: '#ffffffd0', borderRadius: 15, overflow: 'hidden' }}>
+								{urlImage ? (
+									<Image source={{ uri: urlImage }} style={{ width: 250, height: 250 }} />
+								) : null}
+							</View>
+							<View style={{ display: 'flex', padding: 10, flexDirection: 'column', gap: 10 }}>
+								<InputForm
+									isEmail={false}
+									placeholder="Playlist name"
+									inputValue={playlistName}
+									setInputValue={setPlaylistName}
+								/>
+								<InputForm
+									isEmail={false}
+									placeholder="Description"
+									inputValue={playlistDescription}
+									setInputValue={setPlaylistDescription}
+								/>
+								<InputForm
+									isEmail={false}
+									placeholder="Image Url"
+									inputValue={urlImage}
+									setInputValue={setUrlImage}
+								/>
+								<View>
+									<ThemedText style={{ color: '#ffffff' }}>Playlist visibility</ThemedText>
+									<Pressable onPress={() => setVisibilityPlaylist(!visibilityPlaylist)}>
+										{visibilityPlaylist ? <EyeIcon color={'#ffffff'} /> : <EyeClosed color={'#ffffff'} />}
+									</Pressable>
+								</View>
+								<Pressable>
+									<ThemedText style={{ color: '#ffffff' }} onPress={() => {
+										addPlaylistToDb();
+										setPopup(null);
+									}}>ADD</ThemedText>
+								</Pressable>
+							</View>
+						</View>
 					)}
 				</Popup>
 			)}

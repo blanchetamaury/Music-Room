@@ -74,6 +74,18 @@ export const api = {
 	user : {
 		me: () => {
 			return fetchApi<privateUser>(`/user/me`);
+		},
+		playlist: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
+			return fetchApi<{ success: boolean, status: number }>(`/user/playlist/add`, {
+				method: 'POST',
+				body: JSON.stringify({
+					name: name,
+					cover: cover,
+					description: description,
+					private: privatePlaylist,
+				}),
+				headers: { Authorization: `Bearer ${token}` },
+		});
 		}
 	},
 	deezer: {
