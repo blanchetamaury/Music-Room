@@ -1,13 +1,13 @@
-import { OutputTrackDeezer } from "@/types/deezer/deezer";
-import { prisma } from "./prisma";
-import { mapTrack } from "@/format/mapTrack";
-import { createAllDataTrack } from "@/types/track/track";
-import { findArtist } from "./artist";
-import { mapArtist } from "@/format/mapArtist";
-import { findAlbum } from "./album";
 import { mapAlbum } from "@/format/mapAlbum";
-import { findGenre } from "./genre";
+import { mapArtist } from "@/format/mapArtist";
 import { mapGenre } from "@/format/mapGenre";
+import { mapTrack } from "@/format/mapTrack";
+import { OutputTrackDeezer } from "@/types/deezer/deezer";
+import { createAllDataTrack } from "@/types/track/track";
+import { findAlbum } from "./album";
+import { findArtist } from "./artist";
+import { findGenre } from "./genre";
+import { prisma } from "./prisma";
 
 const DEEZER_API = 'https://api.deezer.com'
 
@@ -31,7 +31,7 @@ const getDeezerTrack = async (deezerId: string): Promise<OutputTrackDeezer> => {
 
 	const json = await res.json()
 	if (json.error) {
-		throw new Error(`Deezer error: ${json.error.message ?? 'unknown'}`)
+		throw new Error(`Deezer error: ${json.error.message ?? 'unknown'} ${deezerId}`)
 	}
 	return mapTrack(json);
 }
@@ -87,4 +87,4 @@ const getAlbumToDeezer = async (track: OutputTrackDeezer, newTrack: createAllDat
   return newTrack;
 };
 
-export { findTrackToDb, getDeezerTrack, listArtist, getAlbumToDeezer }
+export { findTrackToDb, getAlbumToDeezer, getDeezerTrack, listArtist };

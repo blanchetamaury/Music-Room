@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react';
+import { Clock3 } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
 import {
 	Image,
+	Pressable,
 	ScrollView,
 	StyleSheet,
 	View,
 } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
+import { outputAPITrack } from '@/src/types/album/album';
 import { DeezerAlbum, DeezerTrack } from '@/src/types/deezer/deezer';
-import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
+import {
+	setTracks as setDebugTracks,
+	setProfile,
+} from '@/src/utils/debug';
 
 import { ThemedText } from '../../themed-text';
+import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
-import { SongDisplayMobile } from './SongDisplayMobile';
 
 interface AlbumProfileProps {
 	id: string;
@@ -20,7 +26,7 @@ interface AlbumProfileProps {
 	onSongPress?: (song: DeezerTrack) => void;
 }
 
-const DEBUG = true;
+const DEBUG = false;
 
 const debugBox = (color: string) => {
 	if (!DEBUG) {
@@ -40,7 +46,7 @@ export function AlbumProfileMobile({
 	onSongPress,
 }: AlbumProfileProps) {
 	const [album, setAlbum] = useState<DeezerAlbum | null>(null);
-	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
+	const [tracks, setTracks] = useState<outputAPITrack[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -52,28 +58,54 @@ export function AlbumProfileMobile({
 				setLoading(true);
 				setError(null);
 
-				const response = await api.deezer.album();
+				const response = await api.deezer.album.album(id);
 
-				if (!response?.data) {
+				console.log(
+					'[AlbumProfileMobile] response:',
+					JSON.stringify(response, null, 2),
+				);
+
+				const albumData = response?.data?.albumRes;
+
+				if (!albumData) {
+					console.warn(
+						'[AlbumProfileMobile] No album returned',
+					);
+
 					if (isMounted) {
 						setError('No album returned');
 					}
+
 					return;
 				}
 
-				const data = response.data;
-				const albumTracks = data.tracks?.data ?? [];
+				const albumTracks = [...(albumData.tracks ?? [])].sort((a, b) => {
+					if (a.trackPosition == null) return 1;
+					if (b.trackPosition == null) return -1;
+
+					return a.trackPosition - b.trackPosition;
+				});
+
+				console.log(
+					'[AlbumProfileMobile] album:',
+					JSON.stringify(albumData, null, 2),
+				);
+
+				console.log(
+					'[AlbumProfileMobile] tracks:',
+					JSON.stringify(albumTracks, null, 2),
+				);
 
 				if (isMounted) {
-					setAlbum(data);
+					setAlbum(albumData);
 					setTracks(albumTracks);
 				}
 
 				setDebugTracks(albumTracks);
-				setProfile(data);
+				setProfile(albumData);
 			} catch (error) {
 				console.error(
-					'[AlbumProfile] failed to fetch album:',
+					'[AlbumProfileMobile] failed to fetch album:',
 					error,
 				);
 
@@ -130,6 +162,9 @@ export function AlbumProfileMobile({
 		album.cover ??
 		null;
 
+	const releaseDate = tracks[0]?.releaseDate;
+	const albumArtist = getAlbumArtist(album, tracks);
+
 	return (
 		<View
 			style={[
@@ -139,7 +174,7 @@ export function AlbumProfileMobile({
 		>
 			<View
 				style={[
-					styles.header,
+					styles.albumHeader,
 					debugBox('#ff8800'),
 				]}
 			>
@@ -162,7 +197,7 @@ export function AlbumProfileMobile({
 						<View
 							style={[
 								styles.coverPlaceholder,
-								debugBox('#00ffff'),
+								debugBox('#ffffff'),
 							]}
 						/>
 					)}
@@ -170,106 +205,63 @@ export function AlbumProfileMobile({
 
 				<View
 					style={[
-						styles.info,
+						styles.albumInfo,
 						debugBox('#0088ff'),
 					]}
 				>
-					<ThemedText
-						style={[
-							styles.title,
-							debugBox('#ffff00'),
-						]}
-						numberOfLines={2}
-					>
-						{album.title}
-					</ThemedText>
+					<ScrollingTitle
+						title={album.title ?? 'Album'}
+					/>
 
-					{album.releaseDate && (
-						<View
+					{albumArtist && (
+						<HoverText
 							style={[
-								styles.metadata,
-								debugBox('#ff00ff'),
+								styles.albumArtist,
+								debugBox('#ffff00'),
 							]}
+							numberOfLines={1}
+							onPress={() => {
+								onArtistPress?.(
+									String(
+										albumArtist.deezerCUID ??
+											albumArtist.id ??
+											'',
+									),
+								);
+							}}
 						>
-							<ThemedText
-								style={styles.metadataText}
-							>
-								{formatDate(
-									album.releaseDate.toString(),
-								)}
-							</ThemedText>
-						</View>
+							{albumArtist.name}
+						</HoverText>
 					)}
+
+					<View
+						style={[
+							styles.albumStats,
+							debugBox('#ff00ff'),
+						]}
+					>
+						{album.fans != null && (
+							<InfoItem>
+								{album.fans.toLocaleString()} fans
+							</InfoItem>
+						)}
+
+						{album.duration != null && (
+							<InfoItem icon>
+								{formatDuration(album.duration)}
+							</InfoItem>
+						)}
+
+						{album.recordType && (
+							<InfoItem>
+								{formatRecordType(album.recordType)}
+							</InfoItem>
+						)}
+					</View>
 				</View>
 			</View>
 
 			<SeparatorFull />
-
-			<View
-				style={[
-					styles.stats,
-					debugBox('#00ffff'),
-				]}
-			>
-				{album.label && (
-					<View
-						style={[
-							styles.statItem,
-							debugBox('#ff8800'),
-						]}
-					>
-						<ThemedText style={styles.stat}>
-							{album.label}
-						</ThemedText>
-					</View>
-				)}
-
-				{album.label && (
-					<ThemedText style={styles.dot}>
-						●
-					</ThemedText>
-				)}
-
-				{album.fans != null && (
-					<ThemedText style={styles.dot}>
-						●
-					</ThemedText>
-				)}
-
-				{album.fans != null && (
-					<View
-						style={[
-							styles.statItem,
-							debugBox('#ff00ff'),
-						]}
-					>
-						<ThemedText style={styles.stat}>
-							{album.fans.toLocaleString()} fans
-						</ThemedText>
-					</View>
-				)}
-
-				{album.nbTracks != null && (
-					<>
-						{(album.fans != null) && (
-							<ThemedText style={styles.dot}>
-								●
-							</ThemedText>
-						)}
-
-						<View
-							style={[
-								styles.statItem,
-								debugBox('#8800ff'),
-							]}
-						>
-							<ThemedText style={styles.stat}>
-								{album.nbTracks.toLocaleString()} tracks
-							</ThemedText>
-						</View>
-					</>
-				)}
-			</View>
 
 			<View
 				style={[
@@ -293,18 +285,317 @@ export function AlbumProfileMobile({
 					debugBox('#00ff88'),
 				]}
 			>
-				{tracks.map((song, index) => (
-					<SongDisplayMobile
-						key={`${song.id}-${index}`}
-						song={song}
+				{tracks.map((track, index) => (
+					<AlbumTrack
+						key={`${track.id}-${index}`}
+						track={track}
+						index={index}
 						onPress={() => {
-							onSongPress?.(song);
+							onSongPress?.(
+								track as unknown as DeezerTrack,
+							);
 						}}
 					/>
 				))}
 			</ScrollView>
+
+			<SeparatorFull />
+
+			<View
+				style={[
+					styles.footer,
+					debugBox('#ff00ff'),
+				]}
+			>
+				{releaseDate && (
+					<View
+						style={[
+							styles.footerItem,
+							debugBox('#ff8800'),
+						]}
+					>
+						<ThemedText style={styles.footerLabel}>
+							Sortie
+						</ThemedText>
+
+						<ThemedText style={styles.footerValue}>
+							{formatDate(releaseDate.toString())}
+						</ThemedText>
+					</View>
+				)}
+
+				{album.label && (
+					<View
+						style={[
+							styles.footerItem,
+							debugBox('#00ffff'),
+						]}
+					>
+						<ThemedText style={styles.footerLabel}>
+							Label
+						</ThemedText>
+
+						<ThemedText
+							style={styles.footerValue}
+							numberOfLines={1}
+						>
+							{album.label}
+						</ThemedText>
+					</View>
+				)}
+			</View>
 		</View>
 	);
+}
+
+function AlbumTrack({
+	track,
+	index,
+	onPress,
+}: {
+	track: outputAPITrack;
+	index: number;
+	onPress: () => void;
+}) {
+	return (
+		<Pressable
+			style={[
+				styles.track,
+				debugBox('#ff8800'),
+			]}
+			onPress={onPress}
+		>
+			<View
+				style={[
+					styles.trackPositionContainer,
+					debugBox('#00ffff'),
+				]}
+			>
+				<ThemedText style={styles.trackPosition}>
+					{track.trackPosition ?? index + 1}
+				</ThemedText>
+			</View>
+
+			<View
+				style={[
+					styles.trackInfo,
+					debugBox('#ffff00'),
+				]}
+			>
+				<ThemedText
+					style={styles.trackName}
+					numberOfLines={1}
+				>
+					{track.title}
+				</ThemedText>
+			</View>
+
+			<View
+				style={[
+					styles.trackDuration,
+					debugBox('#ff00ff'),
+				]}
+			>
+				<ThemedText style={styles.trackDurationText}>
+					{formatDuration(track.duration)}
+				</ThemedText>
+			</View>
+		</Pressable>
+	);
+}
+
+function InfoItem({
+	children,
+	icon = false,
+}: {
+	children: React.ReactNode;
+	icon?: boolean;
+}) {
+	return (
+		<View
+			style={[
+				styles.infoItem,
+				debugBox('#00ff88'),
+			]}
+		>
+			{icon && (
+				<Clock3
+					size={14}
+					color="rgba(255,255,255,0.5)"
+				/>
+			)}
+
+			<ThemedText style={styles.infoText}>
+				{children}
+			</ThemedText>
+		</View>
+	);
+}
+
+function ScrollingTitle({
+	title,
+}: {
+	title: string;
+}) {
+	const scrollRef = useRef<ScrollView>(null);
+	const [contentWidth, setContentWidth] = useState(0);
+	const [containerWidth, setContainerWidth] = useState(0);
+
+	const isOverflowing =
+		contentWidth > 0 &&
+		containerWidth > 0 &&
+		contentWidth > containerWidth;
+
+	useEffect(() => {
+		if (!isOverflowing) {
+			scrollRef.current?.scrollTo({
+				x: 0,
+				animated: false,
+			});
+
+			return;
+		}
+
+		let position = 0;
+		let animationFrame: number;
+
+		const speed = 0.35;
+
+		const animate = () => {
+			position += speed;
+
+			if (position >= contentWidth + 40) {
+				position = 0;
+			}
+
+			scrollRef.current?.scrollTo({
+				x: position,
+				animated: false,
+			});
+
+			animationFrame = requestAnimationFrame(animate);
+		};
+
+		const timeout = setTimeout(() => {
+			animationFrame = requestAnimationFrame(animate);
+		}, 1000);
+
+		return () => {
+			clearTimeout(timeout);
+			cancelAnimationFrame(animationFrame);
+		};
+	}, [isOverflowing, contentWidth]);
+
+	return (
+		<View
+			style={[
+				styles.titleWrapper,
+				debugBox('#ff0000'),
+			]}
+			onLayout={(event) => {
+				setContainerWidth(
+					event.nativeEvent.layout.width,
+				);
+			}}
+		>
+			<ScrollView
+				ref={scrollRef}
+				horizontal
+				scrollEnabled={false}
+				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={[
+					styles.titleScrollContent,
+					!isOverflowing &&
+						styles.titleScrollCentered,
+				]}
+			>
+				<View
+					style={styles.titleContent}
+					onLayout={(event) => {
+						setContentWidth(
+							event.nativeEvent.layout.width,
+						);
+					}}
+				>
+					<ThemedText
+						style={[
+							styles.albumTitle,
+							debugBox('#ffff00'),
+						]}
+						numberOfLines={1}
+					>
+						{title}
+					</ThemedText>
+				</View>
+
+				{isOverflowing && (
+					<View
+						style={[
+							styles.titleDuplicate,
+							debugBox('#00ff00'),
+						]}
+					>
+						<ThemedText
+							style={styles.albumTitle}
+							numberOfLines={1}
+						>
+							{title}
+						</ThemedText>
+					</View>
+				)}
+			</ScrollView>
+		</View>
+	);
+}
+
+function getAlbumArtist(
+	album: DeezerAlbum,
+	tracks: outputAPITrack[],
+) {
+	const albumWithArtist = album as DeezerAlbum & {
+		artist?: {
+			id?: string | number;
+			deezerCUID?: string;
+			name?: string;
+		};
+	};
+
+	if (albumWithArtist.artist?.name) {
+		return albumWithArtist.artist;
+	}
+
+	const firstTrack = tracks[0] as
+		| (outputAPITrack & {
+				artist?: {
+					id?: string | number;
+					deezerCUID?: string;
+					name?: string;
+				};
+		  })
+		| undefined;
+
+	if (firstTrack?.artist?.name) {
+		return firstTrack.artist;
+	}
+
+	return null;
+}
+
+function formatRecordType(type?: string) {
+	if (!type) {
+		return '';
+	}
+
+	switch (type.toLowerCase()) {
+		case 'single':
+			return 'Single';
+		case 'ep':
+			return 'EP';
+		case 'album':
+			return 'Album';
+		default:
+			return type;
+	}
 }
 
 function formatDate(date?: string) {
@@ -325,100 +616,127 @@ function formatDate(date?: string) {
 	});
 }
 
+function formatDuration(duration?: string | number) {
+	if (duration == null) {
+		return '--:--';
+	}
+
+	const totalSeconds = Number(duration);
+
+	if (!Number.isFinite(totalSeconds)) {
+		return '--:--';
+	}
+
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = Math.floor(totalSeconds % 60);
+
+	return `${minutes}:${seconds
+		.toString()
+		.padStart(2, '0')}`;
+}
+
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		flex: 1,
+		height: "100%",
 		padding: 28,
 	},
 
-	header: {
+	albumHeader: {
 		width: '100%',
 		flexDirection: 'row',
-		alignItems: 'flex-start',
+		alignItems: 'center',
+		gap: 24,
 	},
 
 	coverContainer: {
-		width: 180,
-		height: 180,
-		marginRight: 24,
+		width: 150,
+		height: 150,
+		flexShrink: 0,
 	},
 
 	cover: {
-		width: 180,
-		height: 180,
-		borderRadius: 18,
+		width: '100%',
+		height: '100%',
+		borderRadius: 20,
 	},
 
 	coverPlaceholder: {
-		width: 180,
-		height: 180,
-		borderRadius: 18,
-		backgroundColor: 'rgba(255,255,255,0.1)',
-	},
-
-	info: {
-		flex: 1,
-		justifyContent: 'center',
-		paddingTop: 8,
-	},
-
-	title: {
-		fontSize: 28,
-		fontWeight: '700',
-		marginBottom: 10,
-	},
-
-	artist: {
-		fontSize: 16,
-		color: 'rgba(255,255,255,0.8)',
-		marginBottom: 14,
-	},
-
-	metadata: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		flexWrap: 'wrap',
-		gap: 8,
-	},
-
-	metadataText: {
-		fontSize: 14,
-		color: 'rgba(255,255,255,0.55)',
-	},
-
-	stats: {
 		width: '100%',
+		height: '100%',
+		borderRadius: 20,
+		backgroundColor: 'rgba(255,255,255,0.08)',
+	},
+
+	albumInfo: {
+		flex: 1,
+		minWidth: 0,
+		justifyContent: 'center',
+	},
+
+	titleWrapper: {
+		width: '100%',
+		overflow: 'hidden',
+	},
+
+	titleScrollContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+
+	titleScrollCentered: {
+		justifyContent: 'flex-start',
+	},
+
+	titleContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+
+	titleDuplicate: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginLeft: 50,
+	},
+
+	albumTitle: {
+		fontSize: 26,
+		fontWeight: '700',
+		color: '#fff',
+	},
+
+	albumArtist: {
+		marginTop: 8,
+		fontSize: 16,
+		color: 'rgba(255,255,255,0.65)',
+	},
+
+	albumStats: {
+		marginTop: 16,
 		flexDirection: 'row',
 		alignItems: 'center',
 		flexWrap: 'wrap',
-		justifyContent: 'center',
-		gap: 10,
-		marginTop: 18,
-		marginBottom: 20,
+		gap: 12,
 	},
 
-	statItem: {
+	infoItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		gap: 5,
 	},
 
-	stat: {
+	infoText: {
 		fontSize: 13,
 		color: 'rgba(255,255,255,0.6)',
-	},
-
-	dot: {
-		fontSize: 6,
-		color: 'rgba(255,255,255,0.35)',
 	},
 
 	trackHeader: {
 		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginBottom: 12,
 		gap: 8,
+		marginTop: 20,
+		marginBottom: 10,
 	},
 
 	trackTitle: {
@@ -428,17 +746,86 @@ const styles = StyleSheet.create({
 
 	trackCount: {
 		fontSize: 13,
-		color: 'rgba(255,255,255,0.45)',
+		color: 'rgba(255,255,255,0.4)',
 	},
 
 	trackList: {
+		width: '100%',
+		gap: 4,
+		paddingBottom: 10,
+	},
+
+	track: {
+		width: '100%',
+		minHeight: 48,
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 10,
+		borderRadius: 10,
+	},
+
+	trackPositionContainer: {
+		width: 32,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+
+	trackPosition: {
+		fontSize: 13,
+		color: 'rgba(255,255,255,0.35)',
+	},
+
+	trackInfo: {
+		flex: 1,
+		minWidth: 0,
+		paddingHorizontal: 8,
+	},
+
+	trackName: {
+		fontSize: 15,
+		color: 'rgba(255,255,255,0.85)',
+	},
+
+	trackDuration: {
+		width: 55,
+		alignItems: 'flex-end',
+	},
+
+	trackDurationText: {
+		fontSize: 13,
+		color: 'rgba(255,255,255,0.4)',
+	},
+
+	footer: {
+		width: '100%',
+		minHeight: 42,
+		marginTop: 18,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		gap: 20,
+	},
+
+	footerItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
 		gap: 8,
-		paddingBottom: 20,
+		maxWidth: '50%',
+	},
+
+	footerLabel: {
+		fontSize: 12,
+		color: 'rgba(255,255,255,0.35)',
+	},
+
+	footerValue: {
+		flexShrink: 1,
+		fontSize: 13,
+		color: 'rgba(255,255,255,0.6)',
 	},
 
 	loadingContainer: {
 		width: '100%',
-		flex: 1,
 		padding: 32,
 		justifyContent: 'center',
 		alignItems: 'center',

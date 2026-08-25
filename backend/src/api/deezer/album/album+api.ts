@@ -10,14 +10,14 @@ export async function GET(req: Request): Promise<Response> {
 		return Response.json({ error: 'missing deezer_id' }, { status: 400 })
 	}
     
-    const album = await findAlbum({}, deezerId);
+    const album = await findAlbum({ tracks: true }, deezerId);
 
     if (!album)
       return Response.json({ success: false, message: 'User not found' }, { status: 404 });
 
 	const { id, releaseDate, updatedAt, genreId, ...albumRes } = album;
     return Response.json(
-      { success: true, album: { albumRes } },
+      { success: true, albumRes },
       { status: 200 }
     );
   });

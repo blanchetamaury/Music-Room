@@ -50,5 +50,6 @@ const styles = StyleSheet.create({
 		borderRadius: 24,
 		backgroundColor: '#151822',
 		overflow: 'hidden',
+		maxHeight: "80%",
 	},
 });

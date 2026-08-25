@@ -18,6 +18,7 @@ import { InputForm } from '../../InputForm';
 import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
+import { SongProfileMobile } from './SongProfileMobile';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -174,7 +175,7 @@ export function SearchPage({
 								type: 'addPlaylist',
 								id: '',
 							})
-						}>Add playlist</Pressable>
+						}><ThemedText style={homeStyles.sectionTitle}>ADD playlists</ThemedText></Pressable>
 				</View>
 				<View style={styles.playlistContainer}>
 					<ScrollView
