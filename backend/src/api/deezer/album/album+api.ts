@@ -1,23 +1,23 @@
 import { errorHandler } from "@/utils/error";
-import { findArtist } from "../../../../prisma/database/artist";
+import { findAlbum } from "../../../../prisma/database/album";
 
 export async function GET(req: Request): Promise<Response> {
   return errorHandler(async () => {
 	const url = new URL(req.url);
-    const artistId = url.searchParams.get('deezer_id');
+    const deezerId = url.searchParams.get('deezer_id');
 
-    if (!artistId) {
+    if (!deezerId) {
 		return Response.json({ error: 'missing deezer_id' }, { status: 400 })
 	}
     
-    const artist = await findArtist(artistId);
+    const album = await findAlbum({}, deezerId);
 
-    if (!artist)
+    if (!album)
       return Response.json({ success: false, message: 'User not found' }, { status: 404 });
 
-	const { id, updatedAt, createdAt, ...artistRes } = artist;
+	const { id, releaseDate, updatedAt, genreId, ...albumRes } = album;
     return Response.json(
-      { success: true, artist: { artistRes } },
+      { success: true, album: { albumRes } },
       { status: 200 }
     );
   });
