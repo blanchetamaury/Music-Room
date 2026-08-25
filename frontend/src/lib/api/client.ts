@@ -55,6 +55,32 @@ export const api = {
 				}),
 				headers: { Authorization: `Bearer ${token}` },
 		});
+		},
+		like: {
+			create: (trakcId: string, token: string) => {
+				return fetchApi<{ success: boolean, status: number }>(`/user/like/create?track_id=${trakcId}`, {
+					method: 'POST',
+					body: JSON.stringify({}),
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
+			delete: (trakcId: string, token: string) => {
+				return fetchApi<{ success: boolean, status: number }>(`/user/like/delete?track_id=${trakcId}`, {
+					method: 'DELETE',
+					body: JSON.stringify({}),
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
+			like: (trakcId: string, token: string) => {
+				return fetchApi<{ success: boolean, status: number }>(`/user/like/like?track_id=${trakcId}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
+			likes: (token: string) => {
+				return fetchApi<{ success: boolean, status: number }>(`/user/like/likes`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
 		}
 	},
 	deezer: {
