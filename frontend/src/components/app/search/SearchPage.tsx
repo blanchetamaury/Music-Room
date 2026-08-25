@@ -10,10 +10,9 @@ import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 import { SeparatorFull } from '../../ui/separator';
-import { AlbumProfile } from '../AlbumProfile';
-import { ArtistProfile } from '../ArtisteProfile';
 import { homeStyles } from '../home.styles';
-import { SongProfile } from '../SongProfile';
+import { SongProfileMobile } from '../SongProfileMobile';
+import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
 
@@ -215,7 +214,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 			{popup && (
 				<Popup onClose={() => setPopup(null)}>
 					{popup.type === 'song' && (
-						<SongProfile
+						<SongProfileMobile
 							song={popup.song}
 							onArtistPress={(artistId) =>
 								setPopup({
@@ -233,7 +232,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					)}
 
 					{popup.type === 'artist' && (
-						<ArtistProfile
+						<ArtistProfileMobile
 							id={popup.id}
 							onSongPress={(song) =>
 								setPopup({
@@ -251,7 +250,7 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					)}
 
 					{popup.type === 'album' && (
-						<AlbumProfile
+						<AlbumProfileMobile
 							id={popup.id}
 							onSongPress={(song) =>
 								setPopup({
