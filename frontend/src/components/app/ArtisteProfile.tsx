@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, View } from 'react-native';
 
 import { api, DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/lib/api/client';
+
+import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 
 import { ThemedText } from '../themed-text';
 import { SeparatorFull } from '../ui/separator';
 import { AlbumDisplay } from './AlbumDisplay';
-import { SongDisplay } from './search/SongDisplay';
+import { SongDisplay } from './search/SongDisplayMobile';
 
 interface ArtistProfileProps {
 	id: string;
@@ -43,6 +45,7 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 
 				if (topTracksResponse?.data) {
 					setTracks(topTracksResponse.data);
+					setDebugTracks(topTracksResponse.data);
 				}
 
 				if (albumsResponse?.data) {
@@ -57,6 +60,10 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 
 		fetchArtist();
 	}, [id]);
+
+	useEffect(() => {
+		setProfile(artist);
+	}, [artist]);
 
 	return (
 		<View style={styles.container}>
@@ -131,102 +138,3 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		padding: 32,
-		flex: 1,
-	},
-
-	header: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	avatar: {
-		width: 120,
-		height: 120,
-		borderRadius: 60,
-		marginRight: 24,
-	},
-
-	avatarPlaceholder: {
-		width: 120,
-		height: 120,
-		borderRadius: 60,
-		backgroundColor: 'rgba(255,255,255,0.1)',
-		marginRight: 24,
-	},
-
-	artistInfo: {
-		justifyContent: 'center',
-	},
-
-	artistStats: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
-	},
-
-	dot: {
-		fontSize: 6,
-		color: 'rgba(255,255,255,0.4)',
-	},
-
-	name: {
-		fontSize: 30,
-		fontWeight: '700',
-		marginBottom: 8,
-	},
-
-	fans: {
-		fontSize: 15,
-		color: 'rgba(255,255,255,0.6)',
-	},
-
-	tabs: {
-		flexDirection: 'row',
-		marginTop: 20,
-		borderBottomWidth: 1,
-		borderBottomColor: 'rgba(255,255,255,0.08)',
-	},
-
-	tab: {
-		paddingVertical: 10,
-		paddingHorizontal: 16,
-		marginRight: 8,
-	},
-
-	tabActive: {
-		borderBottomWidth: 2,
-		borderBottomColor: 'rgba(255,255,255,0.9)',
-	},
-
-	tabText: {
-		fontSize: 14,
-		color: 'rgba(255,255,255,0.5)',
-	},
-
-	tabTextActive: {
-		color: '#fff',
-	},
-
-	content: {
-		flex: 1,
-		marginTop: 16,
-	},
-
-	list: {
-		gap: 8,
-		paddingBottom: 20,
-	},
-
-	albumList: {
-		gap: 12,
-		paddingBottom: 20,
-	},
-
-	loading: {
-		color: 'rgba(255,255,255,0.5)',
-	},
-});

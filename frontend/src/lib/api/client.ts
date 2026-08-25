@@ -3,7 +3,7 @@ import { auth } from "./auth";
 import { ApiResponse } from "@/src/types/api/ApiResponse";
 import { privateUser } from "@/src/types/user/PrivateUser";
 interface TrackPayload {
-    track: DeezerTrack;
+	track: DeezerTrack;
 }
 
 export type DeezerArtist = {
@@ -34,7 +34,7 @@ export type DeezerAlbum = {
 		picture_medium?: string;
 	};
 
-	tracks?: [DeezerTrack]
+	tracks?: [DeezerTrack];
 };
 
 export async function fetchApi<T>(
@@ -59,9 +59,7 @@ export async function fetchApi<T>(
 	if (!response.ok) {
 		return {
 			success: false,
-			message:
-				data.message ||
-				`HTTP error ${response.status}`,
+			message: data.message || `HTTP error ${response.status}`,
 		};
 	}
 
@@ -87,9 +85,7 @@ export const api = {
 				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
-		album: {
-
-		},
+		album: {},
 		search: (search: string, limit: number) => {
 			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
 		},

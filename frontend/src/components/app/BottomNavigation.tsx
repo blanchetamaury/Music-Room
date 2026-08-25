@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image, Pressable, View } from 'react-native';
-
-import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react';
+import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';
 import { useAuth } from '@/src/context/AuthContext';
@@ -22,23 +21,35 @@ export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; o
 
 	return (
 		<LiquidGlass
-			style={homeStyles.navBar}
+			style={[
+				homeStyles.navBar,
+				{
+					paddingBottom: insets.bottom + 40,
+				},
+			]}
 			contentStyle={homeStyles.navBarContent}
-			intensity={45}
+			intensity={90}
 			radius={28}
-			topLeftRadius={28}
-			topRightRadius={28}
+			topLeftRadius={15}
+			topRightRadius={15}
 			bottomLeftRadius={0}
 			bottomRightRadius={0}
 		>
 			{!loading && tabs.map(({ key, icon }) => (
 				<Pressable
 					key={key}
-					style={[homeStyles.navButton, activeTab === key && homeStyles.navButtonActive]}
+					style={[
+						homeStyles.navButton,
+						activeTab === key &&
+							homeStyles.navButtonActive,
+					]}
 					onPress={() => onSelect(key)}
 				>
 					{icon}
-					{activeTab === key && <View style={homeStyles.navIndicator} />}
+
+					{activeTab === key && (
+						<View style={homeStyles.navIndicator} />
+					)}
 				</Pressable>
 			))}
 		</LiquidGlass>

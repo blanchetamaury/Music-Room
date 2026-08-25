@@ -1,15 +1,8 @@
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
+import { DeezerAlbum } from '@/src/lib/api/client';
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
-
-export type DeezerAlbum = {
-	id: string | number;
-	title: string;
-	cover_medium?: string;
-	cover_big?: string;
-	release_date?: string;
-};
 
 interface AlbumDisplayProps {
 	album: DeezerAlbum;

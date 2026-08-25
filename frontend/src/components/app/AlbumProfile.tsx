@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
-import { api, DeezerAlbum, DeezerTrack, } from '@/src/lib/api/client';
+import { api } from '@/src/lib/api/client';
 
+import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
+
+import { DeezerAlbum, DeezerTrack } from '@/src/types/deezer/deezer';
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
 import { SeparatorFull } from '../ui/separator';
-import { SongDisplay } from './search/SongDisplay';
+import { SongDisplay } from './search/SongDisplayMobile';
 
 interface AlbumProfileProps {
 	id: string;
@@ -15,11 +18,7 @@ interface AlbumProfileProps {
 	onSongPress?: (song: DeezerTrack) => void;
 }
 
-export function AlbumProfile({
-	id,
-	onArtistPress,
-	onSongPress,
-}: AlbumProfileProps) {
+export function AlbumProfile({ id, onArtistPress, onSongPress }: AlbumProfileProps) {
 	const [album, setAlbum] = useState<DeezerAlbum | undefined>();
 	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -29,22 +28,18 @@ export function AlbumProfile({
 			try {
 				setLoading(true);
 
-				const response = await api.deezer.album(id);
+				const response = await api.deezer.album();
 
 				if (!response) {
 					return;
 				}
 
 				setAlbum(response.data);
+				setDebugTracks(response.data?.tracks?.data || []);
 
-				if (response.data?.tracks?.data) {
-					setTracks(response.data.tracks.data);
-				}
+				setProfile(response.data);
 			} catch (error) {
-				console.error(
-					'[AlbumProfile] failed to fetch album',
-					error,
-				);
+				console.error('[AlbumProfile] failed to fetch album', error);
 			} finally {
 				setLoading(false);
 			}
@@ -53,46 +48,13 @@ export function AlbumProfile({
 		fetchAlbum();
 	}, [id]);
 
-	if (loading) {
-		return (
-			<View style={styles.loadingContainer}>
-				<ThemedText style={styles.loading}>
-					Loading...
-				</ThemedText>
-			</View>
-		);
-	}
-
-	if (!album) {
-		return (
-			<View style={styles.loadingContainer}>
-				<ThemedText style={styles.loading}>
-					Album not found
-				</ThemedText>
-			</View>
-		);
-	}
-
-	const artistName = album.artist?.name ?? 'Unknown artist';
-	const artistId = album.artist?.id;
-
-	const genres =
-		album.genres?.data
-			?.map((genre) => genre.name)
-			.join(', ') ?? null;
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				{album.cover_xl ||
-				album.cover_big ||
-				album.cover_medium ? (
+				{album.cover_xl || album.cover_big || album.cover_medium ? (
 					<Image
 						source={{
-							uri:
-								album.cover_xl ??
-								album.cover_big ??
-								album.cover_medium,
+							uri: album.cover_xl ?? album.cover_big ?? album.cover_medium,
 						}}
 						style={styles.cover}
 					/>
@@ -101,65 +63,39 @@ export function AlbumProfile({
 				)}
 
 				<View style={styles.info}>
-					<ThemedText style={styles.title}>
-						{album.title}
-					</ThemedText>
+					<ThemedText style={styles.title}>{album.title}</ThemedText>
 
 					{album.artist && (
 						<HoverText
 							style={styles.artist}
 							onPress={() => {
-								if (artistId) {
-									onArtistPress?.(artistId);
+								if (album.artist?.id) {
+									onArtistPress?.(album.artist.id);
 								}
 							}}
 						>
-							{artistName}
+							{album.artist?.name ?? 'Unknown artist'}
 						</HoverText>
 					)}
 
 					<View style={styles.metadata}>
 						{album.release_date && (
-							<ThemedText
-								style={styles.metadataText}
-							>
-								{formatDate(
-									album.release_date,
-								)}
-							</ThemedText>
+							<ThemedText style={styles.metadataText}>{formatDate(album.release_date)}</ThemedText>
 						)}
 
-						{album.release_date &&
-							(album.record_type ||
-								album.nb_tracks) && (
-								<ThemedText style={styles.dot}>
-									●
-								</ThemedText>
-							)}
+						{album.release_date && (album.record_type || album.nb_tracks) && (
+							<ThemedText style={styles.dot}>●</ThemedText>
+						)}
 
 						{album.record_type && (
-							<ThemedText
-								style={styles.metadataText}
-							>
-								{capitalize(album.record_type)}
-							</ThemedText>
+							<ThemedText style={styles.metadataText}>{capitalize(album.record_type)}</ThemedText>
 						)}
 
-						{album.record_type &&
-							album.nb_tracks && (
-								<ThemedText style={styles.dot}>
-									●
-								</ThemedText>
-							)}
+						{album.record_type && album.nb_tracks && <ThemedText style={styles.dot}>●</ThemedText>}
 
 						{album.nb_tracks && (
-							<ThemedText
-								style={styles.metadataText}
-							>
-								{album.nb_tracks}{' '}
-								{album.nb_tracks === 1
-									? 'track'
-									: 'tracks'}
+							<ThemedText style={styles.metadataText}>
+								{album.nb_tracks} {album.nb_tracks === 1 ? 'track' : 'tracks'}
 							</ThemedText>
 						)}
 					</View>
@@ -171,62 +107,44 @@ export function AlbumProfile({
 			<View style={styles.stats}>
 				{album.label && (
 					<View style={styles.statItem}>
-						<ThemedText style={styles.stat}>
-							{album.label}
-						</ThemedText>
+						<ThemedText style={styles.stat}>{album.label}</ThemedText>
 					</View>
 				)}
 
-				{album.label && genres && (
-					<ThemedText style={styles.dot}>
-						●
-					</ThemedText>
-				)}
+				{album.label && genres && <ThemedText style={styles.dot}>●</ThemedText>}
 
 				{genres && (
 					<View style={styles.statItem}>
-						<ThemedText style={styles.stat}>
-							{genres}
-						</ThemedText>
+						<ThemedText style={styles.stat}>{genres}</ThemedText>
 					</View>
 				)}
 
-				{genres && album.nb_fans && (
-					<ThemedText style={styles.dot}>
-						●
-					</ThemedText>
-				)}
+				{genres && album.nb_fans && <ThemedText style={styles.dot}>●</ThemedText>}
 
 				{album.nb_fans && (
 					<View style={styles.statItem}>
-						<ThemedText style={styles.stat}>
-							{album.nb_fans.toLocaleString()}{' '}
-							fans
-						</ThemedText>
+						<ThemedText style={styles.stat}>{album.nb_fans.toLocaleString()} fans</ThemedText>
 					</View>
 				)}
+
+				{album.nb_tracks && (
+					<View style={styles.statItem}>
+						<ThemedText style={styles.stat}>{album.nb_tracks.toLocaleString()}</ThemedText>
+					</View>
+				)}
+
+				{album.nb_fans && album.nb_tracks && <ThemedText style={styles.dot}>●</ThemedText>}
 			</View>
 
 			<View style={styles.trackHeader}>
-				<ThemedText style={styles.trackTitle}>
-					Tracks
-				</ThemedText>
+				<ThemedText style={styles.trackTitle}>Tracks</ThemedText>
 
-				<ThemedText style={styles.trackCount}>
-					{tracks.length}
-				</ThemedText>
+				<ThemedText style={styles.trackCount}>{tracks.length}</ThemedText>
 			</View>
 
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={styles.trackList}
-			>
+			<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.trackList}>
 				{tracks.map((song, index) => (
-					<SongDisplay
-						key={`${song.id}-${index}`}
-						song={song}
-						onPress={() => onSongPress?.(song)}
-					/>
+					<SongDisplay key={`${song.id}-${index}`} song={song} onPress={() => onSongPress?.(song)} />
 				))}
 			</ScrollView>
 		</View>
@@ -304,16 +222,16 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flexWrap: 'wrap',
 		gap: 8,
-	},
 
-	metadataText: {
-		fontSize: 14,
-		color: 'rgba(255,255,255,0.55)',
-	},
+		metadataText: {
+			fontSize: 14,
+			color: 'rgba(255,255,255,0.55)',
+		},
 
-	dot: {
-		fontSize: 6,
-		color: 'rgba(255,255,255,0.35)',
+		dot: {
+			fontSize: 6,
+			color: 'rgba(255,255,255,0.35)',
+		},
 	},
 
 	stats: {

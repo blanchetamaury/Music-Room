@@ -14,14 +14,12 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ currentTrack }: PlayerCardProps) {
-	const [currentUrl, setCurrentUrl] = useState<string | null>(
-		currentTrack.preview ?? null,
-	);
+	const [currentUrl, setCurrentUrl] = useState<string | null>(currentTrack.preview ?? null);
 
 	const [isPlaying, setIsPlaying] = useState(false);
 
 	const player = useAudioPlayer(currentUrl);
-	
+
 	useEffect(() => {
 		const url = currentTrack.preview ?? null;
 
@@ -33,7 +31,7 @@ export function PlayerCard({ currentTrack }: PlayerCardProps) {
 	 * Lance le morceau courant.
 	 */
 	const handlePlay = () => {
-		if (!currentUrl) {
+		if (!currentTrack.preview) {
 			console.warn('[PlayerCard] No preview URL');
 			return;
 		}
@@ -78,48 +76,26 @@ export function PlayerCard({ currentTrack }: PlayerCardProps) {
 						onPress={handlePlayPause}
 						style={({ pressed }) => [
 							homeStyles.playPauseButtonInner,
-							pressed &&
-								homeStyles.playPauseButtonPressed,
+							pressed && homeStyles.playPauseButtonPressed,
 						]}
 						accessibilityRole="button"
-						accessibilityLabel={
-							isPlaying ? 'Pause' : 'Play'
-						}
+						accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
 					>
-						{isPlaying ? (
-							<Pause
-								size={22}
-								color="#ffffff"
-							/>
-						) : (
-							<Play
-								size={22}
-								color="#ffffff"
-							/>
-						)}
+						{isPlaying ? <Pause size={22} color="#ffffff" /> : <Play size={22} color="#ffffff" />}
 					</Pressable>
 				</View>
 
 				<View style={homeStyles.playerInfo}>
-					<ThemedText
-						style={homeStyles.playerTitle}
-					>
-						{currentTrack.title}
-					</ThemedText>
+					<ThemedText style={homeStyles.playerTitle}>{currentTrack.title}</ThemedText>
 
-					<ThemedText
-						style={homeStyles.playerArtist}
-					>
-						{currentTrack.artist}
-					</ThemedText>
+					<ThemedText style={homeStyles.playerArtist}>{currentTrack.artist}</ThemedText>
 				</View>
 
 				<View
 					style={[
 						homeStyles.playerCover,
 						{
-							backgroundColor:
-								currentTrack.cover,
+							backgroundColor: currentTrack.cover,
 						},
 					]}
 				/>

@@ -1,21 +1,21 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
 
+import { DeezerTrack } from '@/src/types/deezer/deezer';
+import { setTracks } from '@/src/utils/debug';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
-
-import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { SeparatorFull } from '../../ui/separator';
 import { AlbumProfile } from '../AlbumProfile';
 import { ArtistProfile } from '../ArtisteProfile';
 import { homeStyles } from '../home.styles';
 import { SongProfile } from '../SongProfile';
 import { PlaylistDisplay } from './PlaylistDisplay';
-import { SongDisplay } from './SongDisplay';
+import { SongDisplayMobile } from './SongDisplayMobile';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -24,66 +24,16 @@ interface ApiResponse<T> {
 }
 
 const searchPlaylists = [
-	{
-		id: "1",
-		title: 'Chill Vibes',
-		cover: '#f6b26b',
-		songs: 12,
-	},
-	{
-		id: "2",
-		title: 'Workout Energy',
-		cover: '#7ec8e3',
-		songs: 18,
-	},
-	{
-		id: "3",
-		title: 'Late Night Coding',
-		cover: '#9b59b6',
-		songs: 24,
-	},
-	{
-		id: "4",
-		title: 'Morning Coffee',
-		cover: '#ff7f50',
-		songs: 15,
-	},
-	{
-		id: "5",
-		title: 'Road Trip',
-		cover: '#5eead4',
-		songs: 20,
-	},
-	{
-		id: "6",
-		title: 'Focus Flow',
-		cover: '#f9a8d4',
-		songs: 16,
-	},
-	{
-		id: "7",
-		title: 'Chill Vibes',
-		cover: '#f6b26b',
-		songs: 12,
-	},
-	{
-		id: "8",
-		title: 'Workout Energy',
-		cover: '#7ec8e3',
-		songs: 18,
-	},
-	{
-		id: "9",
-		title: 'Late Night Coding',
-		cover: '#9b59b6',
-		songs: 24,
-	},
-	{
-		id: "10",
-		title: 'Morning Coffee',
-		cover: '#ff7f50',
-		songs: 15,
-	},
+	{ id: '1', title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
+	{ id: '2', title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
+	{ id: '3', title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
+	{ id: '4', title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
+	{ id: '5', title: 'Road Trip', cover: '#5eead4', songs: 20 },
+	{ id: '6', title: 'Focus Flow', cover: '#f9a8d4', songs: 16 },
+	{ id: '7', title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
+	{ id: '8', title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
+	{ id: '9', title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
+	{ id: '10', title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
 ] as const;
 
 interface SearchPageProps {
@@ -106,32 +56,37 @@ type PopupState =
 	| null;
 
 export function SearchPage({ onNavigateHome }: SearchPageProps) {
-	const [ query, setQuery ] = useState<string | null>(null);
-	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
+	const [query, setQuery] = useState('');
+	const [tracks, setTracksState] = useState<DeezerTrack[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
-
 	const [popup, setPopup] = useState<PopupState>(null);
-	
-	useEffect(() => {
 
+	useEffect(() => {
 		const timeout = setTimeout(async () => {
 			try {
 				setTracksLoading(true);
-				const value = query?.trim() ?? '';
+
+				const value = query.trim();
 
 				let data: ApiResponse<DeezerTrack[]>;
+
 				if (value.length < 2) {
 					data = await api.deezer.music.top_music(50);
-				}
-				else
+				} else {
 					data = await api.deezer.search(value, 20);
-				const list = Array.isArray(data.data) ? data.data : (data.data as any).data;
+				}
 
-				if (!Array.isArray(list) || list.length === 0) {
+				const list = Array.isArray(data.data) ? data.data : (data.data as any)?.data;
+
+				if (!Array.isArray(list)) {
+					setTracksState([]);
+					setTracks([]);
 					return;
 				}
+
 				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover === 'string');
 
+				setTracksState(validTracks);
 				setTracks(validTracks);
 			} catch (error) {
 				console.error('[SearchPage] search failed', error);
@@ -140,17 +95,15 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 			}
 		}, 200);
 
-		return () => {
-			clearTimeout(timeout);
-		};
+		return () => clearTimeout(timeout);
 	}, [query]);
 
 	return (
-		<View style={homeStyles.searchRoot}>
-			<View style={homeStyles.searchContent}>
+		<View style={styles.searchRoot}>
+			<View style={styles.searchContent}>
 				<LiquidGlass
-					style={homeStyles.searchBar}
-					contentStyle={homeStyles.searchBarContent}
+					style={styles.searchBar}
+					contentStyle={styles.searchBarContent}
 					intensity={30}
 					radius={16}
 					topLeftRadius={16}
@@ -161,24 +114,20 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					chromatic={false}
 				>
 					<TextInput
+						value={query}
+						onChangeText={setQuery}
 						placeholder="Search..."
 						placeholderTextColor="rgba(255,255,255,0.5)"
-						value={query ?? ''}
-						onChangeText={setQuery}
-						style={[
-							homeStyles.searchInput,
-							{ color: '#fff' },
-							Platform.OS === 'web'
-								? ({
-										outlineWidth: 0,
-										outlineColor: 'transparent',
-										outlineStyle: 'none',
-									} as any)
-								: null,
-						]}
-						underlineColorAndroid="transparent"
+						style={styles.searchInput}
 						autoCapitalize="none"
-						selectionColor="rgba(255,255,255,0.5)"
+						autoCorrect={false}
+						selectionColor="rgba(255,255,255,0.7)"
+						underlineColorAndroid="transparent"
+						{...(Platform.OS === 'web'
+							? ({
+									outlineStyle: 'none',
+								} as any)
+							: {})}
 					/>
 				</LiquidGlass>
 
@@ -186,51 +135,45 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 
 				<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
 
-				<View style={homeStyles.playlistListShell}>
-					<View style={homeStyles.playlistFadeContainer} pointerEvents="none">
+				<View style={styles.playlistContainer}>
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						bounces={false}
+						contentContainerStyle={styles.playlistContent}
+					>
+						{searchPlaylists.map((playlist) => (
+							<View key={playlist.id} style={styles.playlistItem}>
+								<PlaylistDisplay id={playlist.id} />
+							</View>
+						))}
+					</ScrollView>
+
+					<View style={styles.playlistFades} pointerEvents="none">
 						<LinearGradient
-							colors={['rgba(8, 11, 26, 0.55)', 'rgba(8, 11, 26, 0.18)', 'transparent']}
+							colors={['rgba(8,11,26,0.65)', 'rgba(8,11,26,0.15)', 'transparent']}
 							locations={[0, 0.45, 1]}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 1, y: 0 }}
-							style={homeStyles.playlistFadeLeft}
+							style={styles.fadeLeft}
 						/>
 
 						<LinearGradient
-							colors={['transparent', 'rgba(8, 11, 26, 0.18)', 'rgba(8, 11, 26, 0.55)']}
+							colors={['transparent', 'rgba(8,11,26,0.15)', 'rgba(8,11,26,0.65)']}
 							locations={[0, 0.55, 1]}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 1, y: 0 }}
-							style={homeStyles.playlistFadeRight}
+							style={styles.fadeRight}
 						/>
 					</View>
-
-					<ScrollView
-						horizontal
-						style={homeStyles.playlistListScroll}
-						contentContainerStyle={homeStyles.playlistListContent}
-						showsHorizontalScrollIndicator={false}
-						bounces={false}
-					>
-						{searchPlaylists.map((playlist) => (
-							<PlaylistDisplay key={playlist.id} id={playlist.id}></PlaylistDisplay>
-						))}
-					</ScrollView>
 				</View>
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>Songs:</ThemedText>
+				<ThemedText style={homeStyles.sectionTitle}>Songs</ThemedText>
 
-				<View style={homeStyles.songSection}>
-					<View style={homeStyles.songListShell}>
-						<LinearGradient
-							colors={['rgba(10, 12, 18, 0.95)', 'rgba(10, 12, 18, 0.4)', 'transparent']}
-							locations={[0, 0, 0.2]}
-							style={homeStyles.songListFade}
-							pointerEvents="none"
-						/>
-
+				<View style={styles.songSection}>
+					<View style={styles.songListShell}>
 						{tracksLoading ? (
 							<View style={styles.loadingContainer}>
 								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
@@ -242,34 +185,29 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 								style={styles.songListScroll}
 								contentContainerStyle={styles.songListContent}
 								showsVerticalScrollIndicator={false}
-								bounces={true}
+								bounces
 							>
 								{tracks.map((song, index) => (
-									<SongDisplay
-										key={`${song.deezerCUID}`}
+									<SongDisplayMobile
+										key={`${song.deezerCUID}-${song.albumId}-${index}`}
 										song={song}
-										onPress={() => {
+										onPress={() =>
 											setPopup({
 												type: 'song',
 												song,
-											});
-										}}
-										onArtistPress={(artistId) => {
-											setPopup({
-												type: 'artist',
-												id: String(artistId),
-											});
-										}}
-										onAlbumPress={(albumId) => {
-											setPopup({
-												type: 'album',
-												id: String(albumId),
-											});
-										}}
+											})
+										}
 									/>
 								))}
 							</ScrollView>
 						)}
+
+						<LinearGradient
+							colors={['rgba(10,12,18,0.95)', 'rgba(10,12,18,0.4)', 'transparent']}
+							locations={[0, 0.45, 1]}
+							style={styles.songListFade}
+							pointerEvents="none"
+						/>
 					</View>
 				</View>
 			</View>
@@ -279,54 +217,54 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 					{popup.type === 'song' && (
 						<SongProfile
 							song={popup.song}
-							onArtistPress={(artistId) => {
+							onArtistPress={(artistId) =>
 								setPopup({
 									type: 'artist',
 									id: String(artistId),
-								});
-							}}
-							onAlbumPress={(albumId) => {
+								})
+							}
+							onAlbumPress={(albumId) =>
 								setPopup({
 									type: 'album',
 									id: String(albumId),
-								});
-							}}
+								})
+							}
 						/>
 					)}
 
 					{popup.type === 'artist' && (
 						<ArtistProfile
 							id={popup.id}
-							onSongPress={(song) => {
+							onSongPress={(song) =>
 								setPopup({
 									type: 'song',
 									song,
-								});
-							}}
-							onAlbumPress={(album) => {
+								})
+							}
+							onAlbumPress={(album) =>
 								setPopup({
 									type: 'album',
 									id: String(album.id),
-								});
-							}}
+								})
+							}
 						/>
 					)}
 
 					{popup.type === 'album' && (
 						<AlbumProfile
 							id={popup.id}
-							onSongPress={(song) => {
+							onSongPress={(song) =>
 								setPopup({
 									type: 'song',
 									song,
-								});
-							}}
-							onArtistPress={(artistId) => {
+								})
+							}
+							onArtistPress={(artistId) =>
 								setPopup({
 									type: 'artist',
 									id: String(artistId),
-								});
-							}}
+								})
+							}
 						/>
 					)}
 				</Popup>
@@ -335,36 +273,130 @@ export function SearchPage({ onNavigateHome }: SearchPageProps) {
 	);
 }
 
-const styles = {
+const styles = StyleSheet.create({
+	searchRoot: {
+		flex: 1,
+		width: '100%',
+		paddingTop: 40,
+	},
+
+	searchContent: {
+		flex: 1,
+		width: '100%',
+		paddingHorizontal: 1,
+		paddingTop: 20,
+	},
+
+	searchBar: {
+		width: '100%',
+		minHeight: 48,
+		marginBottom: 12,
+	},
+
+	searchBarContent: {
+		flex: 1,
+		paddingHorizontal: 14,
+		paddingVertical: 0,
+		justifyContent: 'center' as const,
+	},
+
+	searchInput: {
+		width: '100%',
+		height: 46,
+		paddingHorizontal: 0,
+		paddingVertical: 0,
+		margin: 0,
+		color: '#fff',
+		fontSize: 16,
+		lineHeight: 20,
+		textAlignVertical: 'center' as const,
+	},
+
+	playlistContainer: {
+		position: 'relative' as const,
+		width: '100%',
+		height: 125,
+	},
+
+	playlistContent: {
+		paddingHorizontal: 4,
+		gap: 10,
+		alignItems: 'center' as const,
+	},
+
+	playlistItem: {
+		flexShrink: 0,
+	},
+
+	playlistFades: {
+		position: 'absolute' as const,
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+	},
+
+	fadeLeft: {
+		position: 'absolute' as const,
+		left: 0,
+		top: 0,
+		bottom: 0,
+		width: 28,
+	},
+
+	fadeRight: {
+		position: 'absolute' as const,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		width: 28,
+	},
+
+	songSection: {
+		flex: 1,
+		minHeight: 0,
+		width: '100%',
+	},
+
+	songListShell: {
+		flex: 1,
+		minHeight: 0,
+		width: '100%',
+		borderRadius: 15,
+		overflow: 'hidden' as const,
+	},
+
 	songListScroll: {
 		flex: 1,
+		width: '100%',
 	},
+
 	songListContent: {
-		gap: 10,
 		paddingTop: 10,
-		paddingBottom: 170,
-		paddingLeft: 10,
-		paddingRight: 10,
-		borderRadius: 15,
+		paddingHorizontal: 8,
+		paddingBottom: 150,
+		gap: 8,
 	},
+
 	songListFade: {
-		position: 'absolute',
+		position: 'absolute' as const,
 		top: 0,
 		left: 0,
 		right: 0,
-		height: 50,
+		height: 4,
 		zIndex: 2,
 	},
+
 	loadingContainer: {
 		flex: 1,
+		minHeight: 180,
 		alignItems: 'center' as const,
 		justifyContent: 'center' as const,
 		gap: 10,
-		minHeight: 180,
 	},
 
 	loadingText: {
 		fontSize: 13,
 		color: 'rgba(255,255,255,0.5)',
 	},
-};
+});
