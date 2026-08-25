@@ -1,8 +1,7 @@
-import React from 'react';
-import { Image, Pressable, View } from 'react-native';
-
 import { useAuth } from '@/src/context/AuthContext';
 import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
+import React from 'react';
+import { Image, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';

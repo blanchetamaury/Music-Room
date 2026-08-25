@@ -1,6 +1,5 @@
 export interface CreatePlaylist {
 	name: string;
-	ownerId: string;
 	cover: string;
 	description?: string;
 	private: boolean;

@@ -1,41 +1,10 @@
 import { ApiResponse } from "@/src/types/api/ApiResponse";
-import { DeezerTrack } from "@/src/types/deezer/deezer";
+import { DeezerAlbum, DeezerArtist, DeezerTrack } from "@/src/types/deezer/deezer";
 import { privateUser } from "@/src/types/user/PrivateUser";
 import { auth } from "./auth";
 interface TrackPayload {
 	track: DeezerTrack;
 }
-
-export type DeezerArtist = {
-	id: string | number;
-	name: string;
-	picture?: string;
-	picture_medium?: string;
-	picture_big?: string;
-	nb_fan?: number;
-};
-
-export type DeezerAlbum = {
-	id: string | number;
-	title: string;
-	cover?: string;
-	cover_medium?: string;
-	cover_big?: string;
-	release_date?: string;
-	nb_tracks?: number;
-	duration?: number;
-	fans?: number;
-	record_type?: string;
-	explicit_lyrics?: boolean;
-
-	artist?: {
-		id: string | number;
-		name: string;
-		picture_medium?: string;
-	};
-
-	tracks?: [DeezerTrack];
-};
 
 export async function fetchApi<T>(
 	endpoint: string,
@@ -74,6 +43,18 @@ export const api = {
 	user : {
 		me: () => {
 			return fetchApi<privateUser>(`/user/me`);
+		},
+		playlist: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
+			return fetchApi<{ success: boolean, status: number }>(`/user/playlist/add`, {
+				method: 'POST',
+				body: JSON.stringify({
+					name: name,
+					cover: cover,
+					description: description,
+					private: privatePlaylist,
+				}),
+				headers: { Authorization: `Bearer ${token}` },
+		});
 		}
 	},
 	deezer: {
@@ -85,9 +66,16 @@ export const api = {
 				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
-		
-		album: {},
-		
+		album: {
+			album: (deezerCUID: string) => {
+				return fetchApi<DeezerAlbum>(`/deezer/album/album?deezer_id=${deezerCUID}`);
+			}
+		},
+		artist: {
+			artist: (deezerCUID: string) => {
+				return fetchApi<DeezerArtist>(`/deezer/artist/artist?deezer_id=${deezerCUID}`);
+			}
+		},
 		search: (search: string, limit: number) => {
 			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
 		},
