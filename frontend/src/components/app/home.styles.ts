@@ -14,10 +14,10 @@ export const homeStyles = StyleSheet.create({
 	homeContent: {
 		flex: 1,
 		width: '100%',
-		paddingHorizontal: 14,
+		paddingHorizontal: 0,
 		paddingTop: 28,
 		paddingBottom: 18,
-		zIndex: 1,
+		zIndex: 2,
 	},
 	homeFooter: {
 		flex: -1,

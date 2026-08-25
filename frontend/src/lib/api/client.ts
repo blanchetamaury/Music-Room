@@ -1,8 +1,6 @@
-import { DeezerTrack } from "@/src/types/deezer/deezer";
+import { DeezerTrack } from '@/src/types/deezer/deezer';
 
-const API_BASE_URL =
-	process.env.EXPO_PUBLIC_API_URL ||
-	'http://localhost:3000/api';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface ApiResponse<T> {
 	success: boolean;
@@ -11,7 +9,7 @@ interface ApiResponse<T> {
 }
 
 interface TrackPayload {
-    track: DeezerTrack;
+	track: DeezerTrack;
 }
 
 export type DeezerArtist = {
@@ -42,13 +40,10 @@ export type DeezerAlbum = {
 		picture_medium?: string;
 	};
 
-	tracks?: [DeezerTrack]
+	tracks?: [DeezerTrack];
 };
 
-async function fetchApi<T>(
-	endpoint: string,
-	options: RequestInit = {},
-): Promise<ApiResponse<T>> {
+async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
 	const url = `${API_BASE_URL}${endpoint}`;
 
 	const headers: HeadersInit = {
@@ -67,9 +62,7 @@ async function fetchApi<T>(
 	if (!response.ok) {
 		return {
 			success: false,
-			message:
-				data.message ||
-				`HTTP error ${response.status}`,
+			message: data.message || `HTTP error ${response.status}`,
 		};
 	}
 
@@ -82,87 +75,60 @@ async function fetchApi<T>(
 export const api = {
 	auth: {
 		login: (email: string, password: string) =>
-			fetchApi<{ user_id: string }>(
-				'/auth/login',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						password,
-					}),
-				},
-			),
+			fetchApi<{ user_id: string }>('/auth/login', {
+				method: 'POST',
+				body: JSON.stringify({
+					mail: email,
+					password,
+				}),
+			}),
 
-		signup: (
-			email: string,
-			password: string,
-			username: string,
-		) =>
-			fetchApi<{ user_id: string }>(
-				'/auth/signup',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						password,
-						username,
-					}),
-				},
-			),
+		signup: (email: string, password: string, username: string) =>
+			fetchApi<{ user_id: string }>('/auth/signup', {
+				method: 'POST',
+				body: JSON.stringify({
+					mail: email,
+					password,
+					username,
+				}),
+			}),
 
 		logout: () =>
 			fetchApi<void>('/auth/logout', {
 				method: 'POST',
 			}),
 
-		confirmMailAccount: (
-			email: string,
-			code: string,
-		) => {
-			return fetchApi<{ success: boolean }>(
-				'/auth/confirm',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						code,
-					}),
-				},
-			);
+		confirmMailAccount: (email: string, code: string) => {
+			return fetchApi<{ success: boolean }>('/auth/confirm', {
+				method: 'POST',
+				body: JSON.stringify({
+					mail: email,
+					code,
+				}),
+			});
 		},
 
 		resetPassword: {
 			request: (email: string) =>
-				fetchApi<void>(
-					'/auth/reset-password/request',
-					{
-						method: 'POST',
-						body: JSON.stringify({
-							mail: email,
-						}),
-					},
-				),
+				fetchApi<void>('/auth/reset-password/request', {
+					method: 'POST',
+					body: JSON.stringify({
+						mail: email,
+					}),
+				}),
 
-			verify: (
-				email: string,
-				code: string,
-				password: string,
-			) =>
-				fetchApi<void>(
-					'/auth/reset-password/verify',
-					{
-						method: 'POST',
-						body: JSON.stringify({
-							mail: email,
-							code,
-							password,
-						}),
-					},
-				),
+			verify: (email: string, code: string, password: string) =>
+				fetchApi<void>('/auth/reset-password/verify', {
+					method: 'POST',
+					body: JSON.stringify({
+						mail: email,
+						code,
+						password,
+					}),
+				}),
 		},
 
-		oauthFortyTwo: () =>
-			`${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
+		oauthFortyTwo: () => `${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
 	},
 
 	deezer: {
@@ -174,8 +140,7 @@ export const api = {
 				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
-		album: {
-		},
+		album: {},
 		search: (search: string, limit: number) => {
 			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
 		},

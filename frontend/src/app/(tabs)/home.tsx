@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomNavigation, TabKey } from '@/src/components/app/BottomNavigation';
 import { playlistSongs } from '@/src/components/app/data';
@@ -28,9 +29,13 @@ function HomeContent({
 	return (
 		<View style={homeStyles.homeContent}>
 			<HeaderSection currentTrack={currentTrack} />
+
 			<SeparatorFull />
+
 			<UserStrip />
+
 			<View style={homeStyles.separator} />
+
 			<SongList
 				activeTrack={activeTrack}
 				onSelect={onSelectTrack}
@@ -57,43 +62,54 @@ function ProfileContent() {
 
 const tabColors: Record<TabKey, FluidColors> = {
 	home: {
-		colour1: [0.05, 0.10, 0.30, 1],
-		colour2: [0.10, 0.40, 1.00, 1],
-		colour3: [0.80, 0.20, 0.80, 1],
+		colour1: [0.05, 0.1, 0.3, 1],
+		colour2: [0.1, 0.4, 1.0, 1],
+		colour3: [0.8, 0.2, 0.8, 1],
 	},
 
 	search: {
 		colour1: [0.05, 0.25, 0.15, 1],
-		colour2: [0.05, 0.80, 0.35, 1],
-		colour3: [0.20, 0.90, 0.70, 1],
+		colour2: [0.05, 0.8, 0.35, 1],
+		colour3: [0.2, 0.9, 0.7, 1],
 	},
 
 	profile: {
-		colour1: [0.30, 0.05, 0.10, 1],
-		colour2: [0.80, 0.10, 0.25, 1],
-		colour3: [1.00, 0.45, 0.10, 1],
+		colour1: [0.3, 0.05, 0.1, 1],
+		colour2: [0.8, 0.1, 0.25, 1],
+		colour3: [1.0, 0.45, 0.1, 1],
 	},
 };
 
-export default function HomeScreen() {
-	const [activeTab, setActiveTab] =
-		useState<TabKey>('home');
+const tabs: TabKey[] = ['home', 'search', 'profile'];
 
-	const [activeTrack, setActiveTrack] =
-		useState(0);
+export default function HomeScreen() {
+	const [activeTab, setActiveTab] = React.useState<TabKey>('home');
+	const [activeTrack, setActiveTrack] = React.useState(0);
 
 	const currentTrack =
-		playlistSongs[activeTrack] ??
-		playlistSongs[0];
+		playlistSongs[activeTrack] ?? playlistSongs[0];
 
 	const { token, loading } = useAuth();
 	const router = useRouter();
+
+	const insets = useSafeAreaInsets();
 
 	useEffect(() => {
 		if (!loading && !token) {
 			router.replace('/(auth)/login');
 		}
-	}, [loading, token]);
+	}, [loading, token, router]);
+
+	const changeTab = (direction: number) => {
+		const currentIndex = tabs.indexOf(activeTab);
+		const nextIndex = currentIndex + direction;
+
+		if (nextIndex < 0 || nextIndex >= tabs.length) {
+			return;
+		}
+
+		setActiveTab(tabs[nextIndex]);
+	};
 
 	if (loading || !token) {
 		return null;
@@ -101,40 +117,35 @@ export default function HomeScreen() {
 
 	return (
 		<View style={homeStyles.homeRoot}>
-
-			<FluidBackground
-				colors={tabColors[activeTab]}
-			/>
+			<FluidBackground colors={tabColors[activeTab]} />
 
 			<View style={homeStyles.backgroundOverlay} />
 
 			<View style={styles.content}>
-				{activeTab === 'home' && (
-					<HomeContent
-						currentTrack={currentTrack}
-						activeTrack={activeTrack}
-						onSelectTrack={setActiveTrack}
-					/>
-				)}
+				<View style={styles.page}>
+					{activeTab === 'home' && (
+						<HomeContent
+							currentTrack={currentTrack}
+							activeTrack={activeTrack}
+							onSelectTrack={setActiveTrack}
+						/>
+					)}
 
-				{activeTab === 'search' && (
-					<SearchContent />
-				)}
+					{activeTab === 'search' && (
+						<SearchContent />
+					)}
 
-				{activeTab === 'profile' && (
-					<ProfileContent />
-				)}
-
-				<View style={homeStyles.homeFooter}>
-					<PlayerCard
-						currentTrack={currentTrack}
-					/>
-
-					<BottomNavigation
-						activeTab={activeTab}
-						onSelect={setActiveTab}
-					/>
+					{activeTab === 'profile' && (
+						<ProfileContent />
+					)}
 				</View>
+
+				<PlayerCard currentTrack={currentTrack} />
+
+				<BottomNavigation
+					activeTab={activeTab}
+					onSelect={setActiveTab}
+				/>
 			</View>
 		</View>
 	);
@@ -146,11 +157,16 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 	},
 
+	page: {
+		flex: 1,
+		minHeight: 0,
+	},
+
 	pageContent: {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		paddingHorizontal: 20,
+		paddingHorizontal: 5,
 		backgroundColor: '#0000',
 	},
 

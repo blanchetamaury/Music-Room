@@ -12,18 +12,29 @@ interface SongDisplayProps {
 	onAlbumPress?: (albumId: string | number) => void;
 }
 
-export function SongDisplay({
-	song,
-	onPress,
-	onArtistPress,
-	onAlbumPress,
-}: SongDisplayProps) {
+const DEBUG = false;
+
+const debugBox = (color: string) => {
+	if (!DEBUG) {
+		return {
+			borderWidth: 0,
+		};
+	}
+
+	return {
+		borderWidth: 2,
+		borderColor: color,
+		backgroundColor: `${color}22`,
+	};
+};
+
+export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
 	return (
-		<Pressable onPress={onPress} style={styles.wrapper}>
+		<Pressable onPress={onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
-				style={styles.songCard}
-				contentStyle={styles.songCardContent}
-				intensity={10}
+				style={[styles.songCard, debugBox('#00ff00')]}
+				contentStyle={[styles.songCardContent, debugBox('#0000ff')]}
+				intensity={0}
 				radius={22}
 				topLeftRadius={20}
 				topRightRadius={20}
@@ -33,14 +44,14 @@ export function SongDisplay({
 				<Image
 					source={{ uri: song.album?.cover! }}
 					resizeMode="cover"
-					style={styles.songCover}
+					style={[styles.songCover, debugBox('#09ff00')]}
 				/>
 
-				<View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-					<View style={styles.songInfo}>
-						<View style={styles.songTitleRow}>
+				<View style={[styles.mainRow, debugBox('#ffc400')]}>
+					<View style={[styles.songInfo, debugBox('#00ffff')]}>
+						<View style={[styles.songTitleRow, debugBox('#ff8800')]}>
 							<ThemedText
-								style={styles.songTitle}
+								style={[styles.songTitle, debugBox('#ff0000')]}
 								numberOfLines={1}
 								ellipsizeMode="tail"
 							>
@@ -51,39 +62,23 @@ export function SongDisplay({
 								<Banana
 									size={14}
 									color="rgba(255,255,255,0.7)"
-									style={styles.explicitIcon}
+									style={[styles.explicitIcon, debugBox('#ff00ff')]}
 								/>
 							)}
 						</View>
 
-						<View style={styles.artistAlbumRow}>
-							<ThemedText
-								style={styles.songArtist}
-								numberOfLines={1}
-								ellipsizeMode="tail"
-							>
-								{song.artist.name}
+						<ThemedText
+							style={[styles.songArtist, debugBox('#00ff00')]}
+							numberOfLines={1}
+							ellipsizeMode="tail"
+						>
+							{song.artist.name}
 							</ThemedText>
-
-							<View style={styles.separator} />
-
-							<ThemedText
-								style={styles.albumText}
-								numberOfLines={1}
-								ellipsizeMode="tail"
-							>
-								{song.album?.title}
-							</ThemedText>
-						</View>
 					</View>
 
-					<View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '40%', alignItems: 'center', gap: 3}}>
-						<ThemedText style={styles.songDuration}>
-							{formatDuration(song.duration)}
-						</ThemedText>
-
+					<View style={[styles.actions, debugBox('#ff0088')]}>
 						<Pressable
-							style={styles.iconButton}
+							style={[styles.iconButton, debugBox('#0088ff')]}
 							onPress={(event) => {
 								event.stopPropagation();
 							}}
@@ -92,7 +87,7 @@ export function SongDisplay({
 						</Pressable>
 
 						<Pressable
-							style={styles.iconButton}
+							style={[styles.iconButton, debugBox('#8800ff')]}
 							onPress={(event) => {
 								event.stopPropagation();
 							}}
@@ -107,18 +102,6 @@ export function SongDisplay({
 	);
 }
 
-function formatDuration(duration?: string | number) {
-	if (!duration) {
-		return '--:--';
-	}
-
-	const totalSeconds = Number(duration);
-	const minutes = Math.floor(totalSeconds / 60);
-	const seconds = totalSeconds % 60;
-
-	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
 const styles = StyleSheet.create({
 	wrapper: {
 		width: '100%',
@@ -127,16 +110,17 @@ const styles = StyleSheet.create({
 	songCard: {
 		width: '100%',
 		minHeight: 74,
+		backgroundColor: '#000000a1',
 	},
 
 	songCardContent: {
-		width: '100%',
 		minHeight: 74,
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: 12,
+		paddingHorizontal: 10,
 		paddingVertical: 10,
-		gap: 10,
+		gap: 7,
+		minWidth: 0,
 	},
 
 	songCover: {
@@ -146,15 +130,20 @@ const styles = StyleSheet.create({
 		flexShrink: 0,
 	},
 
-	songInfo: {
+	mainRow: {
 		flex: 1,
+		flexDirection: 'row',
 		minWidth: 0,
-		maxWidth: '40%',
+	},
+
+	songInfo: {
+		flex: 3,
+		minWidth: 0,
+		flexShrink: 1,
 		justifyContent: 'flex-start',
 	},
 
 	songTitleRow: {
-		flex: 1,
 		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -164,6 +153,7 @@ const styles = StyleSheet.create({
 
 	songTitle: {
 		minWidth: 0,
+		flexShrink: 1,
 		color: '#fff',
 		fontSize: 15,
 		fontWeight: '600',
@@ -171,6 +161,7 @@ const styles = StyleSheet.create({
 
 	explicitIcon: {
 		marginLeft: 5,
+		flexShrink: 0,
 	},
 
 	artistAlbumRow: {
@@ -181,31 +172,37 @@ const styles = StyleSheet.create({
 	},
 
 	songArtist: {
-		width: '40%',
-		flexShrink: 0,
+		flex: 1,
+		minWidth: 0,
 		color: 'rgba(255,255,255,0.72)',
 		fontSize: 11,
 		lineHeight: 15,
 	},
 
-	separator: {
-		width: 1,
-		height: 10,
-		marginHorizontal: 8,
-		flexShrink: 0,
-		backgroundColor: 'rgba(255,255,255,0.25)',
+	albumText: {
+		flex: 3,
+		minWidth: 0,
+		color: 'rgba(255,255,255,0.48)',
+		textAlign: 'center',
+		textAlignVertical: 'center',
+		fontSize: 10,
+		lineHeight: 13,
+		paddingHorizontal: 5,
 	},
 
-	albumText: {
+	actions: {
 		flex: 1,
 		minWidth: 0,
 		flexShrink: 1,
-		color: 'rgba(255,255,255,0.48)',
-		fontSize: 10,
-		lineHeight: 13,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		gap: 3,
 	},
 
 	songDuration: {
+		minWidth: 0,
+		flexShrink: 0,
 		color: '#fff',
 		fontSize: 12,
 		marginLeft: 2,

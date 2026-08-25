@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, View } from 'react-native';
 
 import { api, DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/lib/api/client';
 
-import { setProfile, setTracks as setDebugTracks } from '@/src/utils/debug';
+import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 
 import { ThemedText } from '../themed-text';
 import { SeparatorFull } from '../ui/separator';
 import { AlbumDisplay } from './AlbumDisplay';
-import { SongDisplay } from './search/SongDisplay';
+import { SongDisplay } from './search/SongDisplayMobile';
 
 interface ArtistProfileProps {
 	id: string;

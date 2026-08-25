@@ -1,13 +1,13 @@
-import { Pressable, StyleSheet, View } from "react-native";
-import LiquidGlass from "../../LiquidGlass";
-import { ThemedText } from "../../themed-text";
+import { Pressable, StyleSheet, View } from 'react-native';
+import LiquidGlass from '../../LiquidGlass';
+import { ThemedText } from '../../themed-text';
 
 interface PlaylistProps {
 	id: string;
 	onPress?: () => void;
 }
 
-export function PlaylistDisplay({id, onPress}: PlaylistProps) {
+export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
 	return (
 		<Pressable onPress={onPress}>
 			<LiquidGlass
@@ -19,15 +19,15 @@ export function PlaylistDisplay({id, onPress}: PlaylistProps) {
 				topRightRadius={16}
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
-				>
-					<ThemedText style={style.playlistTitle}>{"Test"}</ThemedText>
-					<View style={style.lowerPart}>
-						<View style={style.playlistCover}></View>
-						<ThemedText>{"8 musics"}</ThemedText>
-					</View>
-				</LiquidGlass>
+			>
+				<ThemedText style={style.playlistTitle}>{'Test'}</ThemedText>
+				<View style={style.lowerPart}>
+					<View style={style.playlistCover}></View>
+					<ThemedText>{'8 musics'}</ThemedText>
+				</View>
+			</LiquidGlass>
 		</Pressable>
-	)
+	);
 }
 
 const style = StyleSheet.create({
@@ -56,7 +56,7 @@ const style = StyleSheet.create({
 		width: 64,
 		height: 64,
 		borderRadius: 12,
-		backgroundColor: '#6fc71c'
+		backgroundColor: '#6fc71c',
 	},
 	playlistMeta: {
 		flex: 1,
@@ -70,4 +70,4 @@ const style = StyleSheet.create({
 		flexDirection: 'row',
 		columnGap: 12,
 	},
-})
+});
