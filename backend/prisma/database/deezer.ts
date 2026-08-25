@@ -36,7 +36,6 @@ async function getTrack(deezerId: string) {
 
     const finalTrack = await getAlbumToDeezer(track, newTrack);
 
-    console.log(finalTrack);
     return await createOrUpdateAllDataTrack({album: true, artists: true}, finalTrack);
   }
 }

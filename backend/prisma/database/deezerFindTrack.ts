@@ -55,27 +55,36 @@ const listArtist = async (track: OutputTrackDeezer, newTrack: createAllDataTrack
 }
 
 const getAlbumToDeezer = async (track: OutputTrackDeezer, newTrack: createAllDataTrack) => {
-	const albumToDb = await findAlbum(track.album.deezerCUID);
-    if (!albumToDb) {
-      const res = await fetch(`${DEEZER_API}/album/${track.album.deezerCUID}`);
-      if (!res.ok) throw new Error(`Deezer album ${res.status}`);
-      const albumJson = await res.json();
-	  const genreToDb = await findGenre(String(albumJson.genre_id));
-	  if (!genreToDb) {
-		const resGenre = await fetch(`${DEEZER_API}/genre/${albumJson.genre_id}`);
-        if (!resGenre.ok) throw new Error(`Deezer Genre ${resGenre.status}`);
-        const GenreJson = await resGenre.json();
-		newTrack.album = mapAlbum(albumJson, mapGenre(GenreJson));
-	  }
-	  else {
-		const { id, ...genre } = genreToDb;
-      	newTrack.album = mapAlbum(albumJson, genre);
-	  }
-    } else {
-      const { id, updatedAt, ...toPush } = albumToDb;
-      newTrack.album = toPush;
+  const albumToDb = await findAlbum({ genre: true }, track.album.deezerCUID);
+  if (!albumToDb) {
+    const res = await fetch(`${DEEZER_API}/album/${track.album.deezerCUID}`);
+    if (!res.ok) throw new Error(`Deezer album ${res.status}`);
+    const albumJson = await res.json();
+
+    let genre = null;
+    if (albumJson.genre_id) {
+      const genreToDb = await findGenre(String(albumJson.genre_id));
+      if (!genreToDb) {
+        const resGenre = await fetch(`${DEEZER_API}/genre/${albumJson.genre_id}`);
+        if (resGenre.ok) {
+          const GenreJson = await resGenre.json();
+          genre = mapGenre(GenreJson);
+        }
+      } else {
+        const { id, ...rest } = genreToDb;
+        genre = rest;
+      }
     }
-	return (newTrack);
-}
+
+    newTrack.album = mapAlbum(albumJson, genre);
+  } else {
+    const { id, updatedAt, genre, genreId, ...toPush } = albumToDb;
+    newTrack.album = {
+      genre: genre ?? null,
+      ...toPush,
+    };
+  }
+  return newTrack;
+};
 
 export { findTrackToDb, getDeezerTrack, listArtist, getAlbumToDeezer }

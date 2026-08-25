@@ -5,5 +5,5 @@ model Genre {
   pictureSmall  String?
   pictureMedium String?
   pictureBig    String?
-  album         Album[] @relation("AlbumToGenre")
+  album         Album[]
 }

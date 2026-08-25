@@ -1,6 +1,6 @@
 import { OutputAlbumDeezer, OutputGenreDeezer } from "@/types/deezer/deezer";
 
-function mapAlbum(dz: any, genre: OutputGenreDeezer): OutputAlbumDeezer {
+function mapAlbum(dz: any, genre: OutputGenreDeezer | null): OutputAlbumDeezer {
   return {
     deezerCUID:    String(dz.id),
     title:         dz.title,

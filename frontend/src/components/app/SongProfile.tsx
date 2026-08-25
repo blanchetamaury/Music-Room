@@ -97,7 +97,6 @@ export function SongProfile({ song, onArtistPress, onAlbumPress }: SongProfilePr
                     await api.deezer.music.music(Number(song.id));
 					
 					const track = data.data?.track;
-					console.log(track);
 
                 if (!track) {
                     console.warn('[SongProfile] No track returned');

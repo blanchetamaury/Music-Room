@@ -59,13 +59,6 @@ const publicPaths = ['/api/deezer/chartsfirts', '/api/auth/logout'];
 
 app.use(async (req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.path}`);
-  //const session = await getSession(req);
-  //console.log(req.path, session);
-  /*if (!publicPaths.includes(req.path)) {
-    if (session === null) {
-      return res.redirect('/api/auth/logout');
-    }
-  }*/
   next();
 });
 

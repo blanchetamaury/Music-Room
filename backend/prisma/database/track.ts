@@ -7,7 +7,6 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
     data: createAllDataTrack
 ): Promise<Prisma.TrackGetPayload<{ include: T }>> => {
     const { artist, album, albumId, deezerCUID, ...value } = data;
-
     let genreResponse;
     let albumResponse;
     if (album) {
@@ -16,16 +15,14 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
         albumResponse = albumRes;
     }
 
-    const genresConnectOrCreate = genreResponse
-        ? [
-                {
-                    where: { deezerCUID: genreResponse.deezerCUID },
-                    create: genreResponse,
-                },
-            ]
-        : undefined;
+    const genresConnectOrCreate = genreResponse?.deezerCUID
+        ? {
+            where: { deezerCUID: genreResponse.deezerCUID },
+            create: genreResponse,
+        }
+        : null;
 
-    return prisma.track.upsert({
+    const result = await prisma.track.upsert({
         include: include,
         where: {
             deezerCUID: data.deezerCUID,
@@ -46,9 +43,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
                         create: {
                             ...albumResponse,
                             ...(genresConnectOrCreate && {
-                                genres: {
-                                    connectOrCreate: genresConnectOrCreate,
-                                },
+                                genre: { connectOrCreate: genresConnectOrCreate },
                             }),
                         },
                     },
@@ -69,10 +64,8 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
                         where: { deezerCUID: albumResponse.deezerCUID },
                         create: {
                             ...albumResponse,
-                            ...(genresConnectOrCreate && {
-                                genres: {
-                                    connectOrCreate: genresConnectOrCreate,
-                                },
+                            ...(genresConnectOrCreate != null && {
+                                genre: { connectOrCreate: genresConnectOrCreate },
                             }),
                         },
                     },
@@ -80,6 +73,8 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
             }),
         },
     });
+
+    return result as Prisma.TrackGetPayload<{ include: T }>;
 };
 
 const updatePreviewTrack = async <T extends Prisma.TrackInclude>(

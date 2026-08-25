@@ -1520,7 +1520,8 @@ export const AlbumScalarFieldEnum = {
   explicitLyrics: 'explicitLyrics',
   explicitContentCover: 'explicitContentCover',
   releaseDate: 'releaseDate',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  genreId: 'genreId'
 } as const
 
 export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]

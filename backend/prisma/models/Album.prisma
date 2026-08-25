@@ -16,5 +16,7 @@ model Album {
   updatedAt            DateTime @updatedAt
   tracks               Track[]
   artists              Artist[] @relation("AlbumToArtist")
-  genres               Genre[]  @relation("AlbumToGenre")
+  
+  genreId              String?
+  genre               Genre?    @relation(fields: [genreId], references: [id])
 }

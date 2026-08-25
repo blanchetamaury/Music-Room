@@ -14,5 +14,5 @@ export interface CreateOrUpdateAlbum {
   explicitLyrics: boolean;
   explicitContentCover: number;
   releaseDate: string;
-  genre: CreateOrUpdateGenre;
+  genre: CreateOrUpdateGenre | null;
 }

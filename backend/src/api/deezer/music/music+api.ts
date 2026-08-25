@@ -6,7 +6,6 @@ export async function GET(
     const url = new URL(_req.url);
     const q = url.searchParams.get('music_id');
     
-	console.log(url, q);
     if (q == null) return Response.json({ error: 'parameter not found' }, { status: 404 })
     const track = await getTrack(q);
     
