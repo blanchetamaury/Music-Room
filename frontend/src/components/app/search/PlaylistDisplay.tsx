@@ -1,10 +1,15 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { ReactNode } from 'react';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 
 interface PlaylistProps {
-	id: string;
+	id?: string;
+	title?: string;
+	size?: number;
+	backgroundColorCover: string;
+	children?: ReactNode;
 	onPress?: () => void;
 }
 
@@ -22,12 +27,12 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
-	console.log('[PlaylistDisplay]', JSON.stringify({ id }, null, 2));
+export function PlaylistDisplay(props : PlaylistProps) {
+	console.log('[PlaylistDisplay]', JSON.stringify({ props }, null, 2));
 
 	return (
 		<Pressable
-			onPress={onPress}
+			onPress={props.onPress}
 			style={debugBox('#ff0000')}
 		>
 			<LiquidGlass
@@ -52,7 +57,7 @@ export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
 						debugBox('#ffff00'),
 					]}
 				>
-					{'Test'}
+					{props.title}
 				</ThemedText>
 
 				<View
@@ -61,17 +66,14 @@ export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
 						debugBox('#0088ff'),
 					]}
 				>
-					<View
-						style={[
-							style.playlistCover,
-							debugBox('#00ffff'),
-						]}
-					/>
+					<View style={[style.playlistCover, debugBox('#00ffff'), {backgroundColor: `${props.backgroundColorCover}`} ]}>
+						{props.children}
+					</View>
 
 					<ThemedText
 						style={debugBox('#ff00ff')}
 					>
-						{'8 musics'}
+						{props.size}
 					</ThemedText>
 				</View>
 			</LiquidGlass>
@@ -108,8 +110,10 @@ const style = StyleSheet.create({
 	playlistCover: {
 		width: 64,
 		height: 64,
+		justifyContent: 'center',
+		alignItems: 'center',
 		borderRadius: 12,
-		backgroundColor: '#6fc71c',
+		backgroundColor: '#1c36c7',
 	},
 
 	playlistMeta: {
