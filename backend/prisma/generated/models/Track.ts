@@ -31,6 +31,8 @@ export type TrackAvgAggregateOutputType = {
   rank: number | null
   trackPosition: number | null
   diskNumber: number | null
+  bpm: number | null
+  explicitContentCover: number | null
 }
 
 export type TrackSumAggregateOutputType = {
@@ -38,77 +40,61 @@ export type TrackSumAggregateOutputType = {
   rank: number | null
   trackPosition: number | null
   diskNumber: number | null
+  bpm: number | null
+  explicitContentCover: number | null
 }
 
 export type TrackMinAggregateOutputType = {
   id: string | null
-  deezerId: string | null
+  deezerCUID: string | null
   title: string | null
   titleShort: string | null
   duration: number | null
-  isrc: string | null
   explicit: boolean | null
   previewUrl: string | null
   releaseDate: Date | null
   rank: number | null
   trackPosition: number | null
   diskNumber: number | null
-  artistDeezerId: string | null
-  artistName: string | null
-  artistPicture: string | null
-  albumDeezerId: string | null
-  albumTitle: string | null
-  albumCover: string | null
-  albumCoverBig: string | null
-  fetchedAt: Date | null
+  bpm: number | null
+  explicitContentCover: number | null
+  albumId: string | null
   updatedAt: Date | null
 }
 
 export type TrackMaxAggregateOutputType = {
   id: string | null
-  deezerId: string | null
+  deezerCUID: string | null
   title: string | null
   titleShort: string | null
   duration: number | null
-  isrc: string | null
   explicit: boolean | null
   previewUrl: string | null
   releaseDate: Date | null
   rank: number | null
   trackPosition: number | null
   diskNumber: number | null
-  artistDeezerId: string | null
-  artistName: string | null
-  artistPicture: string | null
-  albumDeezerId: string | null
-  albumTitle: string | null
-  albumCover: string | null
-  albumCoverBig: string | null
-  fetchedAt: Date | null
+  bpm: number | null
+  explicitContentCover: number | null
+  albumId: string | null
   updatedAt: Date | null
 }
 
 export type TrackCountAggregateOutputType = {
   id: number
-  deezerId: number
+  deezerCUID: number
   title: number
   titleShort: number
   duration: number
-  isrc: number
   explicit: number
   previewUrl: number
   releaseDate: number
   rank: number
   trackPosition: number
   diskNumber: number
-  artistDeezerId: number
-  artistName: number
-  artistPicture: number
-  albumDeezerId: number
-  albumTitle: number
-  albumCover: number
-  albumCoverBig: number
-  fetchedAt: number
+  bpm: number
+  explicitContentCover: number
+  albumId: number
   updatedAt: number
   _all: number
 }
@@ -119,6 +105,8 @@ export type TrackAvgAggregateInputType = {
   rank?: true
   trackPosition?: true
   diskNumber?: true
+  bpm?: true
+  explicitContentCover?: true
 }
 
 export type TrackSumAggregateInputType = {
@@ -126,77 +114,61 @@ export type TrackSumAggregateInputType = {
   rank?: true
   trackPosition?: true
   diskNumber?: true
+  bpm?: true
+  explicitContentCover?: true
 }
 
 export type TrackMinAggregateInputType = {
   id?: true
-  deezerId?: true
+  deezerCUID?: true
   title?: true
   titleShort?: true
   duration?: true
-  isrc?: true
   explicit?: true
   previewUrl?: true
   releaseDate?: true
   rank?: true
   trackPosition?: true
   diskNumber?: true
-  artistDeezerId?: true
-  artistName?: true
-  artistPicture?: true
-  albumDeezerId?: true
-  albumTitle?: true
-  albumCover?: true
-  albumCoverBig?: true
-  fetchedAt?: true
+  bpm?: true
+  explicitContentCover?: true
+  albumId?: true
   updatedAt?: true
 }
 
 export type TrackMaxAggregateInputType = {
   id?: true
-  deezerId?: true
+  deezerCUID?: true
   title?: true
   titleShort?: true
   duration?: true
-  isrc?: true
   explicit?: true
   previewUrl?: true
   releaseDate?: true
   rank?: true
   trackPosition?: true
   diskNumber?: true
-  artistDeezerId?: true
-  artistName?: true
-  artistPicture?: true
-  albumDeezerId?: true
-  albumTitle?: true
-  albumCover?: true
-  albumCoverBig?: true
-  fetchedAt?: true
+  bpm?: true
+  explicitContentCover?: true
+  albumId?: true
   updatedAt?: true
 }
 
 export type TrackCountAggregateInputType = {
   id?: true
-  deezerId?: true
+  deezerCUID?: true
   title?: true
   titleShort?: true
   duration?: true
-  isrc?: true
   explicit?: true
   previewUrl?: true
   releaseDate?: true
   rank?: true
   trackPosition?: true
   diskNumber?: true
-  artistDeezerId?: true
-  artistName?: true
-  artistPicture?: true
-  albumDeezerId?: true
-  albumTitle?: true
-  albumCover?: true
-  albumCoverBig?: true
-  fetchedAt?: true
+  bpm?: true
+  explicitContentCover?: true
+  albumId?: true
   updatedAt?: true
   _all?: true
 }
@@ -289,25 +261,19 @@ export type TrackGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type TrackGroupByOutputType = {
   id: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort: string | null
   duration: number
-  isrc: string | null
   explicit: boolean
   previewUrl: string | null
   releaseDate: Date | null
   rank: number | null
   trackPosition: number | null
   diskNumber: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover: string | null
-  albumCoverBig: string | null
-  fetchedAt: Date
+  bpm: number | null
+  explicitContentCover: number
+  albumId: string | null
   updatedAt: Date
   _count: TrackCountAggregateOutputType | null
   _avg: TrackAvgAggregateOutputType | null
@@ -336,109 +302,91 @@ export type TrackWhereInput = {
   OR?: Prisma.TrackWhereInput[]
   NOT?: Prisma.TrackWhereInput | Prisma.TrackWhereInput[]
   id?: Prisma.StringFilter<"Track"> | string
-  deezerId?: Prisma.StringFilter<"Track"> | string
+  deezerCUID?: Prisma.StringFilter<"Track"> | string
   title?: Prisma.StringFilter<"Track"> | string
   titleShort?: Prisma.StringNullableFilter<"Track"> | string | null
   duration?: Prisma.IntFilter<"Track"> | number
-  isrc?: Prisma.StringNullableFilter<"Track"> | string | null
   explicit?: Prisma.BoolFilter<"Track"> | boolean
   previewUrl?: Prisma.StringNullableFilter<"Track"> | string | null
   releaseDate?: Prisma.DateTimeNullableFilter<"Track"> | Date | string | null
   rank?: Prisma.IntNullableFilter<"Track"> | number | null
   trackPosition?: Prisma.IntNullableFilter<"Track"> | number | null
   diskNumber?: Prisma.IntNullableFilter<"Track"> | number | null
-  artistDeezerId?: Prisma.StringFilter<"Track"> | string
-  artistName?: Prisma.StringFilter<"Track"> | string
-  artistPicture?: Prisma.StringNullableFilter<"Track"> | string | null
-  albumDeezerId?: Prisma.StringFilter<"Track"> | string
-  albumTitle?: Prisma.StringFilter<"Track"> | string
-  albumCover?: Prisma.StringNullableFilter<"Track"> | string | null
-  albumCoverBig?: Prisma.StringNullableFilter<"Track"> | string | null
-  fetchedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
+  bpm?: Prisma.IntNullableFilter<"Track"> | number | null
+  explicitContentCover?: Prisma.IntFilter<"Track"> | number
+  albumId?: Prisma.StringNullableFilter<"Track"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
   playlistTracks?: Prisma.PlaylistTrackListRelationFilter
+  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
   likes?: Prisma.LikeListRelationFilter
   plays?: Prisma.PlayHistoryListRelationFilter
+  artists?: Prisma.ArtistListRelationFilter
 }
 
 export type TrackOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  deezerId?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   titleShort?: Prisma.SortOrderInput | Prisma.SortOrder
   duration?: Prisma.SortOrder
-  isrc?: Prisma.SortOrderInput | Prisma.SortOrder
   explicit?: Prisma.SortOrder
   previewUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   releaseDate?: Prisma.SortOrderInput | Prisma.SortOrder
   rank?: Prisma.SortOrderInput | Prisma.SortOrder
   trackPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   diskNumber?: Prisma.SortOrderInput | Prisma.SortOrder
-  artistDeezerId?: Prisma.SortOrder
-  artistName?: Prisma.SortOrder
-  artistPicture?: Prisma.SortOrderInput | Prisma.SortOrder
-  albumDeezerId?: Prisma.SortOrder
-  albumTitle?: Prisma.SortOrder
-  albumCover?: Prisma.SortOrderInput | Prisma.SortOrder
-  albumCoverBig?: Prisma.SortOrderInput | Prisma.SortOrder
-  fetchedAt?: Prisma.SortOrder
+  bpm?: Prisma.SortOrderInput | Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+  albumId?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   playlistTracks?: Prisma.PlaylistTrackOrderByRelationAggregateInput
+  album?: Prisma.AlbumOrderByWithRelationInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
   plays?: Prisma.PlayHistoryOrderByRelationAggregateInput
+  artists?: Prisma.ArtistOrderByRelationAggregateInput
 }
 
 export type TrackWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  deezerId?: string
+  deezerCUID?: string
   AND?: Prisma.TrackWhereInput | Prisma.TrackWhereInput[]
   OR?: Prisma.TrackWhereInput[]
   NOT?: Prisma.TrackWhereInput | Prisma.TrackWhereInput[]
   title?: Prisma.StringFilter<"Track"> | string
   titleShort?: Prisma.StringNullableFilter<"Track"> | string | null
   duration?: Prisma.IntFilter<"Track"> | number
-  isrc?: Prisma.StringNullableFilter<"Track"> | string | null
   explicit?: Prisma.BoolFilter<"Track"> | boolean
   previewUrl?: Prisma.StringNullableFilter<"Track"> | string | null
   releaseDate?: Prisma.DateTimeNullableFilter<"Track"> | Date | string | null
   rank?: Prisma.IntNullableFilter<"Track"> | number | null
   trackPosition?: Prisma.IntNullableFilter<"Track"> | number | null
   diskNumber?: Prisma.IntNullableFilter<"Track"> | number | null
-  artistDeezerId?: Prisma.StringFilter<"Track"> | string
-  artistName?: Prisma.StringFilter<"Track"> | string
-  artistPicture?: Prisma.StringNullableFilter<"Track"> | string | null
-  albumDeezerId?: Prisma.StringFilter<"Track"> | string
-  albumTitle?: Prisma.StringFilter<"Track"> | string
-  albumCover?: Prisma.StringNullableFilter<"Track"> | string | null
-  albumCoverBig?: Prisma.StringNullableFilter<"Track"> | string | null
-  fetchedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
+  bpm?: Prisma.IntNullableFilter<"Track"> | number | null
+  explicitContentCover?: Prisma.IntFilter<"Track"> | number
+  albumId?: Prisma.StringNullableFilter<"Track"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
   playlistTracks?: Prisma.PlaylistTrackListRelationFilter
+  album?: Prisma.XOR<Prisma.AlbumNullableScalarRelationFilter, Prisma.AlbumWhereInput> | null
   likes?: Prisma.LikeListRelationFilter
   plays?: Prisma.PlayHistoryListRelationFilter
-}, "id" | "deezerId">
+  artists?: Prisma.ArtistListRelationFilter
+}, "id" | "deezerCUID">
 
 export type TrackOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  deezerId?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   titleShort?: Prisma.SortOrderInput | Prisma.SortOrder
   duration?: Prisma.SortOrder
-  isrc?: Prisma.SortOrderInput | Prisma.SortOrder
   explicit?: Prisma.SortOrder
   previewUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   releaseDate?: Prisma.SortOrderInput | Prisma.SortOrder
   rank?: Prisma.SortOrderInput | Prisma.SortOrder
   trackPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   diskNumber?: Prisma.SortOrderInput | Prisma.SortOrder
-  artistDeezerId?: Prisma.SortOrder
-  artistName?: Prisma.SortOrder
-  artistPicture?: Prisma.SortOrderInput | Prisma.SortOrder
-  albumDeezerId?: Prisma.SortOrder
-  albumTitle?: Prisma.SortOrder
-  albumCover?: Prisma.SortOrderInput | Prisma.SortOrder
-  albumCoverBig?: Prisma.SortOrderInput | Prisma.SortOrder
-  fetchedAt?: Prisma.SortOrder
+  bpm?: Prisma.SortOrderInput | Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+  albumId?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TrackCountOrderByAggregateInput
   _avg?: Prisma.TrackAvgOrderByAggregateInput
@@ -452,206 +400,171 @@ export type TrackScalarWhereWithAggregatesInput = {
   OR?: Prisma.TrackScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TrackScalarWhereWithAggregatesInput | Prisma.TrackScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Track"> | string
-  deezerId?: Prisma.StringWithAggregatesFilter<"Track"> | string
+  deezerCUID?: Prisma.StringWithAggregatesFilter<"Track"> | string
   title?: Prisma.StringWithAggregatesFilter<"Track"> | string
   titleShort?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
   duration?: Prisma.IntWithAggregatesFilter<"Track"> | number
-  isrc?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
   explicit?: Prisma.BoolWithAggregatesFilter<"Track"> | boolean
   previewUrl?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
   releaseDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Track"> | Date | string | null
   rank?: Prisma.IntNullableWithAggregatesFilter<"Track"> | number | null
   trackPosition?: Prisma.IntNullableWithAggregatesFilter<"Track"> | number | null
   diskNumber?: Prisma.IntNullableWithAggregatesFilter<"Track"> | number | null
-  artistDeezerId?: Prisma.StringWithAggregatesFilter<"Track"> | string
-  artistName?: Prisma.StringWithAggregatesFilter<"Track"> | string
-  artistPicture?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
-  albumDeezerId?: Prisma.StringWithAggregatesFilter<"Track"> | string
-  albumTitle?: Prisma.StringWithAggregatesFilter<"Track"> | string
-  albumCover?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
-  albumCoverBig?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
-  fetchedAt?: Prisma.DateTimeWithAggregatesFilter<"Track"> | Date | string
+  bpm?: Prisma.IntNullableWithAggregatesFilter<"Track"> | number | null
+  explicitContentCover?: Prisma.IntWithAggregatesFilter<"Track"> | number
+  albumId?: Prisma.StringNullableWithAggregatesFilter<"Track"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Track"> | Date | string
 }
 
 export type TrackCreateInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
 }
 
 export type TrackUncheckedCreateInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutTracksInput
 }
 
 export type TrackUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUncheckedUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackCreateManyInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
   updatedAt?: Date | string
 }
 
 export type TrackUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrackUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TrackListRelationFilter = {
+  every?: Prisma.TrackWhereInput
+  some?: Prisma.TrackWhereInput
+  none?: Prisma.TrackWhereInput
+}
+
+export type TrackOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type TrackScalarRelationFilter = {
@@ -661,25 +574,19 @@ export type TrackScalarRelationFilter = {
 
 export type TrackCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  deezerId?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   titleShort?: Prisma.SortOrder
   duration?: Prisma.SortOrder
-  isrc?: Prisma.SortOrder
   explicit?: Prisma.SortOrder
   previewUrl?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   rank?: Prisma.SortOrder
   trackPosition?: Prisma.SortOrder
   diskNumber?: Prisma.SortOrder
-  artistDeezerId?: Prisma.SortOrder
-  artistName?: Prisma.SortOrder
-  artistPicture?: Prisma.SortOrder
-  albumDeezerId?: Prisma.SortOrder
-  albumTitle?: Prisma.SortOrder
-  albumCover?: Prisma.SortOrder
-  albumCoverBig?: Prisma.SortOrder
-  fetchedAt?: Prisma.SortOrder
+  bpm?: Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+  albumId?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -688,53 +595,43 @@ export type TrackAvgOrderByAggregateInput = {
   rank?: Prisma.SortOrder
   trackPosition?: Prisma.SortOrder
   diskNumber?: Prisma.SortOrder
+  bpm?: Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
 }
 
 export type TrackMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  deezerId?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   titleShort?: Prisma.SortOrder
   duration?: Prisma.SortOrder
-  isrc?: Prisma.SortOrder
   explicit?: Prisma.SortOrder
   previewUrl?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   rank?: Prisma.SortOrder
   trackPosition?: Prisma.SortOrder
   diskNumber?: Prisma.SortOrder
-  artistDeezerId?: Prisma.SortOrder
-  artistName?: Prisma.SortOrder
-  artistPicture?: Prisma.SortOrder
-  albumDeezerId?: Prisma.SortOrder
-  albumTitle?: Prisma.SortOrder
-  albumCover?: Prisma.SortOrder
-  albumCoverBig?: Prisma.SortOrder
-  fetchedAt?: Prisma.SortOrder
+  bpm?: Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+  albumId?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TrackMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  deezerId?: Prisma.SortOrder
+  deezerCUID?: Prisma.SortOrder
   title?: Prisma.SortOrder
   titleShort?: Prisma.SortOrder
   duration?: Prisma.SortOrder
-  isrc?: Prisma.SortOrder
   explicit?: Prisma.SortOrder
   previewUrl?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   rank?: Prisma.SortOrder
   trackPosition?: Prisma.SortOrder
   diskNumber?: Prisma.SortOrder
-  artistDeezerId?: Prisma.SortOrder
-  artistName?: Prisma.SortOrder
-  artistPicture?: Prisma.SortOrder
-  albumDeezerId?: Prisma.SortOrder
-  albumTitle?: Prisma.SortOrder
-  albumCover?: Prisma.SortOrder
-  albumCoverBig?: Prisma.SortOrder
-  fetchedAt?: Prisma.SortOrder
+  bpm?: Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+  albumId?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -743,6 +640,88 @@ export type TrackSumOrderByAggregateInput = {
   rank?: Prisma.SortOrder
   trackPosition?: Prisma.SortOrder
   diskNumber?: Prisma.SortOrder
+  bpm?: Prisma.SortOrder
+  explicitContentCover?: Prisma.SortOrder
+}
+
+export type TrackCreateNestedManyWithoutAlbumInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput> | Prisma.TrackCreateWithoutAlbumInput[] | Prisma.TrackUncheckedCreateWithoutAlbumInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutAlbumInput | Prisma.TrackCreateOrConnectWithoutAlbumInput[]
+  createMany?: Prisma.TrackCreateManyAlbumInputEnvelope
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+}
+
+export type TrackUncheckedCreateNestedManyWithoutAlbumInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput> | Prisma.TrackCreateWithoutAlbumInput[] | Prisma.TrackUncheckedCreateWithoutAlbumInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutAlbumInput | Prisma.TrackCreateOrConnectWithoutAlbumInput[]
+  createMany?: Prisma.TrackCreateManyAlbumInputEnvelope
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+}
+
+export type TrackUpdateManyWithoutAlbumNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput> | Prisma.TrackCreateWithoutAlbumInput[] | Prisma.TrackUncheckedCreateWithoutAlbumInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutAlbumInput | Prisma.TrackCreateOrConnectWithoutAlbumInput[]
+  upsert?: Prisma.TrackUpsertWithWhereUniqueWithoutAlbumInput | Prisma.TrackUpsertWithWhereUniqueWithoutAlbumInput[]
+  createMany?: Prisma.TrackCreateManyAlbumInputEnvelope
+  set?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  disconnect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  delete?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  update?: Prisma.TrackUpdateWithWhereUniqueWithoutAlbumInput | Prisma.TrackUpdateWithWhereUniqueWithoutAlbumInput[]
+  updateMany?: Prisma.TrackUpdateManyWithWhereWithoutAlbumInput | Prisma.TrackUpdateManyWithWhereWithoutAlbumInput[]
+  deleteMany?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
+}
+
+export type TrackUncheckedUpdateManyWithoutAlbumNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput> | Prisma.TrackCreateWithoutAlbumInput[] | Prisma.TrackUncheckedCreateWithoutAlbumInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutAlbumInput | Prisma.TrackCreateOrConnectWithoutAlbumInput[]
+  upsert?: Prisma.TrackUpsertWithWhereUniqueWithoutAlbumInput | Prisma.TrackUpsertWithWhereUniqueWithoutAlbumInput[]
+  createMany?: Prisma.TrackCreateManyAlbumInputEnvelope
+  set?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  disconnect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  delete?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  update?: Prisma.TrackUpdateWithWhereUniqueWithoutAlbumInput | Prisma.TrackUpdateWithWhereUniqueWithoutAlbumInput[]
+  updateMany?: Prisma.TrackUpdateManyWithWhereWithoutAlbumInput | Prisma.TrackUpdateManyWithWhereWithoutAlbumInput[]
+  deleteMany?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
+}
+
+export type TrackCreateNestedManyWithoutArtistsInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput> | Prisma.TrackCreateWithoutArtistsInput[] | Prisma.TrackUncheckedCreateWithoutArtistsInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutArtistsInput | Prisma.TrackCreateOrConnectWithoutArtistsInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+}
+
+export type TrackUncheckedCreateNestedManyWithoutArtistsInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput> | Prisma.TrackCreateWithoutArtistsInput[] | Prisma.TrackUncheckedCreateWithoutArtistsInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutArtistsInput | Prisma.TrackCreateOrConnectWithoutArtistsInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+}
+
+export type TrackUpdateManyWithoutArtistsNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput> | Prisma.TrackCreateWithoutArtistsInput[] | Prisma.TrackUncheckedCreateWithoutArtistsInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutArtistsInput | Prisma.TrackCreateOrConnectWithoutArtistsInput[]
+  upsert?: Prisma.TrackUpsertWithWhereUniqueWithoutArtistsInput | Prisma.TrackUpsertWithWhereUniqueWithoutArtistsInput[]
+  set?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  disconnect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  delete?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  update?: Prisma.TrackUpdateWithWhereUniqueWithoutArtistsInput | Prisma.TrackUpdateWithWhereUniqueWithoutArtistsInput[]
+  updateMany?: Prisma.TrackUpdateManyWithWhereWithoutArtistsInput | Prisma.TrackUpdateManyWithWhereWithoutArtistsInput[]
+  deleteMany?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
+}
+
+export type TrackUncheckedUpdateManyWithoutArtistsNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput> | Prisma.TrackCreateWithoutArtistsInput[] | Prisma.TrackUncheckedCreateWithoutArtistsInput[]
+  connectOrCreate?: Prisma.TrackCreateOrConnectWithoutArtistsInput | Prisma.TrackCreateOrConnectWithoutArtistsInput[]
+  upsert?: Prisma.TrackUpsertWithWhereUniqueWithoutArtistsInput | Prisma.TrackUpsertWithWhereUniqueWithoutArtistsInput[]
+  set?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  disconnect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  delete?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  connect?: Prisma.TrackWhereUniqueInput | Prisma.TrackWhereUniqueInput[]
+  update?: Prisma.TrackUpdateWithWhereUniqueWithoutArtistsInput | Prisma.TrackUpdateWithWhereUniqueWithoutArtistsInput[]
+  updateMany?: Prisma.TrackUpdateManyWithWhereWithoutArtistsInput | Prisma.TrackUpdateManyWithWhereWithoutArtistsInput[]
+  deleteMany?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
 }
 
 export type TrackCreateNestedOneWithoutLikesInput = {
@@ -791,56 +770,198 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type TrackCreateWithoutLikesInput = {
+export type TrackCreateWithoutAlbumInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
+}
+
+export type TrackUncheckedCreateWithoutAlbumInput = {
+  id?: string
+  deezerCUID: string
+  title: string
+  titleShort?: string | null
+  duration: number
+  explicit?: boolean
+  previewUrl?: string | null
+  releaseDate?: Date | string | null
+  rank?: number | null
+  trackPosition?: number | null
+  diskNumber?: number | null
+  bpm?: number | null
+  explicitContentCover: number
+  updatedAt?: Date | string
+  playlistTracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutTrackInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutTracksInput
+}
+
+export type TrackCreateOrConnectWithoutAlbumInput = {
+  where: Prisma.TrackWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput>
+}
+
+export type TrackCreateManyAlbumInputEnvelope = {
+  data: Prisma.TrackCreateManyAlbumInput | Prisma.TrackCreateManyAlbumInput[]
+  skipDuplicates?: boolean
+}
+
+export type TrackUpsertWithWhereUniqueWithoutAlbumInput = {
+  where: Prisma.TrackWhereUniqueInput
+  update: Prisma.XOR<Prisma.TrackUpdateWithoutAlbumInput, Prisma.TrackUncheckedUpdateWithoutAlbumInput>
+  create: Prisma.XOR<Prisma.TrackCreateWithoutAlbumInput, Prisma.TrackUncheckedCreateWithoutAlbumInput>
+}
+
+export type TrackUpdateWithWhereUniqueWithoutAlbumInput = {
+  where: Prisma.TrackWhereUniqueInput
+  data: Prisma.XOR<Prisma.TrackUpdateWithoutAlbumInput, Prisma.TrackUncheckedUpdateWithoutAlbumInput>
+}
+
+export type TrackUpdateManyWithWhereWithoutAlbumInput = {
+  where: Prisma.TrackScalarWhereInput
+  data: Prisma.XOR<Prisma.TrackUpdateManyMutationInput, Prisma.TrackUncheckedUpdateManyWithoutAlbumInput>
+}
+
+export type TrackScalarWhereInput = {
+  AND?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
+  OR?: Prisma.TrackScalarWhereInput[]
+  NOT?: Prisma.TrackScalarWhereInput | Prisma.TrackScalarWhereInput[]
+  id?: Prisma.StringFilter<"Track"> | string
+  deezerCUID?: Prisma.StringFilter<"Track"> | string
+  title?: Prisma.StringFilter<"Track"> | string
+  titleShort?: Prisma.StringNullableFilter<"Track"> | string | null
+  duration?: Prisma.IntFilter<"Track"> | number
+  explicit?: Prisma.BoolFilter<"Track"> | boolean
+  previewUrl?: Prisma.StringNullableFilter<"Track"> | string | null
+  releaseDate?: Prisma.DateTimeNullableFilter<"Track"> | Date | string | null
+  rank?: Prisma.IntNullableFilter<"Track"> | number | null
+  trackPosition?: Prisma.IntNullableFilter<"Track"> | number | null
+  diskNumber?: Prisma.IntNullableFilter<"Track"> | number | null
+  bpm?: Prisma.IntNullableFilter<"Track"> | number | null
+  explicitContentCover?: Prisma.IntFilter<"Track"> | number
+  albumId?: Prisma.StringNullableFilter<"Track"> | string | null
+  updatedAt?: Prisma.DateTimeFilter<"Track"> | Date | string
+}
+
+export type TrackCreateWithoutArtistsInput = {
+  id?: string
+  deezerCUID: string
+  title: string
+  titleShort?: string | null
+  duration: number
+  explicit?: boolean
+  previewUrl?: string | null
+  releaseDate?: Date | string | null
+  rank?: number | null
+  trackPosition?: number | null
+  diskNumber?: number | null
+  bpm?: number | null
+  explicitContentCover: number
+  updatedAt?: Date | string
+  playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
+  likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
+}
+
+export type TrackUncheckedCreateWithoutArtistsInput = {
+  id?: string
+  deezerCUID: string
+  title: string
+  titleShort?: string | null
+  duration: number
+  explicit?: boolean
+  previewUrl?: string | null
+  releaseDate?: Date | string | null
+  rank?: number | null
+  trackPosition?: number | null
+  diskNumber?: number | null
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
+  updatedAt?: Date | string
+  playlistTracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutTrackInput
+  plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutTrackInput
+}
+
+export type TrackCreateOrConnectWithoutArtistsInput = {
+  where: Prisma.TrackWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput>
+}
+
+export type TrackUpsertWithWhereUniqueWithoutArtistsInput = {
+  where: Prisma.TrackWhereUniqueInput
+  update: Prisma.XOR<Prisma.TrackUpdateWithoutArtistsInput, Prisma.TrackUncheckedUpdateWithoutArtistsInput>
+  create: Prisma.XOR<Prisma.TrackCreateWithoutArtistsInput, Prisma.TrackUncheckedCreateWithoutArtistsInput>
+}
+
+export type TrackUpdateWithWhereUniqueWithoutArtistsInput = {
+  where: Prisma.TrackWhereUniqueInput
+  data: Prisma.XOR<Prisma.TrackUpdateWithoutArtistsInput, Prisma.TrackUncheckedUpdateWithoutArtistsInput>
+}
+
+export type TrackUpdateManyWithWhereWithoutArtistsInput = {
+  where: Prisma.TrackScalarWhereInput
+  data: Prisma.XOR<Prisma.TrackUpdateManyMutationInput, Prisma.TrackUncheckedUpdateManyWithoutArtistsInput>
+}
+
+export type TrackCreateWithoutLikesInput = {
+  id?: string
+  deezerCUID: string
+  title: string
+  titleShort?: string | null
+  duration: number
+  explicit?: boolean
+  previewUrl?: string | null
+  releaseDate?: Date | string | null
+  rank?: number | null
+  trackPosition?: number | null
+  diskNumber?: number | null
+  bpm?: number | null
+  explicitContentCover: number
+  updatedAt?: Date | string
+  playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
+  plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutLikesInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutTracksInput
 }
 
 export type TrackCreateOrConnectWithoutLikesInput = {
@@ -861,106 +982,86 @@ export type TrackUpdateToOneWithWhereWithoutLikesInput = {
 
 export type TrackUpdateWithoutLikesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutLikesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUncheckedUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackCreateWithoutPlaysInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutTrackInput
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutPlaysInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
   updatedAt?: Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutTracksInput
 }
 
 export type TrackCreateOrConnectWithoutPlaysInput = {
@@ -981,106 +1082,86 @@ export type TrackUpdateToOneWithWhereWithoutPlaysInput = {
 
 export type TrackUpdateWithoutPlaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutPlaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playlistTracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUncheckedUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackCreateWithoutPlaylistTracksInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
   updatedAt?: Date | string
+  album?: Prisma.AlbumCreateNestedOneWithoutTracksInput
   likes?: Prisma.LikeCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistCreateNestedManyWithoutTracksInput
 }
 
 export type TrackUncheckedCreateWithoutPlaylistTracksInput = {
   id?: string
-  deezerId: string
+  deezerCUID: string
   title: string
   titleShort?: string | null
   duration: number
-  isrc?: string | null
   explicit?: boolean
   previewUrl?: string | null
   releaseDate?: Date | string | null
   rank?: number | null
   trackPosition?: number | null
   diskNumber?: number | null
-  artistDeezerId: string
-  artistName: string
-  artistPicture?: string | null
-  albumDeezerId: string
-  albumTitle: string
-  albumCover?: string | null
-  albumCoverBig?: string | null
-  fetchedAt?: Date | string
+  bpm?: number | null
+  explicitContentCover: number
+  albumId?: string | null
   updatedAt?: Date | string
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutTrackInput
   plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutTrackInput
+  artists?: Prisma.ArtistUncheckedCreateNestedManyWithoutTracksInput
 }
 
 export type TrackCreateOrConnectWithoutPlaylistTracksInput = {
@@ -1101,54 +1182,180 @@ export type TrackUpdateToOneWithWhereWithoutPlaylistTracksInput = {
 
 export type TrackUpdateWithoutPlaylistTracksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
   likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
 }
 
 export type TrackUncheckedUpdateWithoutPlaylistTracksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  deezerId?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
-  isrc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  artistDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  artistName?: Prisma.StringFieldUpdateOperationsInput | string
-  artistPicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumDeezerId?: Prisma.StringFieldUpdateOperationsInput | string
-  albumTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  albumCover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  albumCoverBig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fetchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   likes?: Prisma.LikeUncheckedUpdateManyWithoutTrackNestedInput
   plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUncheckedUpdateManyWithoutTracksNestedInput
+}
+
+export type TrackCreateManyAlbumInput = {
+  id?: string
+  deezerCUID: string
+  title: string
+  titleShort?: string | null
+  duration: number
+  explicit?: boolean
+  previewUrl?: string | null
+  releaseDate?: Date | string | null
+  rank?: number | null
+  trackPosition?: number | null
+  diskNumber?: number | null
+  bpm?: number | null
+  explicitContentCover: number
+  updatedAt?: Date | string
+}
+
+export type TrackUpdateWithoutAlbumInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUpdateManyWithoutTracksNestedInput
+}
+
+export type TrackUncheckedUpdateWithoutAlbumInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  playlistTracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutTrackNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput
+  artists?: Prisma.ArtistUncheckedUpdateManyWithoutTracksNestedInput
+}
+
+export type TrackUncheckedUpdateManyWithoutAlbumInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TrackUpdateWithoutArtistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  playlistTracks?: Prisma.PlaylistTrackUpdateManyWithoutTrackNestedInput
+  album?: Prisma.AlbumUpdateOneWithoutTracksNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutTrackNestedInput
+  plays?: Prisma.PlayHistoryUpdateManyWithoutTrackNestedInput
+}
+
+export type TrackUncheckedUpdateWithoutArtistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  playlistTracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutTrackNestedInput
+  plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutTrackNestedInput
+}
+
+export type TrackUncheckedUpdateManyWithoutArtistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  deezerCUID?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  explicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previewUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trackPosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  diskNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bpm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  explicitContentCover?: Prisma.IntFieldUpdateOperationsInput | number
+  albumId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1160,12 +1367,14 @@ export type TrackCountOutputType = {
   playlistTracks: number
   likes: number
   plays: number
+  artists: number
 }
 
 export type TrackCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playlistTracks?: boolean | TrackCountOutputTypeCountPlaylistTracksArgs
   likes?: boolean | TrackCountOutputTypeCountLikesArgs
   plays?: boolean | TrackCountOutputTypeCountPlaysArgs
+  artists?: boolean | TrackCountOutputTypeCountArtistsArgs
 }
 
 /**
@@ -1199,145 +1408,134 @@ export type TrackCountOutputTypeCountPlaysArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.PlayHistoryWhereInput
 }
 
+/**
+ * TrackCountOutputType without action
+ */
+export type TrackCountOutputTypeCountArtistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArtistWhereInput
+}
+
 
 export type TrackSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  deezerId?: boolean
+  deezerCUID?: boolean
   title?: boolean
   titleShort?: boolean
   duration?: boolean
-  isrc?: boolean
   explicit?: boolean
   previewUrl?: boolean
   releaseDate?: boolean
   rank?: boolean
   trackPosition?: boolean
   diskNumber?: boolean
-  artistDeezerId?: boolean
-  artistName?: boolean
-  artistPicture?: boolean
-  albumDeezerId?: boolean
-  albumTitle?: boolean
-  albumCover?: boolean
-  albumCoverBig?: boolean
-  fetchedAt?: boolean
+  bpm?: boolean
+  explicitContentCover?: boolean
+  albumId?: boolean
   updatedAt?: boolean
   playlistTracks?: boolean | Prisma.Track$playlistTracksArgs<ExtArgs>
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   likes?: boolean | Prisma.Track$likesArgs<ExtArgs>
   plays?: boolean | Prisma.Track$playsArgs<ExtArgs>
+  artists?: boolean | Prisma.Track$artistsArgs<ExtArgs>
   _count?: boolean | Prisma.TrackCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["track"]>
 
 export type TrackSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  deezerId?: boolean
+  deezerCUID?: boolean
   title?: boolean
   titleShort?: boolean
   duration?: boolean
-  isrc?: boolean
   explicit?: boolean
   previewUrl?: boolean
   releaseDate?: boolean
   rank?: boolean
   trackPosition?: boolean
   diskNumber?: boolean
-  artistDeezerId?: boolean
-  artistName?: boolean
-  artistPicture?: boolean
-  albumDeezerId?: boolean
-  albumTitle?: boolean
-  albumCover?: boolean
-  albumCoverBig?: boolean
-  fetchedAt?: boolean
+  bpm?: boolean
+  explicitContentCover?: boolean
+  albumId?: boolean
   updatedAt?: boolean
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
 }, ExtArgs["result"]["track"]>
 
 export type TrackSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  deezerId?: boolean
+  deezerCUID?: boolean
   title?: boolean
   titleShort?: boolean
   duration?: boolean
-  isrc?: boolean
   explicit?: boolean
   previewUrl?: boolean
   releaseDate?: boolean
   rank?: boolean
   trackPosition?: boolean
   diskNumber?: boolean
-  artistDeezerId?: boolean
-  artistName?: boolean
-  artistPicture?: boolean
-  albumDeezerId?: boolean
-  albumTitle?: boolean
-  albumCover?: boolean
-  albumCoverBig?: boolean
-  fetchedAt?: boolean
+  bpm?: boolean
+  explicitContentCover?: boolean
+  albumId?: boolean
   updatedAt?: boolean
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
 }, ExtArgs["result"]["track"]>
 
 export type TrackSelectScalar = {
   id?: boolean
-  deezerId?: boolean
+  deezerCUID?: boolean
   title?: boolean
   titleShort?: boolean
   duration?: boolean
-  isrc?: boolean
   explicit?: boolean
   previewUrl?: boolean
   releaseDate?: boolean
   rank?: boolean
   trackPosition?: boolean
   diskNumber?: boolean
-  artistDeezerId?: boolean
-  artistName?: boolean
-  artistPicture?: boolean
-  albumDeezerId?: boolean
-  albumTitle?: boolean
-  albumCover?: boolean
-  albumCoverBig?: boolean
-  fetchedAt?: boolean
+  bpm?: boolean
+  explicitContentCover?: boolean
+  albumId?: boolean
   updatedAt?: boolean
 }
 
-export type TrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deezerId" | "title" | "titleShort" | "duration" | "isrc" | "explicit" | "previewUrl" | "releaseDate" | "rank" | "trackPosition" | "diskNumber" | "artistDeezerId" | "artistName" | "artistPicture" | "albumDeezerId" | "albumTitle" | "albumCover" | "albumCoverBig" | "fetchedAt" | "updatedAt", ExtArgs["result"]["track"]>
+export type TrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deezerCUID" | "title" | "titleShort" | "duration" | "explicit" | "previewUrl" | "releaseDate" | "rank" | "trackPosition" | "diskNumber" | "bpm" | "explicitContentCover" | "albumId" | "updatedAt", ExtArgs["result"]["track"]>
 export type TrackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playlistTracks?: boolean | Prisma.Track$playlistTracksArgs<ExtArgs>
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
   likes?: boolean | Prisma.Track$likesArgs<ExtArgs>
   plays?: boolean | Prisma.Track$playsArgs<ExtArgs>
+  artists?: boolean | Prisma.Track$artistsArgs<ExtArgs>
   _count?: boolean | Prisma.TrackCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type TrackIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type TrackIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TrackIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
+}
+export type TrackIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  album?: boolean | Prisma.Track$albumArgs<ExtArgs>
+}
 
 export type $TrackPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Track"
   objects: {
     playlistTracks: Prisma.$PlaylistTrackPayload<ExtArgs>[]
+    album: Prisma.$AlbumPayload<ExtArgs> | null
     likes: Prisma.$LikePayload<ExtArgs>[]
     plays: Prisma.$PlayHistoryPayload<ExtArgs>[]
+    artists: Prisma.$ArtistPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    deezerId: string
+    deezerCUID: string
     title: string
     titleShort: string | null
     duration: number
-    isrc: string | null
     explicit: boolean
     previewUrl: string | null
     releaseDate: Date | null
     rank: number | null
     trackPosition: number | null
     diskNumber: number | null
-    artistDeezerId: string
-    artistName: string
-    artistPicture: string | null
-    albumDeezerId: string
-    albumTitle: string
-    albumCover: string | null
-    albumCoverBig: string | null
-    fetchedAt: Date
+    bpm: number | null
+    explicitContentCover: number
+    albumId: string | null
     updatedAt: Date
   }, ExtArgs["result"]["track"]>
   composites: {}
@@ -1734,8 +1932,10 @@ readonly fields: TrackFieldRefs;
 export interface Prisma__TrackClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   playlistTracks<T extends Prisma.Track$playlistTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$playlistTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistTrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  album<T extends Prisma.Track$albumArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$albumArgs<ExtArgs>>): Prisma.Prisma__AlbumClient<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   likes<T extends Prisma.Track$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   plays<T extends Prisma.Track$playsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$playsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  artists<T extends Prisma.Track$artistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Track$artistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArtistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1766,25 +1966,19 @@ export interface Prisma__TrackClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface TrackFieldRefs {
   readonly id: Prisma.FieldRef<"Track", 'String'>
-  readonly deezerId: Prisma.FieldRef<"Track", 'String'>
+  readonly deezerCUID: Prisma.FieldRef<"Track", 'String'>
   readonly title: Prisma.FieldRef<"Track", 'String'>
   readonly titleShort: Prisma.FieldRef<"Track", 'String'>
   readonly duration: Prisma.FieldRef<"Track", 'Int'>
-  readonly isrc: Prisma.FieldRef<"Track", 'String'>
   readonly explicit: Prisma.FieldRef<"Track", 'Boolean'>
   readonly previewUrl: Prisma.FieldRef<"Track", 'String'>
   readonly releaseDate: Prisma.FieldRef<"Track", 'DateTime'>
   readonly rank: Prisma.FieldRef<"Track", 'Int'>
   readonly trackPosition: Prisma.FieldRef<"Track", 'Int'>
   readonly diskNumber: Prisma.FieldRef<"Track", 'Int'>
-  readonly artistDeezerId: Prisma.FieldRef<"Track", 'String'>
-  readonly artistName: Prisma.FieldRef<"Track", 'String'>
-  readonly artistPicture: Prisma.FieldRef<"Track", 'String'>
-  readonly albumDeezerId: Prisma.FieldRef<"Track", 'String'>
-  readonly albumTitle: Prisma.FieldRef<"Track", 'String'>
-  readonly albumCover: Prisma.FieldRef<"Track", 'String'>
-  readonly albumCoverBig: Prisma.FieldRef<"Track", 'String'>
-  readonly fetchedAt: Prisma.FieldRef<"Track", 'DateTime'>
+  readonly bpm: Prisma.FieldRef<"Track", 'Int'>
+  readonly explicitContentCover: Prisma.FieldRef<"Track", 'Int'>
+  readonly albumId: Prisma.FieldRef<"Track", 'String'>
   readonly updatedAt: Prisma.FieldRef<"Track", 'DateTime'>
 }
     
@@ -2040,6 +2234,10 @@ export type TrackCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extension
    */
   data: Prisma.TrackCreateManyInput | Prisma.TrackCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrackIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2110,6 +2308,10 @@ export type TrackUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many Tracks to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrackIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2203,6 +2405,25 @@ export type Track$playlistTracksArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
+ * Track.album
+ */
+export type Track$albumArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Album
+   */
+  select?: Prisma.AlbumSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Album
+   */
+  omit?: Prisma.AlbumOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AlbumInclude<ExtArgs> | null
+  where?: Prisma.AlbumWhereInput
+}
+
+/**
  * Track.likes
  */
 export type Track$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2248,6 +2469,30 @@ export type Track$playsArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.PlayHistoryScalarFieldEnum | Prisma.PlayHistoryScalarFieldEnum[]
+}
+
+/**
+ * Track.artists
+ */
+export type Track$artistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Artist
+   */
+  select?: Prisma.ArtistSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Artist
+   */
+  omit?: Prisma.ArtistOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArtistInclude<ExtArgs> | null
+  where?: Prisma.ArtistWhereInput
+  orderBy?: Prisma.ArtistOrderByWithRelationInput | Prisma.ArtistOrderByWithRelationInput[]
+  cursor?: Prisma.ArtistWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArtistScalarFieldEnum | Prisma.ArtistScalarFieldEnum[]
 }
 
 /**

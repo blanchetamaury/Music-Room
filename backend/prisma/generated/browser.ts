@@ -18,20 +18,35 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model Album
+ * 
+ */
+export type Album = Prisma.AlbumModel
+/**
+ * Model Artist
+ * 
+ */
+export type Artist = Prisma.ArtistModel
+/**
  * Model Follow
  * 
  */
 export type Follow = Prisma.FollowModel
 /**
- * Model fortytwo_oauth
+ * Model FortytwoOauth
  * 
  */
-export type fortytwo_oauth = Prisma.fortytwo_oauthModel
+export type FortytwoOauth = Prisma.FortytwoOauthModel
 /**
- * Model Google_oauth
+ * Model Genre
  * 
  */
-export type Google_oauth = Prisma.Google_oauthModel
+export type Genre = Prisma.GenreModel
+/**
+ * Model GoogleOauth
+ * 
+ */
+export type GoogleOauth = Prisma.GoogleOauthModel
 /**
  * Model Like
  * 

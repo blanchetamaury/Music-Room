@@ -166,16 +166,16 @@ export type LikeWhereInput = {
   userId?: Prisma.StringFilter<"Like"> | string
   trackId?: Prisma.StringFilter<"Like"> | string
   createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type LikeOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   track?: Prisma.TrackOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type LikeWhereUniqueInput = Prisma.AtLeast<{
@@ -186,8 +186,8 @@ export type LikeWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Like"> | string
   trackId?: Prisma.StringFilter<"Like"> | string
   createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "userId_trackId">
 
 export type LikeOrderByWithAggregationInput = {
@@ -210,8 +210,8 @@ export type LikeScalarWhereWithAggregatesInput = {
 
 export type LikeCreateInput = {
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutLikesInput
   track: Prisma.TrackCreateNestedOneWithoutLikesInput
+  user: Prisma.UserCreateNestedOneWithoutLikesInput
 }
 
 export type LikeUncheckedCreateInput = {
@@ -222,8 +222,8 @@ export type LikeUncheckedCreateInput = {
 
 export type LikeUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutLikesNestedInput
   track?: Prisma.TrackUpdateOneRequiredWithoutLikesNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutLikesNestedInput
 }
 
 export type LikeUncheckedUpdateInput = {
@@ -492,24 +492,24 @@ export type LikeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userId?: boolean
   trackId?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["like"]>
 
 export type LikeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   userId?: boolean
   trackId?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["like"]>
 
 export type LikeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   userId?: boolean
   trackId?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["like"]>
 
 export type LikeSelectScalar = {
@@ -520,23 +520,23 @@ export type LikeSelectScalar = {
 
 export type LikeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "trackId" | "createdAt", ExtArgs["result"]["like"]>
 export type LikeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type LikeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type LikeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $LikePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Like"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
     track: Prisma.$TrackPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     userId: string
@@ -936,8 +936,8 @@ readonly fields: LikeFieldRefs;
  */
 export interface Prisma__LikeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   track<T extends Prisma.TrackDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackDefaultArgs<ExtArgs>>): Prisma.Prisma__TrackClient<runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

@@ -1,76 +1,17 @@
-const API_BASE_URL =
-	process.env.EXPO_PUBLIC_API_URL ||
-	'http://localhost:3000/api';
-
-interface ApiResponse<T> {
-	success: boolean;
-	message?: string;
-	data?: T;
+import { outputAPIAlbum } from "@/src/types/album/album";
+import { ApiResponse } from "@/src/types/api/ApiResponse";
+import { DeezerArtist, DeezerTrack } from "@/src/types/deezer/deezer";
+import { privateUser } from "@/src/types/user/PrivateUser";
+import { auth } from "./auth";
+interface TrackPayload {
+	track: DeezerTrack;
 }
 
-export type DeezerTrack = {
-	id: string | number;
-	title: string;
-	title_short?: string;
-	duration: string | number;
-	isrc?: string;
-	explicit_lyrics?: boolean;
-	preview?: string;
-	release_date?: string;
-	rank?: string | number;
-	track_position?: number;
-	disk_number?: number;
-
-	artist: {
-		id: string | number;
-		name: string;
-		picture_medium?: string;
-	};
-
-	album: {
-		id: string | number;
-		title: string;
-		cover_medium?: string;
-		cover_big?: string;
-	};
-};
-
-export type DeezerArtist = {
-	id: string | number;
-	name: string;
-	picture?: string;
-	picture_medium?: string;
-	picture_big?: string;
-	nb_fan?: number;
-};
-
-export type DeezerAlbum = {
-	id: string | number;
-	title: string;
-	cover?: string;
-	cover_medium?: string;
-	cover_big?: string;
-	release_date?: string;
-	nb_tracks?: number;
-	duration?: number;
-	fans?: number;
-	record_type?: string;
-	explicit_lyrics?: boolean;
-
-	artist?: {
-		id: string | number;
-		name: string;
-		picture_medium?: string;
-	};
-
-	tracks?: [DeezerTrack]
-};
-
-async function fetchApi<T>(
+export async function fetchApi<T>(
 	endpoint: string,
 	options: RequestInit = {},
 ): Promise<ApiResponse<T>> {
-	const url = `${API_BASE_URL}${endpoint}`;
+	const url = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
 
 	const headers: HeadersInit = {
 		'Content-Type': 'application/json',
@@ -88,9 +29,7 @@ async function fetchApi<T>(
 	if (!response.ok) {
 		return {
 			success: false,
-			message:
-				data.message ||
-				`HTTP error ${response.status}`,
+			message: data.message || `HTTP error ${response.status}`,
 		};
 	}
 
@@ -101,102 +40,42 @@ async function fetchApi<T>(
 }
 
 export const api = {
-	auth: {
-		login: (email: string, password: string) =>
-			fetchApi<{ user_id: string }>(
-				'/auth/login',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						password,
-					}),
-				},
-			),
-
-		signup: (
-			email: string,
-			password: string,
-			username: string,
-		) =>
-			fetchApi<{ user_id: string }>(
-				'/auth/signup',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						password,
-						username,
-					}),
-				},
-			),
-
-		logout: () =>
-			fetchApi<void>('/auth/logout', {
+	auth: auth,
+	user : {
+		me: () => {
+			return fetchApi<privateUser>(`/user/me`);
+		},
+		playlist: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
+			return fetchApi<{ success: boolean, status: number }>(`/user/playlist/add`, {
 				method: 'POST',
-			}),
-
-		confirmMailAccount: (
-			email: string,
-			code: string,
-		) => {
-			return fetchApi<{ success: boolean }>(
-				'/auth/confirm',
-				{
-					method: 'POST',
-					body: JSON.stringify({
-						mail: email,
-						code,
-					}),
-				},
-			);
-		},
-
-		resetPassword: {
-			request: (email: string) =>
-				fetchApi<void>(
-					'/auth/reset-password/request',
-					{
-						method: 'POST',
-						body: JSON.stringify({
-							mail: email,
-						}),
-					},
-				),
-
-			verify: (
-				email: string,
-				code: string,
-				password: string,
-			) =>
-				fetchApi<void>(
-					'/auth/reset-password/verify',
-					{
-						method: 'POST',
-						body: JSON.stringify({
-							mail: email,
-							code,
-							password,
-						}),
-					},
-				),
-		},
-
-		oauthFortyTwo: () =>
-			`${API_BASE_URL}/auth/oauth/oauth_fortytwo`,
+				body: JSON.stringify({
+					name: name,
+					cover: cover,
+					description: description,
+					private: privatePlaylist,
+				}),
+				headers: { Authorization: `Bearer ${token}` },
+		});
+		}
 	},
-
 	deezer: {
 		music: {
 			top_music: (count: number) => {
 				return fetchApi<DeezerTrack[]>(`/deezer/music/top_music?count=${count}`);
 			},
 			music: (music_deezer_id: number) => {
-				return fetchApi<DeezerTrack[]>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
+				return fetchApi<TrackPayload>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`);
 			},
 		},
 		album: {
-
+			album: (deezerCUID: string) => {
+				return fetchApi<outputAPIAlbum>(`/deezer/album/album?deezer_id=${deezerCUID}`);
+			}
+		},
+		artist: {
+			artist: (deezerCUID: string) => {
+				return fetchApi<DeezerArtist>(`/deezer/artist/artist?deezer_id=${deezerCUID}`);
+			}
 		},
 		search: (search: string, limit: number) => {
 			return fetchApi<DeezerTrack[]>(`/deezer/search?q=${encodeURI(search)}&limit=${limit}`);
