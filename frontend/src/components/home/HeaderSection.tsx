@@ -11,7 +11,7 @@ export function HeaderSection({ currentTrack }: { currentTrack: Track }) {
 		<View style={homeStyles.headerRow}>
 			<View style={homeStyles.headerTextWrap}>
 				<ThemedText type="title" style={homeStyles.welcomeText}>
-					Welcome Ntomé,
+					Welcome {},
 				</ThemedText>
 				<ThemedText style={homeStyles.subText}>
 					You are currently listening to{' '}

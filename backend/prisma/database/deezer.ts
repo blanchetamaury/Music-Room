@@ -54,8 +54,7 @@ function mapTrack(dz: DeezerTrack) {
 async function getTrack(deezerId: string) {
   const cached = await prisma.track.findUnique({ where: { deezerId } })
 
-  const isFresh =
-    cached && Date.now() - cached.fetchedAt.getTime() < CACHE_TTL_MS
+  const isFresh = cached && Date.now() - cached.fetchedAt.getTime() < CACHE_TTL_MS
 
   if (isFresh) return cached
 
@@ -124,4 +123,4 @@ async function getChart(limit = 100) {
   return data
 }
 
-export { getTrack, searchTracks, refreshStaleTracks, getChart }
+export { getChart, getTrack, refreshStaleTracks, searchTracks }

@@ -9,7 +9,7 @@ import { PlayerCard } from '@/src/components/home/PlayerCard';
 import { SearchPage } from '@/src/components/home/SearchPage';
 import { SongList } from '@/src/components/home/SongList';
 import { UserStrip } from '@/src/components/home/UserStrip';
-import { api } from '@/src/lib/api/client';
+import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'expo-router';
 
@@ -25,7 +25,7 @@ function HomeContent({
 	return (
 		<View style={homeStyles.homeContent}>
 			<HeaderSection currentTrack={currentTrack} />
-			<View style={homeStyles.separator} />
+			<SeparatorFull></SeparatorFull>
 			<UserStrip />
 			<View style={homeStyles.separator} />
 			<SongList activeTrack={activeTrack} onSelect={onSelectTrack} />

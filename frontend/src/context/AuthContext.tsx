@@ -1,10 +1,10 @@
-import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import axios from 'axios';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { storage } from '../lib/storage';
 import { performFortyTwoOAuth } from '../rest/fortytwo';
 import { performGoogleOAuth } from '../rest/google';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface User {
 	id: string;
