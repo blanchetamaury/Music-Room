@@ -4,12 +4,17 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
+import { useEffect, useState } from 'react';
+import { Like } from '@/src/types/user/like';
+import { api } from '@/src/lib/api/client';
+import { useAuth } from '@/src/context/AuthContext';
 
 interface SongDisplayProps {
 	song: DeezerTrack;
 	onPress?: () => void;
 	onArtistPress?: (artistId: string | number) => void;
 	onAlbumPress?: (albumId: string | number) => void;
+	onLike?: (value: boolean) => void;
 }
 
 const DEBUG = false;
@@ -28,9 +33,25 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
+export function SongDisplayMobile(props : SongDisplayProps) {
+	const [ isLike, setIsLike ] = useState<boolean>(false);
+	const [ Like, setLike ] = useState<Like>();
+	const { token } = useAuth();
+
+	useEffect( () => {
+		const findLike = async () => {
+			const value = await api.user.like.like(props.song.id, token ?? '');
+			if (value.data) {
+				setLike(value.data.like);
+				if (value.data.like != null)
+					setIsLike(true);
+			}
+		}
+		findLike();
+	}, []);
+
 	return (
-		<Pressable onPress={onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
+		<Pressable onPress={props.onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.songCard, debugBox('#00ff00')]}
 				contentStyle={[styles.songCardContent, debugBox('#0000ff')]}
@@ -42,7 +63,7 @@ export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
 				bottomRightRadius={20}
 			>
 				<Image
-					source={{ uri: song.album?.cover! }}
+					source={{ uri: props.song.album?.cover! }}
 					resizeMode="cover"
 					style={[styles.songCover, debugBox('#09ff00')]}
 				/>
@@ -55,10 +76,10 @@ export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
 								numberOfLines={1}
 								ellipsizeMode="tail"
 							>
-								{song.title}
+								{props.song.title}
 							</ThemedText>
 
-							{song.explicit_lyrics === true && (
+							{props.song.explicit_lyrics === true && (
 								<Banana
 									size={14}
 									color="rgba(255,255,255,0.7)"
@@ -72,7 +93,7 @@ export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
 							numberOfLines={1}
 							ellipsizeMode="tail"
 						>
-							{song.artist.name}
+							{props.song.artist.name}
 							</ThemedText>
 					</View>
 
@@ -81,9 +102,23 @@ export function SongDisplayMobile({ song, onPress}: SongDisplayProps) {
 							style={[styles.iconButton, debugBox('#0088ff')]}
 							onPress={(event) => {
 								event.stopPropagation();
+								if (isLike == false) {
+									api.user.like.create(props.song.id, token ?? '');
+									setIsLike(true);
+									if (props.onLike)
+										props.onLike(true);
+								}
+								else {
+									api.user.like.delete(props.song.id, token ?? '');
+									setIsLike(false);
+									if (props.onLike)
+										props.onLike(true);
+								}
 							}}
 						>
-							<Heart color="#fff" size={19} />
+							{
+								isLike == false ? (<Heart color="#fff" fill={'#ffffff65'} size={19} />) : (<Heart color="#ff0000be" size={19} fill={'#ff0000'}/>)
+							}
 						</Pressable>
 
 						<Pressable
@@ -195,7 +230,8 @@ const styles = StyleSheet.create({
 		minWidth: 0,
 		flexShrink: 1,
 		flexDirection: 'row',
-		justifyContent: 'center',
+		justifyContent: 'flex-end',
+		paddingRight: 10,
 		alignItems: 'center',
 		gap: 3,
 	},

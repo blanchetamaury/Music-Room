@@ -2,6 +2,7 @@ import { DeezerAlbum, DeezerArtist, DeezerTrack } from "@/src/types/deezer/deeze
 import { auth } from "./auth";
 import { ApiResponse } from "@/src/types/api/ApiResponse";
 import { privateUser } from "@/src/types/user/PrivateUser";
+import { Like } from "@/src/types/user/like";
 interface TrackPayload {
 	track: DeezerTrack;
 }
@@ -72,12 +73,12 @@ export const api = {
 				});
 			},
 			like: (trakcId: string, token: string) => {
-				return fetchApi<{ success: boolean, status: number }>(`/user/like/like?track_id=${trakcId}`, {
+				return fetchApi<Like>(`/user/like/like?track_id=${trakcId}`, {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},
 			likes: (token: string) => {
-				return fetchApi<{ success: boolean, status: number }>(`/user/like/likes`, {
+				return fetchApi<Like[]>(`/user/like/likes`, {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},

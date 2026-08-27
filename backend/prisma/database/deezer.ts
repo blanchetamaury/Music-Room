@@ -1,4 +1,4 @@
-import { DeezerTrack, OutputAlbumDeezer, OutputArtistDeezer, OutputTrackDeezer } from '@/types/deezer/deezer'
+import { DeezerTrack } from '@/types/deezer/deezer'
 import { createAllDataTrack } from '@/types/track/track'
 import { createOrUpdateAllDataTrack, updatePreviewTrack } from './track'
 import { findTrackToDb, getAlbumToDeezer, getDeezerTrack, listArtist } from './deezerFindTrack'
