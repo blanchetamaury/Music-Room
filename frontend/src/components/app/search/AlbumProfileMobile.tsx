@@ -165,6 +165,8 @@ export function AlbumProfileMobile({
 	const releaseDate = tracks[0]?.releaseDate;
 	const albumArtist = getAlbumArtist(album, tracks);
 
+	console.log("[AlbumProfileMobile] albumArtis: ", JSON.stringify(albumArtist));
+
 	return (
 		<View
 			style={[
@@ -206,20 +208,19 @@ export function AlbumProfileMobile({
 				<View
 					style={[
 						styles.albumInfo,
-						debugBox('#0088ff'),
+						debugBox('#0044ff'),
 					]}
 				>
 					<ScrollingTitle
 						title={album.title ?? 'Album'}
 					/>
 
-					{albumArtist && (
+					{albumArtist?.name && albumArtist.deezerCUID && (
 						<HoverText
 							style={[
 								styles.albumArtist,
-								debugBox('#ffff00'),
+								debugBox('#ffef08'),
 							]}
-							numberOfLines={1}
 							onPress={() => {
 								onArtistPress?.(
 									String(
@@ -230,7 +231,7 @@ export function AlbumProfileMobile({
 								);
 							}}
 						>
-							{albumArtist.name}
+							{"Need to fix"}
 						</HoverText>
 					)}
 
@@ -552,6 +553,7 @@ function getAlbumArtist(
 	album: DeezerAlbum,
 	tracks: outputAPITrack[],
 ) {
+	console.log("Help: ", JSON.stringify(album, null, 2));
 	const albumWithArtist = album as DeezerAlbum & {
 		artist?: {
 			id?: string | number;
@@ -708,7 +710,7 @@ const styles = StyleSheet.create({
 	albumArtist: {
 		marginTop: 8,
 		fontSize: 16,
-		color: 'rgba(255,255,255,0.65)',
+		color: 'rgb(255, 255, 255)',
 	},
 
 	albumStats: {
