@@ -1,15 +1,20 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
+import { ReactNode } from 'react';
 
 interface PlaylistProps {
-	id: string;
+	id?: string;
+	title?: string;
+	size?: number;
+	backgroundColorCover: string;
+	children?: ReactNode;
 	onPress?: () => void;
 }
 
-export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
+export function PlaylistDisplay(props : PlaylistProps) {
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable onPress={props.onPress}>
 			<LiquidGlass
 				style={style.playlistCard}
 				contentStyle={style.playlistCardContent}
@@ -20,10 +25,12 @@ export function PlaylistDisplay({ id, onPress }: PlaylistProps) {
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
-				<ThemedText style={style.playlistTitle}>{'Test'}</ThemedText>
+				<ThemedText style={style.playlistTitle}>{props.title}</ThemedText>
 				<View style={style.lowerPart}>
-					<View style={style.playlistCover}></View>
-					<ThemedText>{'8 musics'}</ThemedText>
+					<View style={[style.playlistCover, {backgroundColor: `${props.backgroundColorCover}`} ]}>
+						{props.children}
+					</View>
+					<ThemedText>{props.size}</ThemedText>
 				</View>
 			</LiquidGlass>
 		</Pressable>
@@ -55,8 +62,10 @@ const style = StyleSheet.create({
 	playlistCover: {
 		width: 64,
 		height: 64,
+		justifyContent: 'center',
+		alignItems: 'center',
 		borderRadius: 12,
-		backgroundColor: '#6fc71c',
+		backgroundColor: '#1c36c7',
 	},
 	playlistMeta: {
 		flex: 1,

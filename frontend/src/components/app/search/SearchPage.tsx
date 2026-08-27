@@ -18,6 +18,10 @@ import { InputForm } from '../../InputForm';
 import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
+import { InputForm } from '../../InputForm';
+import { EyeClosed, EyeIcon, Heart } from 'lucide-react-native';
+import { useAuth } from '@/src/context/AuthContext';
+import { Like } from '@/src/types/user/like';
 import { SongProfileMobile } from './SongProfileMobile';
 
 interface ApiResponse<T> {
@@ -76,6 +80,20 @@ export function SearchPage({
 	const [ playlistName, setPlaylistName ] = useState<string>('');
 	const [ playlistDescription, setPlaylistDescription ] = useState<string>('');
 	const { token } = useAuth();
+
+	const [ likes, setLikes ] = useState<Like[]>();
+	const [ newLike, setNewLike ] = useState<boolean>(false);
+	
+	useEffect(() => {
+		const listLike = async () => {
+			const value = await api.user.like.likes(token ?? '');
+			if (value.data)
+				setLikes(value.data.likes);
+			setNewLike(false);
+		}
+
+		listLike();
+	}, [newLike]);
 
 	useEffect(() => {
 		const timeout = setTimeout(async () => {
@@ -184,12 +202,18 @@ export function SearchPage({
 						bounces={false}
 						contentContainerStyle={styles.playlistContent}
 					>
+						{ likes != undefined && 
+							<View style={styles.playlistItem}>
+								<PlaylistDisplay title='Likes' size={likes.length} backgroundColorCover='#2825c98a'>
+									<Heart color={'#fff'} fill={'#fff'}></Heart>
+								</PlaylistDisplay>
+							</View>
+						}
 						{searchPlaylists.map((playlist) => (
-							<View
-								key={playlist.id}
-								style={styles.playlistItem}
-							>
-								<PlaylistDisplay id={playlist.id} />
+							<View key={playlist.id} style={styles.playlistItem}>
+								<PlaylistDisplay id={playlist.id}  title={playlist.title} size={playlist.songs} backgroundColorCover='#24961594'>
+									<Image style={{ height: 64, width: 64, borderRadius: 12}} source={{ uri: 'https://imgs.search.brave.com/4CpRl9vd35aqG2dfWnXw7AK-iwHm-ujHdbuXbpDffcI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/NDA5NzkzODg3ODkt/NmNlZTI4YTFjZGM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZhdXRv/PWZvcm1hdCZmaXQ9/Y3JvcCZpeGxpYj1y/Yi00LjEuMCZpeGlk/PU0zd3hNakEzZkRC/OE1IeHpaV0Z5WTJo/OE1USjhmRzF2Ym5S/aFoyNWxjM3hsYm53/d2ZId3dmSHg4TUE9/PQ' }} ></Image>
+								</PlaylistDisplay>
 							</View>
 						))}
 					</ScrollView>
@@ -264,6 +288,7 @@ export function SearchPage({
 												song,
 											})
 										}
+										onLike={setNewLike}
 									/>
 								))}
 							</ScrollView>
@@ -442,7 +467,7 @@ const styles = StyleSheet.create({
 	},
 
 	playlistItem: {
-		flexShrink: 0,
+		height: '100%',
 	},
 
 	playlistFades: {
