@@ -1,8 +1,9 @@
-import { DeezerAlbum, DeezerArtist, DeezerTrack } from "@/src/types/deezer/deezer";
-import { auth } from "./auth";
+import { outputAPIAlbum } from "@/src/types/album/album";
 import { ApiResponse } from "@/src/types/api/ApiResponse";
+import { DeezerArtist, DeezerTrack } from "@/src/types/deezer/deezer";
 import { privateUser } from "@/src/types/user/PrivateUser";
 import { Like } from "@/src/types/user/like";
+import { auth } from "./auth";
 interface TrackPayload {
 	track: DeezerTrack;
 }
@@ -95,7 +96,7 @@ export const api = {
 		},
 		album: {
 			album: (deezerCUID: string) => {
-				return fetchApi<DeezerAlbum>(`/deezer/album/album?deezer_id=${deezerCUID}`);
+				return fetchApi<outputAPIAlbum>(`/deezer/album/album?deezer_id=${deezerCUID}`);
 			}
 		},
 		artist: {

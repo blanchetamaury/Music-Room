@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomNavigation, TabKey } from '@/src/components/app/BottomNavigation';
-import { playlistSongs } from '@/src/components/app/data';
 import { homeStyles } from '@/src/components/app/home.styles';
 import { HeaderSection } from '@/src/components/app/home/HeaderSection';
 import { PlayerCard } from '@/src/components/app/PlayerCard';
@@ -15,20 +14,19 @@ import FluidBackground, {
 } from '@/src/components/ui/FluideBackground';
 import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
+import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { useRouter } from 'expo-router';
 
 function HomeContent({
-	currentTrack,
 	activeTrack,
 	onSelectTrack,
 }: {
-	currentTrack: any;
 	activeTrack: number;
 	onSelectTrack: (n: number) => void;
 }) {
 	return (
 		<View style={homeStyles.homeContent}>
-			<HeaderSection currentTrack={currentTrack} />
+			<HeaderSection currentTrack={null} />
 
 			<SeparatorFull />
 
@@ -44,10 +42,14 @@ function HomeContent({
 	);
 }
 
-function SearchContent() {
+function SearchContent({
+	onPlayTrack,
+}: {
+	onPlayTrack: (track: DeezerTrack) => void;
+}) {
 	return (
 		<View style={styles.pageContent}>
-			<SearchPage />
+			<SearchPage onPlayTrack={onPlayTrack} />
 		</View>
 	);
 }
@@ -83,11 +85,15 @@ const tabColors: Record<TabKey, FluidColors> = {
 const tabs: TabKey[] = ['home', 'search', 'profile'];
 
 export default function HomeScreen() {
-	const [activeTab, setActiveTab] = React.useState<TabKey>('home');
+	const [activeTab, setActiveTab] =
+		React.useState<TabKey>('home');
+
 	const [activeTrack, setActiveTrack] = React.useState(0);
 
-	const currentTrack =
-		playlistSongs[activeTrack] ?? playlistSongs[0];
+	const [currentTrack, setCurrentTrack] =
+		React.useState<DeezerTrack | null>(null);
+
+	const [autoPlay, setAutoPlay] = React.useState(false);
 
 	const { token, loading } = useAuth();
 	const router = useRouter();
@@ -111,6 +117,17 @@ export default function HomeScreen() {
 		setActiveTab(tabs[nextIndex]);
 	};
 
+	const handleSelectTrack = (index: number) => {
+		setActiveTrack(index);
+	};
+
+	const handlePlayDeezerTrack = (track: DeezerTrack) => {
+		console.log('[Home] Play track:', track.title);
+
+		setCurrentTrack(track);
+		setAutoPlay(true);
+	};
+
 	if (loading || !token) {
 		return null;
 	}
@@ -125,14 +142,15 @@ export default function HomeScreen() {
 				<View style={styles.page}>
 					{activeTab === 'home' && (
 						<HomeContent
-							currentTrack={currentTrack}
 							activeTrack={activeTrack}
-							onSelectTrack={setActiveTrack}
+							onSelectTrack={handleSelectTrack}
 						/>
 					)}
 
 					{activeTab === 'search' && (
-						<SearchContent />
+						<SearchContent
+							onPlayTrack={handlePlayDeezerTrack}
+						/>
 					)}
 
 					{activeTab === 'profile' && (
@@ -140,7 +158,15 @@ export default function HomeScreen() {
 					)}
 				</View>
 
-				<PlayerCard currentTrack={currentTrack} />
+				{currentTrack && (
+					<PlayerCard
+						currentTrack={currentTrack}
+						autoPlay={autoPlay}
+						onAutoPlayHandled={() => {
+							setAutoPlay(false);
+						}}
+					/>
+				)}
 
 				<BottomNavigation
 					activeTab={activeTab}

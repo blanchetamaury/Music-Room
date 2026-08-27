@@ -11,10 +11,7 @@ interface PopupProps {
 	onClose: () => void;
 }
 
-export function Popup({
-	children,
-	onClose,
-}: PopupProps) {
+export function Popup({ children, onClose }: PopupProps) {
 	return (
 		<Modal
 			visible
@@ -50,9 +47,9 @@ const styles = StyleSheet.create({
 	content: {
 		width: '100%',
 		maxWidth: 800,
-		maxHeight: '100%',
 		borderRadius: 24,
 		backgroundColor: '#151822',
 		overflow: 'hidden',
+		maxHeight: "80%",
 	},
 });

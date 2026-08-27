@@ -1,10 +1,10 @@
+import { useAuth } from '@/src/context/AuthContext';
+import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
 import React from 'react';
 import { Image, Pressable, View } from 'react-native';
-import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LiquidGlass from '../LiquidGlass';
 import { homeStyles } from './home.styles';
-import { useAuth } from '@/src/context/AuthContext';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type TabKey = 'home' | 'search' | 'profile';
 
