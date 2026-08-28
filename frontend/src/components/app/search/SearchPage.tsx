@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
 import { DeezerTrack } from '@/src/types/deezer/deezer';

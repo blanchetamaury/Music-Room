@@ -28,7 +28,6 @@ const debugBox = (color: string) => {
 };
 
 export function PlaylistDisplay(props : PlaylistProps) {
-	console.log('[PlaylistDisplay]', JSON.stringify({ props }, null, 2));
 
 	return (
 		<Pressable

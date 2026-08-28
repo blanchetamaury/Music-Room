@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { InputForm } from '../../InputForm';
+import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 
 interface PlaylistProfileMobileProps {
@@ -164,26 +165,70 @@ export function PlaylistProfileMobile({
 					debugBox('#00ff00'),
 				]}
 			>
-				<InputForm
-					isEmail={false}
-					placeholder="Playlist name"
-					inputValue={playlistName}
-					setInputValue={setPlaylistName}
-				/>
+				<LiquidGlass
+					style={[
+						styles.inputGlass,
+						debugBox('#ffff00'),
+					]}
+					contentStyle={styles.inputGlassContent}
+					intensity={45}
+					radius={12}
+					topLeftRadius={12}
+					topRightRadius={12}
+					bottomLeftRadius={12}
+					bottomRightRadius={12}
+				>
+					<InputForm
+						isEmail={false}
+						placeholder="Playlist name"
+						inputValue={playlistName}
+						setInputValue={setPlaylistName}
+					/>
+				</LiquidGlass>
 
-				<InputForm
-					isEmail={false}
-					placeholder="Description"
-					inputValue={playlistDescription}
-					setInputValue={setPlaylistDescription}
-				/>
+				<LiquidGlass
+					style={[
+						styles.inputGlass,
+						debugBox('#ff00ff'),
+					]}
+					contentStyle={styles.inputGlassContent}
+					intensity={45}
+					radius={12}
+					topLeftRadius={12}
+					topRightRadius={12}
+					bottomLeftRadius={12}
+					bottomRightRadius={12}
+				>
+					<InputForm
+						isEmail={false}
+						placeholder="Description"
+						inputValue={playlistDescription}
+						setInputValue={
+							setPlaylistDescription
+						}
+					/>
+				</LiquidGlass>
 
-				<InputForm
-					isEmail={false}
-					placeholder="Image Url"
-					inputValue={urlImage}
-					setInputValue={setUrlImage}
-				/>
+				<LiquidGlass
+					style={[
+						styles.inputGlass,
+						debugBox('#00ffff'),
+					]}
+					contentStyle={styles.inputGlassContent}
+					intensity={45}
+					radius={12}
+					topLeftRadius={12}
+					topRightRadius={12}
+					bottomLeftRadius={12}
+					bottomRightRadius={12}
+				>
+					<InputForm
+						isEmail={false}
+						placeholder="Image Url"
+						inputValue={urlImage}
+						setInputValue={setUrlImage}
+					/>
+				</LiquidGlass>
 			</View>
 		</View>
 	);
@@ -271,6 +316,17 @@ const styles = StyleSheet.create({
 		minWidth: 0,
 		flexShrink: 1,
 		gap: 10,
+	},
+
+	inputGlass: {
+		width: '100%',
+		minWidth: 0,
+	},
+
+	inputGlassContent: {
+		width: '100%',
+		paddingHorizontal: 4,
+		paddingVertical: 2,
 	},
 
 	addButton: {
