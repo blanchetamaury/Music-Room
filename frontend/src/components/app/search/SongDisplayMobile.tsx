@@ -1,10 +1,8 @@
 import { Banana, EllipsisVertical, Heart } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { useEffect, useState } from 'react';
-import { Like } from '@/src/types/user/like';
 import { api } from '@/src/lib/api/client';
 import { useAuth } from '@/src/context/AuthContext';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
@@ -35,19 +33,15 @@ const debugBox = (color: string) => {
 
 export function SongDisplayMobile(props: SongDisplayProps) {
 	const [isLike, setIsLike] = useState<boolean>(false);
-	const [Like, setLike] = useState<Like>();
 	const { token } = useAuth();
 
 	useEffect(() => {
 		const findLike = async () => {
 			const value = await api.user.like.like(props.song.deezerCUID, token ?? '');
-			if (value.data) {
-				setLike(value.data);
-				if (value.data != null) setIsLike(true);
-			}
+			if (value.data) setIsLike(true);
 		};
 		findLike();
-	}, []);
+	}, [props.song.deezerCUID, token]);
 
 	return (
 		<Pressable onPress={props.onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
@@ -101,7 +95,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 							style={[styles.iconButton, debugBox('#0088ff')]}
 							onPress={(event) => {
 								event.stopPropagation();
-								if (isLike == false) {
+								if (isLike === false) {
 									api.user.like.create(props.song.deezerCUID, token ?? '');
 									setIsLike(true);
 									if (props.onLike) props.onLike(true);
@@ -112,7 +106,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 								}
 							}}
 						>
-							{isLike == false ? (
+							{isLike === false ? (
 								<Heart color="#fff" fill={'#ffffff65'} size={19} />
 							) : (
 								<Heart color="#ff0000be" size={19} fill={'#ff0000'} />

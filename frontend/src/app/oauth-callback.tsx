@@ -9,7 +9,6 @@ export default function OAuthCallback() {
 		if (Platform.OS !== 'web') return;
 
 		if (!token) {
-			console.warn('No token found in query params');
 			return;
 		}
 

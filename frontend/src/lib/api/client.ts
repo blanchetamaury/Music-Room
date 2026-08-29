@@ -1,6 +1,6 @@
 import { outputAPIAlbum } from '@/src/types/album/album';
 import { ApiResponse } from '@/src/types/api/ApiResponse';
-import { DeezerArtist, DeezerTrack } from '@/src/types/deezer/deezer';
+import { DeezerArtist } from '@/src/types/deezer/deezer';
 import { privateUser } from '@/src/types/user/PrivateUser';
 import { Like } from '@/src/types/user/like';
 import { auth } from './auth';

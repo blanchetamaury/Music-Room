@@ -1,12 +1,10 @@
 import { Clock3 } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-
 import { api } from '@/src/lib/api/client';
 import { outputAPITrack } from '@/src/types/album/album';
-import { DeezerAlbum, DeezerTrack } from '@/src/types/deezer/deezer';
+import { DeezerAlbum } from '@/src/types/deezer/deezer';
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
-
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
@@ -47,18 +45,10 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 				setError(null);
 
 				const response = await api.deezer.album.album(id);
-
-				console.log('[AlbumProfileMobile] response:', JSON.stringify(response, null, 2));
-
 				const albumData = response?.data;
 
 				if (!albumData) {
-					console.warn('[AlbumProfileMobile] No album returned');
-
-					if (isMounted) {
-						setError('No album returned');
-					}
-
+					if (isMounted) setError('No album returned');
 					return;
 				}
 
@@ -69,10 +59,6 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 					return a.trackPosition - b.trackPosition;
 				});
 
-				console.log('[AlbumProfileMobile] album:', JSON.stringify(albumData, null, 2));
-
-				console.log('[AlbumProfileMobile] tracks:', JSON.stringify(albumTracks, null, 2));
-
 				if (isMounted) {
 					setAlbum(albumData);
 					setTracks(albumTracks);
@@ -81,8 +67,7 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 				setDebugTracks(albumTracks);
 				setProfile(albumData);
 			} catch (error) {
-				console.error('[AlbumProfileMobile] failed to fetch album:', error);
-
+				error = null;
 				if (isMounted) {
 					setError('Failed to load album');
 				}

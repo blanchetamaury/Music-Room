@@ -2,7 +2,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { api } from '@/src/lib/api/client';
-import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { setTracks } from '@/src/utils/debug';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
@@ -72,7 +71,6 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 	const [playlistName, setPlaylistName] = useState<string>('');
 	const [playlistDescription, setPlaylistDescription] = useState<string>('');
 	const { token } = useAuth();
-
 	const [likes, setLikes] = useState<Like[]>();
 	const [newLike, setNewLike] = useState<boolean>(false);
 
@@ -84,7 +82,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 		};
 
 		listLike();
-	}, [newLike]);
+	}, [newLike, token]);
 
 	useEffect(() => {
 		const timeout = setTimeout(async () => {
@@ -107,7 +105,6 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 					return;
 				}
 
-				console.log(data);
 				setTracksState(data.data);
 				setTracks(data.data);
 			} catch (error) {

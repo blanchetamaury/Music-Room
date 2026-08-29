@@ -18,7 +18,6 @@ export default [
   {
     rules: {
       'no-unused-vars': 'warn',
-      'no-console': 'warn',
       'react-hooks/exhaustive-deps': 'warn',
     },
   },

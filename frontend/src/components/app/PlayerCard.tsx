@@ -2,12 +2,8 @@ import { useAudioPlayer } from 'expo-audio';
 import { Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-
-import { DeezerTrack } from '@/src/types/deezer/deezer';
-
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-
 import { homeStyles } from './home.styles';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
@@ -19,9 +15,7 @@ interface PlayerCardProps {
 
 export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }: PlayerCardProps) {
 	const [isPlaying, setIsPlaying] = useState(false);
-
 	const player = useAudioPlayer(currentTrack.previewUrl);
-
 	const previousTrackId = useRef<string | null>(null);
 
 	useEffect(() => {
