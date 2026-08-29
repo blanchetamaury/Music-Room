@@ -17,7 +17,7 @@ export async function GET(req: Request): Promise<Response> {
 
 	const { id, updatedAt, createdAt, ...artistRes } = artist;
     return Response.json(
-      { success: true, artist: { artistRes } },
+      { success: true, data: { artistRes } },
       { status: 200 }
     );
   });

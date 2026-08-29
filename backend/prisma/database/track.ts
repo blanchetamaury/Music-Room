@@ -6,7 +6,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
     include: T,
     data: createAllDataTrack
 ): Promise<Prisma.TrackGetPayload<{ include: T }>> => {
-    const { artist, album, albumId, deezerCUID, ...value } = data;
+    const { artists, album, albumId, deezerCUID, ...value } = data;
     let genreResponse;
     let albumResponse;
     if (album) {
@@ -31,7 +31,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
             ...value,
             deezerCUID,
             artists: {
-                connectOrCreate: artist.map((a) => ({
+                connectOrCreate: artists.map((a) => ({
                     where: { deezerCUID: a.deezerCUID },
                     create: a,
                 })),
@@ -53,7 +53,7 @@ const createOrUpdateAllDataTrack = async <T extends Prisma.TrackInclude>(
         update: {
             ...value,
             artists: {
-                connectOrCreate: artist.map((a) => ({
+                connectOrCreate: artists.map((a) => ({
                     where: { deezerCUID: a.deezerCUID },
                     create: a,
                 })),

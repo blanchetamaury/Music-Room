@@ -29,7 +29,7 @@ export async function GET(req: Request): Promise<Response> {
     }
     const { passwordHash, fortytwoOauthId, fortytwoUserId, googleOauthId, deezerAccessToken, deezerUserId, email, ...publicUser  } = user;
     return Response.json(
-      { success: true, user: { publicUser } },
+      { success: true, data: publicUser },
       { status: 200 }
     );
   });

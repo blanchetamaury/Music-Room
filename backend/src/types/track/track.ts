@@ -15,7 +15,7 @@ export interface createAllDataTrack {
   bpm: number | null;
   explicitContentCover: number;
   albumId: string | null;
-  artist: CreateOrUpdateArtist[];
+  artists: CreateOrUpdateArtist[];
   album: CreateOrUpdateAlbum | null;
 }
 

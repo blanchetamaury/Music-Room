@@ -22,7 +22,7 @@ export async function GET(req: Request): Promise<Response> {
 
 	const like = await findLikeUser({ track: true }, user.id, trackId);
 	return Response.json(
-      { success: true, like },
+      { success: true, data: like },
       { status: 200 }
     );
   });

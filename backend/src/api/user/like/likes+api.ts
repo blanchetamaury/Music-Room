@@ -16,7 +16,7 @@ export async function GET(req: Request): Promise<Response> {
 
 	const likes = await findAllLikesUser({ track: true }, user.id);
 	return Response.json(
-      { success: true, likes },
+      { success: true, data: likes },
       { status: 200 }
     );
   });

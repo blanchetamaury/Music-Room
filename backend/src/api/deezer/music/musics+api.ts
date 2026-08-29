@@ -1,4 +1,4 @@
-import { searchTracks } from "../../../../prisma/database/deezer";
+import { formatTracksResponse, searchTracks } from "../../../../prisma/database/deezer";
 
 export async function GET(req: Request) {
 	const url = new URL(req.url);
@@ -9,7 +9,7 @@ export async function GET(req: Request) {
 
 	try {
 		const tracks = await searchTracks(q)
-		return Response.json({ data: tracks })
+		return Response.json({ succss: true, data: formatTracksResponse(tracks) })
 	} catch (err) {
 		console.error('[searchTracks]', err)
 		return Response.json({ error: 'search failed' }, { status: 502 })

@@ -12,7 +12,7 @@ interface PlaylistProps {
 	onPress?: () => void;
 }
 
-export function PlaylistDisplay(props : PlaylistProps) {
+export function PlaylistDisplay(props: PlaylistProps) {
 	return (
 		<Pressable onPress={props.onPress}>
 			<LiquidGlass
@@ -27,7 +27,7 @@ export function PlaylistDisplay(props : PlaylistProps) {
 			>
 				<ThemedText style={style.playlistTitle}>{props.title}</ThemedText>
 				<View style={style.lowerPart}>
-					<View style={[style.playlistCover, {backgroundColor: `${props.backgroundColorCover}`} ]}>
+					<View style={[style.playlistCover, { backgroundColor: `${props.backgroundColorCover}` }]}>
 						{props.children}
 					</View>
 					<ThemedText>{props.size}</ThemedText>

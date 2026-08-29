@@ -1,16 +1,16 @@
 import { Banana, EllipsisVertical, Heart } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-import { DeezerTrack } from '@/src/types/deezer/deezer';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { useEffect, useState } from 'react';
 import { Like } from '@/src/types/user/like';
 import { api } from '@/src/lib/api/client';
 import { useAuth } from '@/src/context/AuthContext';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 interface SongDisplayProps {
-	song: DeezerTrack;
+	song: OutputTrackDeezer;
 	onPress?: () => void;
 	onArtistPress?: (artistId: string | number) => void;
 	onAlbumPress?: (albumId: string | number) => void;
@@ -33,20 +33,19 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function SongDisplayMobile(props : SongDisplayProps) {
-	const [ isLike, setIsLike ] = useState<boolean>(false);
-	const [ Like, setLike ] = useState<Like>();
+export function SongDisplayMobile(props: SongDisplayProps) {
+	const [isLike, setIsLike] = useState<boolean>(false);
+	const [Like, setLike] = useState<Like>();
 	const { token } = useAuth();
 
-	useEffect( () => {
+	useEffect(() => {
 		const findLike = async () => {
-			const value = await api.user.like.like(props.song.id, token ?? '');
+			const value = await api.user.like.like(props.song.deezerCUID, token ?? '');
 			if (value.data) {
-				setLike(value.data.like);
-				if (value.data.like != null)
-					setIsLike(true);
+				setLike(value.data);
+				if (value.data != null) setIsLike(true);
 			}
-		}
+		};
 		findLike();
 	}, []);
 
@@ -63,7 +62,7 @@ export function SongDisplayMobile(props : SongDisplayProps) {
 				bottomRightRadius={20}
 			>
 				<Image
-					source={{ uri: props.song.album?.cover! }}
+					source={{ uri: props.song.album.CoverMedium ?? '' }}
 					resizeMode="cover"
 					style={[styles.songCover, debugBox('#09ff00')]}
 				/>
@@ -79,7 +78,7 @@ export function SongDisplayMobile(props : SongDisplayProps) {
 								{props.song.title}
 							</ThemedText>
 
-							{props.song.explicit_lyrics === true && (
+							{props.song.explicit === true && (
 								<Banana
 									size={14}
 									color="rgba(255,255,255,0.7)"
@@ -93,8 +92,8 @@ export function SongDisplayMobile(props : SongDisplayProps) {
 							numberOfLines={1}
 							ellipsizeMode="tail"
 						>
-							{props.song.artist.name}
-							</ThemedText>
+							{props.song.artist[0].name}
+						</ThemedText>
 					</View>
 
 					<View style={[styles.actions, debugBox('#ff0088')]}>
@@ -103,22 +102,21 @@ export function SongDisplayMobile(props : SongDisplayProps) {
 							onPress={(event) => {
 								event.stopPropagation();
 								if (isLike == false) {
-									api.user.like.create(props.song.id, token ?? '');
+									api.user.like.create(props.song.deezerCUID, token ?? '');
 									setIsLike(true);
-									if (props.onLike)
-										props.onLike(true);
-								}
-								else {
-									api.user.like.delete(props.song.id, token ?? '');
+									if (props.onLike) props.onLike(true);
+								} else {
+									api.user.like.delete(props.song.deezerCUID, token ?? '');
 									setIsLike(false);
-									if (props.onLike)
-										props.onLike(true);
+									if (props.onLike) props.onLike(true);
 								}
 							}}
 						>
-							{
-								isLike == false ? (<Heart color="#fff" fill={'#ffffff65'} size={19} />) : (<Heart color="#ff0000be" size={19} fill={'#ff0000'}/>)
-							}
+							{isLike == false ? (
+								<Heart color="#fff" fill={'#ffffff65'} size={19} />
+							) : (
+								<Heart color="#ff0000be" size={19} fill={'#ff0000'} />
+							)}
 						</Pressable>
 
 						<Pressable

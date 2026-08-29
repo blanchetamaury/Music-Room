@@ -9,21 +9,14 @@ import { PlayerCard } from '@/src/components/app/PlayerCard';
 import { SearchPage } from '@/src/components/app/search/SearchPage';
 import { SongList } from '@/src/components/app/SongList';
 import { UserStrip } from '@/src/components/app/UserStrip';
-import FluidBackground, {
-	FluidColors,
-} from '@/src/components/ui/FluideBackground';
+import FluidBackground, { FluidColors } from '@/src/components/ui/FluideBackground';
 import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { useRouter } from 'expo-router';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
-function HomeContent({
-	activeTrack,
-	onSelectTrack,
-}: {
-	activeTrack: number;
-	onSelectTrack: (n: number) => void;
-}) {
+function HomeContent({ activeTrack, onSelectTrack }: { activeTrack: number; onSelectTrack: (n: number) => void }) {
 	return (
 		<View style={homeStyles.homeContent}>
 			<HeaderSection currentTrack={null} />
@@ -34,19 +27,12 @@ function HomeContent({
 
 			<View style={homeStyles.separator} />
 
-			<SongList
-				activeTrack={activeTrack}
-				onSelect={onSelectTrack}
-			/>
+			<SongList activeTrack={activeTrack} onSelect={onSelectTrack} />
 		</View>
 	);
 }
 
-function SearchContent({
-	onPlayTrack,
-}: {
-	onPlayTrack: (track: DeezerTrack) => void;
-}) {
+function SearchContent({ onPlayTrack }: { onPlayTrack: (track: OutputTrackDeezer) => void }) {
 	return (
 		<View style={styles.pageContent}>
 			<SearchPage onPlayTrack={onPlayTrack} />
@@ -85,13 +71,11 @@ const tabColors: Record<TabKey, FluidColors> = {
 const tabs: TabKey[] = ['home', 'search', 'profile'];
 
 export default function HomeScreen() {
-	const [activeTab, setActiveTab] =
-		React.useState<TabKey>('home');
+	const [activeTab, setActiveTab] = React.useState<TabKey>('home');
 
 	const [activeTrack, setActiveTrack] = React.useState(0);
 
-	const [currentTrack, setCurrentTrack] =
-		React.useState<DeezerTrack | null>(null);
+	const [currentTrack, setCurrentTrack] = React.useState<OutputTrackDeezer | null>(null);
 
 	const [autoPlay, setAutoPlay] = React.useState(false);
 
@@ -121,7 +105,7 @@ export default function HomeScreen() {
 		setActiveTrack(index);
 	};
 
-	const handlePlayDeezerTrack = (track: DeezerTrack) => {
+	const handlePlayDeezerTrack = (track: OutputTrackDeezer) => {
 		console.log('[Home] Play track:', track.title);
 
 		setCurrentTrack(track);
@@ -141,21 +125,12 @@ export default function HomeScreen() {
 			<View style={styles.content}>
 				<View style={styles.page}>
 					{activeTab === 'home' && (
-						<HomeContent
-							activeTrack={activeTrack}
-							onSelectTrack={handleSelectTrack}
-						/>
+						<HomeContent activeTrack={activeTrack} onSelectTrack={handleSelectTrack} />
 					)}
 
-					{activeTab === 'search' && (
-						<SearchContent
-							onPlayTrack={handlePlayDeezerTrack}
-						/>
-					)}
+					{activeTab === 'search' && <SearchContent onPlayTrack={handlePlayDeezerTrack} />}
 
-					{activeTab === 'profile' && (
-						<ProfileContent />
-					)}
+					{activeTab === 'profile' && <ProfileContent />}
 				</View>
 
 				{currentTrack && (
@@ -168,10 +143,7 @@ export default function HomeScreen() {
 					/>
 				)}
 
-				<BottomNavigation
-					activeTab={activeTab}
-					onSelect={setActiveTab}
-				/>
+				<BottomNavigation activeTab={activeTab} onSelect={setActiveTab} />
 			</View>
 		</View>
 	);

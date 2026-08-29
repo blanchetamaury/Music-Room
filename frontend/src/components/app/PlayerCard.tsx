@@ -1,13 +1,7 @@
 import { useAudioPlayer } from 'expo-audio';
 import { Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-	Image,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 
@@ -15,26 +9,23 @@ import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
 
 import { homeStyles } from './home.styles';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 interface PlayerCardProps {
-	currentTrack: DeezerTrack;
+	currentTrack: OutputTrackDeezer;
 	autoPlay?: boolean;
 	onAutoPlayHandled?: () => void;
 }
 
-export function PlayerCard({
-	currentTrack,
-	autoPlay = true,
-	onAutoPlayHandled,
-}: PlayerCardProps) {
+export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }: PlayerCardProps) {
 	const [isPlaying, setIsPlaying] = useState(false);
 
-	const player = useAudioPlayer(currentTrack.preview);
+	const player = useAudioPlayer(currentTrack.previewUrl);
 
 	const previousTrackId = useRef<string | null>(null);
 
 	useEffect(() => {
-		if (!currentTrack.preview) {
+		if (!currentTrack.previewUrl) {
 			setIsPlaying(false);
 			return;
 		}
@@ -57,26 +48,17 @@ export function PlayerCard({
 				player.play();
 				setIsPlaying(true);
 			} catch (error) {
-				console.error(
-					'[PlayerCard] Failed to autoplay:',
-					error,
-				);
+				console.error('[PlayerCard] Failed to autoplay:', error);
 			}
 
 			onAutoPlayHandled?.();
 		}, 50);
 
 		return () => clearTimeout(timeout);
-	}, [
-		currentTrack.deezerCUID,
-		currentTrack.preview,
-		autoPlay,
-		player,
-		onAutoPlayHandled,
-	]);
+	}, [currentTrack.deezerCUID, currentTrack.previewUrl, autoPlay, player, onAutoPlayHandled]);
 
 	const handlePlay = () => {
-		if (!currentTrack.preview) {
+		if (!currentTrack.previewUrl) {
 			console.warn('[PlayerCard] No preview URL');
 			return;
 		}
@@ -102,7 +84,7 @@ export function PlayerCard({
 		}
 	};
 
-	const artists = currentTrack.artist?.name ?? 'Unknown artist';
+	const artists = currentTrack.artist[0].name ?? 'Unknown artist';
 
 	return (
 		<View style={homeStyles.playerWrap}>
@@ -121,44 +103,31 @@ export function PlayerCard({
 						onPress={handlePlayPause}
 						style={({ pressed }) => [
 							homeStyles.playPauseButtonInner,
-							pressed &&
-								homeStyles.playPauseButtonPressed,
+							pressed && homeStyles.playPauseButtonPressed,
 						]}
 						accessibilityRole="button"
-						accessibilityLabel={
-							isPlaying ? 'Pause' : 'Play'
-						}
+						accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
 					>
-						{isPlaying ? (
-							<Pause size={22} color="#ffffff" />
-						) : (
-							<Play size={22} color="#ffffff" />
-						)}
+						{isPlaying ? <Pause size={22} color="#ffffff" /> : <Play size={22} color="#ffffff" />}
 					</Pressable>
 				</View>
 
 				<View style={homeStyles.playerInfo}>
-					<ScrollingText
-						text={currentTrack.title}
-						style={homeStyles.playerTitle}
-					/>
+					<ScrollingText text={currentTrack.title} style={homeStyles.playerTitle} />
 
-					<ThemedText style={homeStyles.playerArtist}>
-						{artists}
-					</ThemedText>
+					<ThemedText style={homeStyles.playerArtist}>{artists}</ThemedText>
 				</View>
 
-				{currentTrack.album?.cover_medium ? (
+				{currentTrack.album.CoverMedium ? (
 					<Image
 						source={{
-							uri: currentTrack.album.cover_medium,
+							uri: currentTrack.album.CoverMedium,
 						}}
 						resizeMode="cover"
 						style={[
 							homeStyles.playerCover,
 							{
-								backgroundColor:
-									'rgba(53, 184, 71, 0.1)',
+								backgroundColor: 'rgba(53, 184, 71, 0.1)',
 							},
 						]}
 					/>
@@ -167,8 +136,7 @@ export function PlayerCard({
 						style={[
 							homeStyles.playerCover,
 							{
-								backgroundColor:
-									'rgba(53, 184, 71, 0.1)',
+								backgroundColor: 'rgba(53, 184, 71, 0.1)',
 							},
 						]}
 					/>
@@ -183,10 +151,7 @@ interface ScrollingTextProps {
 	style?: any;
 }
 
-function ScrollingText({
-	text,
-	style,
-}: ScrollingTextProps) {
+function ScrollingText({ text, style }: ScrollingTextProps) {
 	const scrollRef = useRef<ScrollView>(null);
 
 	const [containerWidth, setContainerWidth] = useState(0);
@@ -195,9 +160,7 @@ function ScrollingText({
 	const animationFrame = useRef<number | null>(null);
 	const position = useRef(0);
 
-	const isOverflowing =
-		containerWidth > 0 &&
-		textWidth > containerWidth;
+	const isOverflowing = containerWidth > 0 && textWidth > containerWidth;
 
 	useEffect(() => {
 		position.current = 0;
@@ -238,13 +201,11 @@ function ScrollingText({
 				animated: false,
 			});
 
-			animationFrame.current =
-				requestAnimationFrame(animate);
+			animationFrame.current = requestAnimationFrame(animate);
 		};
 
 		const timeout = setTimeout(() => {
-			animationFrame.current =
-				requestAnimationFrame(animate);
+			animationFrame.current = requestAnimationFrame(animate);
 		}, 1000);
 
 		return () => {
@@ -261,9 +222,7 @@ function ScrollingText({
 		<View
 			style={styles.scrollingTextContainer}
 			onLayout={(event) => {
-				setContainerWidth(
-					event.nativeEvent.layout.width,
-				);
+				setContainerWidth(event.nativeEvent.layout.width);
 			}}
 		>
 			<ScrollView
@@ -277,25 +236,17 @@ function ScrollingText({
 				<View
 					style={styles.textRow}
 					onLayout={(event) => {
-						setTextWidth(
-							event.nativeEvent.layout.width,
-						);
+						setTextWidth(event.nativeEvent.layout.width);
 					}}
 				>
-					<ThemedText
-						style={style}
-						numberOfLines={1}
-					>
+					<ThemedText style={style} numberOfLines={1}>
 						{text}
 					</ThemedText>
 				</View>
 
 				{isOverflowing && (
 					<View style={styles.textRowDuplicate}>
-						<ThemedText
-							style={style}
-							numberOfLines={1}
-						>
+						<ThemedText style={style} numberOfLines={1}>
 							{text}
 						</ThemedText>
 					</View>

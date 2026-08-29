@@ -12,6 +12,7 @@ async function getTrack(deezerId: string) {
   const track = await getDeezerTrack(deezerId);
 
   if (checkToDb == true) {
+    
     return (updatePreviewTrack( {album: true, artists: true}, track.previewUrl!, track.deezerCUID));
   } else {
     let trackData: createAllDataTrack = {
@@ -27,7 +28,7 @@ async function getTrack(deezerId: string) {
       diskNumber: track.diskNumber,
       bpm: track.bpm,
       explicitContentCover: track.explicitContentCover,
-      artist: [],
+      artists: [],
       albumId: null,
       album: null,
     };
@@ -36,7 +37,8 @@ async function getTrack(deezerId: string) {
 
     const finalTrack = await getAlbumToDeezer(track, newTrack);
 
-    return await createOrUpdateAllDataTrack({album: true, artists: true}, finalTrack);
+    await createOrUpdateAllDataTrack({album: true, artists: true}, finalTrack);
+    return finalTrack;
   }
 }
 
@@ -57,7 +59,7 @@ async function searchTracks(query: string, limit = 25) {
 async function getChart(limit = 100) {
   const res = await fetch(`${DEEZER_API}/chart/0/tracks?limit=${limit}`)
   if (!res.ok) throw new Error(`Deezer ${res.status}`)
-  const { data }: { data: DeezerTrack[] } = await res.json()
+  const { data }: { data: any } = await res.json()
   return data
 }
 

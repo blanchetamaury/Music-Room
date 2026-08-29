@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { getChart } from "../../../../prisma/database/deezer"
+import { mapSearch } from "@/format/mapTrack";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -11,5 +12,5 @@ export async function GET(req: Request) {
 
   const tracks = await getChart(value);
 
-  return Response.json({ data: tracks })
+  return Response.json({ success: true, data:  mapSearch(tracks) });
 }

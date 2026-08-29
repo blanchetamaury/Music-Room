@@ -9,7 +9,7 @@ export async function GET(
     if (q == null) return Response.json({ error: 'parameter not found' }, { status: 404 })
     const track = await getTrack(q);
     
-    return Response.json({ track })
+    return Response.json({ success: true, data: track })
   } catch (err) {
     console.error('[getTrack]', err)
     return Response.json({ error: 'not found' }, { status: 404 })

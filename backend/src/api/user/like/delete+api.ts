@@ -25,7 +25,7 @@ export async function DELETE(req: Request): Promise<Response> {
     if (track == null) return Response.json({ success: false, message: 'Track not found' }, { status: 404 });
 	  const like = await deleteLikeUser({}, user.id, trackId);
 	  return Response.json(
-      { success: true, like},
+      { success: true, data: like},
       { status: 200 }
     );
   });

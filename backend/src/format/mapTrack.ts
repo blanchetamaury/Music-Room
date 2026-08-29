@@ -33,4 +33,37 @@ function mapTrack(dz: any): OutputTrackDeezer {
   }
 }
 
-export { mapTrack }
+function mapSearch(dz: any): OutputTrackDeezer[] {
+  return dz.map((row: any) => ({
+	  deezerCUID:    String(row.id),
+	  title:         row.title,
+	  titleShort:    row.title_short ?? null,
+	  duration:      Number(row.duration),
+	  explicit:      Boolean(row.explicit_lyrics),
+	  previewUrl:    row.preview ?? null,
+	  releaseDate:   row.release_date ? new Date(row.release_date) : null,
+	  rank:          row.rank ? Number(row.rank) : null,
+	  trackPosition: row.track_position ?? null,
+	  diskNumber:    row.disk_number ?? null,
+	  bpm: 0,
+	  explicitContentCover: row.explicit_content_cover ?? null,
+  
+	  artist: [{
+		deezerCUID: row.artist.id,
+		name: row.artist.name,
+		pictureSmall: row.artist.picture_small,
+		pictureMedium: row.artist.picture_medium,
+		pictureBig: row.artist.picture_big,
+	  }],
+  
+	  album: {
+		deezerCUID:  String(row.album.id),
+		title:     row.album.title,
+		coverSmall:     row.album.cover_small ?? null,
+		CoverMedium:  row.album.cover_medium ?? null,
+		CoverBig:  row.album.cover_big ?? null,
+	  }
+  }))
+}
+
+export { mapTrack, mapSearch }

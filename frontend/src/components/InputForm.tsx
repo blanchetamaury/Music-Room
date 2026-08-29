@@ -34,8 +34,7 @@ export function InputForm(props: InputFormProps) {
 					value={props.inputValue}
 					onChangeText={(text) => {
 						props.setInputValue(text);
-						if (props.setError)
-							props.setError(null);
+						if (props.setError) props.setError(null);
 					}}
 					onFocus={() => setEmailFocused(true)}
 					onBlur={() => {

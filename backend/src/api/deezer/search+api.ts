@@ -1,3 +1,4 @@
+import { mapSearch } from "@/format/mapTrack";
 import { searchTracks } from "../../../prisma/database/deezer";
 
 export async function GET(req: Request) {
@@ -9,7 +10,7 @@ export async function GET(req: Request) {
 
 	try {
 		const tracks = await searchTracks(q)
-		return Response.json({ data: tracks })
+		return Response.json({ success: true, data: mapSearch(tracks)  })
 	} catch (err) {
 		console.error('[searchTracks]', err)
 		return Response.json({ error: 'search failed' }, { status: 502 })

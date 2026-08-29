@@ -17,7 +17,7 @@ export async function GET(req: Request): Promise<Response> {
 
 	const { id, releaseDate, updatedAt, genreId, ...albumRes } = album;
     return Response.json(
-      { success: true, albumRes },
+      { success: true, data: albumRes },
       { status: 200 }
     );
   });

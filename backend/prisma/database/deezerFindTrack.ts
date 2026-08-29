@@ -43,12 +43,12 @@ const listArtist = async (track: OutputTrackDeezer, newTrack: createAllDataTrack
         const res = await fetch(`${DEEZER_API}/artist/${row.deezerCUID}`);
         if (!res.ok) throw new Error(`Deezer artist ${res.status}`);
         const artistJson = await res.json();
-        if (newTrack.artist.find((e) => e.deezerCUID == artistJson.id) == undefined)
-          newTrack.artist.push(mapArtist(artistJson));
+        if (newTrack.artists.find((e) => e.deezerCUID == artistJson.id) == undefined)
+          newTrack.artists.push(mapArtist(artistJson));
       } else {
         const { id, updatedAt, createdAt, ...toPush } = artistToDb;
-        if (newTrack.artist.find((e) => e.deezerCUID == toPush.deezerCUID) == undefined)
-          newTrack.artist.push(toPush);
+        if (newTrack.artists.find((e) => e.deezerCUID == toPush.deezerCUID) == undefined)
+          newTrack.artists.push(toPush);
       }
     }
 	return newTrack;

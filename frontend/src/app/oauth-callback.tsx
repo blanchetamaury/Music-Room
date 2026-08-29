@@ -6,7 +6,6 @@ export default function OAuthCallback() {
 	const { token } = useLocalSearchParams<{ token?: string }>();
 
 	useEffect(() => {
-
 		if (Platform.OS !== 'web') return;
 
 		if (!token) {

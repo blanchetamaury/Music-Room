@@ -17,7 +17,7 @@ export async function GET(req: Request): Promise<Response> {
 
     const { passwordHash, fortytwoOauthId, fortytwoUserId, googleOauthId, deezerAccessToken, deezerUserId, ...privateUser  } = user;
     return Response.json(
-      { success: true, user: { privateUser } },
+      { success: true, data: privateUser  },
       { status: 200 }
     );
   });
