@@ -86,7 +86,7 @@ export function MusicPreview({
 			style={[styles.container, animationConfig ? styles.animatedContainer : null, animatedStyle]}
 			pointerEvents="none"
 		>
-			{ currentTrack && 
+			{currentTrack && (
 				<LiquidGlass
 					radius={16}
 					topLeftRadius={16}
@@ -100,8 +100,12 @@ export function MusicPreview({
 					style={[StyleSheet.absoluteFillObject, { backgroundColor: glassBg }]}
 					contentStyle={styles.content}
 				>
-					{ currentTrack?.album.CoverMedium ? (
-						<Image source={{ uri: currentTrack.album.CoverMedium }} style={styles.cover} resizeMode="cover" />
+					{currentTrack?.album.CoverMedium ? (
+						<Image
+							source={{ uri: currentTrack.album.CoverMedium }}
+							style={styles.cover}
+							resizeMode="cover"
+						/>
 					) : (
 						<View style={[styles.cover, { backgroundColor: color }]} />
 					)}
@@ -114,7 +118,7 @@ export function MusicPreview({
 						</ThemedText>
 					</View>
 				</LiquidGlass>
-			}
+			)}
 		</OuterView>
 	);
 }

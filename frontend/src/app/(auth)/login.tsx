@@ -19,7 +19,7 @@ export default function LoginScreen() {
 	const { token, loading, login } = useAuth();
 	const [error, setError] = useState<string | null>(null);
 	const [mode, setMode] = useState<AuthMode>(() => {
-    const modeParam = searchParams.mode;
+		const modeParam = searchParams.mode;
 		if (modeParam === 'register' || modeParam === 'reset-password' || modeParam === 'login') {
 			return modeParam;
 		}
@@ -87,7 +87,12 @@ export default function LoginScreen() {
 				pointerEvents={mode === 'register' ? 'auto' : 'none'}
 			>
 				<View style={styles.authContainer}>
-					<Register onBack={() => handleModeChange('login')} onRegisterComplete={handleAuthComplete} onError={setError} error={error} />
+					<Register
+						onBack={() => handleModeChange('login')}
+						onRegisterComplete={handleAuthComplete}
+						onError={setError}
+						error={error}
+					/>
 				</View>
 			</Animated.View>
 

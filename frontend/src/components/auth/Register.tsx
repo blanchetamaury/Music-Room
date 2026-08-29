@@ -17,7 +17,17 @@ function checkRules(pw: string) {
 	return { hasUpper, hasNumber, hasSpecial };
 }
 
-export function Register({ onBack, onRegisterComplete, onError, error }: { onBack?: () => void; onRegisterComplete?: () => void; onError: (value: string | null) => void; error: string | null }) {
+export function Register({
+	onBack,
+	onRegisterComplete,
+	onError,
+	error,
+}: {
+	onBack?: () => void;
+	onRegisterComplete?: () => void;
+	onError: (value: string | null) => void;
+	error: string | null;
+}) {
 	const [email, setEmail] = useState('');
 	const [page, setPage] = useState<boolean>(false);
 	const [confirmMailAccount, setConfirmMailAccount] = useState<boolean>(false);
@@ -176,9 +186,7 @@ export function Register({ onBack, onRegisterComplete, onError, error }: { onBac
 						</Pressable>
 					</InputPasswordForm>
 
-					{ confirm !== pw && (
-						<ThemedText style={styles.error}>Passwords do not match</ThemedText>
-					)}
+					{confirm !== pw && <ThemedText style={styles.error}>Passwords do not match</ThemedText>}
 
 					<Pressable
 						style={[styles.createBtn, !isPasswordValid ? { opacity: 0.55 } : null]}

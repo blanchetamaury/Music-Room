@@ -122,7 +122,11 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 				) : activeTab === 'tracks' ? (
 					<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
 						{tracks.map((song, index) => (
-							<SongDisplayMobile key={`${song.id}-${index}`} song={song} onPress={() => onSongPress?.(song)} />
+							<SongDisplayMobile
+								key={`${song.id}-${index}`}
+								song={song}
+								onPress={() => onSongPress?.(song)}
+							/>
 						))}
 					</ScrollView>
 				) : (

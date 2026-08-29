@@ -98,7 +98,9 @@ const AuthBackground = memo(function AuthBackground() {
 					return;
 				}
 
-				const validTracks = list.filter((track: OutputTrackDeezer) => typeof track.album.CoverMedium === 'string');
+				const validTracks = list.filter(
+					(track: OutputTrackDeezer) => typeof track.album.CoverMedium === 'string'
+				);
 
 				setTracks(validTracks);
 			} catch (error) {
