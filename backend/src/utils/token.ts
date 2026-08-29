@@ -16,6 +16,7 @@ export async function getUserFromToken(req: Request): Promise<string | null> {
 		});
 		return payload.user_id as string;
 	} catch (err) {
+		console.error(`Error to get token ${err}`);
 		return null;
 	}
 }

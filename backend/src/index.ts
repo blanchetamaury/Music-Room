@@ -61,8 +61,6 @@ app.get('/api/openapi.yaml', (req, res) => {
 	res.send(fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8'));
 });
 
-const publicPaths = ['/api/deezer/chartsfirts', '/api/auth/logout'];
-
 app.use(async (req, res, next) => {
 	console.log(`Incoming request: ${req.method} ${req.path}`);
 	next();

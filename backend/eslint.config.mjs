@@ -1,23 +1,18 @@
-// eslint.config.mjs
-import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
-	js.configs.recommended,
+	...tseslint.configs.recommended,
 	prettierConfig,
 	{
 		ignores: ['node_modules/**', 'dist/**', 'prisma/migrations/**'],
-		languageOptions: {
-			ecmaVersion: 2021,
-			sourceType: 'module',
-			globals: {
-				process: 'readonly',
-				console: 'readonly',
-			},
-		},
+	},
+	{
 		rules: {
-			'no-unused-vars': 'warn',
+			'@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true }],
+			'@typescript-eslint/no-explicit-any': 'warn',
 			'prefer-const': 'error',
+			'no-console': 'off',
 		},
 	},
 ];

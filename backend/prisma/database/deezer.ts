@@ -14,7 +14,7 @@ async function getTrack(deezerId: string) {
 	if (checkToDb == true) {
 		return updatePreviewTrack({ album: true, artists: true }, track.previewUrl!, track.deezerCUID);
 	} else {
-		let trackData: createAllDataTrack = {
+		const trackData: createAllDataTrack = {
 			deezerCUID: track.deezerCUID,
 			title: track.title,
 			titleShort: track.titleShort,
