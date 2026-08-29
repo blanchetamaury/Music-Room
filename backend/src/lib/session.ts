@@ -4,7 +4,9 @@ import { JWTSessionPayload, SessionPayload } from '../types/session/SessionPaylo
 import { ERRORS_DETAILS } from '../utils/error';
 import { createCsrfCookie } from './csrf';
 
-const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET || 'fvsdvsdvoewfk3i4r4i5t984-0qwkdpwekopdp34rf3j4fijr');
+const encodedKey = new TextEncoder().encode(
+	process.env.SESSION_SECRET || 'fvsdvsdvoewfk3i4r4i5t984-0qwkdpwekopdp34rf3j4fijr'
+);
 const SESSION_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 
 interface CreatedSessionPayload {
@@ -41,52 +43,49 @@ const createSession = async (payload: SessionPayload): Promise<CreatedSessionPay
 	return { body, expirationDate };
 };
 
-const setSession = async (
-    session: CreatedSessionPayload,
-    response: Response
-): Promise<void> => {
-    response.cookie('token', session.body, {
+const setSession = async (session: CreatedSessionPayload, response: Response): Promise<void> => {
+	response.cookie('token', session.body, {
 		httpOnly: true,
-        path: '/',
-        maxAge: SESSION_MAX_AGE_MS,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-    });
+		path: '/',
+		maxAge: SESSION_MAX_AGE_MS,
+		sameSite: 'lax',
+		secure: process.env.NODE_ENV === 'production',
+	});
 };
 
 const createAndSetSession = async (payload: SessionPayload): Promise<string> => {
-    const session = await createSession(payload);
-    return `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
+	const session = await createSession(payload);
+	return `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
 };
 
 const getTokenFromRequest = (req: Request): string | null => {
-  // 1. Essaie d'abord le header Authorization (mobile / API clients)
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    return authHeader.slice(7).trim();
-  }
+	// 1. Essaie d'abord le header Authorization (mobile / API clients)
+	const authHeader = req.headers.authorization;
+	if (authHeader && authHeader.startsWith('Bearer ')) {
+		return authHeader.slice(7).trim();
+	}
 
-  // 2. Sinon, essaie le cookie (web)
-  const cookieHeader = req.headers.cookie;
-  if (cookieHeader) {
-    const match = cookieHeader.match(/token=([^;]+)/);
-    if (match) return match[1];
-  }
+	// 2. Sinon, essaie le cookie (web)
+	const cookieHeader = req.headers.cookie;
+	if (cookieHeader) {
+		const match = cookieHeader.match(/token=([^;]+)/);
+		if (match) return match[1];
+	}
 
-  return null;
+	return null;
 };
 
 const getSession = async (req: Request): Promise<SessionPayload | null> => {
-    try {
-        const token = getTokenFromRequest(req);
-        if (!token) return null;
-        const session = await decrypt(token);
-        if (Date.now() / 1000 >= session.exp) return null;
-        return session;
-    } catch (err: unknown) {
-        console.error(err);
-        return null;
-    }
+	try {
+		const token = getTokenFromRequest(req);
+		if (!token) return null;
+		const session = await decrypt(token);
+		if (Date.now() / 1000 >= session.exp) return null;
+		return session;
+	} catch (err: unknown) {
+		console.error(err);
+		return null;
+	}
 };
 
 const getThrowableSession = async (req: Request): Promise<SessionPayload> => {
@@ -103,7 +102,12 @@ const parseUserId = (id: string, session: SessionPayload): { id: string; is_me: 
 };
 
 export {
-    createAndSetSession, createSession, decrypt, encrypt, getSession,
-    getThrowableSession,
-    parseUserId, setSession
+	createAndSetSession,
+	createSession,
+	decrypt,
+	encrypt,
+	getSession,
+	getThrowableSession,
+	parseUserId,
+	setSession,
 };

@@ -1,9 +1,7 @@
-import { Prisma } from "../generated/client";
-import { prisma } from "./prisma";
+import { Prisma } from '../generated/client';
+import { prisma } from './prisma';
 
-const findArtist = async (
-	deezerCUID: string,
-): Promise<Prisma.ArtistGetPayload<Prisma.ArtistDefaultArgs> | null> => {
+const findArtist = async (deezerCUID: string): Promise<Prisma.ArtistGetPayload<Prisma.ArtistDefaultArgs> | null> => {
 	return prisma.artist.findUnique({
 		where: {
 			deezerCUID: deezerCUID,
@@ -11,4 +9,4 @@ const findArtist = async (
 	});
 };
 
-export { findArtist }
+export { findArtist };

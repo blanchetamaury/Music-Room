@@ -1,9 +1,9 @@
-import { Prisma } from "../generated/client";
-import { prisma } from "./prisma";
+import { Prisma } from '../generated/client';
+import { prisma } from './prisma';
 
 const findAlbum = async <T extends Prisma.AlbumInclude>(
 	include: T,
-	deezerCUID: string,
+	deezerCUID: string
 ): Promise<Prisma.AlbumGetPayload<{ include: T }> | null> => {
 	return prisma.album.findUnique({
 		include: include,
@@ -13,4 +13,4 @@ const findAlbum = async <T extends Prisma.AlbumInclude>(
 	});
 };
 
-export { findAlbum }
+export { findAlbum };

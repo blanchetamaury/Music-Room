@@ -7,4 +7,4 @@ export const PasswordSchema = z
 	.regex(/[0-9]/, { error: 'Le mot de passe doit contenir un chiffre' })
 	.regex(/[^a-zA-Z0-9]/, {
 		error: 'Le mot de passe doit contenir un caractère spécial',
-});
+	});

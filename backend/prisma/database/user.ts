@@ -10,7 +10,6 @@ const createOrUpdateFortyTwoUser = async (
 	me: FortyTwoCursusUserDetails,
 	authorization: FortyTwoOauthToken
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
-
 	const token_body = {
 		access_token: authorization.access_token,
 		refresh_token: authorization.refresh_token,
@@ -40,44 +39,43 @@ const createOrUpdateFortyTwoUser = async (
 };
 
 const createOrUpdateGoogleUser = async (
-    profile: GoogleOauthResponse,
-    authorization: GoogleOauthToken
+	profile: GoogleOauthResponse,
+	authorization: GoogleOauthToken
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
-
-    return prisma.user.upsert({
-        where: { email: profile.email },
-        create: {
-            email: profile.email,
-            username: profile.name ?? profile.given_name ?? 'Unknown',
-            avatarUrl: profile.picture,
-            googleOauth: {
-                create: {
-                    access_token: authorization.access_token,
-                    refresh_token: authorization.refresh_token ?? null,
-                    token_type: authorization.token_type,
-                    expires_in: authorization.expires_in,
-                },
-            },
-        },
-        update: {
-            googleOauth: {
-                upsert: {
-                    update: {
-                        access_token: authorization.access_token,
-                        refresh_token: authorization.refresh_token ?? null,
-                        token_type: authorization.token_type,
-                        expires_in: authorization.expires_in,
-                    },
-                    create: {
-                        access_token: authorization.access_token,
-                        refresh_token: authorization.refresh_token ?? null,
-                        token_type: authorization.token_type,
-                        expires_in: authorization.expires_in,
-                    },
-                },
-            },
-        },
-    });
+	return prisma.user.upsert({
+		where: { email: profile.email },
+		create: {
+			email: profile.email,
+			username: profile.name ?? profile.given_name ?? 'Unknown',
+			avatarUrl: profile.picture,
+			googleOauth: {
+				create: {
+					access_token: authorization.access_token,
+					refresh_token: authorization.refresh_token ?? null,
+					token_type: authorization.token_type,
+					expires_in: authorization.expires_in,
+				},
+			},
+		},
+		update: {
+			googleOauth: {
+				upsert: {
+					update: {
+						access_token: authorization.access_token,
+						refresh_token: authorization.refresh_token ?? null,
+						token_type: authorization.token_type,
+						expires_in: authorization.expires_in,
+					},
+					create: {
+						access_token: authorization.access_token,
+						refresh_token: authorization.refresh_token ?? null,
+						token_type: authorization.token_type,
+						expires_in: authorization.expires_in,
+					},
+				},
+			},
+		},
+	});
 };
 const getUserByMail = async <T extends Prisma.UserInclude>(
 	email: string,
@@ -92,7 +90,7 @@ const getUserByMail = async <T extends Prisma.UserInclude>(
 const createUser = async (
 	mail: string,
 	password: string,
-	username: string,
+	username: string
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
 	return prisma.user.create({
 		data: {
@@ -108,10 +106,10 @@ const createUser = async (
 
 const updateUserPassword = async (
 	mail: string,
-	password: string,
+	password: string
 ): Promise<Prisma.UserGetPayload<Prisma.UserDefaultArgs>> => {
 	return prisma.user.update({
-		where: {email: mail},
+		where: { email: mail },
 		data: {
 			passwordHash: await bcrypt.hash(password, 10),
 		},
@@ -132,5 +130,12 @@ const getUserById = async <T extends Prisma.UserInclude>(
 	});
 };
 
-export { createOrUpdateFortyTwoUser, createOrUpdateGoogleUser, createUser, existUserByMail, getUserById, getUserByMail, updateUserPassword };
-
+export {
+	createOrUpdateFortyTwoUser,
+	createOrUpdateGoogleUser,
+	createUser,
+	existUserByMail,
+	getUserById,
+	getUserByMail,
+	updateUserPassword,
+};
