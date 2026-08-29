@@ -6,7 +6,7 @@ type InputFormProps = {
 	inputValue: string;
 	showInputValue: boolean;
 	setInputValue: React.Dispatch<React.SetStateAction<string>>;
-	setError: React.Dispatch<React.SetStateAction<string | null>>;
+	setError: (value: string | null) => void;
 	children?: ReactNode;
 };
 

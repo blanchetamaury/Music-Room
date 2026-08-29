@@ -17,18 +17,16 @@ function checkRules(pw: string) {
 	return { hasUpper, hasNumber, hasSpecial };
 }
 
-export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; onRegisterComplete?: () => void }) {
+export function Register({ onBack, onRegisterComplete, onError, error }: { onBack?: () => void; onRegisterComplete?: () => void; onError: (value: string | null) => void; error: string | null }) {
 	const [email, setEmail] = useState('');
 	const [page, setPage] = useState<boolean>(false);
 	const [confirmMailAccount, setConfirmMailAccount] = useState<boolean>(false);
 	const [username, setUsername] = useState('');
 	const [pw, setPw] = useState('');
 	const [confirm, setConfirm] = useState('');
-	const [touchedConfirm, setTouchedConfirm] = useState(false);
 	const [showPw, setShowPw] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const rules = useMemo(() => checkRules(pw), [pw]);
 	const colorScheme = useColorScheme();
 	const completed = [rules.hasUpper, rules.hasNumber, rules.hasSpecial].filter(Boolean).length;
@@ -41,7 +39,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 			if (!isPasswordValid || isLoading) return;
 
 			setIsLoading(true);
-			setError(null);
+			onError(null);
 
 			try {
 				const response = await api.auth.signup(email, pw, username);
@@ -52,7 +50,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 
 				onRegisterComplete?.();
 			} catch (err) {
-				setError(err instanceof Error ? err.message : 'Registration failed');
+				onError(err instanceof Error ? err.message : 'Registration failed');
 			} finally {
 				setIsLoading(false);
 			}
@@ -89,14 +87,14 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						placeholder="Email"
 						inputValue={email}
 						setInputValue={setEmail}
-						setError={setError}
+						setError={onError}
 					/>
 					<InputForm
 						isEmail={false}
 						placeholder="Username"
 						inputValue={username}
 						setInputValue={setUsername}
-						setError={setError}
+						setError={onError}
 					/>
 
 					<InputPasswordForm
@@ -104,7 +102,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						inputValue={pw}
 						showInputValue={showPw}
 						setInputValue={setPw}
-						setError={setError}
+						setError={onError}
 					>
 						<Pressable
 							onPress={() => setShowPw((v) => !v)}
@@ -164,7 +162,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						inputValue={confirm}
 						showInputValue={showConfirm}
 						setInputValue={setConfirm}
-						setError={setError}
+						setError={onError}
 					>
 						<Pressable
 							onPress={() => setShowConfirm((v) => !v)}
@@ -178,7 +176,7 @@ export function Register({ onBack, onRegisterComplete }: { onBack?: () => void; 
 						</Pressable>
 					</InputPasswordForm>
 
-					{touchedConfirm && confirm !== pw && (
+					{ confirm !== pw && (
 						<ThemedText style={styles.error}>Passwords do not match</ThemedText>
 					)}
 
