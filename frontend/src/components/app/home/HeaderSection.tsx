@@ -29,9 +29,7 @@ export function HeaderSection({ currentTrack }: HeaderSectionProps) {
 					{currentTrack ? (
 						<>
 							You are currently listening to{' '}
-							<ThemedText style={homeStyles.subTextStrong}>
-								{currentTrack.title}
-							</ThemedText>
+							<ThemedText style={homeStyles.subTextStrong}>{currentTrack.title}</ThemedText>
 						</>
 					) : (
 						'No music playing'

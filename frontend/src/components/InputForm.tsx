@@ -7,7 +7,7 @@ type InputFormProps = {
 	inputValue: string;
 	isEmail: boolean;
 	setInputValue: React.Dispatch<React.SetStateAction<string>>;
-	setError?: React.Dispatch<React.SetStateAction<string | null>>;
+	setError?: (value: string | null) => void;
 };
 
 export function InputForm(props: InputFormProps) {
@@ -34,8 +34,7 @@ export function InputForm(props: InputFormProps) {
 					value={props.inputValue}
 					onChangeText={(text) => {
 						props.setInputValue(text);
-						if (props.setError)
-							props.setError(null);
+						if (props.setError) props.setError(null);
 					}}
 					onFocus={() => setEmailFocused(true)}
 					onBlur={() => {

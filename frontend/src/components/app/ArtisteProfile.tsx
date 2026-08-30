@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, View } from 'react-native';
-
-import { api, DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/lib/api/client';
-
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
-
 import { ThemedText } from '../themed-text';
 import { SeparatorFull } from '../ui/separator';
 import { AlbumDisplay } from './AlbumDisplay';
-import { SongDisplay } from './search/SongDisplayMobile';
+import { DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/types/deezer/deezer';
+import { api } from '@/src/lib/api/client';
+import { SongDisplayMobile } from './search/SongDisplayMobile';
 
 interface ArtistProfileProps {
 	id: string;
@@ -30,7 +28,7 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 			try {
 				setLoading(true);
 
-				const artistResponse = await api.deezer.artist(id);
+				const artistResponse = await api.deezer.artist.artist(id);
 
 				if (!artistResponse) {
 					return;
@@ -68,10 +66,10 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				{artist?.picture_medium ? (
+				{artist?.pictureMedium ? (
 					<Image
 						source={{
-							uri: artist.picture_medium,
+							uri: artist.pictureMedium,
 						}}
 						style={styles.avatar}
 					/>
@@ -84,7 +82,7 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 
 					<View style={styles.artistStats}>
 						<ThemedText style={styles.fans}>
-							{artist?.nb_fan ? `${artist.nb_fan.toLocaleString()} fans` : '— fans'}
+							{artist?.nbFan ? `${artist.nbFan.toLocaleString()} fans` : '— fans'}
 						</ThemedText>
 
 						<ThemedText style={styles.dot}>●</ThemedText>
@@ -124,7 +122,11 @@ export function ArtistProfile({ id, onSongPress, onAlbumPress }: ArtistProfilePr
 				) : activeTab === 'tracks' ? (
 					<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
 						{tracks.map((song, index) => (
-							<SongDisplay key={`${song.id}-${index}`} song={song} onPress={() => onSongPress?.(song)} />
+							<SongDisplayMobile
+								key={`${song.id}-${index}`}
+								song={song}
+								onPress={() => onSongPress?.(song)}
+							/>
 						))}
 					</ScrollView>
 				) : (

@@ -7,4 +7,3 @@ export interface GoogleOauthResponse {
 	family_name: string;
 	picture: string;
 }
-

@@ -15,19 +15,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import LiquidGlass from '../LiquidGlass';
 import { ThemedText } from '../themed-text';
-
-type DeezerTrack = {
-	id: string | number;
-	title: string;
-	artist: { name: string };
-	album: { cover_medium?: string };
-};
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 export function MusicPreview({
 	color = '#ddd',
-	cover,
-	title,
-	artist,
 	animationConfig,
 	tracks = [],
 }: {
@@ -44,11 +35,11 @@ export function MusicPreview({
 		duration: number;
 		delay: number;
 	};
-	tracks?: DeezerTrack[];
+	tracks?: OutputTrackDeezer[];
 }) {
 	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 	const progress = useSharedValue(0);
-	const [currentTrack, setCurrentTrack] = React.useState<DeezerTrack | null>(null);
+	const [currentTrack, setCurrentTrack] = React.useState<OutputTrackDeezer | null>(null);
 
 	useEffect(() => {
 		if (!animationConfig) return;
@@ -78,12 +69,6 @@ export function MusicPreview({
 		[tracks.length]
 	);
 
-	const displayTrack = currentTrack || {
-		title,
-		artist: { name: artist },
-		album: { cover_medium: cover },
-	};
-
 	const animatedStyle = useAnimatedStyle(() => ({
 		transform: [
 			{ translateX: animationConfig.startX + animationConfig.drift * progress.value },
@@ -101,33 +86,39 @@ export function MusicPreview({
 			style={[styles.container, animationConfig ? styles.animatedContainer : null, animatedStyle]}
 			pointerEvents="none"
 		>
-			<LiquidGlass
-				radius={16}
-				topLeftRadius={16}
-				topRightRadius={16}
-				bottomLeftRadius={16}
-				bottomRightRadius={16}
-				intensity={40}
-				tint="dark"
-				shimmer={true}
-				chromatic={true}
-				style={[StyleSheet.absoluteFillObject, { backgroundColor: glassBg }]}
-				contentStyle={styles.content}
-			>
-				{displayTrack.album?.cover_medium ? (
-					<Image source={{ uri: displayTrack.album.cover_medium }} style={styles.cover} resizeMode="cover" />
-				) : (
-					<View style={[styles.cover, { backgroundColor: color }]} />
-				)}
-				<View style={styles.meta}>
-					<ThemedText type="defaultSemiBold" numberOfLines={1}>
-						{displayTrack.title}
-					</ThemedText>
-					<ThemedText type="default" style={styles.artist} numberOfLines={1}>
-						{displayTrack.artist?.name ?? 'Unknown'}
-					</ThemedText>
-				</View>
-			</LiquidGlass>
+			{currentTrack && (
+				<LiquidGlass
+					radius={16}
+					topLeftRadius={16}
+					topRightRadius={16}
+					bottomLeftRadius={16}
+					bottomRightRadius={16}
+					intensity={40}
+					tint="dark"
+					shimmer={true}
+					chromatic={true}
+					style={[StyleSheet.absoluteFillObject, { backgroundColor: glassBg }]}
+					contentStyle={styles.content}
+				>
+					{currentTrack?.album.CoverMedium ? (
+						<Image
+							source={{ uri: currentTrack.album.CoverMedium }}
+							style={styles.cover}
+							resizeMode="cover"
+						/>
+					) : (
+						<View style={[styles.cover, { backgroundColor: color }]} />
+					)}
+					<View style={styles.meta}>
+						<ThemedText type="defaultSemiBold" numberOfLines={1}>
+							{currentTrack?.title}
+						</ThemedText>
+						<ThemedText type="default" style={styles.artist} numberOfLines={1}>
+							{currentTrack?.artist[0].name ?? 'Unknown'}
+						</ThemedText>
+					</View>
+				</LiquidGlass>
+			)}
 		</OuterView>
 	);
 }

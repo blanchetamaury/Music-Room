@@ -16,8 +16,15 @@ const { width: SCREEN_W } = Dimensions.get('window');
 export default function LoginScreen() {
 	const router = useRouter();
 	const searchParams = useLocalSearchParams<{ mode?: string }>();
-	const [mode, setMode] = useState<AuthMode>('login');
 	const { token, loading, login } = useAuth();
+	const [error, setError] = useState<string | null>(null);
+	const [mode, setMode] = useState<AuthMode>(() => {
+		const modeParam = searchParams.mode;
+		if (modeParam === 'register' || modeParam === 'reset-password' || modeParam === 'login') {
+			return modeParam;
+		}
+		return 'login';
+	});
 
 	const modeIndex = mode === 'register' ? 0 : mode === 'login' ? 1 : 2;
 	const progress = useSharedValue(modeIndex - 1);
@@ -26,19 +33,12 @@ export default function LoginScreen() {
 		if (!loading && token) {
 			router.replace('/(tabs)/home');
 		}
-	}, [loading, token]);
+	}, [loading, token, router]);
 
 	useEffect(() => {
 		const target = modeIndex - 1;
 		progress.value = withTiming(target, { duration: 420 });
-	}, [modeIndex]);
-
-	useEffect(() => {
-		const modeParam = searchParams.mode;
-		if (modeParam === 'register' || modeParam === 'reset-password' || modeParam === 'login') {
-			setMode(modeParam);
-		}
-	}, [searchParams.mode]);
+	}, [modeIndex, progress]);
 
 	const loginStyle = useAnimatedStyle(() => {
 		const tx = interpolate(progress.value, [-1, 0, 1], [SCREEN_W * 0.6, 0, -SCREEN_W * 0.6]);
@@ -62,8 +62,8 @@ export default function LoginScreen() {
 		try {
 			await login(email, password);
 			router.replace('/(tabs)/home');
-		} catch (err) {
-			console.error('Login error:', err);
+		} catch (err: unknown) {
+			setError(`Email ou mot de passe incorrect [${err}]`);
 		}
 	};
 
@@ -87,7 +87,12 @@ export default function LoginScreen() {
 				pointerEvents={mode === 'register' ? 'auto' : 'none'}
 			>
 				<View style={styles.authContainer}>
-					<Register onBack={() => handleModeChange('login')} onRegisterComplete={handleAuthComplete} />
+					<Register
+						onBack={() => handleModeChange('login')}
+						onRegisterComplete={handleAuthComplete}
+						onError={setError}
+						error={error}
+					/>
 				</View>
 			</Animated.View>
 

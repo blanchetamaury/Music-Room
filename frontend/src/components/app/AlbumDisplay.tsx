@@ -1,8 +1,8 @@
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-import { DeezerAlbum } from '@/src/lib/api/client';
 import { ThemedText } from '../themed-text';
 import { HoverText } from '../ui/hoverText';
+import { DeezerAlbum } from '@/src/types/deezer/deezer';
 
 interface AlbumDisplayProps {
 	album: DeezerAlbum;
@@ -12,10 +12,10 @@ interface AlbumDisplayProps {
 export function AlbumDisplay({ album, onPress }: AlbumDisplayProps) {
 	return (
 		<Pressable onPress={onPress} style={styles.container}>
-			{album.cover_medium ? (
+			{album.coverMedium ? (
 				<Image
 					source={{
-						uri: album.cover_medium,
+						uri: album.coverMedium,
 					}}
 					style={styles.cover}
 				/>

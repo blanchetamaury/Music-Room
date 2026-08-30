@@ -12,35 +12,21 @@ import {
 	TrendingUp,
 } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import {
-	Image,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
 import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
+import { Track } from '@/src/types/track/track';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 interface SongProfileProps {
-	song: DeezerTrack;
+	song: OutputTrackDeezer;
 	onPlay?: () => void;
 	onArtistPress?: (artistId: string | number) => void;
 	onAlbumPress?: (albumId: string | null) => void;
-}
-
-interface ApiResponse<T> {
-	success: boolean;
-	message?: string;
-	data?: T;
-}
-
-interface TrackPayload {
-	track: DeezerTrack;
 }
 
 const DEBUG = false;
@@ -57,13 +43,8 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function SongProfileMobile({
-	song,
-	onPlay,
-	onArtistPress,
-	onAlbumPress,
-}: SongProfileProps) {
-	const [music, setMusic] = useState<DeezerTrack | null>(null);
+export function SongProfileMobile({ song, onPlay, onArtistPress, onAlbumPress }: SongProfileProps) {
+	const [music, setMusic] = useState<Track | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -75,12 +56,9 @@ export function SongProfileMobile({
 				setLoading(true);
 				setError(null);
 
-				const data: ApiResponse<TrackPayload> =
-					await api.deezer.music.music(
-						Number(song.id),
-					);
+				const data = await api.deezer.music.music(Number(song.deezerCUID));
 
-				const track = data.data?.track;
+				const track = data.data;
 
 				if (!track) {
 					if (isMounted) {
@@ -93,10 +71,7 @@ export function SongProfileMobile({
 					setMusic(track);
 				}
 			} catch (error) {
-				console.error(
-					'[SongProfile] Failed to load track:',
-					error,
-				);
+				console.error('[SongProfile] Failed to load track:', error);
 
 				if (isMounted) {
 					setError('Failed to load track');
@@ -117,12 +92,7 @@ export function SongProfileMobile({
 
 	if (loading) {
 		return (
-			<View
-				style={[
-					styles.container,
-					debugBox('#ff0000'),
-				]}
-			>
+			<View style={[styles.container, debugBox('#ff0000')]}>
 				<ThemedText>Chargement...</ThemedText>
 			</View>
 		);
@@ -130,15 +100,8 @@ export function SongProfileMobile({
 
 	if (error || !music) {
 		return (
-			<View
-				style={[
-					styles.container,
-					debugBox('#ff0000'),
-				]}
-			>
-				<ThemedText>
-					{error ?? 'Aucune donnée'}
-				</ThemedText>
+			<View style={[styles.container, debugBox('#ff0000')]}>
+				<ThemedText>{error ?? 'Aucune donnée'}</ThemedText>
 			</View>
 		);
 	}
@@ -146,104 +109,48 @@ export function SongProfileMobile({
 	const albumName = music.album?.title ?? 'Album';
 
 	return (
-		<View
-			style={[
-				styles.container,
-				debugBox('#ff0000'),
-			]}
-		>
+		<View style={[styles.container, debugBox('#ff0000')]}>
 			<Pressable
-				style={[
-					styles.albumButton,
-					debugBox('#ff8800'),
-				]}
+				style={[styles.albumButton, debugBox('#ff8800')]}
 				onPress={() => {
-					onAlbumPress?.(
-						music.album?.deezerCUID ?? null,
-					);
+					onAlbumPress?.(music.album?.deezerCUID ?? null);
 				}}
 			>
-				<ThemedText
-					style={[
-						styles.albumTitle,
-						debugBox('#ffff00'),
-					]}
-					numberOfLines={1}
-					ellipsizeMode="tail"
-				>
+				<ThemedText style={[styles.albumTitle, debugBox('#ffff00')]} numberOfLines={1} ellipsizeMode="tail">
 					{albumName}
 				</ThemedText>
 			</Pressable>
 
-			<View
-				style={[
-					styles.coverContainer,
-					debugBox('#00ff00'),
-				]}
-			>
+			<View style={[styles.coverContainer, debugBox('#00ff00')]}>
 				{music.album?.coverMedium && (
 					<Image
 						source={{
 							uri: music.album.coverMedium,
 						}}
 						resizeMode="cover"
-						style={[
-							styles.cover,
-							debugBox('#00ffff'),
-						]}
+						style={[styles.cover, debugBox('#00ffff')]}
 					/>
 				)}
 			</View>
 
-			<View
-				style={[
-					styles.titleContainer,
-					debugBox('#0088ff'),
-				]}
-			>
-				<ScrollingTitle
-					title={music.title}
-					explicit={music.explicit === true}
-				/>
+			<View style={[styles.titleContainer, debugBox('#0088ff')]}>
+				<ScrollingTitle title={music.title} explicit={music.explicit === true} />
 			</View>
 
-			<View
-				style={[
-					styles.artistsContainer,
-					debugBox('#ff00ff'),
-				]}
-			>
+			<View style={[styles.artistsContainer, debugBox('#ff00ff')]}>
 				{music.artists.map((artist, index) => (
-					<View
-						key={`${artist.deezerCUID}-${index}`}
-						style={[
-							styles.artistWrapper,
-							debugBox('#8800ff'),
-						]}
-					>
+					<View key={`${artist.deezerCUID}-${index}`} style={[styles.artistWrapper, debugBox('#8800ff')]}>
 						<HoverText
-							style={[
-								styles.artist,
-								debugBox('#00ff88'),
-							]}
+							style={[styles.artist, debugBox('#00ff88')]}
 							onPress={() => {
-								onArtistPress?.(
-									artist.deezerCUID ?? '',
-								);
+								onArtistPress?.(artist.deezerCUID ?? '');
 							}}
 						>
 							{artist.name}
 						</HoverText>
 
 						{index < music.artists.length - 1 && (
-							<ThemedText
-								style={[
-									styles.artistSeparator,
-									debugBox('#ffffff'),
-								]}
-							>
-								,
-							</ThemedText>
+							<ThemedText style={[styles.artistSeparator, debugBox('#ffffff')]}>,</ThemedText>
 						)}
 					</View>
 				))}
@@ -251,138 +158,58 @@ export function SongProfileMobile({
 
 			<SeparatorFull />
 
-			<View
-				style={[
-					styles.actions,
-					debugBox('#25fc09'),
-				]}
-			>
+			<View style={[styles.actions, debugBox('#25fc09')]}>
 				<Pressable
-					style={[
-						styles.actionButton,
-						debugBox('#ff0000'),
-					]}
+					style={[styles.actionButton, debugBox('#ff0000')]}
 					onPress={() => {
-						console.log(
-							'[SongProfile] Like:',
-							music.deezerCUID,
-						);
+						console.log('[SongProfile] Like:', music.deezerCUID);
 					}}
 				>
-					<Heart
-						size={22}
-						color="rgba(255,255,255,0.8)"
-						strokeWidth={2}
-					/>
+					<Heart size={22} color="rgba(255,255,255,0.8)" strokeWidth={2} />
 				</Pressable>
 
 				<Pressable
-					style={[
-						styles.playButton,
-						debugBox('#00ff00'),
-					]}
+					style={[styles.playButton, debugBox('#00ff00')]}
 					onPress={() => {
-						console.log(
-							'[SongProfile] Play:',
-							music.deezerCUID,
-						);
+						console.log('[SongProfile] Play:', music.deezerCUID);
 
 						onPlay?.();
 					}}
 				>
-					<Play
-						size={23}
-						color="#fff"
-						fill="#fff"
-						strokeWidth={2}
-					/>
+					<Play size={23} color="#fff" fill="#fff" strokeWidth={2} />
 				</Pressable>
 
 				<Pressable
-					style={[
-						styles.actionButton,
-						debugBox('#0088ff'),
-					]}
+					style={[styles.actionButton, debugBox('#0088ff')]}
 					onPress={() => {
-						console.log(
-							'[SongProfile] Add to playlist:',
-							music.deezerCUID,
-						);
+						console.log('[SongProfile] Add to playlist:', music.deezerCUID);
 					}}
 				>
-					<ListPlus
-						size={23}
-						color="rgba(255,255,255,0.8)"
-						strokeWidth={2}
-					/>
+					<ListPlus size={23} color="rgba(255,255,255,0.8)" strokeWidth={2} />
 				</Pressable>
 			</View>
 
 			<SeparatorFull />
 
-			<View
-				style={[
-					styles.stats,
-					debugBox('#00ffff'),
-				]}
-			>
-				<View
-					style={[
-						styles.statItem,
-						debugBox('#ff8800'),
-					]}
-				>
-					<ThemedText style={styles.statLabel}>
-						{formatReleaseDate(
-							music.releaseDate?.toString(),
-						)}
-					</ThemedText>
+			<View style={[styles.stats, debugBox('#00ffff')]}>
+				<View style={[styles.statItem, debugBox('#ff8800')]}>
+					<ThemedText style={styles.statLabel}>{formatReleaseDate(music.releaseDate?.toString())}</ThemedText>
 				</View>
 
-				<View
-					style={[
-						styles.statSeparator,
-						debugBox('#ffffff'),
-					]}
-				/>
+				<View style={[styles.statSeparator, debugBox('#ffffff')]} />
 
-				<View
-					style={[
-						styles.statItem,
-						debugBox('#00ff00'),
-					]}
-				>
-					<Clock3
-						size={15}
-						color="rgba(255,255,255,0.55)"
-					/>
+				<View style={[styles.statItem, debugBox('#00ff00')]}>
+					<Clock3 size={15} color="rgba(255,255,255,0.55)" />
 
-					<ThemedText style={styles.statLabel}>
-						{formatDuration(music.duration)}
-					</ThemedText>
+					<ThemedText style={styles.statLabel}>{formatDuration(music.duration)}</ThemedText>
 				</View>
 
-				<View
-					style={[
-						styles.statSeparator,
-						debugBox('#ffffff'),
-					]}
-				/>
+				<View style={[styles.statSeparator, debugBox('#ffffff')]} />
 
-				<View
-					style={[
-						styles.statItem,
-						debugBox('#ff00ff'),
-					]}
-				>
-					<TrendingUp
-						size={15}
-						color="rgba(255,255,255,0.55)"
-					/>
+				<View style={[styles.statItem, debugBox('#ff00ff')]}>
+					<TrendingUp size={15} color="rgba(255,255,255,0.55)" />
 
-					<ThemedText style={styles.statLabel}>
-						Trending
-					</ThemedText>
+					<ThemedText style={styles.statLabel}>Trending</ThemedText>
 
 					{getRankIcon(music.rank)}
 				</View>
@@ -399,47 +226,22 @@ function getRankIcon(rank?: number | null) {
 	const n = Number(rank);
 
 	if (n < 200_000) {
-		return (
-			<FaceAngry
-				size={17}
-				color="rgba(255,255,255,0.45)"
-			/>
-		);
+		return <FaceAngry size={17} color="rgba(255,255,255,0.45)" />;
 	}
 
 	if (n < 400_000) {
-		return (
-			<FaceSlightlyFrowningIcon
-				size={17}
-				color="rgba(255,255,255,0.55)"
-			/>
-		);
+		return <FaceSlightlyFrowningIcon size={17} color="rgba(255,255,255,0.55)" />;
 	}
 
 	if (n < 600_000) {
-		return (
-			<FaceNeutral
-				size={17}
-				color="rgba(255,255,255,0.65)"
-			/>
-		);
+		return <FaceNeutral size={17} color="rgba(255,255,255,0.65)" />;
 	}
 
 	if (n < 800_000) {
-		return (
-			<FaceSlightlySmiling
-				size={17}
-				color="rgba(255,255,255,0.75)"
-			/>
-		);
+		return <FaceSlightlySmiling size={17} color="rgba(255,255,255,0.75)" />;
 	}
 
-	return (
-		<FaceSlightlySmilingPlus
-			size={17}
-			color="rgba(255,255,255,0.9)"
-		/>
-	);
+	return <FaceSlightlySmilingPlus size={17} color="rgba(255,255,255,0.9)" />;
 }
 
 function formatReleaseDate(date?: string) {
@@ -469,26 +271,15 @@ function formatDuration(duration?: string | number) {
 	const minutes = Math.floor(totalSeconds / 60);
 	const seconds = totalSeconds % 60;
 
-	return `${minutes}:${seconds
-		.toString()
-		.padStart(2, '0')}`;
+	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-function ScrollingTitle({
-	title,
-	explicit,
-}: {
-	title: string;
-	explicit: boolean;
-}) {
+function ScrollingTitle({ title, explicit }: { title: string; explicit: boolean }) {
 	const scrollRef = useRef<ScrollView>(null);
 	const [contentWidth, setContentWidth] = useState(0);
 	const [containerWidth, setContainerWidth] = useState(0);
 
-	const isOverflowing =
-		contentWidth > 0 &&
-		containerWidth > 0 &&
-		contentWidth > containerWidth;
+	const isOverflowing = contentWidth > 0 && containerWidth > 0 && contentWidth > containerWidth;
 
 	useEffect(() => {
 		if (!isOverflowing) {
@@ -532,15 +323,9 @@ function ScrollingTitle({
 
 	return (
 		<View
-			style={[
-				styles.scrollingTitleWrapper,
-				!isOverflowing &&
-					styles.scrollingTitleCentered,
-			]}
+			style={[styles.scrollingTitleWrapper, !isOverflowing && styles.scrollingTitleCentered]}
 			onLayout={(event) => {
-				setContainerWidth(
-					event.nativeEvent.layout.width,
-				);
+				setContainerWidth(event.nativeEvent.layout.width);
 			}}
 		>
 			<ScrollView
@@ -548,44 +333,24 @@ function ScrollingTitle({
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				scrollEnabled={false}
-				contentContainerStyle={[
-					styles.titleScrollContent,
-					!isOverflowing &&
-						styles.titleScrollCentered,
-				]}
+				contentContainerStyle={[styles.titleScrollContent, !isOverflowing && styles.titleScrollCentered]}
 			>
 				<View
 					style={styles.titleContent}
 					onLayout={(event) => {
-						setContentWidth(
-							event.nativeEvent.layout.width,
-						);
+						setContentWidth(event.nativeEvent.layout.width);
 					}}
 				>
-					<ThemedText style={styles.title}>
-						{title}
-					</ThemedText>
+					<ThemedText style={styles.title}>{title}</ThemedText>
 
-					{explicit && (
-						<Banana
-							size={18}
-							color="rgba(255,255,255,0.7)"
-						/>
-					)}
+					{explicit && <Banana size={18} color="rgba(255,255,255,0.7)" />}
 				</View>
 
 				{isOverflowing && (
 					<View style={styles.titleDuplicate}>
-						<ThemedText style={styles.title}>
-							{title}
-						</ThemedText>
+						<ThemedText style={styles.title}>{title}</ThemedText>
 
-						{explicit && (
-							<Banana
-								size={18}
-								color="rgba(255,255,255,0.7)"
-							/>
-						)}
+						{explicit && <Banana size={18} color="rgba(255,255,255,0.7)" />}
 					</View>
 				)}
 			</ScrollView>

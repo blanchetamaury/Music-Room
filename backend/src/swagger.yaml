@@ -1,1406 +1,1406 @@
 openapi: 3.0.3
 info:
-  title: Music Room API
-  version: 1.0.0
-  description: |
-    API for Music Room - A collaborative music application.
-    
-    This API follows REST principles with JSON as the exchange format.
-    All endpoints are versioned under `/api/v1`.
-    
-    ## Authentication
-    - **Cookie-based sessions**: Login/register endpoints set HttpOnly cookies
-    - **CSRF protection**: State-changing requests require `X-CSRF-Token` header
-    - **OAuth 42**: Available via `/api/v1/auth/oauth/42/callback`
-    
-    ## Rate Limiting
-    - Login attempts: 5 per account / 15 min, 20 per IP / 15 min
-    - Other endpoints: Standard Express rate limits apply
-    
-    ## Error Format
-    ```json
-    {
-      "error": "Human readable message",
-      "statusCode": 400
-    }
-    ```
-    
-    ## Success Format
-    ```json
-    {
-      "data": { ... }
-    }
-    ```
-  contact:
-    name: Music Room Team
-  license:
-    name: MIT
+    title: Music Room API
+    version: 1.0.0
+    description: |
+        API for Music Room - A collaborative music application.
+
+        This API follows REST principles with JSON as the exchange format.
+        All endpoints are versioned under `/api/v1`.
+
+        ## Authentication
+        - **Cookie-based sessions**: Login/register endpoints set HttpOnly cookies
+        - **CSRF protection**: State-changing requests require `X-CSRF-Token` header
+        - **OAuth 42**: Available via `/api/v1/auth/oauth/42/callback`
+
+        ## Rate Limiting
+        - Login attempts: 5 per account / 15 min, 20 per IP / 15 min
+        - Other endpoints: Standard Express rate limits apply
+
+        ## Error Format
+        ```json
+        {
+          "error": "Human readable message",
+          "statusCode": 400
+        }
+        ```
+
+        ## Success Format
+        ```json
+        {
+          "data": { ... }
+        }
+        ```
+    contact:
+        name: Music Room Team
+    license:
+        name: MIT
 
 servers:
-  - url: http://localhost:3000/api/v1
-    description: Development server
-  - url: https://api.music-room.example.com/api/v1
-    description: Production server
+    - url: http://localhost:3000/api/v1
+      description: Development server
+    - url: https://api.music-room.example.com/api/v1
+      description: Production server
 
 tags:
-  - name: Authentication
-    description: User authentication and session management
-  - name: Users
-    description: User profile and account management
-  - name: Deezer
-    description: Music track search and metadata (Deezer integration)
-  - name: Events
-    description: Music events and track voting (Music Track Vote service)
-  - name: Playlists
-    description: Collaborative playlist editing (Music Playlist Editor service)
-  - name: Devices
-    description: Device management and control delegation (Music Control Delegation service)
+    - name: Authentication
+      description: User authentication and session management
+    - name: Users
+      description: User profile and account management
+    - name: Deezer
+      description: Music track search and metadata (Deezer integration)
+    - name: Events
+      description: Music events and track voting (Music Track Vote service)
+    - name: Playlists
+      description: Collaborative playlist editing (Music Playlist Editor service)
+    - name: Devices
+      description: Device management and control delegation (Music Control Delegation service)
 
 components:
-  securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: session
-    csrfAuth:
-      type: apiKey
-      in: header
-      name: X-CSRF-Token
+    securitySchemes:
+        cookieAuth:
+            type: apiKey
+            in: cookie
+            name: session
+        csrfAuth:
+            type: apiKey
+            in: header
+            name: X-CSRF-Token
 
-  schemas:
-    # Auth schemas
-    RegisterRequest:
-      type: object
-      required:
-        - mail
-        - password
-        - username
-      properties:
-        mail:
-          type: string
-          format: email
-          example: "user@example.com"
-        password:
-          type: string
-          format: password
-          minLength: 8
-          example: "SecurePass123!"
-        username:
-          type: string
-          minLength: 3
-          maxLength: 20
-          example: "musiclover"
-
-    LoginRequest:
-      type: object
-      required:
-        - mail
-        - password
-      properties:
-        mail:
-          type: string
-          format: email
-          example: "user@example.com"
-        password:
-          type: string
-          format: password
-          example: "SecurePass123!"
-
-    AuthResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            user_id:
-              type: string
-              example: "cm1x2y3z4a5b6c7d8e9f0g1h2"
-
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          example: "Invalid password or mail"
-        statusCode:
-          type: integer
-          example: 401
-
-    # User schemas
-    UserProfile:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "cm1x2y3z4a5b6c7d8e9f0g1h2"
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        username:
-          type: string
-          example: "musiclover"
-        avatarUrl:
-          type: string
-          format: uri
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        fortytwo_oauth:
-          type: boolean
-          example: false
-
-    # Deezer schemas
-    DeezerArtist:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        picture_medium:
-          type: string
-          format: uri
-          nullable: true
-
-    DeezerAlbum:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        cover_medium:
-          type: string
-          format: uri
-          nullable: true
-        cover_big:
-          type: string
-          format: uri
-          nullable: true
-
-    DeezerTrack:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        title_short:
-          type: string
-          nullable: true
-        duration:
-          type: integer
-        explicit_lyrics:
-          type: boolean
-        preview:
-          type: string
-          format: uri
-          nullable: true
-        artist:
-          $ref: '#/components/schemas/DeezerArtist'
-        album:
-          $ref: '#/components/schemas/DeezerAlbum'
-
-    DeezerTrackListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeezerTrack'
-
-    DeezerTrackResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/DeezerTrack'
-
-    # Event schemas (Music Track Vote)
-    Event:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        visibility:
-          type: string
-          enum: [public, private]
-          default: public
-        license_type:
-          type: string
-          enum: [open, invited_only, location_time]
-          default: open
-        location:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
-            radius:
-              type: integer
-          nullable: true
-        time_window_start:
-          type: string
-          format: time
-          nullable: true
-        time_window_end:
-          type: string
-          format: time
-          nullable: true
-        created_by:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-
-    EventCreateRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        visibility:
-          type: string
-          enum: [public, private]
-          default: public
-        license_type:
-          type: string
-          enum: [open, invited_only, location_time]
-          default: open
-        location:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
-            radius:
-              type: integer
-          nullable: true
-        time_window_start:
-          type: string
-          format: time
-          nullable: true
-        time_window_end:
-          type: string
-          format: time
-          nullable: true
-
-    TrackSuggestion:
-      type: object
-      properties:
-        id:
-          type: string
-        event_id:
-          type: string
-        track_id:
-          type: string
-        suggested_by:
-          type: string
-        votes_count:
-          type: integer
-          default: 0
-        created_at:
-          type: string
-          format: date-time
-
-    VoteRequest:
-      type: object
-      required:
-        - track_suggestion_id
-      properties:
-        track_suggestion_id:
-          type: string
-
-    # Playlist schemas (Music Playlist Editor)
-    Playlist:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        cover_url:
-          type: string
-          format: uri
-          nullable: true
-        visibility:
-          type: string
-          enum: [public, private]
-          default: public
-        license_type:
-          type: string
-          enum: [open, invited_only]
-          default: open
-        owner_id:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-
-    PlaylistCreateRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        cover_url:
-          type: string
-          format: uri
-          nullable: true
-        visibility:
-          type: string
-          enum: [public, private]
-          default: public
-        license_type:
-          type: string
-          enum: [open, invited_only]
-          default: open
-
-    PlaylistTrack:
-      type: object
-      properties:
-        id:
-          type: string
-        playlist_id:
-          type: string
-        track_id:
-          type: string
-        position:
-          type: integer
-        added_by:
-          type: string
-        added_at:
-          type: string
-          format: date-time
-
-    PlaylistTrackAddRequest:
-      type: object
-      required:
-        - track_id
-      properties:
-        track_id:
-          type: string
-        position:
-          type: integer
-
-    PlaylistTrackMoveRequest:
-      type: object
-      required:
-        - new_position
-      properties:
-        new_position:
-          type: integer
-
-    # Device schemas (Music Control Delegation)
-    Device:
-      type: object
-      properties:
-        id:
-          type: string
-        user_id:
-          type: string
-        name:
-          type: string
-        platform:
-          type: string
-          example: "iOS"
-        device_model:
-          type: string
-          example: "iPhone 15"
-        app_version:
-          type: string
-          example: "1.0.0"
-        last_active:
-          type: string
-          format: date-time
-        control_delegated_to:
-          type: string
-          nullable: true
-
-    DeviceControlDelegateRequest:
-      type: object
-      required:
-        - device_id
-        - delegate_to_user_id
-      properties:
-        device_id:
-          type: string
-        delegate_to_user_id:
-          type: string
-
-    DeviceControlRevokeRequest:
-      type: object
-      required:
-        - device_id
-      properties:
-        device_id:
-          type: string
-
-    # Pagination
-    PaginationParams:
-      type: object
-      properties:
-        page:
-          type: integer
-          default: 1
-          minimum: 1
-        limit:
-          type: integer
-          default: 20
-          minimum: 1
-          maximum: 100
-
-    PaginatedResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
+    schemas:
+        # Auth schemas
+        RegisterRequest:
             type: object
-        pagination:
-          type: object
-          properties:
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            total_pages:
-              type: integer
+            required:
+                - mail
+                - password
+                - username
+            properties:
+                mail:
+                    type: string
+                    format: email
+                    example: 'user@example.com'
+                password:
+                    type: string
+                    format: password
+                    minLength: 8
+                    example: 'SecurePass123!'
+                username:
+                    type: string
+                    minLength: 3
+                    maxLength: 20
+                    example: 'musiclover'
+
+        LoginRequest:
+            type: object
+            required:
+                - mail
+                - password
+            properties:
+                mail:
+                    type: string
+                    format: email
+                    example: 'user@example.com'
+                password:
+                    type: string
+                    format: password
+                    example: 'SecurePass123!'
+
+        AuthResponse:
+            type: object
+            properties:
+                data:
+                    type: object
+                    properties:
+                        user_id:
+                            type: string
+                            example: 'cm1x2y3z4a5b6c7d8e9f0g1h2'
+
+        ErrorResponse:
+            type: object
+            properties:
+                error:
+                    type: string
+                    example: 'Invalid password or mail'
+                statusCode:
+                    type: integer
+                    example: 401
+
+        # User schemas
+        UserProfile:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: 'cm1x2y3z4a5b6c7d8e9f0g1h2'
+                email:
+                    type: string
+                    format: email
+                    example: 'user@example.com'
+                username:
+                    type: string
+                    example: 'musiclover'
+                avatarUrl:
+                    type: string
+                    format: uri
+                    nullable: true
+                createdAt:
+                    type: string
+                    format: date-time
+                fortytwo_oauth:
+                    type: boolean
+                    example: false
+
+        # Deezer schemas
+        DeezerArtist:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                picture_medium:
+                    type: string
+                    format: uri
+                    nullable: true
+
+        DeezerAlbum:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                cover_medium:
+                    type: string
+                    format: uri
+                    nullable: true
+                cover_big:
+                    type: string
+                    format: uri
+                    nullable: true
+
+        DeezerTrack:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                title_short:
+                    type: string
+                    nullable: true
+                duration:
+                    type: integer
+                explicit_lyrics:
+                    type: boolean
+                preview:
+                    type: string
+                    format: uri
+                    nullable: true
+                artist:
+                    $ref: '#/components/schemas/DeezerArtist'
+                album:
+                    $ref: '#/components/schemas/DeezerAlbum'
+
+        DeezerTrackListResponse:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DeezerTrack'
+
+        DeezerTrackResponse:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DeezerTrack'
+
+        # Event schemas (Music Track Vote)
+        Event:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                visibility:
+                    type: string
+                    enum: [public, private]
+                    default: public
+                license_type:
+                    type: string
+                    enum: [open, invited_only, location_time]
+                    default: open
+                location:
+                    type: object
+                    properties:
+                        latitude:
+                            type: number
+                        longitude:
+                            type: number
+                        radius:
+                            type: integer
+                    nullable: true
+                time_window_start:
+                    type: string
+                    format: time
+                    nullable: true
+                time_window_end:
+                    type: string
+                    format: time
+                    nullable: true
+                created_by:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+
+        EventCreateRequest:
+            type: object
+            required:
+                - name
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                visibility:
+                    type: string
+                    enum: [public, private]
+                    default: public
+                license_type:
+                    type: string
+                    enum: [open, invited_only, location_time]
+                    default: open
+                location:
+                    type: object
+                    properties:
+                        latitude:
+                            type: number
+                        longitude:
+                            type: number
+                        radius:
+                            type: integer
+                    nullable: true
+                time_window_start:
+                    type: string
+                    format: time
+                    nullable: true
+                time_window_end:
+                    type: string
+                    format: time
+                    nullable: true
+
+        TrackSuggestion:
+            type: object
+            properties:
+                id:
+                    type: string
+                event_id:
+                    type: string
+                track_id:
+                    type: string
+                suggested_by:
+                    type: string
+                votes_count:
+                    type: integer
+                    default: 0
+                created_at:
+                    type: string
+                    format: date-time
+
+        VoteRequest:
+            type: object
+            required:
+                - track_suggestion_id
+            properties:
+                track_suggestion_id:
+                    type: string
+
+        # Playlist schemas (Music Playlist Editor)
+        Playlist:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                cover_url:
+                    type: string
+                    format: uri
+                    nullable: true
+                visibility:
+                    type: string
+                    enum: [public, private]
+                    default: public
+                license_type:
+                    type: string
+                    enum: [open, invited_only]
+                    default: open
+                owner_id:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        PlaylistCreateRequest:
+            type: object
+            required:
+                - name
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                cover_url:
+                    type: string
+                    format: uri
+                    nullable: true
+                visibility:
+                    type: string
+                    enum: [public, private]
+                    default: public
+                license_type:
+                    type: string
+                    enum: [open, invited_only]
+                    default: open
+
+        PlaylistTrack:
+            type: object
+            properties:
+                id:
+                    type: string
+                playlist_id:
+                    type: string
+                track_id:
+                    type: string
+                position:
+                    type: integer
+                added_by:
+                    type: string
+                added_at:
+                    type: string
+                    format: date-time
+
+        PlaylistTrackAddRequest:
+            type: object
+            required:
+                - track_id
+            properties:
+                track_id:
+                    type: string
+                position:
+                    type: integer
+
+        PlaylistTrackMoveRequest:
+            type: object
+            required:
+                - new_position
+            properties:
+                new_position:
+                    type: integer
+
+        # Device schemas (Music Control Delegation)
+        Device:
+            type: object
+            properties:
+                id:
+                    type: string
+                user_id:
+                    type: string
+                name:
+                    type: string
+                platform:
+                    type: string
+                    example: 'iOS'
+                device_model:
+                    type: string
+                    example: 'iPhone 15'
+                app_version:
+                    type: string
+                    example: '1.0.0'
+                last_active:
+                    type: string
+                    format: date-time
+                control_delegated_to:
+                    type: string
+                    nullable: true
+
+        DeviceControlDelegateRequest:
+            type: object
+            required:
+                - device_id
+                - delegate_to_user_id
+            properties:
+                device_id:
+                    type: string
+                delegate_to_user_id:
+                    type: string
+
+        DeviceControlRevokeRequest:
+            type: object
+            required:
+                - device_id
+            properties:
+                device_id:
+                    type: string
+
+        # Pagination
+        PaginationParams:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    default: 1
+                    minimum: 1
+                limit:
+                    type: integer
+                    default: 20
+                    minimum: 1
+                    maximum: 100
+
+        PaginatedResponse:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        type: object
+                pagination:
+                    type: object
+                    properties:
+                        page:
+                            type: integer
+                        limit:
+                            type: integer
+                        total:
+                            type: integer
+                        total_pages:
+                            type: integer
 
 paths:
-  # Authentication
-  /auth/register:
-    post:
-      tags: [Authentication]
-      summary: Register a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        '201':
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-          headers:
-            Set-Cookie:
-              description: Session and CSRF cookies
-              schema:
-                type: string
-        '400':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: Email already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    # Authentication
+    /auth/register:
+        post:
+            tags: [Authentication]
+            summary: Register a new user
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterRequest'
+            responses:
+                '201':
+                    description: User created successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthResponse'
+                    headers:
+                        Set-Cookie:
+                            description: Session and CSRF cookies
+                            schema:
+                                type: string
+                '400':
+                    description: Validation error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Email already exists
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/login:
-    post:
-      tags: [Authentication]
-      summary: Login user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-          headers:
-            Set-Cookie:
-              description: Session and CSRF cookies
-              schema:
-                type: string
-        '401':
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '429':
-          description: Too many attempts
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /auth/login:
+        post:
+            tags: [Authentication]
+            summary: Login user
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequest'
+            responses:
+                '200':
+                    description: Login successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthResponse'
+                    headers:
+                        Set-Cookie:
+                            description: Session and CSRF cookies
+                            schema:
+                                type: string
+                '401':
+                    description: Invalid credentials
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '429':
+                    description: Too many attempts
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/logout:
-    post:
-      tags: [Authentication]
-      summary: Logout user
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      responses:
-        '200':
-          description: Logout successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-          headers:
-            Set-Cookie:
-              description: Cleared session and CSRF cookies
-              schema:
-                type: string
-        '403':
-          description: Invalid CSRF token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /auth/logout:
+        post:
+            tags: [Authentication]
+            summary: Logout user
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            responses:
+                '200':
+                    description: Logout successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                    headers:
+                        Set-Cookie:
+                            description: Cleared session and CSRF cookies
+                            schema:
+                                type: string
+                '403':
+                    description: Invalid CSRF token
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/password/reset:
-    post:
-      tags: [Authentication]
-      summary: Request password reset
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - mail
-              properties:
-                mail:
-                  type: string
-                  format: email
-      responses:
-        '200':
-          description: Reset email sent (if account exists)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      message:
-                        type: string
+    /auth/password/reset:
+        post:
+            tags: [Authentication]
+            summary: Request password reset
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - mail
+                            properties:
+                                mail:
+                                    type: string
+                                    format: email
+            responses:
+                '200':
+                    description: Reset email sent (if account exists)
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
 
-  /auth/password/reset/confirm:
-    post:
-      tags: [Authentication]
-      summary: Confirm password reset with code
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - mail
-                - code
-                - password
-              properties:
-                mail:
-                  type: string
-                  format: email
-                code:
-                  type: string
-                  pattern: '^\d{6}$'
-                password:
-                  type: string
-                  minLength: 8
-      responses:
-        '200':
-          description: Password reset successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-        '400':
-          description: Invalid or expired code
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /auth/password/reset/confirm:
+        post:
+            tags: [Authentication]
+            summary: Confirm password reset with code
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - mail
+                                - code
+                                - password
+                            properties:
+                                mail:
+                                    type: string
+                                    format: email
+                                code:
+                                    type: string
+                                    pattern: '^\d{6}$'
+                                password:
+                                    type: string
+                                    minLength: 8
+            responses:
+                '200':
+                    description: Password reset successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                '400':
+                    description: Invalid or expired code
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/oauth/42/callback:
-    get:
-      tags: [Authentication]
-      summary: 42 OAuth callback
-      parameters:
-        - name: code
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '302':
-          description: Redirect to frontend with session cookies
-          headers:
-            Set-Cookie:
-              description: Session and CSRF cookies
-              schema:
-                type: string
-            Location:
-              description: Frontend redirect URL
-              schema:
-                type: string
+    /auth/oauth/42/callback:
+        get:
+            tags: [Authentication]
+            summary: 42 OAuth callback
+            parameters:
+                - name: code
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '302':
+                    description: Redirect to frontend with session cookies
+                    headers:
+                        Set-Cookie:
+                            description: Session and CSRF cookies
+                            schema:
+                                type: string
+                        Location:
+                            description: Frontend redirect URL
+                            schema:
+                                type: string
 
-  # Users
-  /users/me:
-    get:
-      tags: [Users]
-      summary: Get current user profile
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: User profile
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/UserProfile'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    # Users
+    /users/me:
+        get:
+            tags: [Users]
+            summary: Get current user profile
+            security:
+                - cookieAuth: []
+            responses:
+                '200':
+                    description: User profile
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/UserProfile'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  # Deezer
-  /deezer/tracks:
-    get:
-      tags: [Deezer]
-      summary: Search tracks
-      parameters:
-        - name: q
-          in: query
-          required: true
-          schema:
-            type: string
-          description: Search query
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 25
-            minimum: 1
-            maximum: 50
-          description: Maximum results
-      responses:
-        '200':
-          description: Search results
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeezerTrackListResponse'
-        '400':
-          description: Missing query parameter
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    # Deezer
+    /deezer/tracks:
+        get:
+            tags: [Deezer]
+            summary: Search tracks
+            parameters:
+                - name: q
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: Search query
+                - name: limit
+                  in: query
+                  schema:
+                      type: integer
+                      default: 25
+                      minimum: 1
+                      maximum: 50
+                  description: Maximum results
+            responses:
+                '200':
+                    description: Search results
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeezerTrackListResponse'
+                '400':
+                    description: Missing query parameter
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /deezer/tracks/{id}:
-    get:
-      tags: [Deezer]
-      summary: Get track by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Track details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeezerTrackResponse'
-        '404':
-          description: Track not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /deezer/tracks/{id}:
+        get:
+            tags: [Deezer]
+            summary: Get track by ID
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Track details
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeezerTrackResponse'
+                '404':
+                    description: Track not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /deezer/charts:
-    get:
-      tags: [Deezer]
-      summary: Get top charts
-      parameters:
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 50
-            minimum: 1
-            maximum: 200
-      responses:
-        '200':
-          description: Chart tracks
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeezerTrackListResponse'
+    /deezer/charts:
+        get:
+            tags: [Deezer]
+            summary: Get top charts
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                      type: integer
+                      default: 50
+                      minimum: 1
+                      maximum: 200
+            responses:
+                '200':
+                    description: Chart tracks
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeezerTrackListResponse'
 
-  # Events (Music Track Vote)
-  /events:
-    get:
-      tags: [Events]
-      summary: List events (with filters)
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: visibility
-          in: query
-          schema:
-            type: string
-            enum: [public, private]
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: List of events
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Event'
-                  pagination:
-                    $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
+    # Events (Music Track Vote)
+    /events:
+        get:
+            tags: [Events]
+            summary: List events (with filters)
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: visibility
+                  in: query
+                  schema:
+                      type: string
+                      enum: [public, private]
+                - name: page
+                  in: query
+                  schema:
+                      type: integer
+                      default: 1
+                - name: limit
+                  in: query
+                  schema:
+                      type: integer
+                      default: 20
+            responses:
+                '200':
+                    description: List of events
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Event'
+                                    pagination:
+                                        $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
 
-    post:
-      tags: [Events]
-      summary: Create a new event
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventCreateRequest'
-      responses:
-        '201':
-          description: Event created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Event'
-        '400':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags: [Events]
+            summary: Create a new event
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EventCreateRequest'
+            responses:
+                '201':
+                    description: Event created
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Event'
+                '400':
+                    description: Validation error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /events/{id}:
-    get:
-      tags: [Events]
-      summary: Get event details
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Event details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Event'
-        '404':
-          description: Event not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /events/{id}:
+        get:
+            tags: [Events]
+            summary: Get event details
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Event details
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Event'
+                '404':
+                    description: Event not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-    delete:
-      tags: [Events]
-      summary: Delete event (owner only)
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Event deleted
-        '403':
-          description: Not owner
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+        delete:
+            tags: [Events]
+            summary: Delete event (owner only)
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '204':
+                    description: Event deleted
+                '403':
+                    description: Not owner
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /events/{id}/suggestions:
-    get:
-      tags: [Events]
-      summary: Get track suggestions for event
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: List of track suggestions
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TrackSuggestion'
+    /events/{id}/suggestions:
+        get:
+            tags: [Events]
+            summary: Get track suggestions for event
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: List of track suggestions
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/TrackSuggestion'
 
-    post:
-      tags: [Events]
-      summary: Suggest a track for the event
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - track_id
-              properties:
-                track_id:
-                  type: string
-      responses:
-        '201':
-          description: Track suggested
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/TrackSuggestion'
-        '403':
-          description: Not allowed to vote (license/visibility)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags: [Events]
+            summary: Suggest a track for the event
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - track_id
+                            properties:
+                                track_id:
+                                    type: string
+            responses:
+                '201':
+                    description: Track suggested
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/TrackSuggestion'
+                '403':
+                    description: Not allowed to vote (license/visibility)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /events/{id}/suggestions/{suggestionId}/vote:
-    post:
-      tags: [Events]
-      summary: Vote for a track suggestion
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: suggestionId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Vote recorded
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      votes_count:
-                        type: integer
-        '403':
-          description: Not allowed to vote
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: Already voted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /events/{id}/suggestions/{suggestionId}/vote:
+        post:
+            tags: [Events]
+            summary: Vote for a track suggestion
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: suggestionId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Vote recorded
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: object
+                                        properties:
+                                            votes_count:
+                                                type: integer
+                '403':
+                    description: Not allowed to vote
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Already voted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-    delete:
-      tags: [Events]
-      summary: Remove vote
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: suggestionId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Vote removed
+        delete:
+            tags: [Events]
+            summary: Remove vote
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: suggestionId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Vote removed
 
-  # Playlists (Music Playlist Editor)
-  /playlists:
-    get:
-      tags: [Playlists]
-      summary: List playlists
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: visibility
-          in: query
-          schema:
-            type: string
-            enum: [public, private]
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: List of playlists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Playlist'
-                  pagination:
-                    $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
+    # Playlists (Music Playlist Editor)
+    /playlists:
+        get:
+            tags: [Playlists]
+            summary: List playlists
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: visibility
+                  in: query
+                  schema:
+                      type: string
+                      enum: [public, private]
+                - name: page
+                  in: query
+                  schema:
+                      type: integer
+                      default: 1
+                - name: limit
+                  in: query
+                  schema:
+                      type: integer
+                      default: 20
+            responses:
+                '200':
+                    description: List of playlists
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Playlist'
+                                    pagination:
+                                        $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
 
-    post:
-      tags: [Playlists]
-      summary: Create a new playlist
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlaylistCreateRequest'
-      responses:
-        '201':
-          description: Playlist created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Playlist'
+        post:
+            tags: [Playlists]
+            summary: Create a new playlist
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PlaylistCreateRequest'
+            responses:
+                '201':
+                    description: Playlist created
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Playlist'
 
-  /playlists/{id}:
-    get:
-      tags: [Playlists]
-      summary: Get playlist details with tracks
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Playlist with tracks
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      playlist:
-                        $ref: '#/components/schemas/Playlist'
-                      tracks:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/PlaylistTrack'
+    /playlists/{id}:
+        get:
+            tags: [Playlists]
+            summary: Get playlist details with tracks
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Playlist with tracks
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: object
+                                        properties:
+                                            playlist:
+                                                $ref: '#/components/schemas/Playlist'
+                                            tracks:
+                                                type: array
+                                                items:
+                                                    $ref: '#/components/schemas/PlaylistTrack'
 
-    put:
-      tags: [Playlists]
-      summary: Update playlist (owner/invited with license)
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlaylistCreateRequest'
-      responses:
-        '200':
-          description: Playlist updated
-        '403':
-          description: Not allowed to edit
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+        put:
+            tags: [Playlists]
+            summary: Update playlist (owner/invited with license)
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PlaylistCreateRequest'
+            responses:
+                '200':
+                    description: Playlist updated
+                '403':
+                    description: Not allowed to edit
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-    delete:
-      tags: [Playlists]
-      summary: Delete playlist (owner only)
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Playlist deleted
+        delete:
+            tags: [Playlists]
+            summary: Delete playlist (owner only)
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '204':
+                    description: Playlist deleted
 
-  /playlists/{id}/tracks:
-    post:
-      tags: [Playlists]
-      summary: Add track to playlist
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlaylistTrackAddRequest'
-      responses:
-        '201':
-          description: Track added
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/PlaylistTrack'
-        '403':
-          description: Not allowed to edit
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: Conflict (concurrent edit)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /playlists/{id}/tracks:
+        post:
+            tags: [Playlists]
+            summary: Add track to playlist
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PlaylistTrackAddRequest'
+            responses:
+                '201':
+                    description: Track added
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/PlaylistTrack'
+                '403':
+                    description: Not allowed to edit
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Conflict (concurrent edit)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /playlists/{id}/tracks/{trackId}:
-    put:
-      tags: [Playlists]
-      summary: Move track in playlist
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: trackId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlaylistTrackMoveRequest'
-      responses:
-        '200':
-          description: Track moved
-        '403':
-          description: Not allowed to edit
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: Conflict (concurrent edit)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /playlists/{id}/tracks/{trackId}:
+        put:
+            tags: [Playlists]
+            summary: Move track in playlist
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: trackId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PlaylistTrackMoveRequest'
+            responses:
+                '200':
+                    description: Track moved
+                '403':
+                    description: Not allowed to edit
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Conflict (concurrent edit)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-    delete:
-      tags: [Playlists]
-      summary: Remove track from playlist
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: trackId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Track removed
+        delete:
+            tags: [Playlists]
+            summary: Remove track from playlist
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: trackId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '204':
+                    description: Track removed
 
-  # Devices (Music Control Delegation)
-  /devices:
-    get:
-      tags: [Devices]
-      summary: List user's devices
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: List of devices
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Device'
+    # Devices (Music Control Delegation)
+    /devices:
+        get:
+            tags: [Devices]
+            summary: List user's devices
+            security:
+                - cookieAuth: []
+            responses:
+                '200':
+                    description: List of devices
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Device'
 
-    post:
-      tags: [Devices]
-      summary: Register a new device
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - platform
-                - device_model
-                - app_version
-              properties:
-                name:
-                  type: string
-                platform:
-                  type: string
-                device_model:
-                  type: string
-                app_version:
-                  type: string
-      responses:
-        '201':
-          description: Device registered
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Device'
+        post:
+            tags: [Devices]
+            summary: Register a new device
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - name
+                                - platform
+                                - device_model
+                                - app_version
+                            properties:
+                                name:
+                                    type: string
+                                platform:
+                                    type: string
+                                device_model:
+                                    type: string
+                                app_version:
+                                    type: string
+            responses:
+                '201':
+                    description: Device registered
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Device'
 
-  /devices/{id}/delegate:
-    post:
-      tags: [Devices]
-      summary: Delegate control of device to another user
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceControlDelegateRequest'
-      responses:
-        '200':
-          description: Control delegated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Device'
-        '403':
-          description: Not device owner
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /devices/{id}/delegate:
+        post:
+            tags: [Devices]
+            summary: Delegate control of device to another user
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DeviceControlDelegateRequest'
+            responses:
+                '200':
+                    description: Control delegated
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Device'
+                '403':
+                    description: Not device owner
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /devices/{id}/revoke:
-    post:
-      tags: [Devices]
-      summary: Revoke control delegation
-      security:
-        - cookieAuth: []
-        - csrfAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Delegation revoked
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Device'
-        '403':
-          description: Not device owner
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /devices/{id}/revoke:
+        post:
+            tags: [Devices]
+            summary: Revoke control delegation
+            security:
+                - cookieAuth: []
+                - csrfAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Delegation revoked
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        $ref: '#/components/schemas/Device'
+                '403':
+                    description: Not device owner
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'

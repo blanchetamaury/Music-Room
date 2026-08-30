@@ -72,10 +72,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 		await storage.setItem('session', token);
 		setToken(token);
-		
+
 		const res = await axios.get(`${API_URL}/user/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-    	});
+			headers: { Authorization: `Bearer ${token}` },
+		});
 		setUser(res.data.user);
 	};
 
@@ -87,8 +87,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		setToken(token);
 
 		const res = await axios.get(`${API_URL}/user/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-    	});
+			headers: { Authorization: `Bearer ${token}` },
+		});
 		setUser(res.data.user);
 	};
 
