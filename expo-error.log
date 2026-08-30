@@ -1,0 +1,13 @@
+Starting project at /home/nicolas/Documents/42projects/post-CC/Music-Room
+PluginError: Failed to resolve plugin for module "expo-router" relative to "/home/nicolas/Documents/42projects/post-CC/Music-Room". Do you have node modules installed?
+PluginError: Failed to resolve plugin for module "expo-router" relative to "/home/nicolas/Documents/42projects/post-CC/Music-Room". Do you have node modules installed?
+    at resolvePluginForModule (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/utils/plugin-resolver.js:84:9)
+    at resolveConfigPluginFunctionWithInfo (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/utils/plugin-resolver.js:133:7)
+    at resolveConfigPluginFunction (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/utils/plugin-resolver.js:124:7)
+    at withStaticPlugin (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/plugins/withStaticPlugin.js:83:70)
+    at /home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/plugins/withPlugins.js:28:84
+    at Array.reduce (<anonymous>)
+    at withPlugins (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config-plugins/build/plugins/withPlugins.js:28:18)
+    at withConfigPlugins (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config/build/plugins/withConfigPlugins.js:33:47)
+    at fillAndReturnConfig (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config/build/Config.js:247:78)
+    at getConfig (/home/nicolas/Documents/42projects/post-CC/Music-Room/node_modules/@expo/config/build/Config.js:304:10)
