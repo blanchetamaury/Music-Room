@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-	Modal,
-	Pressable,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
 interface PopupProps {
 	children: React.ReactNode;
@@ -22,14 +17,9 @@ export function Popup({ children, onClose }: PopupProps) {
 			navigationBarTranslucent
 		>
 			<View style={styles.overlay}>
-				<Pressable
-					style={StyleSheet.absoluteFill}
-					onPress={onClose}
-				/>
+				<Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
 
-				<View style={styles.content}>
-					{children}
-				</View>
+				<View style={styles.content}>{children}</View>
 			</View>
 		</Modal>
 	);
@@ -50,6 +40,6 @@ const styles = StyleSheet.create({
 		borderRadius: 24,
 		backgroundColor: '#151822',
 		overflow: 'hidden',
-		maxHeight: "80%",
+		maxHeight: '80%',
 	},
 });

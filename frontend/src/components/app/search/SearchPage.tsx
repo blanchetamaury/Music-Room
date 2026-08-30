@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 
 import { api } from '@/src/lib/api/client';
-import { DeezerTrack } from '@/src/types/deezer/deezer';
 import { setTracks } from '@/src/utils/debug';
-
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
@@ -13,6 +11,7 @@ import { SeparatorFull } from '../../ui/separator';
 import { homeStyles } from '../home.styles';
 
 import { useAuth } from '@/src/context/AuthContext';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { Like } from '@/src/types/user/like';
 import { Heart } from 'lucide-react-native';
 import { AlbumProfileMobile } from './AlbumProfileMobile';
@@ -44,13 +43,13 @@ const searchPlaylists = [
 
 interface SearchPageProps {
 	onNavigateHome?: (playlistId: number) => void;
-	onPlayTrack?: (track: DeezerTrack) => void;
+	onPlayTrack?: (track: OutputTrackDeezer) => void;
 }
 
 type PopupState =
 	| {
 			type: 'song';
-			song: DeezerTrack;
+			song: OutputTrackDeezer;
 	  }
 	| {
 			type: 'artist';
@@ -66,33 +65,28 @@ type PopupState =
 	  }
 	| null;
 
-export function SearchPage({
-	onNavigateHome,
-	onPlayTrack,
-}: SearchPageProps) {
+export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 	const [query, setQuery] = useState('');
-	const [tracks, setTracksState] = useState<DeezerTrack[]>([]);
+	const [tracks, setTracksState] = useState<OutputTrackDeezer[]>([]);
 	const [tracksLoading, setTracksLoading] = useState(true);
 	const [popup, setPopup] = useState<PopupState>(null);
-	const [ urlImage, setUrlImage ] = useState<string>('');
-	const [ visibilityPlaylist, setVisibilityPlaylist ] = useState<boolean>(false);
-	const [ playlistName, setPlaylistName ] = useState<string>('');
-	const [ playlistDescription, setPlaylistDescription ] = useState<string>('');
+	const [urlImage, setUrlImage] = useState<string>('');
+	const [visibilityPlaylist, setVisibilityPlaylist] = useState<boolean>(false);
+	const [playlistName, setPlaylistName] = useState<string>('');
+	const [playlistDescription, setPlaylistDescription] = useState<string>('');
 	const { token } = useAuth();
+	const [likes, setLikes] = useState<Like[]>();
+	const [newLike, setNewLike] = useState<boolean>(false);
 
-	const [ likes, setLikes ] = useState<Like[]>();
-	const [ newLike, setNewLike ] = useState<boolean>(false);
-	
 	useEffect(() => {
 		const listLike = async () => {
 			const value = await api.user.like.likes(token ?? '');
-			if (value.data)
-				setLikes(value.data.likes);
+			if (value.data) setLikes(value.data);
 			setNewLike(false);
-		}
+		};
 
 		listLike();
-	}, [newLike]);
+	}, [newLike, token]);
 
 	useEffect(() => {
 		const timeout = setTimeout(async () => {
@@ -101,7 +95,7 @@ export function SearchPage({
 
 				const value = query.trim();
 
-				let data: ApiResponse<DeezerTrack[]>;
+				let data: ApiResponse<OutputTrackDeezer[]>;
 
 				if (value.length < 2) {
 					data = await api.deezer.music.top_music(50);
@@ -109,28 +103,16 @@ export function SearchPage({
 					data = await api.deezer.search(value, 20);
 				}
 
-				const list = Array.isArray(data.data)
-					? data.data
-					: (data.data as any)?.data;
-
-				if (!Array.isArray(list)) {
+				if (!data.data) {
 					setTracksState([]);
 					setTracks([]);
 					return;
 				}
 
-				const validTracks = list.filter(
-					(track: DeezerTrack) =>
-						typeof track.album?.cover === 'string',
-				);
-
-				setTracksState(validTracks);
-				setTracks(validTracks);
+				setTracksState(data.data);
+				setTracks(data.data);
 			} catch (error) {
-				console.error(
-					'[SearchPage] search failed',
-					error,
-				);
+				console.error('[SearchPage] search failed', error);
 			} finally {
 				setTracksLoading(false);
 			}
@@ -140,13 +122,19 @@ export function SearchPage({
 	}, [query]);
 
 	const addPlaylistToDb = async () => {
-		const data = await api.user.playlist(playlistName, urlImage, playlistDescription, visibilityPlaylist, token ?? '');
+		const data = await api.user.playlist(
+			playlistName,
+			urlImage,
+			playlistDescription,
+			visibilityPlaylist,
+			token ?? ''
+		);
 		if (data.success) {
 			setUrlImage('');
 			setPlaylistName('');
 			setPlaylistDescription('');
 		}
-	}
+	};
 
 	return (
 		<View style={styles.searchRoot}>
@@ -183,16 +171,19 @@ export function SearchPage({
 
 				<SeparatorFull />
 
-				
 				<View style={{ display: 'flex', flexDirection: 'row', gap: 20 }}>
 					<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
-					<Pressable style={ homeStyles.sectionTitle} 
+					<Pressable
+						style={homeStyles.sectionTitle}
 						onPress={() =>
 							setPopup({
 								type: 'addPlaylist',
 								id: '',
 							})
-						}><ThemedText style={homeStyles.sectionTitle}>ADD playlists</ThemedText></Pressable>
+						}
+					>
+						<ThemedText style={homeStyles.sectionTitle}>ADD playlists</ThemedText>
+					</Pressable>
 				</View>
 				<View style={styles.playlistContainer}>
 					<ScrollView
@@ -201,17 +192,27 @@ export function SearchPage({
 						bounces={false}
 						contentContainerStyle={styles.playlistContent}
 					>
-						{ likes != undefined && 
+						{likes != undefined && (
 							<View style={styles.playlistItem}>
-								<PlaylistDisplay title='Likes' size={likes.length} backgroundColorCover='#2825c98a'>
+								<PlaylistDisplay title="Likes" size={likes.length} backgroundColorCover="#2825c98a">
 									<Heart color={'#fff'} fill={'#fff'}></Heart>
 								</PlaylistDisplay>
 							</View>
-						}
+						)}
 						{searchPlaylists.map((playlist) => (
 							<View key={playlist.id} style={styles.playlistItem}>
-								<PlaylistDisplay id={playlist.id}  title={playlist.title} size={playlist.songs} backgroundColorCover='#24961594'>
-									<Image style={{ height: 64, width: 64, borderRadius: 12}} source={{ uri: 'https://imgs.search.brave.com/4CpRl9vd35aqG2dfWnXw7AK-iwHm-ujHdbuXbpDffcI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/NDA5NzkzODg3ODkt/NmNlZTI4YTFjZGM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZhdXRv/PWZvcm1hdCZmaXQ9/Y3JvcCZpeGxpYj1y/Yi00LjEuMCZpeGlk/PU0zd3hNakEzZkRC/OE1IeHpaV0Z5WTJo/OE1USjhmRzF2Ym5S/aFoyNWxjM3hsYm53/d2ZId3dmSHg4TUE9/PQ' }} ></Image>
+								<PlaylistDisplay
+									id={playlist.id}
+									title={playlist.title}
+									size={playlist.songs}
+									backgroundColorCover="#24961594"
+								>
+									<Image
+										style={{ height: 64, width: 64, borderRadius: 12 }}
+										source={{
+											uri: 'https://imgs.search.brave.com/4CpRl9vd35aqG2dfWnXw7AK-iwHm-ujHdbuXbpDffcI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/NDA5NzkzODg3ODkt/NmNlZTI4YTFjZGM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZhdXRv/PWZvcm1hdCZmaXQ9/Y3JvcCZpeGxpYj1y/Yi00LjEuMCZpeGlk/PU0zd3hNakEzZkRC/OE1IeHpaV0Z5WTJo/OE1USjhmRzF2Ym5S/aFoyNWxjM3hsYm53/d2ZId3dmSHg4TUE9/PQ',
+										}}
+									></Image>
 								</PlaylistDisplay>
 							</View>
 						))}
@@ -220,37 +221,26 @@ export function SearchPage({
 
 				<SeparatorFull />
 
-				<ThemedText style={homeStyles.sectionTitle}>
-					Songs
-				</ThemedText>
+				<ThemedText style={homeStyles.sectionTitle}>Songs</ThemedText>
 
 				<View style={styles.songSection}>
 					<View style={styles.songListShell}>
 						{tracksLoading ? (
 							<View style={styles.loadingContainer}>
-								<ActivityIndicator
-									size="small"
-									color="rgba(255,255,255,0.7)"
-								/>
+								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
 
-								<ThemedText
-									style={styles.loadingText}
-								>
-									Loading songs...
-								</ThemedText>
+								<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
 							</View>
 						) : (
 							<ScrollView
 								style={styles.songListScroll}
-								contentContainerStyle={
-									styles.songListContent
-								}
+								contentContainerStyle={styles.songListContent}
 								showsVerticalScrollIndicator={false}
 								bounces
 							>
 								{tracks.map((song, index) => (
 									<SongDisplayMobile
-										key={`${song.deezerCUID}-${song.albumId}-${index}`}
+										key={`${song.deezerCUID}-${song.deezerCUID}-${index}`}
 										song={song}
 										onPress={() =>
 											setPopup({
@@ -265,11 +255,7 @@ export function SearchPage({
 						)}
 
 						<LinearGradient
-							colors={[
-								'rgba(10,12,18,0.95)',
-								'rgba(10,12,18,0.4)',
-								'transparent',
-							]}
+							colors={['rgba(10,12,18,0.95)', 'rgba(10,12,18,0.4)', 'transparent']}
 							locations={[0, 0.45, 1]}
 							style={styles.songListFade}
 							pointerEvents="none"

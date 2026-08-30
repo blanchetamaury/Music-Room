@@ -4,28 +4,11 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { api } from '../../lib/api/client';
 import DotGrid from './DotGrid';
 import { MusicPreview } from './MusicPreview';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 function rnd(min: number, max: number) {
 	return Math.random() * (max - min) + min;
 }
-
-type DeezerTrack = {
-	id: string | number;
-	title: string;
-
-	artist: {
-		id: string | number;
-		name: string;
-		picture_medium?: string;
-	};
-
-	album: {
-		id: string | number;
-		title: string;
-		cover_medium?: string;
-		cover_big?: string;
-	};
-};
 
 type AnimationConfig = {
 	startX: number;
@@ -78,7 +61,7 @@ function makeAnimationConfig(width: number, height: number): AnimationConfig {
 const AuthBackground = memo(function AuthBackground() {
 	const { width, height } = useWindowDimensions();
 
-	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
+	const [tracks, setTracks] = useState<OutputTrackDeezer[]>([]);
 
 	const [imagesReady, setImagesReady] = useState(false);
 
@@ -115,7 +98,9 @@ const AuthBackground = memo(function AuthBackground() {
 					return;
 				}
 
-				const validTracks = list.filter((track: DeezerTrack) => typeof track.album?.cover_medium === 'string');
+				const validTracks = list.filter(
+					(track: OutputTrackDeezer) => typeof track.album.CoverMedium === 'string'
+				);
 
 				setTracks(validTracks);
 			} catch (error) {
@@ -142,7 +127,7 @@ const AuthBackground = memo(function AuthBackground() {
 				const covers = [
 					...new Set(
 						tracks
-							.map((track) => track.album?.cover_medium)
+							.map((track) => track.album.CoverMedium ?? '')
 							.filter((url): url is string => typeof url === 'string' && url.length > 0)
 					),
 				];
@@ -184,8 +169,8 @@ const AuthBackground = memo(function AuthBackground() {
 						key={`anim-${index}`}
 						color={config.color}
 						title={track.title}
-						artist={track.artist?.name ?? 'Unknown'}
-						cover={track.album?.cover_medium}
+						artist={track.artist[0].name ?? 'Unknown'}
+						cover={track.album.CoverMedium ?? ''}
 						animationConfig={config}
 						tracks={tracks}
 					/>

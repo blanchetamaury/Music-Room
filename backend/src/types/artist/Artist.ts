@@ -1,4 +1,4 @@
-export interface CreateOrUpdateArtist {	
+export interface CreateOrUpdateArtist {
 	deezerCUID: string;
 	name: string;
 	pictureSmall: string | null;

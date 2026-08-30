@@ -9,12 +9,9 @@ import {
 
 import { api } from '@/src/lib/api/client';
 import { outputAPITrack } from '@/src/types/album/album';
-import { DeezerAlbum, DeezerTrack } from '@/src/types/deezer/deezer';
-import {
-	setTracks as setDebugTracks,
-	setProfile,
-} from '@/src/utils/debug';
-
+import { DeezerAlbum } from '@/src/types/deezer/deezer';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
@@ -23,7 +20,7 @@ import { styles } from './AlbumProfileMobileStyle';
 interface AlbumProfileProps {
 	id: string;
 	onArtistPress?: (artistId: string) => void;
-	onSongPress?: (song: DeezerTrack) => void;
+	onSongPress?: (song: OutputTrackDeezer) => void;
 }
 
 const DEBUG = false;
@@ -40,11 +37,7 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function AlbumProfileMobile({
-	id,
-	onArtistPress,
-	onSongPress,
-}: AlbumProfileProps) {
+export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProfileProps) {
 	const [album, setAlbum] = useState<DeezerAlbum | null>(null);
 	const [tracks, setTracks] = useState<outputAPITrack[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -59,23 +52,10 @@ export function AlbumProfileMobile({
 				setError(null);
 
 				const response = await api.deezer.album.album(id);
-
-				console.log(
-					'[AlbumProfileMobile] response:',
-					JSON.stringify(response, null, 2),
-				);
-
-				const albumData = response?.data?.albumRes;
+				const albumData = response?.data;
 
 				if (!albumData) {
-					console.warn(
-						'[AlbumProfileMobile] No album returned',
-					);
-
-					if (isMounted) {
-						setError('No album returned');
-					}
-
+					if (isMounted) setError('No album returned');
 					return;
 				}
 
@@ -86,16 +66,6 @@ export function AlbumProfileMobile({
 					return a.trackPosition - b.trackPosition;
 				});
 
-				console.log(
-					'[AlbumProfileMobile] album:',
-					JSON.stringify(albumData, null, 2),
-				);
-
-				console.log(
-					'[AlbumProfileMobile] tracks:',
-					JSON.stringify(albumTracks, null, 2),
-				);
-
 				if (isMounted) {
 					setAlbum(albumData);
 					setTracks(albumTracks);
@@ -104,11 +74,7 @@ export function AlbumProfileMobile({
 				setDebugTracks(albumTracks);
 				setProfile(albumData);
 			} catch (error) {
-				console.error(
-					'[AlbumProfileMobile] failed to fetch album:',
-					error,
-				);
-
+				error = null;
 				if (isMounted) {
 					setError('Failed to load album');
 				}
@@ -128,39 +94,21 @@ export function AlbumProfileMobile({
 
 	if (loading) {
 		return (
-			<View
-				style={[
-					styles.loadingContainer,
-					debugBox('#ff0000'),
-				]}
-			>
-				<ThemedText style={styles.loading}>
-					Chargement...
-				</ThemedText>
+			<View style={[styles.loadingContainer, debugBox('#ff0000')]}>
+				<ThemedText style={styles.loading}>Chargement...</ThemedText>
 			</View>
 		);
 	}
 
 	if (error || !album) {
 		return (
-			<View
-				style={[
-					styles.loadingContainer,
-					debugBox('#ff0000'),
-				]}
-			>
-				<ThemedText>
-					{error ?? 'Aucune donnée'}
-				</ThemedText>
+			<View style={[styles.loadingContainer, debugBox('#ff0000')]}>
+				<ThemedText>{error ?? 'Aucune donnée'}</ThemedText>
 			</View>
 		);
 	}
 
-	const cover =
-		album.coverMedium ??
-		album.coverBig ??
-		album.cover ??
-		null;
+	const cover = album.coverMedium ?? album.coverBig ?? album.cover ?? null;
 
 	const releaseDate = tracks[0]?.releaseDate;
 	const albumArtist = getAlbumArtist(album, tracks);
@@ -168,40 +116,13 @@ export function AlbumProfileMobile({
 	console.log("[AlbumProfileMobile] albumArtis: ", JSON.stringify(albumArtist));
 
 	return (
-		<View
-			style={[
-				styles.container,
-				debugBox('#ff0000'),
-			]}
-		>
-			<View
-				style={[
-					styles.albumHeader,
-					debugBox('#ff8800'),
-				]}
-			>
-				<View
-					style={[
-						styles.coverContainer,
-						debugBox('#00ff00'),
-					]}
-				>
+		<View style={[styles.container, debugBox('#ff0000')]}>
+			<View style={[styles.albumHeader, debugBox('#ff8800')]}>
+				<View style={[styles.coverContainer, debugBox('#00ff00')]}>
 					{cover ? (
-						<Image
-							source={{ uri: cover }}
-							resizeMode="cover"
-							style={[
-								styles.cover,
-								debugBox('#00ffff'),
-							]}
-						/>
+						<Image source={{ uri: cover }} resizeMode="cover" style={[styles.cover, debugBox('#00ffff')]} />
 					) : (
-						<View
-							style={[
-								styles.coverPlaceholder,
-								debugBox('#ffffff'),
-							]}
-						/>
+						<View style={[styles.coverPlaceholder, debugBox('#ffffff')]} />
 					)}
 				</View>
 
@@ -222,69 +143,34 @@ export function AlbumProfileMobile({
 								debugBox('#ffef08'),
 							]}
 							onPress={() => {
-								onArtistPress?.(
-									String(
-										albumArtist.deezerCUID ??
-											albumArtist.id ??
-											'',
-									),
-								);
+								onArtistPress?.(String(albumArtist.deezerCUID ?? albumArtist.id ?? ''));
 							}}
 						>
 							{"Need to fix"}
 						</HoverText>
 					)}
 
-					<View
-						style={[
-							styles.albumStats,
-							debugBox('#ff00ff'),
-						]}
-					>
-						{album.fans != null && (
-							<InfoItem>
-								{album.fans.toLocaleString()} fans
-							</InfoItem>
-						)}
+					<View style={[styles.albumStats, debugBox('#ff00ff')]}>
+						{album.fans != null && <InfoItem>{album.fans.toLocaleString()} fans</InfoItem>}
 
-						{album.duration != null && (
-							<InfoItem icon>
-								{formatDuration(album.duration)}
-							</InfoItem>
-						)}
+						{album.duration != null && <InfoItem icon>{formatDuration(album.duration)}</InfoItem>}
 
-						{album.recordType && (
-							<InfoItem>
-								{formatRecordType(album.recordType)}
-							</InfoItem>
-						)}
+						{album.recordType && <InfoItem>{formatRecordType(album.recordType)}</InfoItem>}
 					</View>
 				</View>
 			</View>
 
 			<SeparatorFull />
 
-			<View
-				style={[
-					styles.trackHeader,
-					debugBox('#0088ff'),
-				]}
-			>
-				<ThemedText style={styles.trackTitle}>
-					Tracks
-				</ThemedText>
+			<View style={[styles.trackHeader, debugBox('#0088ff')]}>
+				<ThemedText style={styles.trackTitle}>Tracks</ThemedText>
 
-				<ThemedText style={styles.trackCount}>
-					{tracks.length}
-				</ThemedText>
+				<ThemedText style={styles.trackCount}>{tracks.length}</ThemedText>
 			</View>
 
 			<ScrollView
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={[
-					styles.trackList,
-					debugBox('#00ff88'),
-				]}
+				contentContainerStyle={[styles.trackList, debugBox('#00ff88')]}
 			>
 				{tracks.map((track, index) => (
 					<AlbumTrack
@@ -292,9 +178,7 @@ export function AlbumProfileMobile({
 						track={track}
 						index={index}
 						onPress={() => {
-							onSongPress?.(
-								track as unknown as DeezerTrack,
-							);
+							onSongPress?.(track as unknown as OutputTrackDeezer);
 						}}
 					/>
 				))}
@@ -302,44 +186,20 @@ export function AlbumProfileMobile({
 
 			<SeparatorFull />
 
-			<View
-				style={[
-					styles.footer,
-					debugBox('#ff00ff'),
-				]}
-			>
+			<View style={[styles.footer, debugBox('#ff00ff')]}>
 				{releaseDate && (
-					<View
-						style={[
-							styles.footerItem,
-							debugBox('#ff8800'),
-						]}
-					>
-						<ThemedText style={styles.footerLabel}>
-							Sortie
-						</ThemedText>
+					<View style={[styles.footerItem, debugBox('#ff8800')]}>
+						<ThemedText style={styles.footerLabel}>Sortie</ThemedText>
 
-						<ThemedText style={styles.footerValue}>
-							{formatDate(releaseDate.toString())}
-						</ThemedText>
+						<ThemedText style={styles.footerValue}>{formatDate(releaseDate.toString())}</ThemedText>
 					</View>
 				)}
 
 				{album.label && (
-					<View
-						style={[
-							styles.footerItem,
-							debugBox('#00ffff'),
-						]}
-					>
-						<ThemedText style={styles.footerLabel}>
-							Label
-						</ThemedText>
+					<View style={[styles.footerItem, debugBox('#00ffff')]}>
+						<ThemedText style={styles.footerLabel}>Label</ThemedText>
 
-						<ThemedText
-							style={styles.footerValue}
-							numberOfLines={1}
-						>
+						<ThemedText style={styles.footerValue} numberOfLines={1}>
 							{album.label}
 						</ThemedText>
 					</View>
@@ -349,103 +209,42 @@ export function AlbumProfileMobile({
 	);
 }
 
-function AlbumTrack({
-	track,
-	index,
-	onPress,
-}: {
-	track: outputAPITrack;
-	index: number;
-	onPress: () => void;
-}) {
+function AlbumTrack({ track, index, onPress }: { track: outputAPITrack; index: number; onPress: () => void }) {
 	return (
-		<Pressable
-			style={[
-				styles.track,
-				debugBox('#ff8800'),
-			]}
-			onPress={onPress}
-		>
-			<View
-				style={[
-					styles.trackPositionContainer,
-					debugBox('#00ffff'),
-				]}
-			>
-				<ThemedText style={styles.trackPosition}>
-					{track.trackPosition ?? index + 1}
-				</ThemedText>
+		<Pressable style={[styles.track, debugBox('#ff8800')]} onPress={onPress}>
+			<View style={[styles.trackPositionContainer, debugBox('#00ffff')]}>
+				<ThemedText style={styles.trackPosition}>{track.trackPosition ?? index + 1}</ThemedText>
 			</View>
 
-			<View
-				style={[
-					styles.trackInfo,
-					debugBox('#ffff00'),
-				]}
-			>
-				<ThemedText
-					style={styles.trackName}
-					numberOfLines={1}
-				>
+			<View style={[styles.trackInfo, debugBox('#ffff00')]}>
+				<ThemedText style={styles.trackName} numberOfLines={1}>
 					{track.title}
 				</ThemedText>
 			</View>
 
-			<View
-				style={[
-					styles.trackDuration,
-					debugBox('#ff00ff'),
-				]}
-			>
-				<ThemedText style={styles.trackDurationText}>
-					{formatDuration(track.duration)}
-				</ThemedText>
+			<View style={[styles.trackDuration, debugBox('#ff00ff')]}>
+				<ThemedText style={styles.trackDurationText}>{formatDuration(track.duration)}</ThemedText>
 			</View>
 		</Pressable>
 	);
 }
 
-function InfoItem({
-	children,
-	icon = false,
-}: {
-	children: React.ReactNode;
-	icon?: boolean;
-}) {
+function InfoItem({ children, icon = false }: { children: React.ReactNode; icon?: boolean }) {
 	return (
-		<View
-			style={[
-				styles.infoItem,
-				debugBox('#00ff88'),
-			]}
-		>
-			{icon && (
-				<Clock3
-					size={14}
-					color="rgba(255,255,255,0.5)"
-				/>
-			)}
+		<View style={[styles.infoItem, debugBox('#00ff88')]}>
+			{icon && <Clock3 size={14} color="rgba(255,255,255,0.5)" />}
 
-			<ThemedText style={styles.infoText}>
-				{children}
-			</ThemedText>
+			<ThemedText style={styles.infoText}>{children}</ThemedText>
 		</View>
 	);
 }
 
-function ScrollingTitle({
-	title,
-}: {
-	title: string;
-}) {
+function ScrollingTitle({ title }: { title: string }) {
 	const scrollRef = useRef<ScrollView>(null);
 	const [contentWidth, setContentWidth] = useState(0);
 	const [containerWidth, setContainerWidth] = useState(0);
 
-	const isOverflowing =
-		contentWidth > 0 &&
-		containerWidth > 0 &&
-		contentWidth > containerWidth;
+	const isOverflowing = contentWidth > 0 && containerWidth > 0 && contentWidth > containerWidth;
 
 	useEffect(() => {
 		if (!isOverflowing) {
@@ -489,14 +288,9 @@ function ScrollingTitle({
 
 	return (
 		<View
-			style={[
-				styles.titleWrapper,
-				debugBox('#ff0000'),
-			]}
+			style={[styles.titleWrapper, debugBox('#ff0000')]}
 			onLayout={(event) => {
-				setContainerWidth(
-					event.nativeEvent.layout.width,
-				);
+				setContainerWidth(event.nativeEvent.layout.width);
 			}}
 		>
 			<ScrollView
@@ -504,42 +298,22 @@ function ScrollingTitle({
 				horizontal
 				scrollEnabled={false}
 				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={[
-					styles.titleScrollContent,
-					!isOverflowing &&
-						styles.titleScrollCentered,
-				]}
+				contentContainerStyle={[styles.titleScrollContent, !isOverflowing && styles.titleScrollCentered]}
 			>
 				<View
 					style={styles.titleContent}
 					onLayout={(event) => {
-						setContentWidth(
-							event.nativeEvent.layout.width,
-						);
+						setContentWidth(event.nativeEvent.layout.width);
 					}}
 				>
-					<ThemedText
-						style={[
-							styles.albumTitle,
-							debugBox('#ffff00'),
-						]}
-						numberOfLines={1}
-					>
+					<ThemedText style={[styles.albumTitle, debugBox('#ffff00')]} numberOfLines={1}>
 						{title}
 					</ThemedText>
 				</View>
 
 				{isOverflowing && (
-					<View
-						style={[
-							styles.titleDuplicate,
-							debugBox('#00ff00'),
-						]}
-					>
-						<ThemedText
-							style={styles.albumTitle}
-							numberOfLines={1}
-						>
+					<View style={[styles.titleDuplicate, debugBox('#00ff00')]}>
+						<ThemedText style={styles.albumTitle} numberOfLines={1}>
 							{title}
 						</ThemedText>
 					</View>
@@ -632,7 +406,5 @@ function formatDuration(duration?: string | number) {
 	const minutes = Math.floor(totalSeconds / 60);
 	const seconds = Math.floor(totalSeconds % 60);
 
-	return `${minutes}:${seconds
-		.toString()
-		.padStart(2, '0')}`;
+	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }

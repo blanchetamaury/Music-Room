@@ -5,42 +5,39 @@ import { getFortyTwoMe, getFortyTwoOauthToken } from '../../../oauth/fortytwo';
 import { errorHandler } from '../../../utils/error';
 
 export async function GET(request: Request): Promise<Response> {
-    return errorHandler(async () => {
-        const url = new URL(request.url);
-        const code = url.searchParams.get('code');
-        if (code === null) {
-            return Response.redirect(new URL('/', request.url).toString(), 302);
-        }
+	return errorHandler(async () => {
+		const url = new URL(request.url);
+		const code = url.searchParams.get('code');
+		if (code === null) {
+			return Response.redirect(new URL('/', request.url).toString(), 302);
+		}
 
-        const authorization = await getFortyTwoOauthToken(code);
-        const me = await getFortyTwoMe(authorization.access_token);
-        const user = await createOrUpdateFortyTwoUser(me, authorization);
+		const authorization = await getFortyTwoOauthToken(code);
+		const me = await getFortyTwoMe(authorization.access_token);
+		const user = await createOrUpdateFortyTwoUser(me, authorization);
 
-        const session = await createSession({ user_id: user.id });
-        const { cookie: csrfCookie } = createCsrfCookie();
+		const session = await createSession({ user_id: user.id });
+		const { cookie: csrfCookie } = createCsrfCookie();
 
-        const clientUrl = process.env.CLIENT_URL || 'http://localhost:8081';
+		const clientUrl = process.env.CLIENT_URL || 'http://localhost:8081';
 
-        const redirectUrl = `${clientUrl}/oauth-callback?token=${encodeURIComponent(session.body)}`;
+		const redirectUrl = `${clientUrl}/oauth-callback?token=${encodeURIComponent(session.body)}`;
 
-        const headers = new Headers();
-        headers.append('Location', redirectUrl);
-        headers.append('Set-Cookie', csrfCookie);
-        headers.append(
-            'Set-Cookie',
-            `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`
-        );
-        
-        return new Response(
-            JSON.stringify({
-                success: true,
-                token: session.body,
-                user: { id: user.id, email: user.email, username: user.username },
-            }),
-            {
-                status: 302,
-                headers,
-            }
-        );
-    });
+		const headers = new Headers();
+		headers.append('Location', redirectUrl);
+		headers.append('Set-Cookie', csrfCookie);
+		headers.append('Set-Cookie', `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`);
+
+		return new Response(
+			JSON.stringify({
+				success: true,
+				token: session.body,
+				user: { id: user.id, email: user.email, username: user.username },
+			}),
+			{
+				status: 302,
+				headers,
+			}
+		);
+	});
 }

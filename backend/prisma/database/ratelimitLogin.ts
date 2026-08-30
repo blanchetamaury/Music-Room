@@ -1,5 +1,5 @@
-import { Prisma } from "../generated/client";
-import { prisma } from "./prisma";
+import { Prisma } from '../generated/client';
+import { prisma } from './prisma';
 
 const createRateLimitLogin = async (
 	user_id: string,
