@@ -259,6 +259,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 											})
 										}
 										onLike={setNewLike}
+										playlists={playlists}
 									/>
 								))}
 							</ScrollView>

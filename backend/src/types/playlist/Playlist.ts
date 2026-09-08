@@ -5,6 +5,11 @@ export interface CreatePlaylist {
 	private: boolean;
 }
 
+export interface AddMusicToPlaylist {
+	playlistName: string;
+	trackId: string;
+}
+
 export interface OutputPlaylist {
 	name: string;
 	cover: string;

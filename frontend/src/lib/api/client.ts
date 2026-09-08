@@ -45,7 +45,7 @@ export const api = {
 		},
 		playlist: {
 			create: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
-				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/add`, {
+				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/create`, {
 					method: 'POST',
 					body: JSON.stringify({
 						name: name,
@@ -58,6 +58,16 @@ export const api = {
 			},
 			playlists: (token: string) => {
 				return fetchApi<PlaylistOutput[]>(`/user/playlist/playlists`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
+			addMusic: (token: string, playlistName: string, trackId: string) => {
+				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/addMusic`, {
+					method: 'POST',
+					body: JSON.stringify({
+						playlistName: playlistName,
+						trackId: trackId,
+					}),
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			}
