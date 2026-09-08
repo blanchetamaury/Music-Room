@@ -60,4 +60,16 @@ const removeMusictoPlaylist = async (
 	});
 };
 
-export { createOrUpdatePlaylist, addMusictoPlaylist, removeMusictoPlaylist };
+const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
+	ownerId: string,
+	include: T,
+): Promise<Prisma.PlaylistGetPayload<{ include : T }>[]> => {
+	return prisma.playlist.findMany({
+		include: include,
+		where: {
+			ownerId: ownerId,
+		},
+	});
+};
+
+export { createOrUpdatePlaylist, addMusictoPlaylist, removeMusictoPlaylist, getPlaylists };

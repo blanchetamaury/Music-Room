@@ -6,6 +6,7 @@ import { Like } from '@/src/types/user/like';
 import { auth } from './auth';
 import { Track } from '@/src/types/track/track';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
 	const url = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
@@ -42,18 +43,25 @@ export const api = {
 		me: () => {
 			return fetchApi<privateUser>(`/user/me`);
 		},
-		playlist: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
-			return fetchApi<{ success: boolean; status: number }>(`/user/playlist/add`, {
-				method: 'POST',
-				body: JSON.stringify({
-					name: name,
-					cover: cover,
-					description: description,
-					private: privatePlaylist,
-				}),
-				headers: { Authorization: `Bearer ${token}` },
-			});
-		},
+		playlist: {
+			create: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
+				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/add`, {
+					method: 'POST',
+					body: JSON.stringify({
+						name: name,
+						cover: cover,
+						description: description,
+						private: privatePlaylist,
+					}),
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
+			playlists: (token: string) => {
+				return fetchApi<PlaylistOutput[]>(`/user/playlist/playlists`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			}
+		}, 
 		like: {
 			create: (trakcId: string, token: string) => {
 				return fetchApi<{ success: boolean; status: number }>(`/user/like/create?track_id=${trakcId}`, {

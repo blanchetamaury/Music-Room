@@ -17,25 +17,13 @@ import { useAuth } from '@/src/context/AuthContext';
 import { Like } from '@/src/types/user/like';
 import { SongProfileMobile } from './SongProfileMobile';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 
 interface ApiResponse<T> {
 	success: boolean;
 	message?: string;
 	data?: T;
 }
-
-const searchPlaylists = [
-	{ id: '1', title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
-	{ id: '2', title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
-	{ id: '3', title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
-	{ id: '4', title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
-	{ id: '5', title: 'Road Trip', cover: '#5eead4', songs: 20 },
-	{ id: '6', title: 'Focus Flow', cover: '#f9a8d4', songs: 16 },
-	{ id: '7', title: 'Chill Vibes', cover: '#f6b26b', songs: 12 },
-	{ id: '8', title: 'Workout Energy', cover: '#7ec8e3', songs: 18 },
-	{ id: '9', title: 'Late Night Coding', cover: '#9b59b6', songs: 24 },
-	{ id: '10', title: 'Morning Coffee', cover: '#ff7f50', songs: 15 },
-] as const;
 
 interface SearchPageProps {
 	onNavigateHome?: (playlistId: number) => void;
@@ -73,6 +61,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 	const { token } = useAuth();
 	const [likes, setLikes] = useState<Like[]>();
 	const [newLike, setNewLike] = useState<boolean>(false);
+	const [playlists, setPlaylists] = useState<PlaylistOutput[]>();
 
 	useEffect(() => {
 		const listLike = async () => {
@@ -81,7 +70,14 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 			setNewLike(false);
 		};
 
+		const listPlaylist = async () => {
+			const value = await api.user.playlist.playlists(token ?? '');
+			if (value.data)
+				setPlaylists(value.data);
+		}
+
 		listLike();
+		listPlaylist();
 	}, [newLike, token]);
 
 	useEffect(() => {
@@ -118,7 +114,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 	}, [query]);
 
 	const addPlaylistToDb = async () => {
-		const data = await api.user.playlist(
+		const data = await api.user.playlist.create(
 			playlistName,
 			urlImage,
 			playlistDescription,
@@ -195,18 +191,18 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 								</PlaylistDisplay>
 							</View>
 						)}
-						{searchPlaylists.map((playlist) => (
+						{playlists && playlists.map((playlist) => (
 							<View key={playlist.id} style={styles.playlistItem}>
 								<PlaylistDisplay
 									id={playlist.id}
-									title={playlist.title}
-									size={playlist.songs}
+									title={playlist.name}
+									size={playlist.music.length}
 									backgroundColorCover="#24961594"
 								>
 									<Image
 										style={{ height: 64, width: 64, borderRadius: 12 }}
 										source={{
-											uri: 'https://imgs.search.brave.com/4CpRl9vd35aqG2dfWnXw7AK-iwHm-ujHdbuXbpDffcI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/NDA5NzkzODg3ODkt/NmNlZTI4YTFjZGM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZhdXRv/PWZvcm1hdCZmaXQ9/Y3JvcCZpeGxpYj1y/Yi00LjEuMCZpeGlk/PU0zd3hNakEzZkRC/OE1IeHpaV0Z5WTJo/OE1USjhmRzF2Ym5S/aFoyNWxjM3hsYm53/d2ZId3dmSHg4TUE9/PQ',
+											uri: playlist.cover,
 										}}
 									></Image>
 								</PlaylistDisplay>
