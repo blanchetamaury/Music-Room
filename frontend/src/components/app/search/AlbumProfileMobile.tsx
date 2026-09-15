@@ -1,14 +1,21 @@
 import { Clock3 } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+	Image,
+	Pressable,
+	ScrollView,
+	View
+} from 'react-native';
+
 import { api } from '@/src/lib/api/client';
 import { outputAPITrack } from '@/src/types/album/album';
 import { DeezerAlbum } from '@/src/types/deezer/deezer';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { styles } from './AlbumProfileMobileStyle';
 
 interface AlbumProfileProps {
 	id: string;
@@ -106,6 +113,8 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 	const releaseDate = tracks[0]?.releaseDate;
 	const albumArtist = getAlbumArtist(album, tracks);
 
+	console.log("[AlbumProfileMobile] albumArtis: ", JSON.stringify(albumArtist));
+
 	return (
 		<View style={[styles.container, debugBox('#ff0000')]}>
 			<View style={[styles.albumHeader, debugBox('#ff8800')]}>
@@ -117,18 +126,27 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 					)}
 				</View>
 
-				<View style={[styles.albumInfo, debugBox('#0088ff')]}>
-					<ScrollingTitle title={album.title ?? 'Album'} />
+				<View
+					style={[
+						styles.albumInfo,
+						debugBox('#0044ff'),
+					]}
+				>
+					<ScrollingTitle
+						title={album.title ?? 'Album'}
+					/>
 
-					{albumArtist && (
+					{albumArtist?.name && albumArtist.deezerCUID && (
 						<HoverText
-							style={[styles.albumArtist, debugBox('#ffff00')]}
-							numberOfLines={1}
+							style={[
+								styles.albumArtist,
+								debugBox('#ffef08'),
+							]}
 							onPress={() => {
 								onArtistPress?.(String(albumArtist.deezerCUID ?? albumArtist.id ?? ''));
 							}}
 						>
-							{albumArtist.name}
+							{"Need to fix"}
 						</HoverText>
 					)}
 
@@ -305,7 +323,11 @@ function ScrollingTitle({ title }: { title: string }) {
 	);
 }
 
-function getAlbumArtist(album: DeezerAlbum, tracks: outputAPITrack[]) {
+function getAlbumArtist(
+	album: DeezerAlbum,
+	tracks: outputAPITrack[],
+) {
+	console.log("Help: ", JSON.stringify(album, null, 2));
 	const albumWithArtist = album as DeezerAlbum & {
 		artist?: {
 			id?: string | number;
@@ -386,204 +408,3 @@ function formatDuration(duration?: string | number) {
 
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
-
-const styles = StyleSheet.create({
-	container: {
-		width: '100%',
-		height: '100%',
-		padding: 28,
-	},
-
-	albumHeader: {
-		width: '100%',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 24,
-	},
-
-	coverContainer: {
-		width: 150,
-		height: 150,
-		flexShrink: 0,
-	},
-
-	cover: {
-		width: '100%',
-		height: '100%',
-		borderRadius: 20,
-	},
-
-	coverPlaceholder: {
-		width: '100%',
-		height: '100%',
-		borderRadius: 20,
-		backgroundColor: 'rgba(255,255,255,0.08)',
-	},
-
-	albumInfo: {
-		flex: 1,
-		minWidth: 0,
-		justifyContent: 'center',
-	},
-
-	titleWrapper: {
-		width: '100%',
-		overflow: 'hidden',
-	},
-
-	titleScrollContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	titleScrollCentered: {
-		justifyContent: 'flex-start',
-	},
-
-	titleContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	titleDuplicate: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		marginLeft: 50,
-	},
-
-	albumTitle: {
-		fontSize: 26,
-		fontWeight: '700',
-		color: '#fff',
-	},
-
-	albumArtist: {
-		marginTop: 8,
-		fontSize: 16,
-		color: 'rgba(255,255,255,0.65)',
-	},
-
-	albumStats: {
-		marginTop: 16,
-		flexDirection: 'row',
-		alignItems: 'center',
-		flexWrap: 'wrap',
-		gap: 12,
-	},
-
-	infoItem: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 5,
-	},
-
-	infoText: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.6)',
-	},
-
-	trackHeader: {
-		width: '100%',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
-		marginTop: 20,
-		marginBottom: 10,
-	},
-
-	trackTitle: {
-		fontSize: 18,
-		fontWeight: '700',
-	},
-
-	trackCount: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.4)',
-	},
-
-	trackList: {
-		width: '100%',
-		gap: 4,
-		paddingBottom: 10,
-	},
-
-	track: {
-		width: '100%',
-		minHeight: 48,
-		flexDirection: 'row',
-		alignItems: 'center',
-		paddingHorizontal: 10,
-		borderRadius: 10,
-	},
-
-	trackPositionContainer: {
-		width: 32,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-
-	trackPosition: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.35)',
-	},
-
-	trackInfo: {
-		flex: 1,
-		minWidth: 0,
-		paddingHorizontal: 8,
-	},
-
-	trackName: {
-		fontSize: 15,
-		color: 'rgba(255,255,255,0.85)',
-	},
-
-	trackDuration: {
-		width: 55,
-		alignItems: 'flex-end',
-	},
-
-	trackDurationText: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.4)',
-	},
-
-	footer: {
-		width: '100%',
-		minHeight: 42,
-		marginTop: 18,
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		gap: 20,
-	},
-
-	footerItem: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
-		maxWidth: '50%',
-	},
-
-	footerLabel: {
-		fontSize: 12,
-		color: 'rgba(255,255,255,0.35)',
-	},
-
-	footerValue: {
-		flexShrink: 1,
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.6)',
-	},
-
-	loadingContainer: {
-		width: '100%',
-		padding: 32,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-
-	loading: {
-		color: 'rgba(255,255,255,0.5)',
-	},
-});

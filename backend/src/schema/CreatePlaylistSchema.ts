@@ -6,3 +6,8 @@ export const CreatePlaylistSchema = z.object({
 	description: z.string(),
 	private: z.boolean(),
 });
+
+export const AddMusicToPlaylistSchema = z.object({
+	playlistName: z.string(),
+	trackId: z.string(),
+});
