@@ -40,20 +40,19 @@ export const styles = StyleSheet.create({
 	},
 
 	playlistContainer: {
-		position: 'relative' as const,
 		width: '100%',
 		height: 125,
 	},
 
 	playlistContent: {
-		flex: 1,
 		paddingHorizontal: 4,
 		gap: 10,
+		flexDirection: 'row' as const,
 	},
 
 	playlistItem: {
 		height: '100%',
-		backgroundColor: "#fff",
+		flexShrink: 0,
 	},
 
 	playlistFades: {

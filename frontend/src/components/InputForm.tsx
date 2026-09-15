@@ -1,10 +1,13 @@
+
 import { useState } from 'react';
 import {
 	Platform,
+	StyleProp,
 	StyleSheet,
 	TextInput,
 	useColorScheme,
 	View,
+	ViewStyle,
 } from 'react-native';
 
 import { ThemedText } from './themed-text';
@@ -15,6 +18,7 @@ type InputFormProps = {
 	isEmail: boolean;
 	setInputValue: React.Dispatch<React.SetStateAction<string>>;
 	setError?: (value: string | null) => void;
+	style?: StyleProp<ViewStyle>;
 };
 
 export function InputForm(props: InputFormProps) {
@@ -36,6 +40,7 @@ export function InputForm(props: InputFormProps) {
 			<View
 				style={[
 					styles.inputWrapper,
+					props.style,
 					props.isEmail &&
 						touched &&
 						!isEmailValid &&
@@ -107,8 +112,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		minWidth: 0,
 		maxWidth: '100%',
-		marginTop: 8,
-		borderRadius: 12,
+		marginTop: 0,
+		borderRadius: 0,
 		borderWidth: 1,
 		paddingHorizontal: 12,
 		paddingVertical: 8,

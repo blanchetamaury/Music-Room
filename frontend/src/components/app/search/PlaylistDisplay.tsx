@@ -32,7 +32,7 @@ export function PlaylistDisplay(props : PlaylistProps) {
 	return (
 		<Pressable
 			onPress={props.onPress}
-			style={debugBox('#ff0000')}
+			style={[style.wrapper, debugBox('#ff0000')]}
 		>
 			<LiquidGlass
 				style={[
@@ -81,6 +81,10 @@ export function PlaylistDisplay(props : PlaylistProps) {
 }
 
 const style = StyleSheet.create({
+	wrapper: {
+		flex: 1,
+	},
+
 	playlistCard: {
 		flex: 1,
 		height: 120,

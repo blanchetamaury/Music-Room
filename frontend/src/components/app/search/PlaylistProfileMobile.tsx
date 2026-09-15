@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import { InputForm } from '../../InputForm';
-import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 
 interface PlaylistProfileMobileProps {
@@ -165,70 +164,31 @@ export function PlaylistProfileMobile({
 					debugBox('#00ff00'),
 				]}
 			>
-				<LiquidGlass
-					style={[
-						styles.inputGlass,
-						debugBox('#ffff00'),
-					]}
-					contentStyle={styles.inputGlassContent}
-					intensity={45}
-					radius={12}
-					topLeftRadius={12}
-					topRightRadius={12}
-					bottomLeftRadius={12}
-					bottomRightRadius={12}
-				>
-					<InputForm
-						isEmail={false}
-						placeholder="Playlist name"
-						inputValue={playlistName}
-						setInputValue={setPlaylistName}
-					/>
-				</LiquidGlass>
-
-				<LiquidGlass
-					style={[
-						styles.inputGlass,
-						debugBox('#ff00ff'),
-					]}
-					contentStyle={styles.inputGlassContent}
-					intensity={45}
-					radius={12}
-					topLeftRadius={12}
-					topRightRadius={12}
-					bottomLeftRadius={12}
-					bottomRightRadius={12}
-				>
-					<InputForm
-						isEmail={false}
-						placeholder="Description"
-						inputValue={playlistDescription}
-						setInputValue={
-							setPlaylistDescription
-						}
-					/>
-				</LiquidGlass>
-
-				<LiquidGlass
-					style={[
-						styles.inputGlass,
-						debugBox('#00ffff'),
-					]}
-					contentStyle={styles.inputGlassContent}
-					intensity={45}
-					radius={12}
-					topLeftRadius={12}
-					topRightRadius={12}
-					bottomLeftRadius={12}
-					bottomRightRadius={12}
-				>
-					<InputForm
-						isEmail={false}
-						placeholder="Image Url"
-						inputValue={urlImage}
-						setInputValue={setUrlImage}
-					/>
-				</LiquidGlass>
+				<InputForm
+					isEmail={false}
+					placeholder="Playlist name"
+					inputValue={playlistName}
+					setInputValue={setPlaylistName}
+					style={styles.inputForm}
+				/>
+		
+				<InputForm
+					isEmail={false}
+					placeholder="Description"
+					inputValue={playlistDescription}
+					setInputValue={
+						setPlaylistDescription
+					}
+					style={styles.inputForm}
+				/>
+		
+				<InputForm
+					isEmail={false}
+					placeholder="Image Url"
+					inputValue={urlImage}
+					setInputValue={setUrlImage}
+					style={styles.inputForm}
+				/>
 			</View>
 		</View>
 	);
@@ -318,6 +278,12 @@ const styles = StyleSheet.create({
 		gap: 10,
 	},
 
+	inputForm: {
+		borderRadius: 10,
+		backgroundColor: 'rgba(255,255,255,0.08)',
+		borderWidth: 1,
+	},
+
 	inputGlass: {
 		width: '100%',
 		minWidth: 0,
@@ -325,8 +291,8 @@ const styles = StyleSheet.create({
 
 	inputGlassContent: {
 		width: '100%',
-		paddingHorizontal: 4,
-		paddingVertical: 2,
+		paddingHorizontal: 0,
+		paddingVertical: 0,
 	},
 
 	addButton: {
