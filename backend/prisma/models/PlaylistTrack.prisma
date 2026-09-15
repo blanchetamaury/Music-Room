@@ -5,7 +5,7 @@ model PlaylistTrack {
   playlistId String
   trackId    String
   playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
-  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  track      Track    @relation(fields: [trackId], references: [deezerCUID], onDelete: Cascade)
 
   @@unique([playlistId, trackId])
 }
