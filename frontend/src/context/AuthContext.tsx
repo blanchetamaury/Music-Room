@@ -49,7 +49,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			});
 
 			setToken(storedToken);
-			setUser(res.data.user.privateUser);
+			setUser(res.data.data);
 		} catch (error) {
 			await storage.deleteItem('session');
 			setToken(null);

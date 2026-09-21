@@ -204,7 +204,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 										style={styles.menuItem}
 										onPress={() => {
 											setDisplayAddToPlaylistMenu(false);
-											api.user.playlist.addMusic(token ?? '', row.name, props.song.deezerCUID);
+											api.user.playlist.addMusic(token ?? '', row.id, props.song.deezerCUID);
 										}}
 									>
 										<Image source={{ uri: row.cover }} style={styles.cover}></Image>

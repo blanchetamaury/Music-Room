@@ -1,5 +1,5 @@
-import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 
 export function generateFortyTwoAuthorizationUrl(): string {
@@ -13,6 +13,7 @@ export function generateFortyTwoAuthorizationUrl(): string {
 	url.searchParams.set('client_id', process.env.EXPO_PUBLIC_OAUTH_FORTYTWO_CLIENTID);
 	url.searchParams.set('redirect_uri', `${baseUrl}/api/auth/oauth/oauth_fortytwo`);
 	url.searchParams.set('response_type', 'code');
+	url.searchParams.set('state', Platform.OS === 'web' ? 'web' : 'mobile');
 
 	return url.toString();
 }

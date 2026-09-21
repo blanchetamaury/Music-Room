@@ -4,7 +4,7 @@ import { getUserById } from '../../../../prisma/database/user';
 import { parseBody } from '@/utils/parsing';
 import { AddMusicToPlaylist } from '@/types/playlist/Playlist';
 import { AddMusicToPlaylistSchema } from '@/schema/CreatePlaylistSchema';
-import { addMusictoPlaylist } from '../../../../prisma/database/playlists';
+import { addMusictoPlaylist, getPlaylist } from '../../../../prisma/database/playlists';
 
 export async function POST(req: Request): Promise<Response> {
 	return errorHandler(async () => {
@@ -18,7 +18,8 @@ export async function POST(req: Request): Promise<Response> {
 
 		const data = await parseBody<AddMusicToPlaylist>(req, AddMusicToPlaylistSchema);
 
-		await addMusictoPlaylist(data.playlistName, user.id, data.trackId);
+		const playlist = await getPlaylist(data.playlistId, {});
+		await addMusictoPlaylist(data.playlistId, data.trackId);
 		return Response.json({ success: true }, { status: 200 });
 	});
 }

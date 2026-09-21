@@ -98,47 +98,55 @@ gnome-terminal --tab \
         echo '⏳ En attente de l adresse Expo...'
         echo ''
 
-        # Attendre que le fichier existe
         while [ ! -f '$EXPO_LOG' ]; do
             sleep 1
         done
 
-        # Attendre qu une URL Expo soit trouvée
         while true; do
-            CLIENT_URL=\$(grep -oE 'exp://[^[:space:]]+|https://[^[:space:]]+' '$EXPO_LOG' | head -n 1)
+            CLIENT_URL_MOBILE=\$(sed 's/\x1b\[[0-9;]*m//g' '$EXPO_LOG' \
+                | tr -d '\r' \
+                | grep -oE 'exp://[a-zA-Z0-9.-]+\.exp\.direct|https://[a-zA-Z0-9.-]+\.exp\.direct' \
+                | head -n 1)
 
-            if [ -n \"\$CLIENT_URL\" ]; then
+            if [ -n \"\$CLIENT_URL_MOBILE\" ]; then
                 break
             fi
 
-            sleep 1
+            sleep 2
         done
 
         echo ''
-        echo \"✅ Adresse Expo trouvée : \$CLIENT_URL\"
+        echo \"✅ Adresse Expo trouvée : \$CLIENT_URL_MOBILE\"
         echo ''
 
-        # =========================
-        # Mise à jour du .env
-        # =========================
-
-        if grep -q '^CLIENT_URL=' '$ENV_FILE'; then
-            sed -i \"s|^CLIENT_URL=.*|CLIENT_URL=\$CLIENT_URL|\" '$ENV_FILE'
+        if grep -q '^CLIENT_URL_MOBILE=' '$ENV_FILE'; then
+            sed -i \"s|^CLIENT_URL_MOBILE=.*|CLIENT_URL_MOBILE=\$CLIENT_URL_MOBILE|\" '$ENV_FILE'
         else
-            echo \"CLIENT_URL=\$CLIENT_URL\" >> '$ENV_FILE'
+            echo "" >> '$ENV_FILE'
+            echo \"CLIENT_URL_MOBILE=\$CLIENT_URL_MOBILE\" >> '$ENV_FILE'
         fi
 
-        echo '✅ CLIENT_URL mis à jour dans .env'
+        echo '✅ CLIENT_URL_MOBILE mis à jour dans .env'
         echo ''
 
         echo '📄 Valeur actuelle :'
-        grep '^CLIENT_URL=' '$ENV_FILE'
+        grep '^CLIENT_URL_MOBILE=' '$ENV_FILE'
         echo ''
 
         echo '🚀 Lancement du backend...'
         echo ''
 
-        npm run dev
+        # === IMPORTANT : on ignore SIGINT au niveau du script ===
+        trap '' SIGINT
+
+        # === Boucle de relance automatique ===
+        while true; do
+            npm run dev
+            EXIT_CODE=\$?
+            echo ''
+            echo \"⚠️  Le backend s'est arrêté (code \$EXIT_CODE). Relance dans 2s...\"
+            sleep 2
+        done
 
         exec zsh
     "

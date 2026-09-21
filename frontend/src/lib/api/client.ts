@@ -7,12 +7,14 @@ import { auth } from './auth';
 import { Track } from '@/src/types/track/track';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
+import { Platform } from 'react-native';
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
 	const url = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
 
 	const headers: HeadersInit = {
 		'Content-Type': 'application/json',
+		...(Platform.OS === 'web' ? {'X-Client-Type': 'web'} : {'X-Client-Type': 'android'}),
 		...options.headers,
 	};
 
@@ -61,11 +63,11 @@ export const api = {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},
-			addMusic: (token: string, playlistName: string, trackId: string) => {
+			addMusic: (token: string, playlistId: string, trackId: string) => {
 				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/addMusic`, {
 					method: 'POST',
 					body: JSON.stringify({
-						playlistName: playlistName,
+						playlistId: playlistId,
 						trackId: trackId,
 					}),
 					headers: { Authorization: `Bearer ${token}` },

@@ -2,12 +2,10 @@ import { Request, Response } from 'express';
 import { SignJWT, jwtVerify } from 'jose';
 import { JWTSessionPayload, SessionPayload } from '../types/session/SessionPayload';
 import { ERRORS_DETAILS } from '../utils/error';
-import { createCsrfCookie } from './csrf';
+import { getSessionSecret } from './session-secret';
 
-const encodedKey = new TextEncoder().encode(
-	process.env.SESSION_SECRET || 'fvsdvsdvoewfk3i4r4i5t984-0qwkdpwekopdp34rf3j4fijr'
-);
-const SESSION_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60;
+const SESSION_MAX_AGE_MS = SESSION_MAX_AGE_SECONDS * 1000;
 
 interface CreatedSessionPayload {
 	body: string;
@@ -17,14 +15,14 @@ interface CreatedSessionPayload {
 const encrypt = async (payload: JWTSessionPayload): Promise<string> => {
 	return new SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
-		.setIssuedAt()
 		.setExpirationTime(payload.exp)
-		.sign(encodedKey);
+		.sign(getSessionSecret());
 };
 
 const decrypt = async (session: string | undefined = ''): Promise<JWTSessionPayload> => {
-	const { payload } = await jwtVerify(session, encodedKey, {
+	const { payload } = await jwtVerify(session, getSessionSecret(), {
 		algorithms: ['HS256'],
+		issuer: 'music room',
 	});
 	if (payload.exp != null && Date.now() / 1000 >= payload.exp) {
 		throw new Error('Error, session cookie is not set');
@@ -33,12 +31,14 @@ const decrypt = async (session: string | undefined = ''): Promise<JWTSessionPayl
 };
 
 const createSession = async (payload: SessionPayload): Promise<CreatedSessionPayload> => {
-	const expirationDate = Date.now() + 2 * 60 * 60 * 1000;
+	const issuedAt = Math.floor(Date.now() / 1000);
+	const expirationTime = issuedAt + SESSION_MAX_AGE_SECONDS;
+	const expirationDate = expirationTime * 1000;
 	const body = await encrypt({
-		exp: Math.floor(expirationDate / 1000),
-		iat: Math.floor(Date.now() / 1000),
-		iss: 'music room',
 		...payload,
+		iat: issuedAt,
+		iss: 'music room',
+		exp: expirationTime,
 	});
 	return { body, expirationDate };
 };
@@ -55,17 +55,15 @@ const setSession = async (session: CreatedSessionPayload, response: Response): P
 
 const createAndSetSession = async (payload: SessionPayload): Promise<string> => {
 	const session = await createSession(payload);
-	return `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`;
+	return `token=${session.body}; HttpOnly; Path=/; Max-Age=${SESSION_MAX_AGE_SECONDS}; SameSite=Lax`;
 };
 
 const getTokenFromRequest = (req: Request): string | null => {
-	// 1. Essaie d'abord le header Authorization (mobile / API clients)
 	const authHeader = req.headers.authorization;
 	if (authHeader && authHeader.startsWith('Bearer ')) {
 		return authHeader.slice(7).trim();
 	}
 
-	// 2. Sinon, essaie le cookie (web)
 	const cookieHeader = req.headers.cookie;
 	if (cookieHeader) {
 		const match = cookieHeader.match(/token=([^;]+)/);
@@ -102,12 +100,13 @@ const parseUserId = (id: string, session: SessionPayload): { id: string; is_me: 
 };
 
 export {
-	createAndSetSession,
+	SESSION_MAX_AGE_SECONDS, createAndSetSession,
 	createSession,
 	decrypt,
 	encrypt,
 	getSession,
 	getThrowableSession,
 	parseUserId,
-	setSession,
+	setSession
 };
+

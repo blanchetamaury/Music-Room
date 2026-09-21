@@ -6,7 +6,7 @@ export interface CreatePlaylist {
 }
 
 export interface AddMusicToPlaylist {
-	playlistName: string;
+	playlistId: string;
 	trackId: string;
 }
 

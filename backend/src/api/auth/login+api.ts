@@ -6,7 +6,7 @@ import {
 } from '../../../prisma/database/ratelimitLogin';
 import { getUserByMail } from '../../../prisma/database/user';
 import { createCsrfCookie } from '../../lib/csrf';
-import { createSession } from '../../lib/session';
+import { createSession, SESSION_MAX_AGE_SECONDS } from '../../lib/session';
 import { LoginParametersSchema } from '../../schema/LoginParamtersSchema';
 import { LoginParameters } from '../../types/auth/LoginParameters';
 import { errorHandler, ERRORS_DETAILS } from '../../utils/error';
@@ -56,7 +56,7 @@ export async function POST(req: Request): Promise<Response> {
 
 		const headers = new Headers();
 		headers.append('Set-Cookie', csrfCookie);
-		headers.append('Set-Cookie', `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`);
+		headers.append('Set-Cookie', `token=${session.body}; HttpOnly; Path=/; Max-Age=${SESSION_MAX_AGE_SECONDS}; SameSite=Lax`);
 		headers.append('Content-Type', 'application/json');
 
 		return new Response(
