@@ -34,7 +34,10 @@ export async function GET(request: Request): Promise<Response> {
 		const headers = new Headers();
 		headers.append('Location', redirectUrl);
 		headers.append('Set-Cookie', csrfCookie);
-		headers.append('Set-Cookie', `token=${session.body}; HttpOnly; Path=/; Max-Age=${SESSION_MAX_AGE_SECONDS}; SameSite=Lax`);
+		headers.append(
+			'Set-Cookie',
+			`token=${session.body}; HttpOnly; Path=/; Max-Age=${SESSION_MAX_AGE_SECONDS}; SameSite=Lax`
+		);
 
 		return new Response(
 			JSON.stringify({

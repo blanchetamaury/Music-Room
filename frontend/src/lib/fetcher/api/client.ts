@@ -69,6 +69,11 @@ export const api = {
 					}
 				);
 			},
+			playlist: (token: string, playlistId: string) => {
+				return fetchApi<PlaylistOutput>(`/user/playlist/playlist?playlist_id=${playlistId}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
 			addMusic: (token: string, playlistId: string, trackId: string) => {
 				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/addMusic`, {
 					method: 'POST',

@@ -1,4 +1,9 @@
+import { useAuth } from '@/src/context/AuthContext';
+import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Heart } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 import LiquidGlass from '../../LiquidGlass';
@@ -6,18 +11,14 @@ import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 import { SeparatorFull } from '../../ui/separator';
 import { homeStyles } from '../home.styles';
-import { useAuth } from '@/src/context/AuthContext';
-import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
-import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
-import { Heart } from 'lucide-react-native';
 import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { ArtistProfileMobile } from './ArtisteProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
-import { PlaylistProfileMobile } from './PlaylistProfileMobile';
-import { styles } from './styles/SearchPageStyle';
 import { SongDisplayMobile } from './SongDisplayMobile';
 import { SongProfileMobile } from './SongProfileMobile';
+import { PlaylistCreate } from './playlist/PlaylistCreate';
+import { styles } from './styles/SearchPageStyle';
+import { PlaylistProfile } from './playlist/PlaylistProfile';
 
 interface SearchPageProps {
 	onPlayTrack?: (track: OutputTrackDeezer) => void;
@@ -28,6 +29,7 @@ type PopupState =
 	| { type: 'artist'; id: string }
 	| { type: 'album'; id: string }
 	| { type: 'addPlaylist'; id: string }
+	| { type: 'playlist'; id: string }
 	| null;
 
 const SEARCH_DEBOUNCE_MS = 200;
@@ -127,17 +129,22 @@ export function SearchPage({ onPlayTrack }: SearchPageProps) {
 
 						{playlists.map((playlist: PlaylistOutput) => (
 							<View key={playlist.id} style={styles.playlistItem}>
-								<PlaylistDisplay
-									id={playlist.id}
-									title={playlist.name}
-									size={playlist.music.length}
-									backgroundColorCover="#24961594"
+								<Pressable
+									style={homeStyles.sectionTitle}
+									onPress={() => setPopup({ type: 'playlist', id: playlist.id })}
 								>
-									<Image
-										style={{ height: 64, width: 64, borderRadius: 12 }}
-										source={{ uri: playlist.cover }}
-									/>
-								</PlaylistDisplay>
+									<PlaylistDisplay
+										id={playlist.id}
+										title={playlist.name}
+										size={playlist.music.length}
+										backgroundColorCover="#24961594"
+									>
+										<Image
+											style={{ height: 64, width: 64, borderRadius: 12 }}
+											source={{ uri: playlist.cover }}
+										/>
+									</PlaylistDisplay>
+								</Pressable>
 							</View>
 						))}
 					</ScrollView>
@@ -212,7 +219,8 @@ export function SearchPage({ onPlayTrack }: SearchPageProps) {
 						/>
 					)}
 
-					{popup.type === 'addPlaylist' && <PlaylistProfileMobile setPopup={setPopup} />}
+					{popup.type === 'addPlaylist' && <PlaylistCreate setPopup={setPopup} />}
+					{popup.type === 'playlist' && <PlaylistProfile setPopup={setPopup} id={popup.id} />}
 				</Popup>
 			)}
 		</View>

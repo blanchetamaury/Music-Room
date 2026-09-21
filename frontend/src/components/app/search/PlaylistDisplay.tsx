@@ -29,7 +29,7 @@ const debugBox = (color: string) => {
 
 export function PlaylistDisplay(props: PlaylistProps) {
 	return (
-		<Pressable onPress={props.onPress} style={[style.wrapper, debugBox('#ff0000')]}>
+		<View style={[style.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[style.playlistCard, debugBox('#ff8800')]}
 				contentStyle={[style.playlistCardContent, debugBox('#00ff00')]}
@@ -56,7 +56,7 @@ export function PlaylistDisplay(props: PlaylistProps) {
 					<ThemedText style={debugBox('#ff00ff')}>{props.size}</ThemedText>
 				</View>
 			</LiquidGlass>
-		</Pressable>
+		</View>
 	);
 }
 

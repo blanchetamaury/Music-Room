@@ -1,5 +1,5 @@
-import { PaginationParameters } from "@/types/pagination/PaginationParameters";
-import { PaginationResponse } from "@/types/pagination/PaginationResponse";
+import { PaginationParameters } from '@/types/pagination/PaginationParameters';
+import { PaginationResponse } from '@/types/pagination/PaginationResponse';
 
 const DEFAULT_PAGINATION = { page: 1, limit: 20 };
 

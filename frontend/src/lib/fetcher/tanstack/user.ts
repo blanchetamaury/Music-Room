@@ -6,6 +6,7 @@ export const userQueryKeys = {
 	all: ['user'] as const,
 	me: (token: string) => ['user', 'me', token] as const,
 	playlists: (token: string) => ['user', 'playlists', token] as const,
+	playlist: (token: string, playlistId: string) => ['user', 'playlists', token, playlistId] as const,
 	likes: (token: string) => ['user', 'likes', token] as const,
 	like: (token: string, trackId: string) => ['user', 'like', token, trackId] as const,
 };
@@ -25,6 +26,14 @@ export function usePlaylistsInfiniteQuery(token: string | null) {
 		queryFn: ({ pageParam }) => api.user.playlist.playlists(token ?? '', pageParam).then(unwrapApiResponse),
 		getNextPageParam: (lastPage) => (lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined),
 		enabled: Boolean(token),
+	});
+}
+
+export function usePlaylistQuery(token: string | null, playlistId: string | null) {
+	return useQuery({
+		queryKey: userQueryKeys.playlist(token ?? '', playlistId ?? ''),
+		queryFn: () => api.user.playlist.playlist(token ?? '', playlistId ?? '').then(unwrapApiResponse),
+		enabled: Boolean(token && playlistId),
 	});
 }
 

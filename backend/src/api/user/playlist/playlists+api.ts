@@ -16,8 +16,12 @@ export async function GET(req: Request): Promise<Response> {
 
 		if (!user) return Response.json({ success: false, message: 'User not found' }, { status: 404 });
 
-		const data = await getPlaylists(user.id, { user: true, music: true }, pagination);
-		
+		const data = await getPlaylists(
+			user.id,
+			{ user: true, music: { include: { track: { include: { album: true } } } } },
+			pagination
+		);
+
 		const list = data.map((row) => ({
 			name: row.name,
 			cover: row.cover,
@@ -28,7 +32,7 @@ export async function GET(req: Request): Promise<Response> {
 			user: row.user.map((row) => ({
 				id: row.id,
 				username: row.username,
-				avatarUrl: row.avatarUrl
+				avatarUrl: row.avatarUrl,
 			})),
 			music: row.music.map((row) => ({
 				id: row.id,
@@ -38,6 +42,9 @@ export async function GET(req: Request): Promise<Response> {
 			})),
 		}));
 
-		return Response.json({ success: true, data: generatePaginationResponse(list, data.length, pagination) }, { status: 200 });
+		return Response.json(
+			{ success: true, data: generatePaginationResponse(list, data.length, pagination) },
+			{ status: 200 }
+		);
 	});
 }

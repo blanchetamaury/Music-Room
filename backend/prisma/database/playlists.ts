@@ -52,10 +52,10 @@ const removeMusictoPlaylist = async (
 	});
 };
 
-const getPlaylist = async  <T extends Prisma.PlaylistInclude>(
+const getPlaylist = async <T extends Prisma.PlaylistInclude>(
 	playlistId: string,
-	include: T,
-): Promise<Prisma.PlaylistGetPayload<{ include : T }> | null> => {
+	include: T
+): Promise<Prisma.PlaylistGetPayload<{ include: T }> | null> => {
 	return prisma.playlist.findFirst({
 		include: include,
 		where: {
@@ -64,11 +64,11 @@ const getPlaylist = async  <T extends Prisma.PlaylistInclude>(
 	});
 };
 
-const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
+const getPlaylists = async <T extends Prisma.PlaylistInclude>(
 	ownerId: string,
 	include: T,
 	pagination?: PaginationParameters
-): Promise<Prisma.PlaylistGetPayload<{ include : T }>[]> => {
+): Promise<Prisma.PlaylistGetPayload<{ include: T }>[]> => {
 	return prisma.playlist.findMany({
 		include: include,
 		where: {

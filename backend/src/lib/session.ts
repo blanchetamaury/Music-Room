@@ -100,13 +100,13 @@ const parseUserId = (id: string, session: SessionPayload): { id: string; is_me: 
 };
 
 export {
-	SESSION_MAX_AGE_SECONDS, createAndSetSession,
+	SESSION_MAX_AGE_SECONDS,
+	createAndSetSession,
 	createSession,
 	decrypt,
 	encrypt,
 	getSession,
 	getThrowableSession,
 	parseUserId,
-	setSession
+	setSession,
 };
-

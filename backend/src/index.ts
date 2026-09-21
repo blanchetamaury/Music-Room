@@ -11,29 +11,29 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
-    process.env.CLIENT_URL_WEB,
-    process.env.CLIENT_URL_MOBILE,
-    'http://localhost:8081',
-    'http://localhost:19006',
+	process.env.CLIENT_URL_WEB,
+	process.env.CLIENT_URL_MOBILE,
+	'http://localhost:8081',
+	'http://localhost:19006',
 ].filter(Boolean);
 
 app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin) {
-                return callback(null, true);
-            }
-            if (allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                console.warn(`❌ CORS bloqué pour l'origine : ${origin}`);
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Client-Type'], // 👈 AJOUTE X-Client-Type ICI
-    })
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) {
+				return callback(null, true);
+			}
+			if (allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				console.warn(`❌ CORS bloqué pour l'origine : ${origin}`);
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
+		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Client-Type'], // 👈 AJOUTE X-Client-Type ICI
+	})
 );
 
 // Ajoute explicitement la gestion des OPTIONS

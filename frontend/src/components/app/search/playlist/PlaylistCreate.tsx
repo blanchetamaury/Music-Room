@@ -2,10 +2,10 @@ import { Eye, EyeClosed } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-import { InputForm } from '../../InputForm';
-import { ThemedText } from '../../themed-text';
-import { useCreatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
 import { useAuth } from '@/src/context/AuthContext';
+import { useCreatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
+import { InputForm } from '../../../InputForm';
+import { ThemedText } from '../../../themed-text';
 
 interface PlaylistProfileMobileProps {
 	setPopup: (value: null) => void;
@@ -25,7 +25,7 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function PlaylistProfileMobile({ setPopup }: PlaylistProfileMobileProps) {
+export function PlaylistCreate({ setPopup }: PlaylistProfileMobileProps) {
 	const [playlistName, setPlaylistName] = useState('');
 	const [playlistDescription, setPlaylistDescription] = useState('');
 	const [urlImage, setUrlImage] = useState('');

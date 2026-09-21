@@ -15,13 +15,13 @@ export async function POST(req: Request): Promise<Response> {
 		}
 
 		if (!userId) return Response.json({ success: false, message: 'No token provided' }, { status: 401 });
-		
+
 		const user = await getUserById(userId, {});
 		if (!user) return Response.json({ success: false, message: 'User not found' }, { status: 404 });
 
 		const track = await getTrack(trackId);
 		if (track == null) return Response.json({ success: false, message: 'Track not found' }, { status: 404 });
-		
+
 		const getlike = await findLikeUser({ track: true }, user.id, trackId);
 		if (getlike === null) {
 			const like = await createLikeUser({}, user.id, trackId);
