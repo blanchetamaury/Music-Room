@@ -1,7 +1,6 @@
 import { Clock3 } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, View } from 'react-native';
-
 import { api } from '@/src/lib/fetcher/api/client';
 import { outputAPITrack } from '@/src/types/album/album';
 import { DeezerAlbum } from '@/src/types/deezer/deezer';
@@ -10,7 +9,7 @@ import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 import { HoverText } from '../ui/hoverText';
 import { SeparatorFull } from '../ui/separator';
 import { ThemedText } from '../utils/themed-text';
-import { styles } from './styles/AlbumProfileMobileStyle';
+import { styles } from './AlbumProfileMobile.style';
 
 interface AlbumProfileProps {
 	id: string;

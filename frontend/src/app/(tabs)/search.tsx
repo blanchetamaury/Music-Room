@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Heart } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
-import { searchStyles } from './styles/search.styles';
+import { styles } from '@/src/components/search/SearchPage.styles';
 import { ThemedView } from '@/src/components/utils/themed-view';
 
 interface SearchPageProps {
@@ -81,15 +81,15 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 	const playlists = playlistsData?.pages.flatMap((page) => page.data ?? []) ?? [];
 
 	return (
-		<ThemedView style={{ flex: 1 }}>
+		<ThemedView style={styles.root}>
 			<FluidBackground colors={tabColors['search']} />
-			<View style={searchStyles.backgroundOverlay} />
+			<View style={styles.backgroundOverlay} />
 
-			<View style={searchStyles.searchRoot}>
-				<View style={searchStyles.searchContent}>
+			<View style={styles.searchRoot}>
+				<View style={styles.searchContent}>
 					<LiquidGlass
-						style={searchStyles.searchBar}
-						contentStyle={searchStyles.searchBarContent}
+						style={styles.searchBar}
+						contentStyle={styles.searchBarContent}
 						intensity={30}
 						radius={16}
 						topLeftRadius={16}
@@ -104,7 +104,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							onChangeText={setQuery}
 							placeholder="Search..."
 							placeholderTextColor="rgba(255,255,255,0.5)"
-							style={searchStyles.searchInput}
+							style={styles.searchInput}
 							autoCapitalize="none"
 							autoCorrect={false}
 							selectionColor="rgba(255,255,255,0.7)"
@@ -115,25 +115,25 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 
 					<SeparatorFull />
 
-					<View style={{ display: 'flex', flexDirection: 'row', gap: 20 }}>
-						<ThemedText style={searchStyles.sectionTitle}>Playlists</ThemedText>
+					<View style={styles.sectionHeader}>
+						<ThemedText style={styles.sectionTitle}>Playlists</ThemedText>
 						<Pressable
-							style={searchStyles.sectionTitle}
+							style={styles.sectionTitle}
 							onPress={() => setPopup({ type: 'addPlaylist', id: '' })}
 						>
-							<ThemedText style={searchStyles.sectionTitle}>ADD playlists</ThemedText>
+							<ThemedText style={styles.sectionTitle}>ADD playlists</ThemedText>
 						</Pressable>
 					</View>
 
-					<View style={searchStyles.playlistContainer}>
+					<View style={styles.playlistContainer}>
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							bounces={false}
-							contentContainerStyle={searchStyles.playlistContent}
+							contentContainerStyle={styles.playlistContent}
 						>
 							{likesData !== undefined && (
-								<View style={searchStyles.playlistItem}>
+								<View style={styles.playlistItem}>
 									<PlaylistDisplay
 										title="Likes"
 										size={likesData.length}
@@ -145,9 +145,9 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							)}
 
 							{playlists.map((playlist: PlaylistOutput) => (
-								<View key={playlist.id} style={searchStyles.playlistItem}>
+								<View key={playlist.id} style={styles.playlistItem}>
 									<Pressable
-										style={searchStyles.sectionTitle}
+										style={styles.sectionTitle}
 										onPress={() => setPopup({ type: 'playlist', id: playlist.id })}
 									>
 										<PlaylistDisplay
@@ -156,10 +156,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 											size={playlist.music.length}
 											backgroundColorCover="#24961594"
 										>
-											<Image
-												style={{ height: 64, width: 64, borderRadius: 12 }}
-												source={{ uri: playlist.cover }}
-											/>
+											<Image style={styles.playlistCover} source={{ uri: playlist.cover }} />
 										</PlaylistDisplay>
 									</Pressable>
 								</View>
@@ -169,19 +166,19 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 
 					<SeparatorFull />
 
-					<ThemedText style={searchStyles.sectionTitle}>Songs</ThemedText>
+					<ThemedText style={styles.sectionTitle}>Songs</ThemedText>
 
-					<View style={searchStyles.songSection}>
-						<View style={searchStyles.songListShell}>
+					<View style={styles.songSection}>
+						<View style={styles.songListShell}>
 							{tracksLoading && tracks.length == 0 ? (
-								<View style={searchStyles.loadingContainer}>
+								<View style={styles.loadingContainer}>
 									<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
-									<ThemedText style={searchStyles.loadingText}>Loading songs...</ThemedText>
+									<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
 								</View>
 							) : (
 								<ScrollView
-									style={searchStyles.songListScroll}
-									contentContainerStyle={searchStyles.songListContent}
+									style={styles.songListScroll}
+									contentContainerStyle={styles.songListContent}
 									showsVerticalScrollIndicator={false}
 									bounces
 								>
@@ -199,7 +196,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							<LinearGradient
 								colors={['rgba(10,12,18,0.95)', 'rgba(10,12,18,0.4)', 'transparent']}
 								locations={[0, 0.45, 1]}
-								style={searchStyles.songListFade}
+								style={styles.songListFade}
 								pointerEvents="none"
 							/>
 						</View>
