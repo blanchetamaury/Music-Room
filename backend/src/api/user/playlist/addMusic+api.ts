@@ -5,6 +5,7 @@ import { parseBody } from '@/utils/parsing';
 import { AddMusicToPlaylist } from '@/types/playlist/Playlist';
 import { AddMusicToPlaylistSchema } from '@/schema/CreatePlaylistSchema';
 import { addMusictoPlaylist, getPlaylist } from '../../../../prisma/database/playlists';
+import { getTrack } from '../../../../prisma/database/deezer';
 
 export async function POST(req: Request): Promise<Response> {
 	return errorHandler(async () => {
@@ -32,6 +33,8 @@ export async function POST(req: Request): Promise<Response> {
 		if (playlist.music.find((m) => m.trackId === data.trackId) !== undefined) {
 			return Response.json({ success: false, message: 'Music already in playlist' }, { status: 400 });
 		}
+
+		await getTrack(data.trackId);
 
 		await addMusictoPlaylist(data.playlistId, data.trackId);
 		return Response.json({ success: true }, { status: 200 });
