@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { api } from '../../lib/fetcher/api/client';
-import { ThemedText } from '../themed-text';
+import { ThemedText } from '../utils/themed-text';
 
 export function ConfirmMail({
 	onBack,

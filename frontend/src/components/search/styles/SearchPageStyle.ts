@@ -39,22 +39,6 @@ export const styles = StyleSheet.create({
 		textAlignVertical: 'center' as const,
 	},
 
-	playlistContainer: {
-		width: '100%',
-		height: 125,
-	},
-
-	playlistContent: {
-		paddingHorizontal: 4,
-		gap: 10,
-		flexDirection: 'row' as const,
-	},
-
-	playlistItem: {
-		height: '100%',
-		flexShrink: 0,
-	},
-
 	playlistFades: {
 		position: 'absolute' as const,
 		left: 0,
@@ -112,18 +96,5 @@ export const styles = StyleSheet.create({
 		right: 0,
 		height: 4,
 		zIndex: 2,
-	},
-
-	loadingContainer: {
-		flex: 1,
-		minHeight: 180,
-		alignItems: 'center' as const,
-		justifyContent: 'center' as const,
-		gap: 10,
-	},
-
-	loadingText: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.5)',
 	},
 });

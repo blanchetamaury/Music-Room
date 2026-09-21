@@ -5,9 +5,9 @@ import { api, DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/lib/fetcher/a
 
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 
-import { ThemedText } from '../../themed-text';
-import { SeparatorFull } from '../../ui/separator';
-import { AlbumDisplay } from '../AlbumDisplay';
+import { SeparatorFull } from '../ui/separator';
+import { ThemedText } from '../utils/themed-text';
+import { AlbumDisplay } from './AlbumDisplay';
 import { SongDisplayMobile } from './SongDisplayMobile';
 
 interface ArtistProfileProps {

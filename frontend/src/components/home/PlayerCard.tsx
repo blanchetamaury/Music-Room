@@ -1,11 +1,11 @@
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { useAudioPlayer } from 'expo-audio';
 import { Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
-import { homeStyles } from './home.styles';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { Image, Pressable, ScrollView, View } from 'react-native';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
+import { styles } from './PlayerCard.styles';
 
 interface PlayerCardProps {
 	currentTrack: OutputTrackDeezer;
@@ -24,9 +24,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 			return;
 		}
 
-		if (previousTrackId.current === currentTrack.deezerCUID) {
-			return;
-		}
+		if (previousTrackId.current === currentTrack.deezerCUID) return;
 
 		previousTrackId.current = currentTrack.deezerCUID;
 
@@ -81,10 +79,10 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 	const artists = currentTrack.artist[0].name ?? 'Unknown artist';
 
 	return (
-		<View style={homeStyles.playerWrap}>
+		<View style={styles.playerWrap}>
 			<LiquidGlass
-				style={homeStyles.playerCard}
-				contentStyle={homeStyles.playerContent}
+				style={styles.playerCard}
+				contentStyle={styles.playerContent}
 				intensity={50}
 				radius={22}
 				topLeftRadius={22}
@@ -92,13 +90,10 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 				bottomLeftRadius={22}
 				bottomRightRadius={22}
 			>
-				<View style={homeStyles.playerControls}>
+				<View style={styles.playerControls}>
 					<Pressable
 						onPress={handlePlayPause}
-						style={({ pressed }) => [
-							homeStyles.playPauseButtonInner,
-							pressed && homeStyles.playPauseButtonPressed,
-						]}
+						style={({ pressed }) => [styles.playPauseButtonInner, pressed && styles.playPauseButtonPressed]}
 						accessibilityRole="button"
 						accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
 					>
@@ -106,10 +101,10 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 					</Pressable>
 				</View>
 
-				<View style={homeStyles.playerInfo}>
-					<ScrollingText text={currentTrack.title} style={homeStyles.playerTitle} />
+				<View style={styles.playerInfo}>
+					<ScrollingText text={currentTrack.title} style={styles.playerTitle} />
 
-					<ThemedText style={homeStyles.playerArtist}>{artists}</ThemedText>
+					<ThemedText style={styles.playerArtist}>{artists}</ThemedText>
 				</View>
 
 				{currentTrack.album.CoverMedium ? (
@@ -119,7 +114,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 						}}
 						resizeMode="cover"
 						style={[
-							homeStyles.playerCover,
+							styles.playerCover,
 							{
 								backgroundColor: 'rgba(53, 184, 71, 0.1)',
 							},
@@ -128,7 +123,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 				) : (
 					<View
 						style={[
-							homeStyles.playerCover,
+							styles.playerCover,
 							{
 								backgroundColor: 'rgba(53, 184, 71, 0.1)',
 							},
@@ -249,28 +244,3 @@ function ScrollingText({ text, style }: ScrollingTextProps) {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	scrollingTextContainer: {
-		width: '100%',
-		overflow: 'hidden',
-	},
-
-	scrollingContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	textRow: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		flexShrink: 0,
-	},
-
-	textRowDuplicate: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		flexShrink: 0,
-		marginLeft: 40,
-	},
-});

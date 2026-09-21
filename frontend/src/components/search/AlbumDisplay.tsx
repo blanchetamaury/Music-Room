@@ -1,8 +1,7 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-
-import { ThemedText } from '../themed-text';
-import { HoverText } from '../ui/hoverText';
 import { DeezerAlbum } from '@/src/types/deezer/deezer';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { HoverText } from '../ui/hoverText';
+import { ThemedText } from '../utils/themed-text';
 
 interface AlbumDisplayProps {
 	album: DeezerAlbum;
@@ -28,7 +27,7 @@ export function AlbumDisplay({ album, onPress }: AlbumDisplayProps) {
 					{album.title}
 				</HoverText>
 
-				<ThemedText style={styles.date}>{album.release_date ?? 'Unknown date'}</ThemedText>
+				<ThemedText style={styles.date}>{album.releaseDate.toISOString() ?? 'Unknown date'}</ThemedText>
 			</View>
 		</Pressable>
 	);

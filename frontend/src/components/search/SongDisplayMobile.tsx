@@ -1,12 +1,12 @@
 import { useAuth } from '@/src/context/AuthContext';
+import { useAddMusicMutation, useLikeQuery, useManageLikeMutation } from '@/src/lib/fetcher/tanstack/user';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Banana, EllipsisVertical, Heart, ListMusic, Plus, Share2 } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Modal, Pressable, StyleSheet, View } from 'react-native';
-import LiquidGlass from '../../LiquidGlass';
-import { ThemedText } from '../../themed-text';
-import { useAddMusicMutation, useLikeQuery, useManageLikeMutation } from '@/src/lib/fetcher/tanstack/user';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
 
 interface SongDisplayProps {
 	song: OutputTrackDeezer;

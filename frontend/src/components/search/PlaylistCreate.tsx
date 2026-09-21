@@ -1,11 +1,10 @@
 import { Eye, EyeClosed } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-
 import { useAuth } from '@/src/context/AuthContext';
 import { useCreatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
-import { InputForm } from '../../../InputForm';
-import { ThemedText } from '../../../themed-text';
+import { ThemedText } from '../utils/themed-text';
+import { InputForm } from '../utils/InputForm';
 
 interface PlaylistProfileMobileProps {
 	setPopup: (value: null) => void;

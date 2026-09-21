@@ -3,7 +3,7 @@ import { usePlaylistQuery } from '@/src/lib/fetcher/tanstack/user';
 import { ChevronLeft, LockKeyhole, Music2, Users } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { ThemedText } from '../../../themed-text';
+import { ThemedText } from '../utils/themed-text';
 
 interface PlaylistProfileProps {
 	setPopup: (value: null) => void;

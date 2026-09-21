@@ -17,9 +17,9 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { api } from '@/src/lib/fetcher/api/client';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { Track } from '@/src/types/track/track';
-import { ThemedText } from '../../themed-text';
-import { HoverText } from '../../ui/hoverText';
-import { SeparatorFull } from '../../ui/separator';
+import { HoverText } from '../ui/hoverText';
+import { SeparatorFull } from '../ui/separator';
+import { ThemedText } from '../utils/themed-text';
 
 interface SongProfileProps {
 	song: OutputTrackDeezer;

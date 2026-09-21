@@ -7,9 +7,9 @@ import { outputAPITrack } from '@/src/types/album/album';
 import { DeezerAlbum } from '@/src/types/deezer/deezer';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
-import { ThemedText } from '../../themed-text';
-import { HoverText } from '../../ui/hoverText';
-import { SeparatorFull } from '../../ui/separator';
+import { HoverText } from '../ui/hoverText';
+import { SeparatorFull } from '../ui/separator';
+import { ThemedText } from '../utils/themed-text';
 import { styles } from './styles/AlbumProfileMobileStyle';
 
 interface AlbumProfileProps {

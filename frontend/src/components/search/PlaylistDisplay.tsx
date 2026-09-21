@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ReactNode } from 'react';
-import LiquidGlass from '../../LiquidGlass';
-import { ThemedText } from '../../themed-text';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
 
 interface PlaylistProps {
 	id?: string;

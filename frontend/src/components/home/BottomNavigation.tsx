@@ -3,8 +3,8 @@ import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
 import React from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import LiquidGlass from '../LiquidGlass';
-import { homeStyles } from './home.styles';
+import LiquidGlass from '../utils/LiquidGlass';
+import { styles } from './BottomNavigation.styles';
 
 export type TabKey = 'home' | 'search' | 'profile';
 
@@ -32,12 +32,12 @@ export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; o
 	return (
 		<LiquidGlass
 			style={[
-				homeStyles.navBar,
+				styles.navBar,
 				{
 					paddingBottom: insets.bottom + 40,
 				},
 			]}
-			contentStyle={homeStyles.navBarContent}
+			contentStyle={styles.navBarContent}
 			intensity={90}
 			radius={28}
 			topLeftRadius={15}
@@ -49,12 +49,12 @@ export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; o
 				tabs.map(({ key, icon }) => (
 					<Pressable
 						key={key}
-						style={[homeStyles.navButton, activeTab === key && homeStyles.navButtonActive]}
+						style={[styles.navButton, activeTab === key && styles.navButtonActive]}
 						onPress={() => onSelect(key)}
 					>
 						{icon}
 
-						{activeTab === key && <View style={homeStyles.navIndicator} />}
+						{activeTab === key && <View style={styles.navIndicator} />}
 					</Pressable>
 				))}
 		</LiquidGlass>
