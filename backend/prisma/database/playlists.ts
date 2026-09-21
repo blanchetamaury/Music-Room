@@ -69,7 +69,18 @@ const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
 	return prisma.playlist.findMany({
 		include: include,
 		where: {
-			ownerId: ownerId,
+			OR: [
+				{
+					ownerId: ownerId,
+				},
+				{
+					user: {
+						some: {
+							id: ownerId,
+						},
+					},
+				},
+			],
 		},
 	});
 };
