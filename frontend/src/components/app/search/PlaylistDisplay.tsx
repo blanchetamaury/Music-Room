@@ -27,22 +27,12 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function PlaylistDisplay(props : PlaylistProps) {
-
+export function PlaylistDisplay(props: PlaylistProps) {
 	return (
-		<Pressable
-			onPress={props.onPress}
-			style={[style.wrapper, debugBox('#ff0000')]}
-		>
+		<Pressable onPress={props.onPress} style={[style.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
-				style={[
-					style.playlistCard,
-					debugBox('#ff8800'),
-				]}
-				contentStyle={[
-					style.playlistCardContent,
-					debugBox('#00ff00'),
-				]}
+				style={[style.playlistCard, debugBox('#ff8800')]}
+				contentStyle={[style.playlistCardContent, debugBox('#00ff00')]}
 				intensity={18}
 				radius={16}
 				topLeftRadius={16}
@@ -50,30 +40,20 @@ export function PlaylistDisplay(props : PlaylistProps) {
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
-				<ThemedText
-					style={[
-						style.playlistTitle,
-						debugBox('#ffff00'),
-					]}
-				>
-					{props.title}
-				</ThemedText>
+				<ThemedText style={[style.playlistTitle, debugBox('#ffff00')]}>{props.title}</ThemedText>
 
-				<View
-					style={[
-						style.lowerPart,
-						debugBox('#0088ff'),
-					]}
-				>
-					<View style={[style.playlistCover, debugBox('#00ffff'), {backgroundColor: `${props.backgroundColorCover}`} ]}>
+				<View style={[style.lowerPart, debugBox('#0088ff')]}>
+					<View
+						style={[
+							style.playlistCover,
+							debugBox('#00ffff'),
+							{ backgroundColor: `${props.backgroundColorCover}` },
+						]}
+					>
 						{props.children}
 					</View>
 
-					<ThemedText
-						style={debugBox('#ff00ff')}
-					>
-						{props.size}
-					</ThemedText>
+					<ThemedText style={debugBox('#ff00ff')}>{props.size}</ThemedText>
 				</View>
 			</LiquidGlass>
 		</Pressable>

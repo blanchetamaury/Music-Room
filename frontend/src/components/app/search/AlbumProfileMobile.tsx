@@ -1,13 +1,8 @@
 import { Clock3 } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import {
-	Image,
-	Pressable,
-	ScrollView,
-	View
-} from 'react-native';
+import { Image, Pressable, ScrollView, View } from 'react-native';
 
-import { api } from '@/src/lib/api/client';
+import { api } from '@/src/lib/fetcher/api/client';
 import { outputAPITrack } from '@/src/types/album/album';
 import { DeezerAlbum } from '@/src/types/deezer/deezer';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
@@ -15,7 +10,7 @@ import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 import { ThemedText } from '../../themed-text';
 import { HoverText } from '../../ui/hoverText';
 import { SeparatorFull } from '../../ui/separator';
-import { styles } from './AlbumProfileMobileStyle';
+import { styles } from './styles/AlbumProfileMobileStyle';
 
 interface AlbumProfileProps {
 	id: string;
@@ -113,7 +108,7 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 	const releaseDate = tracks[0]?.releaseDate;
 	const albumArtist = getAlbumArtist(album, tracks);
 
-	console.log("[AlbumProfileMobile] albumArtis: ", JSON.stringify(albumArtist));
+	console.log('[AlbumProfileMobile] albumArtis: ', JSON.stringify(albumArtist));
 
 	return (
 		<View style={[styles.container, debugBox('#ff0000')]}>
@@ -126,27 +121,17 @@ export function AlbumProfileMobile({ id, onArtistPress, onSongPress }: AlbumProf
 					)}
 				</View>
 
-				<View
-					style={[
-						styles.albumInfo,
-						debugBox('#0044ff'),
-					]}
-				>
-					<ScrollingTitle
-						title={album.title ?? 'Album'}
-					/>
+				<View style={[styles.albumInfo, debugBox('#0044ff')]}>
+					<ScrollingTitle title={album.title ?? 'Album'} />
 
 					{albumArtist?.name && albumArtist.deezerCUID && (
 						<HoverText
-							style={[
-								styles.albumArtist,
-								debugBox('#ffef08'),
-							]}
+							style={[styles.albumArtist, debugBox('#ffef08')]}
 							onPress={() => {
 								onArtistPress?.(String(albumArtist.deezerCUID ?? albumArtist.id ?? ''));
 							}}
 						>
-							{"Need to fix"}
+							{'Need to fix'}
 						</HoverText>
 					)}
 
@@ -323,11 +308,8 @@ function ScrollingTitle({ title }: { title: string }) {
 	);
 }
 
-function getAlbumArtist(
-	album: DeezerAlbum,
-	tracks: outputAPITrack[],
-) {
-	console.log("Help: ", JSON.stringify(album, null, 2));
+function getAlbumArtist(album: DeezerAlbum, tracks: outputAPITrack[]) {
+	console.log('Help: ', JSON.stringify(album, null, 2));
 	const albumWithArtist = album as DeezerAlbum & {
 		artist?: {
 			id?: string | number;

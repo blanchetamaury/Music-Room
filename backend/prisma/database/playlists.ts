@@ -1,6 +1,8 @@
 import { CreatePlaylist } from '@/types/playlist/Playlist';
 import { Prisma } from '../generated/client';
 import { prisma } from './prisma';
+import { PaginationParameters } from '@/types/pagination/PaginationParameters';
+import { DEFAULT_PAGINATION, paginationToPrisma } from '@/utils/pagination';
 
 const createOrUpdatePlaylist = async (
 	data: CreatePlaylist,
@@ -65,6 +67,7 @@ const getPlaylist = async  <T extends Prisma.PlaylistInclude>(
 const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
 	ownerId: string,
 	include: T,
+	pagination?: PaginationParameters
 ): Promise<Prisma.PlaylistGetPayload<{ include : T }>[]> => {
 	return prisma.playlist.findMany({
 		include: include,
@@ -82,6 +85,7 @@ const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
 				},
 			],
 		},
+		...paginationToPrisma(pagination ?? DEFAULT_PAGINATION),
 	});
 };
 

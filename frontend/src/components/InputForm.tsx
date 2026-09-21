@@ -1,14 +1,5 @@
-
 import { useState } from 'react';
-import {
-	Platform,
-	StyleProp,
-	StyleSheet,
-	TextInput,
-	useColorScheme,
-	View,
-	ViewStyle,
-} from 'react-native';
+import { Platform, StyleProp, StyleSheet, TextInput, useColorScheme, View, ViewStyle } from 'react-native';
 
 import { ThemedText } from './themed-text';
 
@@ -25,15 +16,11 @@ export function InputForm(props: InputFormProps) {
 	const colorScheme = useColorScheme();
 
 	const [touched, settouched] = useState(false);
-	const [emailFocused, setEmailFocused] =
-		useState(false);
+	const [emailFocused, setEmailFocused] = useState(false);
 
-	const emailRegex =
-		/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-	const isEmailValid = emailRegex.test(
-		props.inputValue,
-	);
+	const isEmailValid = emailRegex.test(props.inputValue);
 
 	return (
 		<>
@@ -41,52 +28,34 @@ export function InputForm(props: InputFormProps) {
 				style={[
 					styles.inputWrapper,
 					props.style,
-					props.isEmail &&
-						touched &&
-						!isEmailValid &&
-						!emailFocused &&
-						styles.inputInvalid,
+					props.isEmail && touched && !isEmailValid && !emailFocused && styles.inputInvalid,
 				]}
 			>
 				<TextInput
 					placeholder={props.placeholder}
-					placeholderTextColor={
-						colorScheme === 'light'
-							? '#48494b'
-							: '#D1D5D8'
-					}
+					placeholderTextColor={colorScheme === 'light' ? '#48494b' : '#D1D5D8'}
 					value={props.inputValue}
 					onChangeText={(text) => {
 						props.setInputValue(text);
 						if (props.setError) props.setError(null);
 					}}
-					onFocus={() =>
-						setEmailFocused(true)
-					}
+					onFocus={() => setEmailFocused(true)}
 					onBlur={() => {
 						setEmailFocused(false);
 						settouched(true);
 					}}
-					keyboardType={
-						props.isEmail
-							? 'email-address'
-							: 'default'
-					}
+					keyboardType={props.isEmail ? 'email-address' : 'default'}
 					autoCapitalize="none"
 					underlineColorAndroid="transparent"
 					style={[
 						styles.input,
 						{
-							color:
-								colorScheme === 'light'
-									? '#000000'
-									: '#ffffff',
+							color: colorScheme === 'light' ? '#000000' : '#ffffff',
 						},
 						Platform.OS === 'web'
 							? ({
 									outlineWidth: 0,
-									outlineColor:
-										'transparent',
+									outlineColor: 'transparent',
 									outlineStyle: 'none',
 								} as any)
 							: null,
@@ -95,14 +64,9 @@ export function InputForm(props: InputFormProps) {
 				/>
 			</View>
 
-			{touched &&
-				!isEmailValid &&
-				!emailFocused &&
-				props.isEmail && (
-					<ThemedText style={styles.error}>
-						Invalid email address
-					</ThemedText>
-				)}
+			{touched && !isEmailValid && !emailFocused && props.isEmail && (
+				<ThemedText style={styles.error}>Invalid email address</ThemedText>
+			)}
 		</>
 	);
 }

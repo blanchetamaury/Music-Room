@@ -1,20 +1,23 @@
 import { outputAPIAlbum } from '@/src/types/album/album';
 import { ApiResponse } from '@/src/types/api/ApiResponse';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { DeezerArtist } from '@/src/types/deezer/deezer';
+import { PaginationResponse } from '@/src/types/pagination/PaginationResponse';
+import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
+import { Track } from '@/src/types/track/track';
 import { privateUser } from '@/src/types/user/PrivateUser';
 import { Like } from '@/src/types/user/like';
-import { auth } from './auth';
-import { Track } from '@/src/types/track/track';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
-import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Platform } from 'react-native';
+import { auth } from './auth';
+
+export type { DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/types/deezer/deezer';
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
 	const url = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
 
 	const headers: HeadersInit = {
 		'Content-Type': 'application/json',
-		...(Platform.OS === 'web' ? {'X-Client-Type': 'web'} : {'X-Client-Type': 'android'}),
+		...(Platform.OS === 'web' ? { 'X-Client-Type': 'web' } : { 'X-Client-Type': 'android' }),
 		...options.headers,
 	};
 
@@ -42,8 +45,8 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
 export const api = {
 	auth: auth,
 	user: {
-		me: () => {
-			return fetchApi<privateUser>(`/user/me`);
+		me: (token?: string) => {
+			return fetchApi<privateUser>(`/user/me`, token ? { headers: { Authorization: `Bearer ${token}` } } : {});
 		},
 		playlist: {
 			create: (name: string, cover: string, description: string, privatePlaylist: boolean, token: string) => {
@@ -58,10 +61,13 @@ export const api = {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},
-			playlists: (token: string) => {
-				return fetchApi<PlaylistOutput[]>(`/user/playlist/playlists`, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
+			playlists: (token: string, pageParam = 1) => {
+				return fetchApi<PaginationResponse<PlaylistOutput>>(
+					`/user/playlist/playlists?page=${pageParam}&limit=5`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
 			},
 			addMusic: (token: string, playlistId: string, trackId: string) => {
 				return fetchApi<{ success: boolean; status: number }>(`/user/playlist/addMusic`, {
@@ -72,19 +78,12 @@ export const api = {
 					}),
 					headers: { Authorization: `Bearer ${token}` },
 				});
-			}
-		}, 
-		like: {
-			create: (trakcId: string, token: string) => {
-				return fetchApi<{ success: boolean; status: number }>(`/user/like/create?track_id=${trakcId}`, {
-					method: 'POST',
-					body: JSON.stringify({}),
-					headers: { Authorization: `Bearer ${token}` },
-				});
 			},
-			delete: (trakcId: string, token: string) => {
-				return fetchApi<{ success: boolean; status: number }>(`/user/like/delete?track_id=${trakcId}`, {
-					method: 'DELETE',
+		},
+		like: {
+			manage: (trakcId: string, token: string) => {
+				return fetchApi<{ success: boolean; status: number }>(`/user/like/manage?track_id=${trakcId}`, {
+					method: 'POST',
 					body: JSON.stringify({}),
 					headers: { Authorization: `Bearer ${token}` },
 				});

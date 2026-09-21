@@ -2,7 +2,7 @@ import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { api } from '../../lib/api/client';
+import { api } from '../../lib/fetcher/api/client';
 import { InputForm } from '../InputForm';
 import { InputPasswordForm } from '../InputPasswordForm';
 import LiquidGlass from '../LiquidGlass';

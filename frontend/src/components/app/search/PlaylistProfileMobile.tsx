@@ -1,25 +1,13 @@
-import {
-	Eye,
-	EyeClosed,
-} from 'lucide-react-native';
+import { Eye, EyeClosed } from 'lucide-react-native';
 import React, { useState } from 'react';
-import {
-	Image,
-	Pressable,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { InputForm } from '../../InputForm';
 import { ThemedText } from '../../themed-text';
+import { useCreatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
+import { useAuth } from '@/src/context/AuthContext';
 
 interface PlaylistProfileMobileProps {
-	addPlaylistToDb: (
-		name: string,
-		description: string,
-		imageUrl: string,
-		visibility: boolean,
-	) => void;
 	setPopup: (value: null) => void;
 }
 
@@ -37,133 +25,64 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function PlaylistProfileMobile({
-	addPlaylistToDb,
-	setPopup,
-}: PlaylistProfileMobileProps) {
-	const [playlistName, setPlaylistName] =
-		useState('');
-	const [playlistDescription, setPlaylistDescription] =
-		useState('');
+export function PlaylistProfileMobile({ setPopup }: PlaylistProfileMobileProps) {
+	const [playlistName, setPlaylistName] = useState('');
+	const [playlistDescription, setPlaylistDescription] = useState('');
 	const [urlImage, setUrlImage] = useState('');
-	const [visibilityPlaylist, setVisibilityPlaylist] =
-		useState(false);
+	const [visibilityPlaylist, setVisibilityPlaylist] = useState(false);
+	const createPlaylistMutation = useCreatePlaylistMutation();
+	const { token } = useAuth();
 
 	const handleAddPlaylist = () => {
-		addPlaylistToDb(
-			playlistName,
-			playlistDescription,
-			urlImage,
-			visibilityPlaylist,
-		);
+		createPlaylistMutation.mutate({
+			name: playlistName,
+			cover: urlImage,
+			description: playlistDescription,
+			privatePlaylist: visibilityPlaylist,
+			token: token ?? '',
+		});
 
 		setPopup(null);
 	};
 
 	return (
-		<View
-			style={[
-				styles.container,
-				debugBox('#ff0000'),
-			]}
-		>
-			<View
-				style={[
-					styles.leftColumn,
-					debugBox('#ff8800'),
-				]}
-			>
-				<View
-					style={[
-						styles.imageContainer,
-						debugBox('#00ffff'),
-					]}
-				>
+		<View style={[styles.container, debugBox('#ff0000')]}>
+			<View style={[styles.leftColumn, debugBox('#ff8800')]}>
+				<View style={[styles.imageContainer, debugBox('#00ffff')]}>
 					{urlImage ? (
-						<Image
-							source={{ uri: urlImage }}
-							resizeMode="cover"
-							style={styles.image}
-						/>
+						<Image source={{ uri: urlImage }} resizeMode="cover" style={styles.image} />
 					) : (
-						<View
-							style={
-								styles.imagePlaceholder
-							}
-						>
-							<ThemedText
-								style={
-									styles.placeholderText
-								}
-							>
-								No image
-							</ThemedText>
+						<View style={styles.imagePlaceholder}>
+							<ThemedText style={styles.placeholderText}>No image</ThemedText>
 						</View>
 					)}
 				</View>
 
-				<View
-					style={[
-						styles.visibility,
-						debugBox('#0088ff'),
-					]}
-				>
-					<ThemedText
-						style={styles.visibilityText}
-					>
-						{visibilityPlaylist
-							? 'Public'
-							: 'Private'}
-					</ThemedText>
+				<View style={[styles.visibility, debugBox('#0088ff')]}>
+					<ThemedText style={styles.visibilityText}>{visibilityPlaylist ? 'Public' : 'Private'}</ThemedText>
 
 					<Pressable
 						style={[
 							styles.visibilityButton,
-							visibilityPlaylist &&
-								styles.visibilityButtonActive,
+							visibilityPlaylist && styles.visibilityButtonActive,
 							debugBox('#ff00ff'),
 						]}
-						onPress={() =>
-							setVisibilityPlaylist(
-								!visibilityPlaylist,
-							)
-						}
+						onPress={() => setVisibilityPlaylist(!visibilityPlaylist)}
 					>
 						{visibilityPlaylist ? (
-							<Eye
-								size={20}
-								color="#ffffff"
-							/>
+							<Eye size={20} color="#ffffff" />
 						) : (
-							<EyeClosed
-								size={20}
-								color="#ffffff"
-							/>
+							<EyeClosed size={20} color="#ffffff" />
 						)}
 					</Pressable>
 				</View>
 
-				<Pressable
-					style={[
-						styles.addButton,
-						debugBox('#00ff88'),
-					]}
-					onPress={handleAddPlaylist}
-				>
-					<ThemedText
-						style={styles.addText}
-					>
-						ADD
-					</ThemedText>
+				<Pressable style={[styles.addButton, debugBox('#00ff88')]} onPress={handleAddPlaylist}>
+					<ThemedText style={styles.addText}>ADD</ThemedText>
 				</Pressable>
 			</View>
 
-			<View
-				style={[
-					styles.form,
-					debugBox('#00ff00'),
-				]}
-			>
+			<View style={[styles.form, debugBox('#00ff00')]}>
 				<InputForm
 					isEmail={false}
 					placeholder="Playlist name"
@@ -171,17 +90,15 @@ export function PlaylistProfileMobile({
 					setInputValue={setPlaylistName}
 					style={styles.inputForm}
 				/>
-		
+
 				<InputForm
 					isEmail={false}
 					placeholder="Description"
 					inputValue={playlistDescription}
-					setInputValue={
-						setPlaylistDescription
-					}
+					setInputValue={setPlaylistDescription}
 					style={styles.inputForm}
 				/>
-		
+
 				<InputForm
 					isEmail={false}
 					placeholder="Image Url"

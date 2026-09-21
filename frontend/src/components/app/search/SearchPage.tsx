@@ -1,136 +1,73 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
-
-import { api } from '@/src/lib/api/client';
-import { setTracks } from '@/src/utils/debug';
 import LiquidGlass from '../../LiquidGlass';
 import { ThemedText } from '../../themed-text';
 import { Popup } from '../../ui/Popup';
 import { SeparatorFull } from '../../ui/separator';
 import { homeStyles } from '../home.styles';
-
 import { useAuth } from '@/src/context/AuthContext';
+import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
-import { Like } from '@/src/types/user/like';
 import { Heart } from 'lucide-react-native';
 import { AlbumProfileMobile } from './AlbumProfileMobile';
 import { ArtistProfileMobile } from './ArtisteProfileMobile';
 import { PlaylistDisplay } from './PlaylistDisplay';
 import { PlaylistProfileMobile } from './PlaylistProfileMobile';
-import { styles } from './SearchPageStyle';
+import { styles } from './styles/SearchPageStyle';
 import { SongDisplayMobile } from './SongDisplayMobile';
 import { SongProfileMobile } from './SongProfileMobile';
 
-interface ApiResponse<T> {
-	success: boolean;
-	message?: string;
-	data?: T;
-}
-
 interface SearchPageProps {
-	onNavigateHome?: (playlistId: number) => void;
 	onPlayTrack?: (track: OutputTrackDeezer) => void;
 }
 
 type PopupState =
-	| {
-			type: 'song';
-			song: OutputTrackDeezer;
-	  }
-	| {
-			type: 'artist';
-			id: string;
-	  }
-	| {
-			type: 'album';
-			id: string;
-	  }
-	| {
-			type: 'addPlaylist';
-			id: string;
-	  }
+	| { type: 'song'; song: OutputTrackDeezer }
+	| { type: 'artist'; id: string }
+	| { type: 'album'; id: string }
+	| { type: 'addPlaylist'; id: string }
 	| null;
 
-export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
-	const [query, setQuery] = useState('');
-	const [tracks, setTracksState] = useState<OutputTrackDeezer[]>([]);
-	const [tracksLoading, setTracksLoading] = useState(true);
-	const [popup, setPopup] = useState<PopupState>(null);
-	const [urlImage, setUrlImage] = useState<string>('');
-	const [visibilityPlaylist, setVisibilityPlaylist] = useState<boolean>(false);
-	const [playlistName, setPlaylistName] = useState<string>('');
-	const [playlistDescription, setPlaylistDescription] = useState<string>('');
+const SEARCH_DEBOUNCE_MS = 200;
+const MIN_SEARCH_LENGTH = 2;
+const TOP_MUSIC_LIMIT = 50;
+const SEARCH_LIMIT = 20;
+
+export function SearchPage({ onPlayTrack }: SearchPageProps) {
 	const { token } = useAuth();
-	const [likes, setLikes] = useState<Like[]>();
-	const [newLike, setNewLike] = useState<boolean>(false);
-	const [playlists, setPlaylists] = useState<PlaylistOutput[]>();
+
+	const [query, setQuery] = useState('');
+	const [debouncedQuery, setDebouncedQuery] = useState('');
+	const [popup, setPopup] = useState<PopupState>(null);
 
 	useEffect(() => {
-		const listLike = async () => {
-			const value = await api.user.like.likes(token ?? '');
-			if (value.data) setLikes(value.data);
-			setNewLike(false);
-		};
-
-		const listPlaylist = async () => {
-			const value = await api.user.playlist.playlists(token ?? '');
-			if (value.data)
-				setPlaylists(value.data);
-		}
-
-		listLike();
-		listPlaylist();
-	}, [newLike, token]);
-
-	useEffect(() => {
-		const timeout = setTimeout(async () => {
-			try {
-				setTracksLoading(true);
-
-				const value = query.trim();
-
-				let data: ApiResponse<OutputTrackDeezer[]>;
-
-				if (value.length < 2) {
-					data = await api.deezer.music.top_music(50);
-				} else {
-					data = await api.deezer.search(value, 20);
-				}
-
-				if (!data.data) {
-					setTracksState([]);
-					setTracks([]);
-					return;
-				}
-
-				setTracksState(data.data);
-				setTracks(data.data);
-			} catch (error) {
-				console.error('[SearchPage] search failed', error);
-			} finally {
-				setTracksLoading(false);
-			}
-		}, 200);
+		const timeout = setTimeout(() => {
+			setDebouncedQuery(query.trim());
+		}, SEARCH_DEBOUNCE_MS);
 
 		return () => clearTimeout(timeout);
 	}, [query]);
 
-	const addPlaylistToDb = async () => {
-		const data = await api.user.playlist.create(
-			playlistName,
-			urlImage,
-			playlistDescription,
-			visibilityPlaylist,
-			token ?? ''
-		);
-		if (data.success) {
-			setUrlImage('');
-			setPlaylistName('');
-			setPlaylistDescription('');
-		}
-	};
+	const isSearching = debouncedQuery.length >= MIN_SEARCH_LENGTH;
+
+	const { data: playlistsData, error: playlistsError } = usePlaylistsInfiniteQuery(token ?? '');
+	const { data: likesData, error: likesError } = useLikesQuery(token ?? '');
+	const { data: topMusicData, isLoading: topMusicLoading } = useTopMusicQuery(TOP_MUSIC_LIMIT);
+	const { data: searchData, isLoading: searchLoading } = useSearchQuery(debouncedQuery, SEARCH_LIMIT);
+
+	if (playlistsError) console.error('[SearchPage] playlists query failed', playlistsError);
+	if (likesError) console.error('[SearchPage] likes query failed', likesError);
+
+	useEffect(() => {
+		console.log('topMusicData:', topMusicData);
+		console.log('searchData:', searchData);
+	}, [topMusicData, searchData]);
+
+	const tracks = isSearching ? (searchData ?? []) : (topMusicData ?? []);
+	const tracksLoading = isSearching ? searchLoading : topMusicLoading;
+	const playlists = playlistsData?.pages.flatMap((page) => page.data ?? []) ?? [];
 
 	return (
 		<View style={styles.searchRoot}>
@@ -157,11 +94,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 						autoCorrect={false}
 						selectionColor="rgba(255,255,255,0.7)"
 						underlineColorAndroid="transparent"
-						{...(Platform.OS === 'web'
-							? ({
-									outlineStyle: 'none',
-								} as any)
-							: {})}
+						{...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : {})}
 					/>
 				</LiquidGlass>
 
@@ -171,16 +104,12 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 					<ThemedText style={homeStyles.sectionTitle}>Playlists</ThemedText>
 					<Pressable
 						style={homeStyles.sectionTitle}
-						onPress={() =>
-							setPopup({
-								type: 'addPlaylist',
-								id: '',
-							})
-						}
+						onPress={() => setPopup({ type: 'addPlaylist', id: '' })}
 					>
 						<ThemedText style={homeStyles.sectionTitle}>ADD playlists</ThemedText>
 					</Pressable>
 				</View>
+
 				<View style={styles.playlistContainer}>
 					<ScrollView
 						horizontal
@@ -188,14 +117,15 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 						bounces={false}
 						contentContainerStyle={styles.playlistContent}
 					>
-						{likes != undefined && (
+						{likesData !== undefined && (
 							<View style={styles.playlistItem}>
-								<PlaylistDisplay title="Likes" size={likes.length} backgroundColorCover="#2825c98a">
-									<Heart color={'#fff'} fill={'#fff'}></Heart>
+								<PlaylistDisplay title="Likes" size={likesData.length} backgroundColorCover="#2825c98a">
+									<Heart color="#fff" fill="#fff" />
 								</PlaylistDisplay>
 							</View>
 						)}
-						{playlists && playlists.map((playlist) => (
+
+						{playlists.map((playlist: PlaylistOutput) => (
 							<View key={playlist.id} style={styles.playlistItem}>
 								<PlaylistDisplay
 									id={playlist.id}
@@ -205,10 +135,8 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 								>
 									<Image
 										style={{ height: 64, width: 64, borderRadius: 12 }}
-										source={{
-											uri: playlist.cover,
-										}}
-									></Image>
+										source={{ uri: playlist.cover }}
+									/>
 								</PlaylistDisplay>
 							</View>
 						))}
@@ -221,10 +149,9 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 
 				<View style={styles.songSection}>
 					<View style={styles.songListShell}>
-						{tracksLoading ? (
+						{tracksLoading && tracks.length == 0 ? (
 							<View style={styles.loadingContainer}>
 								<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
-
 								<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
 							</View>
 						) : (
@@ -236,15 +163,9 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 							>
 								{tracks.map((song, index) => (
 									<SongDisplayMobile
-										key={`${song.deezerCUID}-${song.deezerCUID}-${index}`}
+										key={`${song.deezerCUID}-${index}`}
 										song={song}
-										onPress={() =>
-											setPopup({
-												type: 'song',
-												song,
-											})
-										}
-										onLike={setNewLike}
+										onPress={() => setPopup({ type: 'song', song })}
 										playlists={playlists}
 									/>
 								))}
@@ -260,6 +181,7 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 					</View>
 				</View>
 			</View>
+
 			{popup && (
 				<Popup onClose={() => setPopup(null)}>
 					{popup.type === 'song' && (
@@ -269,63 +191,28 @@ export function SearchPage({ onNavigateHome, onPlayTrack }: SearchPageProps) {
 								onPlayTrack?.(popup.song);
 								setPopup(null);
 							}}
-							onArtistPress={(artistId) =>
-								setPopup({
-									type: 'artist',
-									id: String(artistId),
-								})
-							}
-							onAlbumPress={(albumId) =>
-								setPopup({
-									type: 'album',
-									id: String(albumId),
-								})
-							}
+							onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
+							onAlbumPress={(albumId) => setPopup({ type: 'album', id: String(albumId) })}
 						/>
 					)}
 
 					{popup.type === 'artist' && (
 						<ArtistProfileMobile
 							id={popup.id}
-							onSongPress={(song) =>
-								setPopup({
-									type: 'song',
-									song,
-								})
-							}
-							onAlbumPress={(album) =>
-								setPopup({
-									type: 'album',
-									id: String(album.id),
-								})
-							}
+							onSongPress={(song) => setPopup({ type: 'song', song })}
+							onAlbumPress={(album) => setPopup({ type: 'album', id: String(album.id) })}
 						/>
 					)}
 
 					{popup.type === 'album' && (
 						<AlbumProfileMobile
 							id={popup.id}
-							onSongPress={(song) =>
-								setPopup({
-									type: 'song',
-									song,
-								})
-							}
-							onArtistPress={(artistId) =>
-								setPopup({
-									type: 'artist',
-									id: String(artistId),
-								})
-							}
+							onSongPress={(song) => setPopup({ type: 'song', song })}
+							onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
 						/>
 					)}
 
-					{popup.type === 'addPlaylist' && (
-						<PlaylistProfileMobile
-							addPlaylistToDb={addPlaylistToDb}
-							setPopup={setPopup}
-						/>
-					)}
+					{popup.type === 'addPlaylist' && <PlaylistProfileMobile setPopup={setPopup} />}
 				</Popup>
 			)}
 		</View>

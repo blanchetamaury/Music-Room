@@ -2,7 +2,7 @@ import { ChevronLeft } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
-import { api } from '../../lib/api/client';
+import { api } from '../../lib/fetcher/api/client';
 import { ThemedText } from '../themed-text';
 
 export function ConfirmMail({

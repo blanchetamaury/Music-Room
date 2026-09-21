@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
 	container: {
@@ -31,8 +31,7 @@ export const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 		borderRadius: 55,
-		backgroundColor:
-			'rgba(255,255,255,0.08)',
+		backgroundColor: 'rgba(255,255,255,0.08)',
 	},
 
 	artistInfo: {
@@ -89,8 +88,7 @@ export const styles = StyleSheet.create({
 	},
 
 	tabActive: {
-		backgroundColor:
-			'rgba(255,255,255,0.1)',
+		backgroundColor: 'rgba(255,255,255,0.1)',
 	},
 
 	tabText: {
