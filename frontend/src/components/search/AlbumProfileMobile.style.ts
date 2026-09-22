@@ -1,19 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-	container: {
-		width: '100%',
-		height: '100%',
-		padding: 28,
-	},
-
-	albumHeader: {
-		width: '100%',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 24,
-	},
-
+const cover = StyleSheet.create({
 	coverContainer: {
 		width: 150,
 		height: 150,
@@ -32,38 +19,21 @@ export const styles = StyleSheet.create({
 		borderRadius: 20,
 		backgroundColor: 'rgba(255,255,255,0.08)',
 	},
+});
+
+const album = StyleSheet.create({
+	albumHeader: {
+		width: '100%',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 24,
+	},
 
 	albumInfo: {
 		flex: 1,
 		minWidth: 0,
 		justifyContent: 'center',
 	},
-
-	titleWrapper: {
-		width: '100%',
-		overflow: 'hidden',
-	},
-
-	titleScrollContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	titleScrollCentered: {
-		justifyContent: 'flex-start',
-	},
-
-	titleContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-
-	titleDuplicate: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		marginLeft: 50,
-	},
-
 	albumTitle: {
 		fontSize: 26,
 		fontWeight: '700',
@@ -83,18 +53,9 @@ export const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		gap: 12,
 	},
+});
 
-	infoItem: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 5,
-	},
-
-	infoText: {
-		fontSize: 13,
-		color: 'rgba(255,255,255,0.6)',
-	},
-
+const track = StyleSheet.create({
 	trackHeader: {
 		width: '100%',
 		flexDirection: 'row',
@@ -160,6 +121,52 @@ export const styles = StyleSheet.create({
 		fontSize: 13,
 		color: 'rgba(255,255,255,0.4)',
 	},
+})
+
+const title = StyleSheet.create({
+	titleWrapper: {
+		width: '100%',
+		overflow: 'hidden',
+	},
+
+	titleScrollContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+
+	titleScrollCentered: {
+		justifyContent: 'flex-start',
+	},
+
+	titleContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+
+	titleDuplicate: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginLeft: 50,
+	},
+})
+
+
+export const styles = StyleSheet.create({
+	container: {
+		width: '100%',
+		height: '100%',
+		padding: 28,
+	},
+	infoItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 5,
+	},
+
+	infoText: {
+		fontSize: 13,
+		color: 'rgba(255,255,255,0.6)',
+	},
 
 	footer: {
 		width: '100%',
@@ -199,4 +206,8 @@ export const styles = StyleSheet.create({
 	loading: {
 		color: 'rgba(255,255,255,0.5)',
 	},
+	...cover,
+	...album,
+	...track,
+	...title,
 });

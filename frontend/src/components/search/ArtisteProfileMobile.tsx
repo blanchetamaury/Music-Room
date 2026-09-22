@@ -35,7 +35,6 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
 	const [albums, setAlbums] = useState<DeezerAlbum[]>([]);
 	const [activeTab, setActiveTab] = useState<ArtistTab>('tracks');
-
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -70,19 +69,8 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 					api.deezer.artistAlbums(id),
 				]);
 
-				console.log('[ArtistProfileMobile] top tracks response:', JSON.stringify(topTracksResponse, null, 2));
-
-				console.log('[ArtistProfileMobile] albums response:', JSON.stringify(albumsResponse, null, 2));
-
 				const artistTracks = topTracksResponse?.data ?? [];
-
 				const artistAlbums = albumsResponse?.data ?? [];
-
-				console.log('[ArtistProfileMobile] artist:', JSON.stringify(artistData, null, 2));
-
-				console.log('[ArtistProfileMobile] tracks:', JSON.stringify(artistTracks, null, 2));
-
-				console.log('[ArtistProfileMobile] albums:', JSON.stringify(artistAlbums, null, 2));
 
 				if (!isMounted) {
 					return;
@@ -130,7 +118,7 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 		);
 	}
 
-	const picture = artist.picture_medium ?? artist.picture_big ?? artist.picture ?? null;
+	const picture = artist.pictureMedium ?? artist.pictureBig ?? artist.pictureSmall ?? null;
 
 	return (
 		<View style={[styles.container, debugBox('#ff0000')]}>
@@ -153,9 +141,9 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 					</ThemedText>
 
 					<View style={[styles.artistStats, debugBox('#ff00ff')]}>
-						{artist.nb_fan != null && <InfoItem>{artist.nb_fan.toLocaleString()} fans</InfoItem>}
+						{artist.nbFan != null && <InfoItem>{artist.nbFan.toLocaleString()} fans</InfoItem>}
 
-						{artist.nb_fan != null && albums.length > 0 && <ThemedText style={styles.dot}>●</ThemedText>}
+						{artist.nbFan != null && albums.length > 0 && <ThemedText style={styles.dot}>●</ThemedText>}
 
 						<InfoItem>
 							{albums.length} {albums.length === 1 ? 'album' : 'albums'}
@@ -193,7 +181,7 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 						) : (
 							tracks.map((song, index) => (
 								<SongDisplayMobile
-									key={`${song.id}-${index}`}
+									key={`${song.deezerCUID}-${index}`}
 									song={song}
 									onPress={() => onSongPress?.(song)}
 								/>
@@ -209,7 +197,7 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 							<EmptyState text="Aucun album trouvé" />
 						) : (
 							albums.map((album, index) => (
-								<View key={`${album.id}-${index}`} style={debugBox('#ff8800')}>
+								<View key={`${album.deezerCUID}-${index}`} style={debugBox('#ff8800')}>
 									<AlbumDisplay album={album} onPress={() => onAlbumPress?.(album)} />
 								</View>
 							))
