@@ -36,6 +36,8 @@ export const styles = StyleSheet.create({
 		marginBottom: 26
 	},
 	coverContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
 		width: 132,
 		height: 132,
 		borderRadius: 16,

@@ -1,4 +1,4 @@
-import { homeStyles } from '@/src/app/(tabs)/styles/homes.styles';
+import { homeStyles } from '@/src/app/(tabs)/homes.styles';
 import { BottomNavigation, TabKey } from '@/src/components/home/BottomNavigation';
 import { PlayerCard } from '@/src/components/home/PlayerCard';
 import { HeaderSection } from '@/src/components/home/HeaderSection';

@@ -3,16 +3,20 @@ import { StyleSheet } from 'react-native';
 const playlist = StyleSheet.create({
 	playlistContainer: {
 		width: '100%',
-		height: 125
+		maxHeight: 125,
+		height: 125,
 	},
 	playlistContent: {
 		paddingHorizontal: 4,
 		gap: 10,
-		flexDirection: 'row' as const
+		flexDirection: 'row' as const,
+		maxHeight: 125,
+		height: 125,
 	},
 	playlistItem: {
-		height: '100%',
-		flexShrink: 0
+		flexShrink: 0,
+		maxHeight: 125,
+		height: 125,
 	},
 });
 
@@ -94,7 +98,7 @@ export const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 14,
 		fontWeight: '700',
-		marginBottom: 10
+		marginBottom: 10,
 	},
 	sectionHeader: {
 		flexDirection: 'row',

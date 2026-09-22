@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './PlaylistDisplay.styles';
+import { Plus } from 'lucide-react-native';
 
 interface PlaylistProps {
 	id?: string;
@@ -41,7 +42,6 @@ export function PlaylistDisplay(props: PlaylistProps) {
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
-				<ThemedText style={[styles.playlistTitle, debugBox('#ffff00')]}>{props.title}</ThemedText>
 
 				<View style={[styles.lowerPart, debugBox('#0088ff')]}>
 					<View
@@ -53,9 +53,31 @@ export function PlaylistDisplay(props: PlaylistProps) {
 					>
 						{props.children}
 					</View>
-
-					<ThemedText style={debugBox('#ff00ff')}>{props.size}</ThemedText>
+					<View style={{ flexDirection: 'column' }}>
+						<ThemedText style={[styles.playlistTitle, debugBox('#ffff00')]}>{props.title}</ThemedText>
+						<ThemedText style={debugBox('#ff00ff')}>{props.size}</ThemedText>
+					</View>
 				</View>
+			</LiquidGlass>
+		</View>
+	);
+}
+
+export function PlaylistDisplayAdd() {
+	return (
+		<View style={[styles.wrapper, debugBox('#ff0000')]}>
+			<LiquidGlass
+				style={[styles.playlistCard, debugBox('#ff8800')]}
+				contentStyle={[styles.playlistCardContent, { alignContent: 'center', alignItems: 'center', justifyContent: 'center' }, debugBox('#00ff00')]}
+				intensity={18}
+				radius={16}
+				topLeftRadius={16}
+				topRightRadius={16}
+				bottomLeftRadius={16}
+				bottomRightRadius={16}
+			>
+				<ThemedText style={[styles.playlistTitle, { fontSize: 20 }, debugBox('#ffff00')]}>playlists</ThemedText>
+				<Plus style={[styles.playlistTitle,  { width: 32, height: 32 }, debugBox('#ffff00')]}></Plus>
 			</LiquidGlass>
 		</View>
 	);

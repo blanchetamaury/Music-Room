@@ -4,7 +4,6 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { AuthProvider } from '../context/AuthContext';
 import { useColorScheme } from '../hooks/use-color-scheme.web';
 import { queryClient } from '../lib/fetcher/tanstack/query-client';
@@ -15,7 +14,6 @@ export const unstable_settings = {
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();
-
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaProvider>

@@ -2,16 +2,21 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
 	wrapper: {
-		flex: 1
+		display: 'flex',
+		flex: 1,
+		height: '100%',
 	},
 	playlistCard: {
+		display: 'flex',
 		flex: 1,
-		height: 120,
+		height: '100%',
 		width: 160
 	},
 	playlistCardContent: {
+		display: 'flex',
 		flex: 1,
 		padding: 12,
+		height: '100%',
 		flexDirection: 'column'
 	},
 	playlistTitle: {
