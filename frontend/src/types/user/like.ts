@@ -1,4 +1,4 @@
-import { outputAPIAlbum } from "../album/album";
+import { outputAPIAlbum } from '../album/album';
 
 export interface Like {
 	userId: string;

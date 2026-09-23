@@ -84,6 +84,13 @@ export const api = {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},
+			update: (token: string, playlistId: string, name: string) => {
+				return fetchApi<{ success: boolean }>(`/user/playlist/update`, {
+					method: 'PATCH',
+					body: JSON.stringify({ playlistId, name }),
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			},
 		},
 		like: {
 			manage: (trakcId: string, token: string) => {

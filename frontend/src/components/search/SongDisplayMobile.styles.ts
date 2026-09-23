@@ -2,12 +2,12 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
 	wrapper: {
-		width: '100%'
+		width: '100%',
 	},
 	songCard: {
 		width: '100%',
 		minHeight: 74,
-		backgroundColor: '#000000a1'
+		backgroundColor: '#000000a1',
 	},
 	songCardContent: {
 		minHeight: 74,
@@ -21,44 +21,44 @@ export const styles = StyleSheet.create({
 	songCover: {
 		width: 52,
 		height: 52,
-		borderRadius: 14,
-		flexShrink: 0
+		borderRadius: 6,
+		flexShrink: 0,
 	},
 	mainRow: {
 		flex: 1,
 		flexDirection: 'row',
-		minWidth: 0
+		minWidth: 0,
 	},
 	songInfo: {
 		flex: 3,
 		minWidth: 0,
 		flexShrink: 1,
-		justifyContent: 'flex-start'
+		justifyContent: 'flex-start',
 	},
 	songTitleRow: {
 		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
 		minWidth: 0,
-		marginBottom: 3
+		marginBottom: 3,
 	},
 	songTitle: {
 		minWidth: 0,
 		flexShrink: 1,
 		color: '#fff',
 		fontSize: 15,
-		fontWeight: '600'
+		fontWeight: '600',
 	},
 	explicitIcon: {
 		marginLeft: 5,
-		flexShrink: 0
+		flexShrink: 0,
 	},
 	songArtist: {
 		flex: 1,
 		minWidth: 0,
 		color: 'rgba(255,255,255,0.72)',
 		fontSize: 11,
-		lineHeight: 15
+		lineHeight: 15,
 	},
 	actions: {
 		flex: 1,
@@ -75,11 +75,11 @@ export const styles = StyleSheet.create({
 		height: 34,
 		alignItems: 'center',
 		justifyContent: 'center',
-		flexShrink: 0
+		flexShrink: 0,
 	},
 	backdrop: {
 		flex: 1,
-		backgroundColor: 'rgba(0,0,0,0.15)'
+		backgroundColor: 'rgba(0,0,0,0.15)',
 	},
 	dropdownMenu: {
 		position: 'absolute',
@@ -98,16 +98,16 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 		gap: 10,
 		paddingHorizontal: 14,
-		paddingVertical: 12
+		paddingVertical: 12,
 	},
 	menuItemText: {
 		color: '#fff',
-		fontSize: 14
+		fontSize: 14,
 	},
 	cover: {
 		width: 48,
 		height: 48,
 		borderRadius: 10,
-		marginRight: 14
+		marginRight: 14,
 	},
 });

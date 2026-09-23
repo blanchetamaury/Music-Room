@@ -10,6 +10,11 @@ export interface AddMusicToPlaylist {
 	trackId: string;
 }
 
+export interface UpdatePlaylist {
+	playlistId: string;
+	name: string;
+}
+
 export interface OutputPlaylist {
 	name: string;
 	cover: string;

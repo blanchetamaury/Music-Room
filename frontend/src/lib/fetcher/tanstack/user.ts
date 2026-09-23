@@ -88,6 +88,19 @@ export function useAddMusicMutation() {
 	});
 }
 
+export function useUpdatePlaylistMutation() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ token, playlistId, name }: { token: string; playlistId: string; name: string }) =>
+			api.user.playlist.update(token, playlistId, name).then(unwrapApiResponse),
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlists(variables.token) });
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlist(variables.token, variables.playlistId) });
+		},
+	});
+}
+
 export function useManageLikeMutation() {
 	const queryClient = useQueryClient();
 

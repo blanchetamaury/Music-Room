@@ -39,6 +39,7 @@ export async function GET(req: Request): Promise<Response> {
 				position: row.position,
 				added_at: row.addedAt,
 				trackId: row.trackId,
+				track: row.track,
 			})),
 		}));
 

@@ -4,64 +4,64 @@ export const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		padding: 28,
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	albumButton: {
 		width: '100%',
 		alignItems: 'center',
-		marginBottom: 20
+		marginBottom: 20,
 	},
 	albumTitle: {
 		fontSize: 16,
 		fontWeight: '500',
-		color: 'rgba(255,255,255,0.7)'
+		color: 'rgba(255,255,255,0.7)',
 	},
 	coverContainer: {
 		width: 220,
 		height: 220,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	cover: {
 		width: 220,
 		height: 220,
-		borderRadius: 20
+		borderRadius: 20,
 	},
 	titleContainer: {
 		width: '100%',
 		marginTop: 22,
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	scrollingTitleWrapper: {
 		width: '100%',
 		overflow: 'hidden',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	scrollingTitleCentered: {
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	titleScrollContent: {
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	titleScrollCentered: {
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	titleContent: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 8
+		gap: 8,
 	},
 	titleDuplicate: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 8,
-		marginLeft: 40
+		marginLeft: 40,
 	},
 	title: {
 		fontSize: 24,
 		fontWeight: '700',
-		color: '#fff'
+		color: '#fff',
 	},
 	artistsContainer: {
 		width: '100%',
@@ -73,16 +73,16 @@ export const styles = StyleSheet.create({
 	},
 	artistWrapper: {
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	artist: {
 		fontSize: 15,
-		color: 'rgba(255,255,255,0.65)'
+		color: 'rgba(255,255,255,0.65)',
 	},
 	artistSeparator: {
 		marginHorizontal: 5,
 		fontSize: 14,
-		color: 'rgba(255,255,255,0.35)'
+		color: 'rgba(255,255,255,0.35)',
 	},
 	actions: {
 		width: '100%',
@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
 		height: 42,
 		borderRadius: 21,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	playButton: {
 		width: 52,
@@ -118,15 +118,15 @@ export const styles = StyleSheet.create({
 	statItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 5
+		gap: 5,
 	},
 	statLabel: {
 		fontSize: 12,
-		color: 'rgba(255,255,255,0.55)'
+		color: 'rgba(255,255,255,0.55)',
 	},
 	statSeparator: {
 		width: 1,
 		height: 12,
-		backgroundColor: 'rgba(255,255,255,0.2)'
+		backgroundColor: 'rgba(255,255,255,0.2)',
 	},
 });

@@ -121,7 +121,7 @@ const track = StyleSheet.create({
 		fontSize: 13,
 		color: 'rgba(255,255,255,0.4)',
 	},
-})
+});
 
 const title = StyleSheet.create({
 	titleWrapper: {
@@ -148,8 +148,7 @@ const title = StyleSheet.create({
 		alignItems: 'center',
 		marginLeft: 50,
 	},
-})
-
+});
 
 export const styles = StyleSheet.create({
 	container: {

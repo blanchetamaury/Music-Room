@@ -50,19 +50,16 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 	};
 
 	return (
-		<AnimatedPressable
-			onPress={props.onPress}
-			style={[styles.wrapper, debugBox('#ff0000')]}
-		>
+		<AnimatedPressable onPress={props.onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.songCard, debugBox('#00ff00')]}
 				contentStyle={[styles.songCardContent, debugBox('#0000ff')]}
 				intensity={0}
-				radius={22}
-				topLeftRadius={20}
-				topRightRadius={20}
-				bottomLeftRadius={20}
-				bottomRightRadius={20}
+				radius={8}
+				topLeftRadius={8}
+				topRightRadius={8}
+				bottomLeftRadius={8}
+				bottomRightRadius={8}
 			>
 				<Image
 					source={{ uri: props.song.album.CoverMedium ?? '' }}

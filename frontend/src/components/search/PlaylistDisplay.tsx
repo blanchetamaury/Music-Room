@@ -10,6 +10,7 @@ interface PlaylistProps {
 	id?: string;
 	title?: string;
 	size?: number;
+	duration?: number;
 	backgroundColorCover: string;
 	children?: ReactNode;
 	onPress?: () => void;
@@ -30,19 +31,24 @@ const debugBox = (color: string) => {
 };
 
 export function PlaylistDisplay(props: PlaylistProps) {
+	const duration = props.duration ?? 0;
+	const durationLabel = `${Math.floor(duration / 60)}m ${(duration % 60).toString().padStart(2, '0')}s`;
 	return (
 		<View style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.playlistCard, debugBox('#ff8800')]}
-				contentStyle={[styles.playlistCardContent, {justifyContent: 'center', padding: 5 }, debugBox('#00ff00')]}
+				contentStyle={[
+					styles.playlistCardContent,
+					{ justifyContent: 'center', padding: 5 },
+					debugBox('#00ff00'),
+				]}
 				intensity={18}
-				radius={16}
-				topLeftRadius={16}
-				topRightRadius={16}
-				bottomLeftRadius={16}
-				bottomRightRadius={16}
+				radius={8}
+				topLeftRadius={8}
+				topRightRadius={8}
+				bottomLeftRadius={8}
+				bottomRightRadius={8}
 			>
-
 				<View style={[styles.lowerPart, debugBox('#0088ff')]}>
 					<View
 						style={[
@@ -53,9 +59,20 @@ export function PlaylistDisplay(props: PlaylistProps) {
 					>
 						{props.children}
 					</View>
-					<View style={{ flexDirection: 'column' }}>
+					<View style={{ flexDirection: 'column', flex: 1 }}>
 						<ThemedText style={[styles.playlistTitle, debugBox('#ffff00')]}>{props.title}</ThemedText>
-						<ThemedText style={debugBox('#ff00ff')}>{props.size}</ThemedText>
+						<View
+							style={{
+								flex: 1,
+								justifyContent: 'space-between',
+								flexDirection: 'row',
+								gap: 10,
+								padding: 5,
+							}}
+						>
+							<ThemedText style={styles.playlistSongCount}>{props.size} tracks</ThemedText>
+							<ThemedText style={styles.playlistSongCount}>{durationLabel}</ThemedText>
+						</View>
 					</View>
 				</View>
 			</LiquidGlass>
@@ -68,16 +85,20 @@ export function PlaylistDisplayAdd() {
 		<View style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.playlistCard, debugBox('#ff8800')]}
-				contentStyle={[styles.playlistCardContent, { alignItems: 'center', justifyContent: 'center', padding: 5 }, debugBox('#00ff00')]}
+				contentStyle={[
+					styles.playlistCardContent,
+					{ alignItems: 'center', justifyContent: 'center', padding: 5, width: '100%' },
+					debugBox('#00ff00'),
+				]}
 				intensity={18}
-				radius={16}
-				topLeftRadius={16}
-				topRightRadius={16}
-				bottomLeftRadius={16}
-				bottomRightRadius={16}
+				radius={8}
+				topLeftRadius={8}
+				topRightRadius={8}
+				bottomLeftRadius={8}
+				bottomRightRadius={8}
 			>
 				<ThemedText style={[styles.playlistTitle, { fontSize: 20 }, debugBox('#ffff00')]}>playlists</ThemedText>
-				<Plus style={[styles.playlistTitle,  { width: 16, height: 16 }, debugBox('#ffff00')]}></Plus>
+				<Plus style={[styles.playlistTitle, { width: 16, height: 16 }, debugBox('#ffff00')]}></Plus>
 			</LiquidGlass>
 		</View>
 	);

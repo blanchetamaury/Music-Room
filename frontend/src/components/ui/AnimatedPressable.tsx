@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-	Animated,
-	GestureResponderEvent,
-	Platform,
-	Pressable,
-	StyleProp,
-	ViewStyle,
-} from 'react-native';
+import { Animated, GestureResponderEvent, Platform, Pressable, StyleProp, ViewStyle } from 'react-native';
 
 interface AnimatedPressableProps {
 	children: React.ReactNode;
@@ -34,14 +27,22 @@ export function AnimatedPressable({ children, onPress, style }: AnimatedPressabl
 			onPress={onPress}
 			onPressIn={() => animateTo(0.97)}
 			onPressOut={() => animateTo(hovered ? 1.045 : 1)}
-			onHoverIn={Platform.OS === 'web' ? () => {
-				setHovered(true);
-				animateTo(1.010);
-			} : undefined}
-			onHoverOut={Platform.OS === 'web' ? () => {
-				setHovered(false);
-				animateTo(1);
-			} : undefined}
+			onHoverIn={
+				Platform.OS === 'web'
+					? () => {
+							setHovered(true);
+							animateTo(1.01);
+						}
+					: undefined
+			}
+			onHoverOut={
+				Platform.OS === 'web'
+					? () => {
+							setHovered(false);
+							animateTo(1);
+						}
+					: undefined
+			}
 			style={[style, { transform: [{ scale }] }]}
 		>
 			{children}

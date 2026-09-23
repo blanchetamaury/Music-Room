@@ -140,7 +140,7 @@ export function PlaylistLikeProfile({ setPopup, like }: PlaylistLikeProfileProps
 
 			<View style={styles.hero}>
 				<View style={styles.coverContainer}>
-					<Heart color="#fff" fill="#fff" style={{ width: '50%', height: '50%' }}/>
+					<Heart color="#fff" fill="#fff" style={{ width: '50%', height: '50%' }} />
 				</View>
 				<View style={styles.details}>
 					<ThemedText numberOfLines={2} style={styles.title}>
@@ -174,26 +174,30 @@ export function PlaylistLikeProfile({ setPopup, like }: PlaylistLikeProfileProps
 				</View>
 			) : (
 				<View style={styles.trackList}>
-					{like && like.map((track, index) => (
-						<View key={track.trackId} style={styles.trackRow}>
-							<View style={styles.trackNumber}>
-								<ThemedText style={styles.numberText}>{index + 1}</ThemedText>
+					{like &&
+						like.map((track, index) => (
+							<View key={track.trackId} style={styles.trackRow}>
+								<View style={styles.trackNumber}>
+									<ThemedText style={styles.numberText}>{index + 1}</ThemedText>
+								</View>
+								<View style={styles.trackIcon}>
+									{track.track.album.cover == null ? (
+										<Music2 color="rgba(255,255,255,0.65)" size={17} />
+									) : (
+										<Image
+											source={{ uri: track.track.album.cover }}
+											style={styles.trackIcon}
+										></Image>
+									)}
+								</View>
+								<View style={styles.trackInfo}>
+									<ThemedText numberOfLines={1} style={styles.trackTitle}>
+										{track.track.title}
+									</ThemedText>
+									<ThemedText style={styles.trackSubtitle}>Position {track.track.rank}</ThemedText>
+								</View>
 							</View>
-							<View style={styles.trackIcon}>
-								{track.track.album.cover == null ? (
-									<Music2 color="rgba(255,255,255,0.65)" size={17} />
-								) : (
-									<Image source={{ uri: track.track.album.cover }} style={styles.trackIcon}></Image>
-								)}
-							</View>
-							<View style={styles.trackInfo}>
-								<ThemedText numberOfLines={1} style={styles.trackTitle}>
-									{track.track.title}
-								</ThemedText>
-								<ThemedText style={styles.trackSubtitle}>Position {track.track.rank}</ThemedText>
-							</View>
-						</View>
-					))}
+						))}
 				</View>
 			)}
 		</ScrollView>

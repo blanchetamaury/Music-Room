@@ -3,37 +3,37 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
 	content: {
 		padding: 20,
-		paddingBottom: 28
+		paddingBottom: 28,
 	},
 	state: {
 		minHeight: 260,
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: 12,
-		padding: 24
+		padding: 24,
 	},
 	headerRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 20
+		marginBottom: 20,
 	},
 	headerLabel: {
 		color: 'rgba(255,255,255,0.58)',
 		fontSize: 25,
 		fontWeight: '700',
-		letterSpacing: 1.5
+		letterSpacing: 1.5,
 	},
 	iconButton: {
 		width: 36,
 		height: 36,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	hero: {
 		flexDirection: 'row',
 		gap: 16,
-		marginBottom: 26
+		marginBottom: 26,
 	},
 	coverContainer: {
 		alignItems: 'center',
@@ -42,47 +42,47 @@ export const styles = StyleSheet.create({
 		height: 132,
 		borderRadius: 16,
 		overflow: 'hidden',
-		backgroundColor: '#293052'
+		backgroundColor: '#293052',
 	},
 	cover: {
 		width: '100%',
-		height: '100%'
+		height: '100%',
 	},
 	coverPlaceholder: {
 		flex: 1,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	details: {
 		flex: 1,
 		justifyContent: 'center',
-		minWidth: 0
+		minWidth: 0,
 	},
 	title: {
 		color: '#ffffff',
 		fontSize: 23,
 		fontWeight: '700',
-		marginBottom: 8
+		marginBottom: 8,
 	},
 	description: {
 		color: 'rgba(255,255,255,0.65)',
 		fontSize: 13,
 		lineHeight: 19,
-		marginBottom: 14
+		marginBottom: 14,
 	},
 	metaRow: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		gap: 12
+		gap: 12,
 	},
 	metaItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 6
+		gap: 6,
 	},
 	metaText: {
 		color: 'rgba(255,255,255,0.65)',
-		fontSize: 15
+		fontSize: 15,
 	},
 	sectionHeader: {
 		flexDirection: 'row',
@@ -96,14 +96,14 @@ export const styles = StyleSheet.create({
 	sectionTitle: {
 		color: '#ffffff',
 		fontSize: 16,
-		fontWeight: '700'
+		fontWeight: '700',
 	},
 	sectionCount: {
 		color: 'rgba(255,255,255,0.5)',
-		fontSize: 12
+		fontSize: 12,
 	},
 	trackList: {
-		gap: 2
+		gap: 2,
 	},
 	trackRow: {
 		minHeight: 58,
@@ -115,11 +115,11 @@ export const styles = StyleSheet.create({
 	},
 	trackNumber: {
 		width: 22,
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	numberText: {
 		color: 'rgba(255,255,255,0.4)',
-		fontSize: 12
+		fontSize: 12,
 	},
 	trackIcon: {
 		width: 32,
@@ -131,31 +131,31 @@ export const styles = StyleSheet.create({
 	},
 	trackInfo: {
 		flex: 1,
-		minWidth: 0
+		minWidth: 0,
 	},
 	trackTitle: {
 		color: '#ffffff',
 		fontSize: 13,
-		fontWeight: '600'
+		fontWeight: '600',
 	},
 	trackSubtitle: {
 		color: 'rgba(255,255,255,0.45)',
 		fontSize: 11,
-		marginTop: 3
+		marginTop: 3,
 	},
 	emptyState: {
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: 10,
-		paddingVertical: 42
+		paddingVertical: 42,
 	},
 	mutedText: {
 		color: 'rgba(255,255,255,0.58)',
-		fontSize: 13
+		fontSize: 13,
 	},
 	errorText: {
 		color: '#ff9b9b',
-		fontSize: 13
+		fontSize: 13,
 	},
 	closeButton: {
 		paddingHorizontal: 18,
@@ -166,6 +166,6 @@ export const styles = StyleSheet.create({
 	closeButtonText: {
 		color: '#ffffff',
 		fontSize: 13,
-		fontWeight: '600'
+		fontWeight: '600',
 	},
 });

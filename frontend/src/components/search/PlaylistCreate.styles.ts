@@ -7,13 +7,13 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'flex-start',
 		gap: 25,
-		minWidth: 0
+		minWidth: 0,
 	},
 	leftColumn: {
 		width: 128,
 		flexShrink: 0,
 		alignItems: 'stretch',
-		gap: 12
+		gap: 12,
 	},
 	imageContainer: {
 		width: 128,
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
 	},
 	image: {
 		width: '100%',
-		height: '100%'
+		height: '100%',
 	},
 	imagePlaceholder: {
 		width: '100%',
@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
 	},
 	placeholderText: {
 		fontSize: 12,
-		color: 'rgba(255,255,255,0.35)'
+		color: 'rgba(255,255,255,0.35)',
 	},
 	visibility: {
 		width: '100%',
@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
 	visibilityText: {
 		fontSize: 12,
 		fontWeight: '600',
-		color: 'rgba(255,255,255,0.7)'
+		color: 'rgba(255,255,255,0.7)',
 	},
 	visibilityButton: {
 		width: 28,
@@ -65,18 +65,18 @@ export const styles = StyleSheet.create({
 		backgroundColor: 'rgba(255,255,255,0.08)',
 	},
 	visibilityButtonActive: {
-		backgroundColor: 'rgba(255,255,255,0.14)'
+		backgroundColor: 'rgba(255,255,255,0.14)',
 	},
 	form: {
 		flex: 1,
 		minWidth: 0,
 		flexShrink: 1,
-		gap: 10
+		gap: 10,
 	},
 	inputForm: {
 		borderRadius: 10,
 		backgroundColor: 'rgba(255,255,255,0.08)',
-		borderWidth: 1
+		borderWidth: 1,
 	},
 	addButton: {
 		width: '100%',
@@ -89,6 +89,39 @@ export const styles = StyleSheet.create({
 	addText: {
 		fontSize: 13,
 		fontWeight: '700',
-		color: '#000000'
+		color: '#000000',
+	},
+	stateContainer: {
+		padding: 32,
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: 12,
+	},
+	editContainer: {
+		padding: 24,
+		gap: 16,
+	},
+	editTitle: {
+		color: '#fff',
+		fontSize: 20,
+		fontWeight: '700',
+	},
+	editActions: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		gap: 10,
+	},
+	cancelButton: {
+		minHeight: 38,
+		paddingHorizontal: 16,
+		borderRadius: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'rgba(255,255,255,0.1)',
+	},
+	cancelText: {
+		color: '#fff',
+		fontSize: 13,
+		fontWeight: '600',
 	},
 });

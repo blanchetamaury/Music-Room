@@ -34,12 +34,14 @@ export function Popup({ children, onClose }: PopupProps) {
 					style={[
 						styles.content,
 						{
-							transform: [{
-								scale: progress.interpolate({
-									inputRange: [0, 1],
-									outputRange: [0.88, 1],
-								}),
-							}],
+							transform: [
+								{
+									scale: progress.interpolate({
+										inputRange: [0, 1],
+										outputRange: [0.88, 1],
+									}),
+								},
+							],
 						},
 					]}
 				>

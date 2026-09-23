@@ -52,6 +52,13 @@ const removeMusictoPlaylist = async (
 	});
 };
 
+const updatePlaylist = async (playlistId: string, ownerId: string, name: string) => {
+	return prisma.playlist.updateMany({
+		where: { id: playlistId, ownerId },
+		data: { name },
+	});
+};
+
 const getPlaylist = async <T extends Prisma.PlaylistInclude>(
 	playlistId: string,
 	include: T
@@ -89,4 +96,4 @@ const getPlaylists = async <T extends Prisma.PlaylistInclude>(
 	});
 };
 
-export { createOrUpdatePlaylist, addMusictoPlaylist, removeMusictoPlaylist, getPlaylists, getPlaylist };
+export { createOrUpdatePlaylist, updatePlaylist, addMusictoPlaylist, removeMusictoPlaylist, getPlaylists, getPlaylist };

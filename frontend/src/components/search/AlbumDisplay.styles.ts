@@ -5,13 +5,13 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		padding: 8,
-		borderRadius: 12
+		borderRadius: 12,
 	},
 	cover: {
 		width: 64,
 		height: 64,
 		borderRadius: 10,
-		marginRight: 14
+		marginRight: 14,
 	},
 	coverPlaceholder: {
 		width: 64,
@@ -22,16 +22,16 @@ export const styles = StyleSheet.create({
 	},
 	info: {
 		flex: 1,
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	title: {
 		fontSize: 15,
 		fontWeight: '600',
 		marginBottom: 4,
-		alignSelf: 'flex-start'
+		alignSelf: 'flex-start',
 	},
 	date: {
 		fontSize: 13,
-		color: 'rgba(255,255,255,0.5)'
+		color: 'rgba(255,255,255,0.5)',
 	},
 });

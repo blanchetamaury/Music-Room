@@ -1,44 +1,47 @@
 import { styles } from '@/src/app/(tabs)/SearchPage.styles';
+import { TabKey } from '@/src/components/home/BottomNavigation';
+import { WebHomeHeader } from '@/src/components/home/WebHomeHeader';
 import { AlbumProfileMobile } from '@/src/components/search/AlbumProfileMobile';
 import { ArtistProfileMobile } from '@/src/components/search/ArtisteProfileMobile';
 import { PlaylistCreate } from '@/src/components/search/PlaylistCreate';
-import { PlaylistDisplay, PlaylistDisplayAdd } from '@/src/components/search/PlaylistDisplay';
+import { PlaylistEdit } from '@/src/components/search/PlaylistEdit';
+import PlaylistList from '@/src/components/search/PlaylistList';
 import { PlaylistLikeProfile, PlaylistProfile } from '@/src/components/search/PlaylistProfile';
-import { SongDisplayMobile } from '@/src/components/search/SongDisplayMobile';
+import { SearchBar } from '@/src/components/search/SearchBar';
+import { SongList } from '@/src/components/search/SongList';
 import { SongProfileMobile } from '@/src/components/search/SongProfileMobile';
 import { AnimatedPressable } from '@/src/components/ui/AnimatedPressable';
-import FluidBackground, { FluidColors } from '@/src/components/ui/FluideBackground';
+import { FluidColors } from '@/src/components/ui/FluideBackground';
 import { Popup } from '@/src/components/ui/Popup';
-import { SeparatorFull } from '@/src/components/ui/separator';
-import LiquidGlass from '@/src/components/utils/LiquidGlass';
 import { ThemedText } from '@/src/components/utils/themed-text';
 import { ThemedView } from '@/src/components/utils/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
 import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
-import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Like } from '@/src/types/user/like';
-import { Heart } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Platform, ScrollView, TextInput, View, useWindowDimensions } from 'react-native';
+import { Image, ScrollView, View, useWindowDimensions } from 'react-native';
 
 interface SearchPageProps {
 	onPlayTrack?: (track: OutputTrackDeezer) => void;
+	setActiveTab: (value: TabKey) => void;
+	activeTab: TabKey;
 }
 
 const tabColors: Record<'search', FluidColors> = {
 	search: {
-		colour1: [0.00, 0.0, 0.0, 1],
+		colour1: [0.0, 0.0, 0.0, 1],
 		colour2: [0.02, 0.2, 0.35, 1],
 		colour3: [0.4, 0.4, 0.4, 1],
 	},
 };
 
-type PopupState =
+export type PopupState =
 	| { type: 'song'; song: OutputTrackDeezer }
 	| { type: 'artist'; id: string }
 	| { type: 'album'; id: string }
 	| { type: 'addPlaylist'; id: string }
+	| { type: 'editPlaylist'; id: string }
 	| { type: 'playlist'; id: string }
 	| { type: 'like'; like: Like[] | undefined }
 	| null;
@@ -48,7 +51,13 @@ const MIN_SEARCH_LENGTH = 2;
 const TOP_MUSIC_LIMIT = 50;
 const SEARCH_LIMIT = 20;
 
-export function SearchScreen({ onPlayTrack }: SearchPageProps) {
+function formatDuration(totalSeconds: number) {
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
+	return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+}
+
+export function SearchScreen(props: SearchPageProps) {
 	const { token } = useAuth();
 	const { width } = useWindowDimensions();
 
@@ -79,178 +88,107 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 		console.log('searchData:', searchData);
 	}, [topMusicData, searchData]);
 
-	const tracks = isSearching ? (searchData ?? []) : (topMusicData ?? []);
-	const tracksLoading = isSearching ? searchLoading : topMusicLoading;
 	const playlists = playlistsData?.pages.flatMap((page) => page.data ?? []) ?? [];
 	const likedAlbums = likesData
 		? Array.from(
-				new Map(
-					likesData
-						.filter((like) => like.track.album?.deezerCUID)
-						.map((like) => [like.track.album.deezerCUID, like.track.album])
-				)
-			).map(([, album]) => album)
+				likesData
+					.reduce((albums, like) => {
+						const album = like.track.album;
+						if (!album?.deezerCUID) return albums;
+
+						const current = albums.get(album.deezerCUID) ?? { album, likes: 0, duration: 0 };
+						current.likes += 1;
+						current.duration += like.track.duration ?? 0;
+						albums.set(album.deezerCUID, current);
+						return albums;
+					}, new Map<string, { album: NonNullable<Like['track']['album']>; likes: number; duration: number }>())
+					.values()
+			).sort((left, right) => right.likes - left.likes)
 		: [];
 	const showLikedAlbums = width >= 768;
 
 	return (
 		<ThemedView style={styles.root}>
-			<FluidBackground colors={tabColors['search']} />
 			<View style={styles.backgroundOverlay} />
-
 			<View style={styles.searchRoot}>
 				<View style={styles.searchContent}>
-					<LiquidGlass
-						style={styles.searchBar}
-						contentStyle={styles.searchBarContent}
-						intensity={30}
-						radius={16}
-						topLeftRadius={16}
-						topRightRadius={16}
-						bottomLeftRadius={16}
-						bottomRightRadius={16}
-						shimmer={false}
-						chromatic={false}
-					>
-						<TextInput
-							value={query}
-							onChangeText={setQuery}
-							placeholder="Search..."
-							placeholderTextColor="rgba(255,255,255,0.5)"
-							style={styles.searchInput}
-							autoCapitalize="none"
-							autoCorrect={false}
-							selectionColor="rgba(255,255,255,0.7)"
-							underlineColorAndroid="transparent"
-							{...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : {})}
+					<View style={styles.desktopLayout}>
+						<WebHomeHeader
+							activeTab={props.activeTab}
+							onSelect={props.setActiveTab}
+							setQuery={setQuery}
+							query={query}
 						/>
-					</LiquidGlass>
 
-					<SeparatorFull />
+						<View style={styles.mainColumn}>
+							<PlaylistList setPopup={setPopup} likesData={likesData} playlists={playlists} />
+							<SongList
+								setPopup={setPopup}
+								playlists={playlists}
+								tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
+								tracksLoading={isSearching ? searchLoading : topMusicLoading}
+							/>
 
-					<View style={styles.sectionHeader}>
-						<ThemedText style={styles.sectionTitle}>Playlists</ThemedText>
-					</View>
-
-					<View style={styles.playlistContainer}>
-						<ScrollView
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							bounces={false}
-							contentContainerStyle={styles.playlistContent}
-						>
-							<View style={styles.playlistItem}>
-								<AnimatedPressable
-									style={{ flex: 1 }}
-									onPress={() => setPopup({ type: 'addPlaylist', id: '' })}
-								>
-									<PlaylistDisplayAdd />
-								</AnimatedPressable>
-							</View>
-
-							{likesData !== undefined && (
-								<View style={styles.playlistItem}>
-									<AnimatedPressable
-										style={{ flex: 1 }}
-										onPress={() => setPopup({ type: 'like', like: likesData })}
+							{showLikedAlbums && (
+								<View style={styles.likedAlbumsSection}>
+									<View
+										style={{
+											flex: 1,
+											backgroundColor: 'rgb(19, 19, 19)',
+											borderRadius: 6,
+											padding: 10,
+											position: 'relative',
+											alignSelf: 'stretch',
+										}}
 									>
-										<PlaylistDisplay
-											title="Likes"
-											size={likesData.length}
-											backgroundColorCover="#2825c98a"
+										<ThemedText style={styles.sectionTitle}>
+											Liked albums ({likedAlbums.length})
+										</ThemedText>
+										<ScrollView
+											style={styles.likedAlbumsScroll}
+											contentContainerStyle={styles.likedAlbumsContent}
+											showsVerticalScrollIndicator={false}
 										>
-											<Heart color="#fff" fill="#fff" />
-										</PlaylistDisplay>
-									</AnimatedPressable>
+											{likedAlbums.length === 0 ? (
+												<ThemedText style={styles.emptyAlbumsText}>
+													No liked albums yet
+												</ThemedText>
+											) : (
+												likedAlbums.map((album) => (
+													<AnimatedPressable
+														key={album.album.deezerCUID}
+														style={styles.likedAlbumItem}
+														onPress={() =>
+															setPopup({ type: 'album', id: album.album.deezerCUID })
+														}
+													>
+														{album.album.coverMedium || album.album.cover ? (
+															<Image
+																source={{
+																	uri:
+																		album.album.coverMedium ??
+																		album.album.cover ??
+																		'',
+																}}
+																style={styles.likedAlbumCover}
+															/>
+														) : (
+															<View style={styles.likedAlbumPlaceholder} />
+														)}
+														<ThemedText style={styles.likedAlbumTitle} numberOfLines={2}>
+															{album.album.title}
+														</ThemedText>
+														<ThemedText style={styles.albumMeta}>
+															{album.likes} likes · {formatDuration(album.duration)}
+														</ThemedText>
+													</AnimatedPressable>
+												))
+											)}
+										</ScrollView>
+									</View>
 								</View>
 							)}
-
-							{playlists !== undefined && playlists.map((playlist: PlaylistOutput) => (
-								<View key={playlist.id} style={styles.playlistItem}>
-									<AnimatedPressable
-										style={{ flex: 1 }}
-										onPress={() => setPopup({ type: 'playlist', id: playlist.id })}
-									>
-										<PlaylistDisplay
-											id={playlist.id}
-											title={playlist.name}
-											size={playlist.music.length}
-											backgroundColorCover="#00000018"
-										>
-											<Image style={styles.playlistCover} source={{ uri: playlist.cover }} />
-										</PlaylistDisplay>
-									</AnimatedPressable>
-								</View>
-							))}
-						</ScrollView>
-					</View>
-
-					<SeparatorFull />
-
-					<View style={styles.resultsLayout}>
-						<View style={styles.songSection}>
-							<View style={styles.songListShell}>
-								{tracksLoading && tracks.length == 0 ? (
-									<View style={styles.loadingContainer}>
-										<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
-										<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
-									</View>
-								) : (
-										<>
-											<ThemedText style={styles.sectionTitle}>Songs</ThemedText>
-											<ScrollView
-												style={styles.songListScroll}
-												contentContainerStyle={styles.songListContent}
-												showsVerticalScrollIndicator={false}
-												bounces
-											>
-												{tracks.map((song, index) => (
-													<SongDisplayMobile
-														key={`${song.deezerCUID}-${index}`}
-														song={song}
-														onPress={() => setPopup({ type: 'song', song })}
-														playlists={playlists}
-													/>
-												))}
-											</ScrollView>
-										</>
-								)}
-							</View>
 						</View>
-						{showLikedAlbums && (
-							<View style={styles.likedAlbumsSection}>
-								<ThemedText style={styles.sectionTitle}>Liked albums</ThemedText>
-								<ScrollView
-									style={styles.likedAlbumsScroll}
-									contentContainerStyle={styles.likedAlbumsContent}
-									showsVerticalScrollIndicator={false}
-								>
-									{likedAlbums.length === 0 ? (
-										<ThemedText style={styles.emptyAlbumsText}>No liked albums yet</ThemedText>
-									) : (
-										likedAlbums.map((album) => (
-											<AnimatedPressable
-												key={album.deezerCUID}
-												style={styles.likedAlbumItem}
-												onPress={() => setPopup({ type: 'album', id: album.deezerCUID })}
-											>
-												{album.coverMedium || album.cover ? (
-													<Image
-														source={{ uri: album.coverMedium ?? album.cover ?? '' }}
-														style={styles.likedAlbumCover}
-													/>
-												) : (
-													<View style={styles.likedAlbumPlaceholder} />
-												)}
-												<ThemedText style={styles.likedAlbumTitle} numberOfLines={2}>
-													{album.title}
-												</ThemedText>
-											</AnimatedPressable>
-										))
-									)}
-								</ScrollView>
-							</View>
-						)}
 					</View>
 				</View>
 
@@ -260,7 +198,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							<SongProfileMobile
 								song={popup.song}
 								onPlay={() => {
-									onPlayTrack?.(popup.song);
+									props.onPlayTrack?.(popup.song);
 									setPopup(null);
 								}}
 								onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
@@ -285,6 +223,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 						)}
 
 						{popup.type === 'addPlaylist' && <PlaylistCreate setPopup={setPopup} />}
+						{popup.type === 'editPlaylist' && <PlaylistEdit id={popup.id} setPopup={setPopup} />}
 						{popup.type === 'playlist' && <PlaylistProfile setPopup={setPopup} id={popup.id} />}
 						{popup.type === 'like' && <PlaylistLikeProfile setPopup={setPopup} like={popup.like} />}
 					</Popup>

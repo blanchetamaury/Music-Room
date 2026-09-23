@@ -4,6 +4,7 @@ import { PlayerCard } from '@/src/components/home/PlayerCard';
 import { HeaderSection } from '@/src/components/home/HeaderSection';
 import { SongList } from '@/src/components/home/SongList';
 import { UserStrip } from '@/src/components/home/UserStrip';
+import { WebHomeHeader } from '@/src/components/home/WebHomeHeader';
 import FluidBackground, { FluidColors } from '@/src/components/ui/FluideBackground';
 import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
@@ -82,8 +83,6 @@ export default function HomeScreen() {
 
 	return (
 		<View style={homeStyles.homeRoot}>
-			<FluidBackground colors={tabColors[activeTab]} />
-
 			<View style={homeStyles.backgroundOverlay} />
 
 			<View style={homeStyles.content}>
@@ -92,7 +91,13 @@ export default function HomeScreen() {
 						<HomeContent activeTrack={activeTrack} onSelectTrack={handleSelectTrack} />
 					)}
 
-					{activeTab === 'search' && <SearchScreen onPlayTrack={handlePlayDeezerTrack} />}
+					{activeTab === 'search' && (
+						<SearchScreen
+							onPlayTrack={handlePlayDeezerTrack}
+							setActiveTab={setActiveTab}
+							activeTab={activeTab}
+						/>
+					)}
 
 					{activeTab === 'profile' && <ProfileContent />}
 				</View>
