@@ -34,12 +34,9 @@ const song = StyleSheet.create({
 	songListContent: {
 		gap: 10,
 		paddingBottom: 170,
-		borderRadius: 15
+		borderRadius: 15,
+		padding: 10,
 	},
-	songListFade: {
-		position: 'absolute',
-		top: 0, left: 0, right: 0, height: 50,
-		zIndex: 2 },
 });
 
 const loading = StyleSheet.create({
@@ -97,6 +94,54 @@ export const styles = StyleSheet.create({
 	sectionHeader: {
 		flexDirection: 'row',
 		gap: 20
+	},
+	resultsLayout: {
+		flex: 1,
+		flexDirection: 'row',
+		gap: 10,
+		minHeight: 0,
+	},
+	likedAlbumsSection: {
+		width: '33%',
+		minWidth: 220,
+		minHeight: 0,
+		paddingLeft: 8,
+	},
+	likedAlbumsScroll: {
+		flex: 1,
+	},
+	likedAlbumsContent: {
+		gap: 8,
+		paddingBottom: 24,
+	},
+	likedAlbumItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 10,
+		padding: 8,
+		borderRadius: 14,
+		backgroundColor: 'rgba(255,255,255,0.08)',
+	},
+	likedAlbumCover: {
+		width: 58,
+		height: 58,
+		borderRadius: 10,
+	},
+	likedAlbumPlaceholder: {
+		width: 58,
+		height: 58,
+		borderRadius: 10,
+		backgroundColor: 'rgba(255,255,255,0.12)',
+	},
+	likedAlbumTitle: {
+		flex: 1,
+		fontSize: 13,
+		fontWeight: '600',
+	},
+	emptyAlbumsText: {
+		color: 'rgba(255,255,255,0.5)',
+		fontSize: 13,
+		padding: 8,
 	},
 	playlistCover: {
 		height: 72, width: 72,

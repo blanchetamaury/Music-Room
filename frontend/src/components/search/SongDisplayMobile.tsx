@@ -5,6 +5,7 @@ import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Banana, EllipsisVertical, Heart, ListMusic, Plus, Share2 } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Modal, Pressable, View } from 'react-native';
+import { AnimatedPressable } from '../ui/AnimatedPressable';
 import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './SongDisplayMobile.styles';
@@ -49,7 +50,10 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 	};
 
 	return (
-		<Pressable onPress={props.onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
+		<AnimatedPressable
+			onPress={props.onPress}
+			style={[styles.wrapper, debugBox('#ff0000')]}
+		>
 			<LiquidGlass
 				style={[styles.songCard, debugBox('#00ff00')]}
 				contentStyle={[styles.songCardContent, debugBox('#0000ff')]}
@@ -193,6 +197,6 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 					</View>
 				</Pressable>
 			</Modal>
-		</Pressable>
+		</AnimatedPressable>
 	);
 }
