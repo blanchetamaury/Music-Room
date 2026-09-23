@@ -6,6 +6,9 @@ export const styles = StyleSheet.create({
 		flex: 1,
 		height: '100%',
 		borderRadius: 8,
+		borderStyle: 'solid',
+		borderWidth: 1,
+		borderColor: '#ffffff18',
 	},
 	playlistCard: {
 		display: 'flex',

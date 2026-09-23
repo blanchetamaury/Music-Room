@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
 	songCard: {
 		width: '100%',
 		minHeight: 74,
-		backgroundColor: '#000000a1',
 	},
 	songCardContent: {
 		minHeight: 74,
@@ -17,6 +16,10 @@ export const styles = StyleSheet.create({
 		paddingVertical: 10,
 		gap: 7,
 		minWidth: 0,
+		borderRadius: 8,
+		borderStyle: 'solid',
+		borderWidth: 1,
+		borderColor: '#ffffff18',
 	},
 	songCover: {
 		width: 52,

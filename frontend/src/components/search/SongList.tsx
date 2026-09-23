@@ -5,6 +5,7 @@ import { styles } from './SongList.styles';
 import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { PopupState } from '@/src/app/(tabs)/search';
+import LiquidGlass from '../utils/LiquidGlass';
 
 interface PlaylistListProps {
 	setPopup: (value: PopupState) => void;
@@ -15,7 +16,16 @@ interface PlaylistListProps {
 
 export function SongList(props: PlaylistListProps) {
 	return (
-		<View style={styles.songSection}>
+		<LiquidGlass
+			style={[styles.songSection]}
+			contentStyle={[styles.songListContent]}
+			intensity={10}
+			radius={8}
+			topLeftRadius={8}
+			topRightRadius={8}
+			bottomLeftRadius={8}
+			bottomRightRadius={8}
+		>
 			<View style={styles.songListShell}>
 				{props.tracksLoading && props.tracks.length == 0 ? (
 					<View style={styles.loadingContainer}>
@@ -40,6 +50,6 @@ export function SongList(props: PlaylistListProps) {
 					</ScrollView>
 				)}
 			</View>
-		</View>
+		</LiquidGlass>
 	);
 }

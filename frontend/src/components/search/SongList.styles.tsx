@@ -5,8 +5,8 @@ export const styles = StyleSheet.create({
 		flex: 1,
 		minWidth: 0,
 		borderRadius: 8,
-		backgroundColor: 'rgb(19, 19, 19)',
 		padding: 10,
+		backgroundColor: 'rgba(0, 0, 0, 0.75)',
 	},
 	songListShell: {
 		flex: 1,
@@ -21,9 +21,9 @@ export const styles = StyleSheet.create({
 	},
 	songListContent: {
 		gap: 10,
-		paddingBottom: 170,
 		borderRadius: 8,
 		padding: 10,
+		flex: 1,
 	},
 	loadingContainer: {
 		flex: 1,

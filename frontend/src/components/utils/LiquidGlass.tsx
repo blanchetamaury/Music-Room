@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
 		padding: 20,
 		width: '100%',
 		minWidth: 0,
+		flex: 1,
 	},
 
 	edgeLeft: {

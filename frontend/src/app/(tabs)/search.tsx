@@ -12,6 +12,7 @@ import { SongList } from '@/src/components/search/SongList';
 import { SongProfileMobile } from '@/src/components/search/SongProfileMobile';
 import { AnimatedPressable } from '@/src/components/ui/AnimatedPressable';
 import { Popup } from '@/src/components/ui/Popup';
+import LiquidGlass from '@/src/components/utils/LiquidGlass';
 import { ThemedText } from '@/src/components/utils/themed-text';
 import { ThemedView } from '@/src/components/utils/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
@@ -135,66 +136,69 @@ export function SearchScreen(props: SearchPageProps) {
 								</View>
 
 								{showLikedAlbums && (
-									<View style={styles.likedAlbumsSection}>
-										<View
-											style={{
-												flex: 1,
-												backgroundColor: 'rgb(19, 19, 19)',
-												borderRadius: 6,
-												padding: 10,
-												position: 'relative',
-												alignSelf: 'stretch',
-											}}
+									<LiquidGlass
+										style={{
+											flexShrink: 1,
+											width: '25%',
+											minWidth: 0,
+											minHeight: 0,
+											padding: 10,
+											borderRadius: 8,
+											backgroundColor: 'rgba(0, 0, 0, 0.75)',
+										}}
+										contentStyle={[styles.likedAlbumsContent]}
+										intensity={10}
+										radius={8}
+										topLeftRadius={8}
+										topRightRadius={8}
+										bottomLeftRadius={8}
+										bottomRightRadius={8}
+									>
+										<ThemedText style={styles.sectionTitle}>
+											Liked albums ({likedAlbums.length})
+										</ThemedText>
+										<ScrollView
+											style={styles.likedAlbumsScroll}
+											contentContainerStyle={styles.likedAlbumsContent}
+											showsVerticalScrollIndicator={false}
 										>
-											<ThemedText style={styles.sectionTitle}>
-												Liked albums ({likedAlbums.length})
-											</ThemedText>
-											<ScrollView
-												style={styles.likedAlbumsScroll}
-												contentContainerStyle={styles.likedAlbumsContent}
-												showsVerticalScrollIndicator={false}
-											>
-												{likedAlbums.length === 0 ? (
-													<ThemedText style={styles.emptyAlbumsText}>
-														No liked albums yet
-													</ThemedText>
-												) : (
-													likedAlbums.map((album) => (
-														<AnimatedPressable
-															key={album.album.deezerCUID}
-															style={styles.likedAlbumItem}
-															onPress={() =>
-																setPopup({ type: 'album', id: album.album.deezerCUID })
-															}
-														>
-															{album.album.coverMedium || album.album.cover ? (
-																<Image
-																	source={{
-																		uri:
-																			album.album.coverMedium ??
-																			album.album.cover ??
-																			'',
-																	}}
-																	style={styles.likedAlbumCover}
-																/>
-															) : (
-																<View style={styles.likedAlbumPlaceholder} />
-															)}
-															<ThemedText
-																style={styles.likedAlbumTitle}
-																numberOfLines={2}
-															>
-																{album.album.title}
-															</ThemedText>
-															<ThemedText style={styles.albumMeta}>
-																{album.likes} likes · {formatDuration(album.duration)}
-															</ThemedText>
-														</AnimatedPressable>
-													))
-												)}
-											</ScrollView>
-										</View>
-									</View>
+											{likedAlbums.length === 0 ? (
+												<ThemedText style={styles.emptyAlbumsText}>
+													No liked albums yet
+												</ThemedText>
+											) : (
+												likedAlbums.map((album) => (
+													<AnimatedPressable
+														key={album.album.deezerCUID}
+														style={styles.likedAlbumItem}
+														onPress={() =>
+															setPopup({ type: 'album', id: album.album.deezerCUID })
+														}
+													>
+														{album.album.coverMedium || album.album.cover ? (
+															<Image
+																source={{
+																	uri:
+																		album.album.coverMedium ??
+																		album.album.cover ??
+																		'',
+																}}
+																style={styles.likedAlbumCover}
+															/>
+														) : (
+															<View style={styles.likedAlbumPlaceholder} />
+														)}
+														<ThemedText style={styles.likedAlbumTitle} numberOfLines={2}>
+															{album.album.title}
+														</ThemedText>
+														<ThemedText style={styles.albumMeta}>
+															{album.likes} likes · {formatDuration(album.duration)}
+														</ThemedText>
+													</AnimatedPressable>
+												))
+											)}
+										</ScrollView>
+									</LiquidGlass>
 								)}
 							</View>
 						</View>

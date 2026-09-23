@@ -54,13 +54,6 @@ export const styles = StyleSheet.create({
 		paddingBottom: 10,
 		gap: 10,
 	},
-	likedAlbumsSection: {
-		width: '25%',
-		minWidth: 220,
-		minHeight: 0,
-		position: 'relative',
-		alignSelf: 'stretch',
-	},
 	likedAlbumsGradient: {
 		position: 'absolute',
 		top: 0,
@@ -72,8 +65,10 @@ export const styles = StyleSheet.create({
 		flex: 1,
 	},
 	likedAlbumsContent: {
-		gap: 8,
-		paddingBottom: 100,
+		width: '100%',
+		paddingHorizontal: 4,
+		gap: 10,
+		flexDirection: 'column' as const,
 	},
 	likedAlbumItem: {
 		flexDirection: 'row',
@@ -81,7 +76,9 @@ export const styles = StyleSheet.create({
 		gap: 10,
 		padding: 8,
 		borderRadius: 8,
-		backgroundColor: 'rgba(255,255,255,0.08)',
+		borderStyle: 'solid',
+		borderWidth: 1,
+		borderColor: '#ffffff18',
 	},
 	likedAlbumCover: {
 		width: 58,

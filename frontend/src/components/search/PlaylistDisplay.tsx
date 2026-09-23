@@ -32,7 +32,7 @@ export function PlaylistDisplay(props: PlaylistProps) {
 	const duration = props.duration ?? 0;
 	const durationLabel = `${Math.floor(duration / 60)}m ${(duration % 60).toString().padStart(2, '0')}s`;
 	return (
-		<View style={[styles.wrapper, { padding: 5, backgroundColor: '#1f1f1f' }, debugBox('#ff0000')]}>
+		<View style={[styles.wrapper, { padding: 5 }, debugBox('#ff0000')]}>
 			<View style={[styles.lowerPart, debugBox('#0088ff')]}>
 				<View style={{ height: '100%', alignContent: 'center', justifyContent: 'center' }}>
 					<View
@@ -77,7 +77,6 @@ export function PlaylistDisplayAdd() {
 					borderRadius: 15,
 					paddingHorizontal: 10,
 					paddingTop: 10,
-					backgroundColor: '#333333',
 				},
 				debugBox('#ff0000'),
 			]}

@@ -51,16 +51,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 
 	return (
 		<AnimatedPressable onPress={props.onPress} style={[styles.wrapper, debugBox('#ff0000')]}>
-			<LiquidGlass
-				style={[styles.songCard, debugBox('#00ff00')]}
-				contentStyle={[styles.songCardContent, debugBox('#0000ff')]}
-				intensity={0}
-				radius={8}
-				topLeftRadius={8}
-				topRightRadius={8}
-				bottomLeftRadius={8}
-				bottomRightRadius={8}
-			>
+			<View style={[styles.songCardContent]}>
 				<Image
 					source={{ uri: props.song.album.CoverMedium ?? '' }}
 					resizeMode="cover"
@@ -127,7 +118,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 						</Pressable>
 					</View>
 				</View>
-			</LiquidGlass>
+			</View>
 
 			<Modal visible={displayMenu} transparent animationType="fade" onRequestClose={() => setDisplayMenu(false)}>
 				<Pressable style={styles.backdrop} onPress={() => setDisplayMenu(false)}>
