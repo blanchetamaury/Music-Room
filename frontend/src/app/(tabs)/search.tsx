@@ -101,134 +101,143 @@ export function SearchScreen(props: SearchPageProps) {
 
 	return (
 		<ThemedView style={styles.root}>
-			<View style={styles.backgroundOverlay} />
-			<View style={styles.searchRoot}>
-				<View style={styles.searchContent}>
-					<View style={styles.desktopLayout}>
-						<WebHomeHeader
-							activeTab={props.activeTab}
-							onSelect={props.setActiveTab}
-							setQuery={setQuery}
-							query={query}
-						/>
+			<LinearGradient
+				colors={['#1b0850', '#000000']}
+				start={{ x: 0, y: 1 }}
+				end={{ x: 0, y: 0 }}
+				style={styles.backgroundOverlay}
+			>
+				<View style={styles.searchRoot}>
+					<View style={styles.searchContent}>
+						<View style={styles.desktopLayout}>
+							<WebHomeHeader
+								activeTab={props.activeTab}
+								onSelect={props.setActiveTab}
+								setQuery={setQuery}
+								query={query}
+							/>
 
-						<View style={styles.mainColumn}>
-							<PlaylistList setPopup={setPopup} likesData={likesData} playlists={playlists} />
-							<View style={{ flexDirection: 'column', flex: 1 }}>
-								<SectionBanner
-									isSearching={isSearching}
-									query={debouncedQuery}
-									count={isSearching ? (searchData?.length ?? 0) : (topMusicData?.length ?? 0)}
-									loading={isSearching ? searchLoading : topMusicLoading}
-								/>
-								<SongList
-									setPopup={setPopup}
-									playlists={playlists}
-									tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
-									tracksLoading={isSearching ? searchLoading : topMusicLoading}
-								/>
-							</View>
-
-							{showLikedAlbums && (
-								<View style={styles.likedAlbumsSection}>
-									<View
-										style={{
-											flex: 1,
-											backgroundColor: 'rgb(19, 19, 19)',
-											borderRadius: 6,
-											padding: 10,
-											position: 'relative',
-											alignSelf: 'stretch',
-										}}
-									>
-										<ThemedText style={styles.sectionTitle}>
-											Liked albums ({likedAlbums.length})
-										</ThemedText>
-										<ScrollView
-											style={styles.likedAlbumsScroll}
-											contentContainerStyle={styles.likedAlbumsContent}
-											showsVerticalScrollIndicator={false}
-										>
-											{likedAlbums.length === 0 ? (
-												<ThemedText style={styles.emptyAlbumsText}>
-													No liked albums yet
-												</ThemedText>
-											) : (
-												likedAlbums.map((album) => (
-													<AnimatedPressable
-														key={album.album.deezerCUID}
-														style={styles.likedAlbumItem}
-														onPress={() =>
-															setPopup({ type: 'album', id: album.album.deezerCUID })
-														}
-													>
-														{album.album.coverMedium || album.album.cover ? (
-															<Image
-																source={{
-																	uri:
-																		album.album.coverMedium ??
-																		album.album.cover ??
-																		'',
-																}}
-																style={styles.likedAlbumCover}
-															/>
-														) : (
-															<View style={styles.likedAlbumPlaceholder} />
-														)}
-														<ThemedText style={styles.likedAlbumTitle} numberOfLines={2}>
-															{album.album.title}
-														</ThemedText>
-														<ThemedText style={styles.albumMeta}>
-															{album.likes} likes · {formatDuration(album.duration)}
-														</ThemedText>
-													</AnimatedPressable>
-												))
-											)}
-										</ScrollView>
-									</View>
+							<View style={styles.mainColumn}>
+								<PlaylistList setPopup={setPopup} likesData={likesData} playlists={playlists} />
+								<View style={{ flexDirection: 'column', flex: 1 }}>
+									<SectionBanner
+										isSearching={isSearching}
+										query={debouncedQuery}
+										count={isSearching ? (searchData?.length ?? 0) : (topMusicData?.length ?? 0)}
+										loading={isSearching ? searchLoading : topMusicLoading}
+									/>
+									<SongList
+										setPopup={setPopup}
+										playlists={playlists}
+										tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
+										tracksLoading={isSearching ? searchLoading : topMusicLoading}
+									/>
 								</View>
-							)}
+
+								{showLikedAlbums && (
+									<View style={styles.likedAlbumsSection}>
+										<View
+											style={{
+												flex: 1,
+												backgroundColor: 'rgb(19, 19, 19)',
+												borderRadius: 6,
+												padding: 10,
+												position: 'relative',
+												alignSelf: 'stretch',
+											}}
+										>
+											<ThemedText style={styles.sectionTitle}>
+												Liked albums ({likedAlbums.length})
+											</ThemedText>
+											<ScrollView
+												style={styles.likedAlbumsScroll}
+												contentContainerStyle={styles.likedAlbumsContent}
+												showsVerticalScrollIndicator={false}
+											>
+												{likedAlbums.length === 0 ? (
+													<ThemedText style={styles.emptyAlbumsText}>
+														No liked albums yet
+													</ThemedText>
+												) : (
+													likedAlbums.map((album) => (
+														<AnimatedPressable
+															key={album.album.deezerCUID}
+															style={styles.likedAlbumItem}
+															onPress={() =>
+																setPopup({ type: 'album', id: album.album.deezerCUID })
+															}
+														>
+															{album.album.coverMedium || album.album.cover ? (
+																<Image
+																	source={{
+																		uri:
+																			album.album.coverMedium ??
+																			album.album.cover ??
+																			'',
+																	}}
+																	style={styles.likedAlbumCover}
+																/>
+															) : (
+																<View style={styles.likedAlbumPlaceholder} />
+															)}
+															<ThemedText
+																style={styles.likedAlbumTitle}
+																numberOfLines={2}
+															>
+																{album.album.title}
+															</ThemedText>
+															<ThemedText style={styles.albumMeta}>
+																{album.likes} likes · {formatDuration(album.duration)}
+															</ThemedText>
+														</AnimatedPressable>
+													))
+												)}
+											</ScrollView>
+										</View>
+									</View>
+								)}
+							</View>
 						</View>
+
+						{popup && (
+							<Popup onClose={() => setPopup(null)}>
+								{popup.type === 'song' && (
+									<SongProfileMobile
+										song={popup.song}
+										onPlay={() => {
+											props.onPlayTrack?.(popup.song);
+											setPopup(null);
+										}}
+										onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
+										onAlbumPress={(albumId) => setPopup({ type: 'album', id: String(albumId) })}
+									/>
+								)}
+
+								{popup.type === 'artist' && (
+									<ArtistProfileMobile
+										id={popup.id}
+										onSongPress={(song) => setPopup({ type: 'song', song: song })}
+										onAlbumPress={(album) => setPopup({ type: 'album', id: String(album.id) })}
+									/>
+								)}
+
+								{popup.type === 'album' && (
+									<AlbumProfileMobile
+										id={popup.id}
+										onSongPress={(song) => setPopup({ type: 'song', song })}
+										onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
+									/>
+								)}
+
+								{popup.type === 'addPlaylist' && <PlaylistCreate setPopup={setPopup} />}
+								{popup.type === 'editPlaylist' && <PlaylistEdit id={popup.id} setPopup={setPopup} />}
+								{popup.type === 'playlist' && <PlaylistProfile setPopup={setPopup} id={popup.id} />}
+								{popup.type === 'like' && <PlaylistLikeProfile setPopup={setPopup} like={popup.like} />}
+							</Popup>
+						)}
 					</View>
 				</View>
-
-				{popup && (
-					<Popup onClose={() => setPopup(null)}>
-						{popup.type === 'song' && (
-							<SongProfileMobile
-								song={popup.song}
-								onPlay={() => {
-									props.onPlayTrack?.(popup.song);
-									setPopup(null);
-								}}
-								onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
-								onAlbumPress={(albumId) => setPopup({ type: 'album', id: String(albumId) })}
-							/>
-						)}
-
-						{popup.type === 'artist' && (
-							<ArtistProfileMobile
-								id={popup.id}
-								onSongPress={(song) => setPopup({ type: 'song', song: song })}
-								onAlbumPress={(album) => setPopup({ type: 'album', id: String(album.id) })}
-							/>
-						)}
-
-						{popup.type === 'album' && (
-							<AlbumProfileMobile
-								id={popup.id}
-								onSongPress={(song) => setPopup({ type: 'song', song })}
-								onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
-							/>
-						)}
-
-						{popup.type === 'addPlaylist' && <PlaylistCreate setPopup={setPopup} />}
-						{popup.type === 'editPlaylist' && <PlaylistEdit id={popup.id} setPopup={setPopup} />}
-						{popup.type === 'playlist' && <PlaylistProfile setPopup={setPopup} id={popup.id} />}
-						{popup.type === 'like' && <PlaylistLikeProfile setPopup={setPopup} like={popup.like} />}
-					</Popup>
-				)}
-			</View>
+			</LinearGradient>
 		</ThemedView>
 	);
 }

@@ -3,6 +3,9 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
 	searchBar: {
 		width: '50%',
+		height: 40,
+		alignContent: 'center',
+		justifyContent: 'center',
 		marginBottom: 14,
 	},
 	searchBarContent: {

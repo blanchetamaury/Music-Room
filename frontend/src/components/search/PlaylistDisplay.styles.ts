@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
 		display: 'flex',
 		flex: 1,
 		height: '100%',
+		borderRadius: 8,
 	},
 	playlistCard: {
 		display: 'flex',
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 14,
 		fontWeight: '600',
-		marginBottom: 10,
+		marginBottom: 4,
 	},
 	playlistBottomRow: {
 		flexDirection: 'row',
@@ -31,8 +32,8 @@ export const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 	},
 	playlistCover: {
-		width: 72,
-		height: 72,
+		width: 48,
+		height: 48,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 12,

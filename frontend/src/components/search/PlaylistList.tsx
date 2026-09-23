@@ -7,6 +7,7 @@ import { Like } from '@/src/types/user/like';
 import { Heart, MoreVertical } from 'lucide-react-native';
 import { styles } from './PlaylistList.styles';
 import { PopupState } from '@/src/app/(tabs)/search';
+import LiquidGlass from '../utils/LiquidGlass';
 
 interface PlaylistListProps {
 	setPopup: (value: PopupState) => void;
@@ -18,23 +19,28 @@ export default function PlaylistList(props: PlaylistListProps) {
 	const playlists = [...(props.playlists ?? [])].sort((left, right) => right.music.length - left.music.length);
 
 	return (
-		<View style={styles.playlistContainer}>
-			<ThemedText style={styles.sectionTitle}>Playlists</ThemedText>
+		<LiquidGlass
+			style={[styles.playlistContainer]}
+			contentStyle={[styles.playlistContent]}
+			intensity={10}
+			radius={8}
+			topLeftRadius={8}
+			topRightRadius={8}
+			bottomLeftRadius={8}
+			bottomRightRadius={8}
+		>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+				<ThemedText style={styles.sectionTitle}>Playlists</ThemedText>
+				<AnimatedPressable onPress={() => props.setPopup({ type: 'addPlaylist', id: '' })}>
+					<PlaylistDisplayAdd />
+				</AnimatedPressable>
+			</View>
 			<ScrollView
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				bounces={false}
 				contentContainerStyle={styles.playlistContent}
 			>
-				<View style={styles.playlistItem}>
-					<AnimatedPressable
-						style={{ flex: 1 }}
-						onPress={() => props.setPopup({ type: 'addPlaylist', id: '' })}
-					>
-						<PlaylistDisplayAdd />
-					</AnimatedPressable>
-				</View>
-
 				{props.likesData !== undefined && (
 					<View style={styles.playlistItem}>
 						<AnimatedPressable
@@ -81,6 +87,6 @@ export default function PlaylistList(props: PlaylistListProps) {
 					</View>
 				))}
 			</ScrollView>
-		</View>
+		</LiquidGlass>
 	);
 }

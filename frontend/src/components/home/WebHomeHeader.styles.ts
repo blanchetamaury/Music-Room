@@ -28,9 +28,9 @@ export const styles = StyleSheet.create({
 		backgroundColor: 'rgba(0,0,0,0.35)',
 	},
 	avatar: {
-		width: 30,
-		height: 30,
-		borderRadius: 15,
+		width: 48,
+		height: 48,
+		borderRadius: 100,
 	},
 	menu: {
 		position: 'absolute',

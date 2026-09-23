@@ -111,7 +111,6 @@ export const styles = StyleSheet.create({
 	},
 	backgroundOverlay: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgb(0, 0, 0)',
 	},
 	...loading,
 });
