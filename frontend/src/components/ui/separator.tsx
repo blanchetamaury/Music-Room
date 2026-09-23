@@ -30,8 +30,7 @@ const styles = StyleSheet.create({
 	separatorRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 10,
-		marginTop: 14,
+		margin: 5,
 	},
 	separatorLine: {
 		height: 1,

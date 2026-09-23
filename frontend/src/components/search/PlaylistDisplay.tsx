@@ -34,7 +34,7 @@ export function PlaylistDisplay(props: PlaylistProps) {
 		<View style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.playlistCard, debugBox('#ff8800')]}
-				contentStyle={[styles.playlistCardContent, debugBox('#00ff00')]}
+				contentStyle={[styles.playlistCardContent, {justifyContent: 'center', padding: 5 }, debugBox('#00ff00')]}
 				intensity={18}
 				radius={16}
 				topLeftRadius={16}
@@ -68,7 +68,7 @@ export function PlaylistDisplayAdd() {
 		<View style={[styles.wrapper, debugBox('#ff0000')]}>
 			<LiquidGlass
 				style={[styles.playlistCard, debugBox('#ff8800')]}
-				contentStyle={[styles.playlistCardContent, { alignContent: 'center', alignItems: 'center', justifyContent: 'center' }, debugBox('#00ff00')]}
+				contentStyle={[styles.playlistCardContent, { alignItems: 'center', justifyContent: 'center', padding: 5 }, debugBox('#00ff00')]}
 				intensity={18}
 				radius={16}
 				topLeftRadius={16}
@@ -77,7 +77,7 @@ export function PlaylistDisplayAdd() {
 				bottomRightRadius={16}
 			>
 				<ThemedText style={[styles.playlistTitle, { fontSize: 20 }, debugBox('#ffff00')]}>playlists</ThemedText>
-				<Plus style={[styles.playlistTitle,  { width: 32, height: 32 }, debugBox('#ffff00')]}></Plus>
+				<Plus style={[styles.playlistTitle,  { width: 16, height: 16 }, debugBox('#ffff00')]}></Plus>
 			</LiquidGlass>
 		</View>
 	);

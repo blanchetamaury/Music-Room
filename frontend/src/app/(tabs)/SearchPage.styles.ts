@@ -3,20 +3,14 @@ import { StyleSheet } from 'react-native';
 const playlist = StyleSheet.create({
 	playlistContainer: {
 		width: '100%',
-		maxHeight: 125,
-		height: 125,
 	},
 	playlistContent: {
 		paddingHorizontal: 4,
 		gap: 10,
 		flexDirection: 'row' as const,
-		maxHeight: 125,
-		height: 125,
 	},
 	playlistItem: {
 		flexShrink: 0,
-		maxHeight: 125,
-		height: 125,
 	},
 });
 
@@ -64,10 +58,10 @@ const loading = StyleSheet.create({
 
 export const styles = StyleSheet.create({
 	root: {
-		flex: 1
+		flex: 1,
 	},
 	searchRoot: {
-		paddingTop: 40,
+		paddingTop: 10,
 		flex: 1,
 		width: '100%',
 		backgroundColor: '#080b1a00'
@@ -76,7 +70,7 @@ export const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		paddingHorizontal: 14,
-		paddingTop: 28,
+		paddingTop: 14,
 		paddingBottom: 18
 	},
 	searchBar: {
@@ -105,7 +99,7 @@ export const styles = StyleSheet.create({
 		gap: 20
 	},
 	playlistCover: {
-		height: 64, width: 64,
+		height: 72, width: 72,
 		borderRadius: 12
 	},
 	backgroundOverlay: {

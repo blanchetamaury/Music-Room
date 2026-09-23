@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
 		display: 'flex',
 		flex: 1,
 		height: '100%',
-		width: 160
+		width: 180
 	},
 	playlistCardContent: {
 		display: 'flex',
@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	playlistCover: {
-		width: 64,
-		height: 64,
+		width: 72,
+		height: 72,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 12,

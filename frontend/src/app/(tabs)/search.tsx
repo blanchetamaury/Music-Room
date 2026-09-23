@@ -130,7 +130,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 						>
 							<View style={styles.playlistItem}>
 								<Pressable
-									style={{ flex: 1, height: '100%' }}
+									style={{ flex: 1 }}
 									onPress={() => setPopup({ type: 'addPlaylist', id: '' })}
 								>
 									<PlaylistDisplayAdd />
@@ -140,6 +140,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							{likesData !== undefined && (
 								<View style={styles.playlistItem}>
 									<Pressable
+										style={{ flex: 1 }}
 										onPress={() => setPopup({ type: 'like', like: likesData })}
 									>
 										<PlaylistDisplay
@@ -156,13 +157,14 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 							{playlists !== undefined && playlists.map((playlist: PlaylistOutput) => (
 								<View key={playlist.id} style={styles.playlistItem}>
 									<Pressable
+										style={{ flex: 1 }}
 										onPress={() => setPopup({ type: 'playlist', id: playlist.id })}
 									>
 										<PlaylistDisplay
 											id={playlist.id}
 											title={playlist.name}
 											size={playlist.music.length}
-											backgroundColorCover="#24961594"
+											backgroundColorCover="#00000018"
 										>
 											<Image style={styles.playlistCover} source={{ uri: playlist.cover }} />
 										</PlaylistDisplay>
@@ -191,7 +193,7 @@ export function SearchScreen({ onPlayTrack }: SearchPageProps) {
 									bounces
 								>
 									{tracks.map((song, index) => (
-										<SongDisplayMobile
+								1,		<SongDisplayMobile
 											key={`${song.deezerCUID}-${index}`}
 											song={song}
 											onPress={() => setPopup({ type: 'song', song })}
