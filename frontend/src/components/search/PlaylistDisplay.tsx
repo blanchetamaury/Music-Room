@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-
 import { ReactNode } from 'react';
 import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';

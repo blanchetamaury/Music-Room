@@ -7,11 +7,10 @@ import { PlaylistCreate } from '@/src/components/search/PlaylistCreate';
 import { PlaylistEdit } from '@/src/components/search/PlaylistEdit';
 import PlaylistList from '@/src/components/search/PlaylistList';
 import { PlaylistLikeProfile, PlaylistProfile } from '@/src/components/search/PlaylistProfile';
-import { SearchBar } from '@/src/components/search/SearchBar';
+import { SectionBanner } from '@/src/components/search/SectionBanner';
 import { SongList } from '@/src/components/search/SongList';
 import { SongProfileMobile } from '@/src/components/search/SongProfileMobile';
 import { AnimatedPressable } from '@/src/components/ui/AnimatedPressable';
-import { FluidColors } from '@/src/components/ui/FluideBackground';
 import { Popup } from '@/src/components/ui/Popup';
 import { ThemedText } from '@/src/components/utils/themed-text';
 import { ThemedView } from '@/src/components/utils/themed-view';
@@ -19,6 +18,7 @@ import { useAuth } from '@/src/context/AuthContext';
 import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { Like } from '@/src/types/user/like';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, View, useWindowDimensions } from 'react-native';
 
@@ -27,14 +27,6 @@ interface SearchPageProps {
 	setActiveTab: (value: TabKey) => void;
 	activeTab: TabKey;
 }
-
-const tabColors: Record<'search', FluidColors> = {
-	search: {
-		colour1: [0.0, 0.0, 0.0, 1],
-		colour2: [0.02, 0.2, 0.35, 1],
-		colour3: [0.4, 0.4, 0.4, 1],
-	},
-};
 
 export type PopupState =
 	| { type: 'song'; song: OutputTrackDeezer }
@@ -122,12 +114,20 @@ export function SearchScreen(props: SearchPageProps) {
 
 						<View style={styles.mainColumn}>
 							<PlaylistList setPopup={setPopup} likesData={likesData} playlists={playlists} />
-							<SongList
-								setPopup={setPopup}
-								playlists={playlists}
-								tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
-								tracksLoading={isSearching ? searchLoading : topMusicLoading}
-							/>
+							<View style={{ flexDirection: 'column', flex: 1 }}>
+								<SectionBanner
+									isSearching={isSearching}
+									query={debouncedQuery}
+									count={isSearching ? (searchData?.length ?? 0) : (topMusicData?.length ?? 0)}
+									loading={isSearching ? searchLoading : topMusicLoading}
+								/>
+								<SongList
+									setPopup={setPopup}
+									playlists={playlists}
+									tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
+									tracksLoading={isSearching ? searchLoading : topMusicLoading}
+								/>
+							</View>
 
 							{showLikedAlbums && (
 								<View style={styles.likedAlbumsSection}>

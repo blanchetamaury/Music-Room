@@ -1,18 +1,19 @@
 import { homeStyles } from '@/src/app/(tabs)/homes.styles';
-import { BottomNavigation, TabKey } from '@/src/components/home/BottomNavigation';
+import { TabKey } from '@/src/components/home/BottomNavigation';
 import { PlayerCard } from '@/src/components/home/PlayerCard';
 import { HeaderSection } from '@/src/components/home/HeaderSection';
 import { SongList } from '@/src/components/home/SongList';
 import { UserStrip } from '@/src/components/home/UserStrip';
-import { WebHomeHeader } from '@/src/components/home/WebHomeHeader';
-import FluidBackground, { FluidColors } from '@/src/components/ui/FluideBackground';
+import { FluidColors } from '@/src/components/ui/FluideBackground';
 import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import { SearchScreen } from './search';
+import { SideMenuBar } from '@/src/components/home/MenuSideBar';
+import { DownMenuBar } from '@/src/components/home/MenuDownBar';
 
 const tabColors: Record<TabKey, FluidColors> = {
 	home: {
@@ -112,7 +113,11 @@ export default function HomeScreen() {
 					/>
 				)}
 
-				<BottomNavigation activeTab={activeTab} onSelect={setActiveTab} />
+				{Platform.OS == 'web' ? (
+					<SideMenuBar activeTab={activeTab} onTabPress={setActiveTab} />
+				) : (
+					<DownMenuBar activeTab={activeTab} onTabPress={setActiveTab} />
+				)}
 			</View>
 		</View>
 	);

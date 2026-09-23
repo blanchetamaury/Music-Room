@@ -23,24 +23,21 @@ export function SongList(props: PlaylistListProps) {
 						<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
 					</View>
 				) : (
-					<>
-						<ThemedText style={styles.sectionTitle}>Songs</ThemedText>
-						<ScrollView
-							style={styles.songListScroll}
-							contentContainerStyle={styles.songListContent}
-							showsVerticalScrollIndicator={false}
-							bounces
-						>
-							{props.tracks.map((song, index) => (
-								<SongDisplayMobile
-									key={`${song.deezerCUID}-${index}`}
-									song={song}
-									onPress={() => props.setPopup({ type: 'song', song })}
-									playlists={props.playlists}
-								/>
-							))}
-						</ScrollView>
-					</>
+					<ScrollView
+						style={styles.songListScroll}
+						contentContainerStyle={styles.songListContent}
+						showsVerticalScrollIndicator={false}
+						bounces
+					>
+						{props.tracks.map((song, index) => (
+							<SongDisplayMobile
+								key={`${song.deezerCUID}-${index}`}
+								song={song}
+								onPress={() => props.setPopup({ type: 'song', song })}
+								playlists={props.playlists}
+							/>
+						))}
+					</ScrollView>
 				)}
 			</View>
 		</View>

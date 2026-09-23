@@ -1,8 +1,7 @@
-import { Menu, UserCircle, X } from 'lucide-react-native';
+import { UserCircle } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, Platform, Pressable, View } from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
-import { ThemedText } from '../utils/themed-text';
 import { TabKey } from './BottomNavigation';
 import { styles } from './WebHomeHeader.styles';
 import { SearchBar } from '../search/SearchBar';
@@ -27,26 +26,7 @@ export function WebHomeHeader({ activeTab, onSelect, setQuery, query }: WebHomeH
 
 	return (
 		<View style={styles.header}>
-			<View style={styles.leftArea}>
-				<Pressable
-					accessibilityLabel={menuOpen ? 'Close menu' : 'Open menu'}
-					style={styles.iconButton}
-					onPress={() => setMenuOpen((open) => !open)}
-				>
-					{menuOpen ? <X size={22} color="#fff" /> : <Menu size={22} color="#fff" />}
-				</Pressable>
-				{menuOpen && (
-					<View style={styles.menu}>
-						{(['home', 'search', 'profile'] as TabKey[]).map((tab) => (
-							<Pressable key={tab} style={styles.menuItem} onPress={() => selectTab(tab)}>
-								<ThemedText style={[styles.menuText, activeTab === tab && styles.menuTextActive]}>
-									{tab[0].toUpperCase() + tab.slice(1)}
-								</ThemedText>
-							</Pressable>
-						))}
-					</View>
-				)}
-			</View>
+			<View style={{ width: 40, height: 40 }} />
 			<SearchBar setQuery={setQuery} query={query} />
 			<Pressable
 				accessibilityLabel="Open profile"

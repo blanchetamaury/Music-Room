@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
 	header: {
-		position: 'relative',
 		zIndex: 10,
 		width: '100%',
 		minHeight: 58,
@@ -11,9 +10,6 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-	},
-	leftArea: {
-		position: 'relative',
 	},
 	iconButton: {
 		width: 40,

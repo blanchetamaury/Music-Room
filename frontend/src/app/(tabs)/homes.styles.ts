@@ -26,7 +26,6 @@ export const homeStyles = StyleSheet.create({
 		width: '100%',
 		paddingHorizontal: 0,
 		paddingTop: 28,
-		paddingBottom: 18,
 		zIndex: 2,
 	},
 	separator: {
