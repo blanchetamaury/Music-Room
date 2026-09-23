@@ -87,9 +87,10 @@ export const styles = StyleSheet.create({
 	},
 	sectionTitle: {
 		color: '#fff',
-		fontSize: 14,
+		fontSize: 22,
 		fontWeight: '700',
 		marginBottom: 10,
+		paddingLeft: 10,
 	},
 	sectionHeader: {
 		flexDirection: 'row',
