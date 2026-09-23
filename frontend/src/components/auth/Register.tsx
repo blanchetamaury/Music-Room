@@ -2,13 +2,13 @@ import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { api } from '../../lib/api/client';
-import { InputForm } from '../InputForm';
-import { InputPasswordForm } from '../InputPasswordForm';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
+import { api } from '../../lib/fetcher/api/client';
 import { SeparatorFull } from '../ui/separator';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
 import { ConfirmMail } from './ConfirmMail';
+import { InputPasswordForm } from './InputPasswordForm';
+import { InputForm } from '../utils/InputForm';
 
 function checkRules(pw: string) {
 	const hasUpper = /[A-Z]/.test(pw);

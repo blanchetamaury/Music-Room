@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Animated, Modal, Pressable, StyleSheet } from 'react-native';
 
 interface PopupProps {
 	children: React.ReactNode;
@@ -7,6 +7,17 @@ interface PopupProps {
 }
 
 export function Popup({ children, onClose }: PopupProps) {
+	const [progress] = useState(() => new Animated.Value(0));
+
+	useEffect(() => {
+		Animated.spring(progress, {
+			toValue: 1,
+			useNativeDriver: true,
+			friction: 8,
+			tension: 65,
+		}).start();
+	}, [progress]);
+
 	return (
 		<Modal
 			visible
@@ -16,11 +27,27 @@ export function Popup({ children, onClose }: PopupProps) {
 			statusBarTranslucent
 			navigationBarTranslucent
 		>
-			<View style={styles.overlay}>
+			<Animated.View style={[styles.overlay, { opacity: progress }]}>
 				<Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
 
-				<View style={styles.content}>{children}</View>
-			</View>
+				<Animated.View
+					style={[
+						styles.content,
+						{
+							transform: [
+								{
+									scale: progress.interpolate({
+										inputRange: [0, 1],
+										outputRange: [0.88, 1],
+									}),
+								},
+							],
+						},
+					]}
+				>
+					{children}
+				</Animated.View>
+			</Animated.View>
 		</Modal>
 	);
 }

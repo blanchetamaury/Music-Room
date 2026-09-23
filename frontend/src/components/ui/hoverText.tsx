@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GestureResponderEvent, Platform, Pressable, StyleProp, TextStyle } from 'react-native';
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from '../utils/themed-text';
 
 interface HoverTextProps {
 	children: React.ReactNode;

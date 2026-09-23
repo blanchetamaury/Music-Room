@@ -1,49 +1,19 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { BottomNavigation, TabKey } from '@/src/components/app/BottomNavigation';
-import { homeStyles } from '@/src/components/app/home.styles';
-import { HeaderSection } from '@/src/components/app/home/HeaderSection';
-import { PlayerCard } from '@/src/components/app/PlayerCard';
-import { SearchPage } from '@/src/components/app/search/SearchPage';
-import { SongList } from '@/src/components/app/SongList';
-import { UserStrip } from '@/src/components/app/UserStrip';
-import FluidBackground, { FluidColors } from '@/src/components/ui/FluideBackground';
+import { homeStyles } from '@/src/app/(tabs)/homes.styles';
+import { TabKey } from '@/src/components/home/BottomNavigation';
+import { PlayerCard } from '@/src/components/home/PlayerCard';
+import { HeaderSection } from '@/src/components/home/HeaderSection';
+import { SongList } from '@/src/components/home/SongList';
+import { UserStrip } from '@/src/components/home/UserStrip';
+import { FluidColors } from '@/src/components/ui/FluideBackground';
 import { SeparatorFull } from '@/src/components/ui/separator';
 import { useAuth } from '@/src/context/AuthContext';
-import { useRouter } from 'expo-router';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
-
-function HomeContent({ activeTrack, onSelectTrack }: { activeTrack: number; onSelectTrack: (n: number) => void }) {
-	return (
-		<View style={homeStyles.homeContent}>
-			<HeaderSection currentTrack={null} />
-
-			<SeparatorFull />
-
-			<UserStrip />
-
-			<View style={homeStyles.separator} />
-
-			<SongList activeTrack={activeTrack} onSelect={onSelectTrack} />
-		</View>
-	);
-}
-
-function SearchContent({ onPlayTrack }: { onPlayTrack: (track: OutputTrackDeezer) => void }) {
-	return (
-		<View style={styles.pageContent}>
-			<SearchPage onPlayTrack={onPlayTrack} />
-		</View>
-	);
-}
-
-function ProfileContent() {
-	return (
-		<View style={styles.pageContent}>
-			<Text style={styles.pageTitle}>Profile</Text>
-		</View>
-	);
-}
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Platform, Text, View } from 'react-native';
+import { SearchScreen } from './search';
+import { SideMenuBar } from '@/src/components/home/MenuSideBar';
+import { DownMenuBar } from '@/src/components/home/MenuDownBar';
 
 const tabColors: Record<TabKey, FluidColors> = {
 	home: {
@@ -64,6 +34,26 @@ const tabColors: Record<TabKey, FluidColors> = {
 		colour3: [1.0, 0.45, 0.1, 1],
 	},
 };
+
+function HomeContent({ activeTrack, onSelectTrack }: { activeTrack: number; onSelectTrack: (n: number) => void }) {
+	return (
+		<View style={homeStyles.homeContent}>
+			<HeaderSection currentTrack={null} />
+			<SeparatorFull />
+			<UserStrip />
+			<View style={homeStyles.separator} />
+			<SongList activeTrack={activeTrack} onSelect={onSelectTrack} />
+		</View>
+	);
+}
+
+function ProfileContent() {
+	return (
+		<View style={homeStyles.pageContent}>
+			<Text style={homeStyles.pageTitle}>Profile</Text>
+		</View>
+	);
+}
 
 export default function HomeScreen() {
 	const [activeTab, setActiveTab] = React.useState<TabKey>('home');
@@ -94,17 +84,21 @@ export default function HomeScreen() {
 
 	return (
 		<View style={homeStyles.homeRoot}>
-			<FluidBackground colors={tabColors[activeTab]} />
-
 			<View style={homeStyles.backgroundOverlay} />
 
-			<View style={styles.content}>
-				<View style={styles.page}>
+			<View style={homeStyles.content}>
+				<View style={homeStyles.page}>
 					{activeTab === 'home' && (
 						<HomeContent activeTrack={activeTrack} onSelectTrack={handleSelectTrack} />
 					)}
 
-					{activeTab === 'search' && <SearchContent onPlayTrack={handlePlayDeezerTrack} />}
+					{activeTab === 'search' && (
+						<SearchScreen
+							onPlayTrack={handlePlayDeezerTrack}
+							setActiveTab={setActiveTab}
+							activeTab={activeTab}
+						/>
+					)}
 
 					{activeTab === 'profile' && <ProfileContent />}
 				</View>
@@ -119,34 +113,12 @@ export default function HomeScreen() {
 					/>
 				)}
 
-				<BottomNavigation activeTab={activeTab} onSelect={setActiveTab} />
+				{Platform.OS == 'web' ? (
+					<SideMenuBar activeTab={activeTab} onTabPress={setActiveTab} />
+				) : (
+					<DownMenuBar activeTab={activeTab} onTabPress={setActiveTab} />
+				)}
 			</View>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	content: {
-		flex: 1,
-		zIndex: 1,
-	},
-
-	page: {
-		flex: 1,
-		minHeight: 0,
-	},
-
-	pageContent: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-		paddingHorizontal: 5,
-		backgroundColor: '#0000',
-	},
-
-	pageTitle: {
-		color: '#fff',
-		fontSize: 32,
-		fontWeight: '700',
-	},
-});

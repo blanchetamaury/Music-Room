@@ -12,12 +12,12 @@ import {
 	View,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { InputForm } from '../InputForm';
-import { InputPasswordForm } from '../InputPasswordForm';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
 import { Separator, SeparatorFull } from '../ui/separator';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
+import { InputPasswordForm } from './InputPasswordForm';
+import { InputForm } from '../utils/InputForm';
 
 export function LoginForm({
 	onLogin,

@@ -1,6 +1,6 @@
 import { useColorScheme } from '@/src/hooks/use-color-scheme.web';
 import { StyleSheet, View } from 'react-native';
-import { ThemedText } from '../themed-text';
+import { ThemedText } from '../utils/themed-text';
 
 type SeparatorProps = {
 	sepText: string;
@@ -30,8 +30,7 @@ const styles = StyleSheet.create({
 	separatorRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 10,
-		marginTop: 14,
+		margin: 5,
 	},
 	separatorLine: {
 		height: 1,

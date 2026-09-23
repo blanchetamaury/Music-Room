@@ -1,40 +1,43 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
+import 'dotenv/config';
+import express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import swaggerUi from 'swagger-ui-express';
 import * as yaml from 'yamljs';
 import { createApiRouter } from './router';
 
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://10.18.239.241:8081';
 
 const allowedOrigins = [
-	CLIENT_URL,
-	'http://10.18.239.241:8081',
+	process.env.CLIENT_URL_WEB,
+	process.env.CLIENT_URL_MOBILE,
 	'http://localhost:8081',
 	'http://localhost:19006',
-	'https://ambulance-eggshell-preamble.ngrok-free.dev',
-];
+].filter(Boolean);
 
 app.use(
 	cors({
 		origin: (origin, callback) => {
-			if (!origin || allowedOrigins.includes(origin)) {
+			if (!origin) {
+				return callback(null, true);
+			}
+			if (allowedOrigins.includes(origin)) {
 				callback(null, true);
 			} else {
+				console.warn(`❌ CORS bloqué pour l'origine : ${origin}`);
 				callback(new Error('Not allowed by CORS'));
 			}
 		},
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
+		allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Client-Type'], // 👈 AJOUTE X-Client-Type ICI
 	})
 );
+
+// Ajoute explicitement la gestion des OPTIONS
+app.options(/.*/, cors());
 app.use(express.json());
 
 const swaggerDocument = yaml.load(path.join(__dirname, 'swagger.yaml'));

@@ -2,7 +2,7 @@ import AuthBackground from '@/src/components/auth/AuthBackground';
 import { LoginForm } from '@/src/components/auth/LoginForm';
 import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
-import { ThemedView } from '@/src/components/themed-view';
+import { ThemedView } from '@/src/components/utils/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';

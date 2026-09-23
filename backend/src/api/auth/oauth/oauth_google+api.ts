@@ -1,6 +1,6 @@
 import { createOrUpdateGoogleUser } from '../../../../prisma/database/user';
 import { createCsrfCookie } from '../../../lib/csrf';
-import { createSession } from '../../../lib/session';
+import { createSession, SESSION_MAX_AGE_SECONDS } from '../../../lib/session';
 import { getGoogleMe, getGoogleOauthToken } from '../../../oauth/google';
 import { errorHandler } from '../../../utils/error';
 
@@ -26,7 +26,10 @@ export async function GET(request: Request): Promise<Response> {
 		const headers = new Headers();
 		headers.append('Location', redirectUrl);
 		headers.append('Set-Cookie', csrfCookie);
-		headers.append('Set-Cookie', `token=${session.body}; HttpOnly; Path=/; Max-Age=${2 * 60 * 60}; SameSite=Lax`);
+		headers.append(
+			'Set-Cookie',
+			`token=${session.body}; HttpOnly; Path=/; Max-Age=${SESSION_MAX_AGE_SECONDS}; SameSite=Lax`
+		);
 
 		return new Response(
 			JSON.stringify({

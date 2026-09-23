@@ -1,6 +1,8 @@
 import { CreatePlaylist } from '@/types/playlist/Playlist';
 import { Prisma } from '../generated/client';
 import { prisma } from './prisma';
+import { PaginationParameters } from '@/types/pagination/PaginationParameters';
+import { DEFAULT_PAGINATION, paginationToPrisma } from '@/utils/pagination';
 
 const createOrUpdatePlaylist = async (
 	data: CreatePlaylist,
@@ -25,23 +27,13 @@ const createOrUpdatePlaylist = async (
 };
 
 const addMusictoPlaylist = async (
-	playlistName: string,
-	ownerId: string,
+	playlistId: string,
 	trackId: string
-): Promise<Prisma.PlaylistGetPayload<Prisma.PlaylistDefaultArgs>> => {
-	return prisma.playlist.update({
-		where: {
-			name_ownerId: {
-				name: playlistName,
-				ownerId: ownerId,
-			},
-		},
+): Promise<Prisma.PlaylistTrackGetPayload<Prisma.PlaylistTrackDefaultArgs>> => {
+	return prisma.playlistTrack.create({
 		data: {
-			music: {
-				create: {
-					trackId: trackId,
-				},
-			},
+			playlistId: playlistId,
+			trackId: trackId,
 		},
 	});
 };
@@ -60,16 +52,48 @@ const removeMusictoPlaylist = async (
 	});
 };
 
-const getPlaylists = async  <T extends Prisma.PlaylistInclude>(
-	ownerId: string,
-	include: T,
-): Promise<Prisma.PlaylistGetPayload<{ include : T }>[]> => {
-	return prisma.playlist.findMany({
+const updatePlaylist = async (playlistId: string, ownerId: string, name: string) => {
+	return prisma.playlist.updateMany({
+		where: { id: playlistId, ownerId },
+		data: { name },
+	});
+};
+
+const getPlaylist = async <T extends Prisma.PlaylistInclude>(
+	playlistId: string,
+	include: T
+): Promise<Prisma.PlaylistGetPayload<{ include: T }> | null> => {
+	return prisma.playlist.findFirst({
 		include: include,
 		where: {
-			ownerId: ownerId,
+			id: playlistId,
 		},
 	});
 };
 
-export { createOrUpdatePlaylist, addMusictoPlaylist, removeMusictoPlaylist, getPlaylists };
+const getPlaylists = async <T extends Prisma.PlaylistInclude>(
+	ownerId: string,
+	include: T,
+	pagination?: PaginationParameters
+): Promise<Prisma.PlaylistGetPayload<{ include: T }>[]> => {
+	return prisma.playlist.findMany({
+		include: include,
+		where: {
+			OR: [
+				{
+					ownerId: ownerId,
+				},
+				{
+					user: {
+						some: {
+							id: ownerId,
+						},
+					},
+				},
+			],
+		},
+		...paginationToPrisma(pagination ?? DEFAULT_PAGINATION),
+	});
+};
+
+export { createOrUpdatePlaylist, updatePlaylist, addMusictoPlaylist, removeMusictoPlaylist, getPlaylists, getPlaylist };

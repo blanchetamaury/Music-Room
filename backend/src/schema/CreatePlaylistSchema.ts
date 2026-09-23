@@ -8,6 +8,11 @@ export const CreatePlaylistSchema = z.object({
 });
 
 export const AddMusicToPlaylistSchema = z.object({
-	playlistName: z.string(),
+	playlistId: z.string(),
 	trackId: z.string(),
+});
+
+export const UpdatePlaylistSchema = z.object({
+	playlistId: z.string().min(1),
+	name: z.string().trim().min(1),
 });
