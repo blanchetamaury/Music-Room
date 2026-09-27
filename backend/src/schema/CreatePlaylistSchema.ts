@@ -15,4 +15,11 @@ export const AddMusicToPlaylistSchema = z.object({
 export const UpdatePlaylistSchema = z.object({
 	playlistId: z.string().min(1),
 	name: z.string().trim().min(1),
+	cover: z.string().optional(),
+	private: z.boolean().optional(),
+});
+
+export const RemoveMusicFromPlaylistSchema = z.object({
+	playlistId: z.string().min(1),
+	trackId: z.string().min(1),
 });

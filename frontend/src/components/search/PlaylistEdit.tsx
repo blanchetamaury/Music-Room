@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
-import { usePlaylistQuery, useUpdatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
+import {
+	useDeletePlaylistMutation,
+	usePlaylistQuery,
+	useUpdatePlaylistDetailsMutation,
+} from '@/src/lib/fetcher/tanstack/user';
 import { ThemedText } from '../utils/themed-text';
 import { InputForm } from '../utils/InputForm';
 import { styles } from './PlaylistCreate.styles';
@@ -14,14 +18,22 @@ interface PlaylistEditProps {
 export function PlaylistEdit({ id, setPopup }: PlaylistEditProps) {
 	const { token } = useAuth();
 	const { data: playlist, isLoading } = usePlaylistQuery(token, id);
-	const updateMutation = useUpdatePlaylistMutation();
+	const updateMutation = useUpdatePlaylistDetailsMutation();
+	const deleteMutation = useDeletePlaylistMutation();
 	const [name, setName] = useState('');
+	const [cover, setCover] = useState('');
+	const [isPrivate, setIsPrivate] = useState(true);
 	const [initialized, setInitialized] = useState(false);
 
 	useEffect(() => {
 		if (playlist && !initialized) {
-			setName(playlist.name);
-			setInitialized(true);
+			const timer = setTimeout(() => {
+				setName(playlist.name);
+				setCover(playlist.cover ?? '');
+				setIsPrivate(playlist.private);
+				setInitialized(true);
+			}, 0);
+			return () => clearTimeout(timer);
 		}
 	}, [initialized, playlist]);
 
@@ -29,7 +41,15 @@ export function PlaylistEdit({ id, setPopup }: PlaylistEditProps) {
 		const trimmedName = name.trim();
 		if (!token || !trimmedName) return;
 
-		updateMutation.mutate({ token, playlistId: id, name: trimmedName }, { onSuccess: () => setPopup(null) });
+		updateMutation.mutate(
+			{ token, playlistId: id, data: { name: trimmedName, cover, private: isPrivate } },
+			{ onSuccess: () => setPopup(null) }
+		);
+	};
+
+	const handleDelete = () => {
+		if (!token) return;
+		deleteMutation.mutate({ token, playlistId: id }, { onSuccess: () => setPopup(null) });
 	};
 
 	if (isLoading || !playlist) {
@@ -51,7 +71,20 @@ export function PlaylistEdit({ id, setPopup }: PlaylistEditProps) {
 				setInputValue={setName}
 				style={styles.inputForm}
 			/>
+			<InputForm
+				isEmail={false}
+				placeholder="Cover URL"
+				inputValue={cover}
+				setInputValue={setCover}
+				style={styles.inputForm}
+			/>
+			<Pressable style={styles.visibilityButton} onPress={() => setIsPrivate((value) => !value)}>
+				<ThemedText style={styles.cancelText}>{isPrivate ? 'Private playlist' : 'Public playlist'}</ThemedText>
+			</Pressable>
 			<View style={styles.editActions}>
+				<Pressable style={styles.deleteButton} onPress={handleDelete} disabled={deleteMutation.isPending}>
+					<ThemedText style={styles.deleteText}>Delete</ThemedText>
+				</Pressable>
 				<Pressable style={styles.cancelButton} onPress={() => setPopup(null)}>
 					<ThemedText style={styles.cancelText}>Cancel</ThemedText>
 				</Pressable>

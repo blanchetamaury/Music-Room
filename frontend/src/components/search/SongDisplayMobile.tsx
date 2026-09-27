@@ -6,7 +6,6 @@ import { Banana, EllipsisVertical, Heart, ListMusic, Plus, Share2 } from 'lucide
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Modal, Pressable, View } from 'react-native';
 import { AnimatedPressable } from '../ui/AnimatedPressable';
-import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './SongDisplayMobile.styles';
 
@@ -17,6 +16,7 @@ interface SongDisplayProps {
 	onAlbumPress?: (albumId: string | number) => void;
 	onLike?: (value: boolean) => void;
 	playlists?: PlaylistOutput[];
+	onAddToQueue?: (song: OutputTrackDeezer) => void;
 }
 
 const DEBUG = false;
@@ -98,7 +98,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 								});
 							}}
 						>
-							{likeData == undefined ? (
+							{likeData === undefined ? (
 								<Heart color="#fff" fill={'#ffffff65'} size={19} />
 							) : (
 								<Heart color="#ff0000be" size={19} fill={'#ff0000'} />
@@ -138,10 +138,11 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 							style={styles.menuItem}
 							onPress={() => {
 								setDisplayMenu(false);
+								props.onAddToQueue?.(props.song);
 							}}
 						>
 							<ListMusic color="#fff" size={18} />
-							<ThemedText style={styles.menuItemText}>Ajouter à la file d'attente</ThemedText>
+							<ThemedText style={styles.menuItemText}>Ajouter à la file d&apos;attente</ThemedText>
 						</Pressable>
 
 						<Pressable
@@ -168,6 +169,7 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 						{props.playlists &&
 							props.playlists.map((row) => (
 								<Pressable
+									key={row.id}
 									style={styles.menuItem}
 									onPress={() => {
 										addMusicToPlaylistMutation.mutate({

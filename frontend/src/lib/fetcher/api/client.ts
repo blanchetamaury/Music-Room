@@ -91,6 +91,27 @@ export const api = {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			},
+			updateDetails: (
+				token: string,
+				playlistId: string,
+				data: { name: string; cover?: string; private?: boolean }
+			) =>
+				fetchApi<{ success: boolean }>(`/user/playlist/update`, {
+					method: 'PATCH',
+					body: JSON.stringify({ playlistId, ...data }),
+					headers: { Authorization: `Bearer ${token}` },
+				}),
+			remove: (token: string, playlistId: string) =>
+				fetchApi<{ success: boolean }>(`/user/playlist/delete?playlist_id=${encodeURIComponent(playlistId)}`, {
+					method: 'DELETE',
+					headers: { Authorization: `Bearer ${token}` },
+				}),
+			removeMusic: (token: string, playlistId: string, trackId: string) =>
+				fetchApi<{ success: boolean }>(`/user/playlist/removeMusic`, {
+					method: 'DELETE',
+					body: JSON.stringify({ playlistId, trackId }),
+					headers: { Authorization: `Bearer ${token}` },
+				}),
 		},
 		like: {
 			manage: (trakcId: string, token: string) => {

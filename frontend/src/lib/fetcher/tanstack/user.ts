@@ -101,6 +101,47 @@ export function useUpdatePlaylistMutation() {
 	});
 }
 
+export function useUpdatePlaylistDetailsMutation() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({
+			token,
+			playlistId,
+			data,
+		}: {
+			token: string;
+			playlistId: string;
+			data: { name: string; cover?: string; private?: boolean };
+		}) => api.user.playlist.updateDetails(token, playlistId, data).then(unwrapApiResponse),
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlists(variables.token) });
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlist(variables.token, variables.playlistId) });
+		},
+	});
+}
+
+export function useDeletePlaylistMutation() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ token, playlistId }: { token: string; playlistId: string }) =>
+			api.user.playlist.remove(token, playlistId).then(unwrapApiResponse),
+		onSuccess: (_data, variables) =>
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlists(variables.token) }),
+	});
+}
+
+export function useRemoveMusicMutation() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ token, playlistId, trackId }: { token: string; playlistId: string; trackId: string }) =>
+			api.user.playlist.removeMusic(token, playlistId, trackId).then(unwrapApiResponse),
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlists(variables.token) });
+			queryClient.invalidateQueries({ queryKey: userQueryKeys.playlist(variables.token, variables.playlistId) });
+		},
+	});
+}
+
 export function useManageLikeMutation() {
 	const queryClient = useQueryClient();
 

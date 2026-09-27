@@ -59,6 +59,11 @@ export function SearchScreen(props: SearchPageProps) {
 	const [query, setQuery] = useState('');
 	const [debouncedQuery, setDebouncedQuery] = useState('');
 	const [popup, setPopup] = useState<PopupState>(null);
+	const [queue, setQueue] = useState<OutputTrackDeezer[]>([]);
+
+	const addToQueue = (track: OutputTrackDeezer) => {
+		setQueue((current) => [...current, track]);
+	};
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -123,6 +128,11 @@ export function SearchScreen(props: SearchPageProps) {
 							<View style={styles.mainColumn}>
 								<PlaylistList setPopup={setPopup} likesData={likesData} playlists={playlists} />
 								<View style={{ flexDirection: 'column', flex: 1 }}>
+									{queue.length > 0 && (
+										<ThemedText style={styles.emptyAlbumsText}>
+											{queue.length} titre(s) dans la file d&apos;attente
+										</ThemedText>
+									)}
 									<SectionBanner
 										isSearching={isSearching}
 										query={debouncedQuery}
@@ -134,6 +144,7 @@ export function SearchScreen(props: SearchPageProps) {
 										playlists={playlists}
 										tracks={isSearching ? (searchData ?? []) : (topMusicData ?? [])}
 										tracksLoading={isSearching ? searchLoading : topMusicLoading}
+										onAddToQueue={addToQueue}
 									/>
 								</View>
 
@@ -210,6 +221,8 @@ export function SearchScreen(props: SearchPageProps) {
 								{popup.type === 'song' && (
 									<SongProfileMobile
 										song={popup.song}
+										playlists={playlists}
+										onAddToQueue={addToQueue}
 										onPlay={() => {
 											props.onPlayTrack?.(popup.song);
 											setPopup(null);

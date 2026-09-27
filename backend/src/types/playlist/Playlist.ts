@@ -13,6 +13,8 @@ export interface AddMusicToPlaylist {
 export interface UpdatePlaylist {
 	playlistId: string;
 	name: string;
+	cover?: string;
+	private?: boolean;
 }
 
 export interface OutputPlaylist {

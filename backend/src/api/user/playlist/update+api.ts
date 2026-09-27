@@ -11,7 +11,7 @@ export async function PATCH(req: Request): Promise<Response> {
 		if (!ownerId) return Response.json({ success: false, message: 'No token provided' }, { status: 401 });
 
 		const data = await parseBody<UpdatePlaylist>(req, UpdatePlaylistSchema);
-		const updated = await updatePlaylist(data.playlistId, ownerId, data.name);
+		const updated = await updatePlaylist(data.playlistId, ownerId, data);
 
 		if (updated.count === 0) {
 			return Response.json({ success: false, message: 'Playlist not found' }, { status: 404 });

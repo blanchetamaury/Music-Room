@@ -111,6 +111,17 @@ export const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		gap: 10,
 	},
+	deleteButton: {
+		minHeight: 38,
+		paddingHorizontal: 16,
+		borderRadius: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'rgba(180,40,50,0.35)',
+		borderWidth: 1,
+		borderColor: 'rgba(255,100,100,0.4)',
+	},
+	deleteText: { color: '#ffb0b0', fontSize: 13, fontWeight: '700' },
 	cancelButton: {
 		minHeight: 38,
 		paddingHorizontal: 16,

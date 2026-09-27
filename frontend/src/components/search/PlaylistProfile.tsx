@@ -1,14 +1,15 @@
 import { useAuth } from '@/src/context/AuthContext';
-import { usePlaylistQuery } from '@/src/lib/fetcher/tanstack/user';
-import { ChevronLeft, Heart, LockKeyhole, Music2, Users } from 'lucide-react-native';
+import { usePlaylistQuery, useRemoveMusicMutation } from '@/src/lib/fetcher/tanstack/user';
+import { ChevronLeft, Heart, LockKeyhole, Music2, Trash2, Users } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, View } from 'react-native';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './PlaylistProfile.styles';
 import { Like } from '@/src/types/user/like';
+import { PopupState } from '@/src/app/(tabs)/search';
 
 interface PlaylistProfileProps {
-	setPopup: (value: null) => void;
+	setPopup: (value: PopupState) => void;
 	id: string;
 }
 
@@ -20,6 +21,7 @@ interface PlaylistLikeProfileProps {
 export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 	const { token } = useAuth();
 	const { data: playlist, isLoading, isError } = usePlaylistQuery(token, id);
+	const removeMusicMutation = useRemoveMusicMutation();
 
 	if (isLoading) {
 		return (
@@ -119,6 +121,15 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 								</ThemedText>
 								<ThemedText style={styles.trackSubtitle}>Position {track.track.rank}</ThemedText>
 							</View>
+							<Pressable
+								onPress={() =>
+									token &&
+									removeMusicMutation.mutate({ token, playlistId: id, trackId: track.trackId })
+								}
+								accessibilityLabel="Remove track"
+							>
+								<Trash2 color="rgba(255,155,155,0.8)" size={17} />
+							</Pressable>
 						</View>
 					))}
 				</View>

@@ -12,6 +12,7 @@ interface PlaylistListProps {
 	playlists: PlaylistOutput[] | undefined;
 	tracks: OutputTrackDeezer[];
 	tracksLoading: boolean;
+	onAddToQueue?: (track: OutputTrackDeezer) => void;
 }
 
 export function SongList(props: PlaylistListProps) {
@@ -27,7 +28,7 @@ export function SongList(props: PlaylistListProps) {
 			bottomRightRadius={8}
 		>
 			<View style={styles.songListShell}>
-				{props.tracksLoading && props.tracks.length == 0 ? (
+				{props.tracksLoading && props.tracks.length === 0 ? (
 					<View style={styles.loadingContainer}>
 						<ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
 						<ThemedText style={styles.loadingText}>Loading songs...</ThemedText>
@@ -41,6 +42,7 @@ export function SongList(props: PlaylistListProps) {
 					>
 						{props.tracks.map((song, index) => (
 							<View
+								key={`${song.deezerCUID}-${index}`}
 								style={{
 									flexDirection: 'row',
 									gap: 10,
@@ -54,6 +56,7 @@ export function SongList(props: PlaylistListProps) {
 									song={song}
 									onPress={() => props.setPopup({ type: 'song', song })}
 									playlists={props.playlists}
+									onAddToQueue={props.onAddToQueue}
 								/>
 							</View>
 						))}

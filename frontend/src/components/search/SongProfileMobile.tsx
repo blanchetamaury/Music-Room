@@ -1,23 +1,12 @@
-import {
-	Banana,
-	Clock3,
-	FaceAngry,
-	FaceNeutral,
-	FaceSlightlyFrowningIcon,
-	FaceSlightlySmiling,
-	FaceSlightlySmilingPlus,
-	Heart,
-	ListPlus,
-	Play,
-	TrendingUp,
-} from 'lucide-react-native';
-import { useEffect, useRef, useState } from 'react';
-import { Image, Pressable, ScrollView, View } from 'react-native';
-
+import { useAuth } from '@/src/context/AuthContext';
+import { useAddMusicMutation, useLikeQuery, useManageLikeMutation } from '@/src/lib/fetcher/tanstack/user';
 import { api } from '@/src/lib/fetcher/api/client';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Track } from '@/src/types/track/track';
-import { HoverText } from '../ui/hoverText';
+import { Clock3, Heart, ListPlus, Play, TrendingUp } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, Modal, Pressable, View } from 'react-native';
 import { SeparatorFull } from '../ui/separator';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './SongProfileMobile.styles';
@@ -27,333 +16,140 @@ interface SongProfileProps {
 	onPlay?: () => void;
 	onArtistPress?: (artistId: string | number) => void;
 	onAlbumPress?: (albumId: string | null) => void;
+	playlists?: PlaylistOutput[];
+	onAddToQueue?: (song: OutputTrackDeezer) => void;
 }
 
-const DEBUG = false;
-
-const debugBox = (color: string) => {
-	if (!DEBUG) {
-		return {};
-	}
-
-	return {
-		borderWidth: 2,
-		borderColor: color,
-		backgroundColor: `${color}22`,
-	};
-};
-
-export function SongProfileMobile({ song, onPlay, onArtistPress, onAlbumPress }: SongProfileProps) {
+export function SongProfileMobile({
+	song,
+	onPlay,
+	onArtistPress,
+	onAlbumPress,
+	playlists = [],
+	onAddToQueue,
+}: SongProfileProps) {
+	const { token } = useAuth();
+	const { data: likeData } = useLikeQuery(token ?? '', song.deezerCUID);
+	const likeMutation = useManageLikeMutation();
+	const addMusicMutation = useAddMusicMutation();
 	const [music, setMusic] = useState<Track | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const [playlistPickerOpen, setPlaylistPickerOpen] = useState(false);
 
 	useEffect(() => {
-		let isMounted = true;
-
-		const loadMusic = async () => {
-			try {
-				setLoading(true);
-				setError(null);
-
-				const data = await api.deezer.music.music(Number(song.deezerCUID));
-
-				const track = data.data;
-
-				if (!track) {
-					if (isMounted) {
-						setError('No track returned');
-					}
-					return;
-				}
-
-				if (isMounted) {
-					setMusic(track);
-				}
-			} catch (error) {
-				console.error('[SongProfile] Failed to load track:', error);
-
-				if (isMounted) {
-					setError('Failed to load track');
-				}
-			} finally {
-				if (isMounted) {
-					setLoading(false);
-				}
-			}
-		};
-
-		loadMusic();
-
+		let mounted = true;
+		api.deezer.music.music(Number(song.deezerCUID)).then((response) => {
+			if (mounted) setMusic(response.data ?? null);
+		});
 		return () => {
-			isMounted = false;
+			mounted = false;
 		};
 	}, [song.deezerCUID]);
 
-	if (loading) {
+	if (!music)
 		return (
-			<View style={[styles.container, debugBox('#ff0000')]}>
+			<View style={styles.container}>
 				<ThemedText>Chargement...</ThemedText>
 			</View>
 		);
-	}
-
-	if (error || !music) {
-		return (
-			<View style={[styles.container, debugBox('#ff0000')]}>
-				<ThemedText>{error ?? 'Aucune donnée'}</ThemedText>
-			</View>
-		);
-	}
-
-	const albumName = music.album?.title ?? 'Album';
 
 	return (
-		<View style={[styles.container, debugBox('#ff0000')]}>
-			<Pressable
-				style={[styles.albumButton, debugBox('#ff8800')]}
-				onPress={() => {
-					onAlbumPress?.(music.album?.deezerCUID ?? null);
-				}}
-			>
-				<ThemedText style={[styles.albumTitle, debugBox('#ffff00')]} numberOfLines={1} ellipsizeMode="tail">
-					{albumName}
+		<View style={styles.container}>
+			<Pressable style={styles.albumButton} onPress={() => onAlbumPress?.(music.album?.deezerCUID ?? null)}>
+				<ThemedText style={styles.albumTitle} numberOfLines={1}>
+					{music.album?.title ?? 'Album'}
 				</ThemedText>
 			</Pressable>
-
-			<View style={[styles.coverContainer, debugBox('#00ff00')]}>
-				{music.album?.coverMedium && (
-					<Image
-						source={{
-							uri: music.album.coverMedium,
-						}}
-						resizeMode="cover"
-						style={[styles.cover, debugBox('#00ffff')]}
-					/>
-				)}
+			<View style={styles.coverContainer}>
+				{music.album?.coverMedium && <Image source={{ uri: music.album.coverMedium }} style={styles.cover} />}
 			</View>
-
-			<View style={[styles.titleContainer, debugBox('#0088ff')]}>
-				<ScrollingTitle title={music.title} explicit={music.explicit === true} />
+			<View style={styles.titleContainer}>
+				<ThemedText style={styles.title}>{music.title}</ThemedText>
 			</View>
-
-			<View style={[styles.artistsContainer, debugBox('#ff00ff')]}>
+			<View style={styles.artistsContainer}>
 				{music.artists.map((artist, index) => (
-					<View key={`${artist.deezerCUID}-${index}`} style={[styles.artistWrapper, debugBox('#8800ff')]}>
-						<HoverText
-							style={[styles.artist, debugBox('#00ff88')]}
-							onPress={() => {
-								onArtistPress?.(artist.deezerCUID ?? '');
-							}}
-						>
+					<Pressable
+						key={`${artist.deezerCUID}-${index}`}
+						style={styles.artistWrapper}
+						onPress={() => onArtistPress?.(artist.deezerCUID)}
+					>
+						<ThemedText style={styles.artist}>
 							{artist.name}
-						</HoverText>
-
-						{index < music.artists.length - 1 && (
-							<ThemedText style={[styles.artistSeparator, debugBox('#ffffff')]}>,</ThemedText>
-						)}
-					</View>
+							{index < music.artists.length - 1 ? ', ' : ''}
+						</ThemedText>
+					</Pressable>
 				))}
 			</View>
-
 			<SeparatorFull />
-
-			<View style={[styles.actions, debugBox('#25fc09')]}>
+			<View style={styles.actions}>
 				<Pressable
-					style={[styles.actionButton, debugBox('#ff0000')]}
-					onPress={() => {
-						console.log('[SongProfile] Like:', music.deezerCUID);
-					}}
+					style={styles.actionButton}
+					onPress={() => token && likeMutation.mutate({ token, trackId: song.deezerCUID })}
+					accessibilityLabel="Like this music"
 				>
-					<Heart size={22} color="rgba(255,255,255,0.8)" strokeWidth={2} />
+					<Heart
+						size={22}
+						color={likeData ? '#ff6b8a' : '#fff'}
+						fill={likeData ? '#ff6b8a' : 'transparent'}
+					/>
 				</Pressable>
-
-				<Pressable
-					style={[styles.playButton, debugBox('#00ff00')]}
-					onPress={() => {
-						console.log('[SongProfile] Play:', music.deezerCUID);
-
-						onPlay?.();
-					}}
-				>
-					<Play size={23} color="#fff" fill="#fff" strokeWidth={2} />
+				<Pressable style={styles.playButton} onPress={onPlay} accessibilityLabel="Play this music">
+					<Play size={23} color="#fff" fill="#fff" />
 				</Pressable>
-
 				<Pressable
-					style={[styles.actionButton, debugBox('#0088ff')]}
-					onPress={() => {
-						console.log('[SongProfile] Add to playlist:', music.deezerCUID);
-					}}
+					style={styles.actionButton}
+					onPress={() => setPlaylistPickerOpen(true)}
+					accessibilityLabel="Add to playlist"
 				>
-					<ListPlus size={23} color="rgba(255,255,255,0.8)" strokeWidth={2} />
+					<ListPlus size={23} color="#fff" />
 				</Pressable>
 			</View>
-
+			<Pressable style={styles.queueButton} onPress={() => onAddToQueue?.(song)}>
+				<ListPlus size={18} color="#fff" />
+				<ThemedText style={styles.queueText}>Ajouter à la file d&apos;attente</ThemedText>
+			</Pressable>
 			<SeparatorFull />
-
-			<View style={[styles.stats, debugBox('#00ffff')]}>
-				<View style={[styles.statItem, debugBox('#ff8800')]}>
-					<ThemedText style={styles.statLabel}>{formatReleaseDate(music.releaseDate?.toString())}</ThemedText>
-				</View>
-
-				<View style={[styles.statSeparator, debugBox('#ffffff')]} />
-
-				<View style={[styles.statItem, debugBox('#00ff00')]}>
-					<Clock3 size={15} color="rgba(255,255,255,0.55)" />
-
-					<ThemedText style={styles.statLabel}>{formatDuration(music.duration)}</ThemedText>
-				</View>
-
-				<View style={[styles.statSeparator, debugBox('#ffffff')]} />
-
-				<View style={[styles.statItem, debugBox('#ff00ff')]}>
-					<TrendingUp size={15} color="rgba(255,255,255,0.55)" />
-
-					<ThemedText style={styles.statLabel}>Trending</ThemedText>
-
-					{getRankIcon(music.rank)}
-				</View>
+			<View style={styles.stats}>
+				<ThemedText style={styles.statLabel}>{formatDuration(music.duration)}</ThemedText>
+				<Clock3 size={15} color="rgba(255,255,255,0.55)" />
+				<ThemedText style={styles.statLabel}>
+					{music.releaseDate ? new Date(music.releaseDate).toLocaleDateString('fr-FR') : 'Date inconnue'}
+				</ThemedText>
+				<TrendingUp size={15} color="rgba(255,255,255,0.55)" />
 			</View>
-		</View>
-	);
-}
-
-function getRankIcon(rank?: number | null) {
-	if (!rank) {
-		return null;
-	}
-
-	const n = Number(rank);
-
-	if (n < 200_000) {
-		return <FaceAngry size={17} color="rgba(255,255,255,0.45)" />;
-	}
-
-	if (n < 400_000) {
-		return <FaceSlightlyFrowningIcon size={17} color="rgba(255,255,255,0.55)" />;
-	}
-
-	if (n < 600_000) {
-		return <FaceNeutral size={17} color="rgba(255,255,255,0.65)" />;
-	}
-
-	if (n < 800_000) {
-		return <FaceSlightlySmiling size={17} color="rgba(255,255,255,0.75)" />;
-	}
-
-	return <FaceSlightlySmilingPlus size={17} color="rgba(255,255,255,0.9)" />;
-}
-
-function formatReleaseDate(date?: string) {
-	if (!date) {
-		return 'Unknown date';
-	}
-
-	const parsedDate = new Date(date);
-
-	if (Number.isNaN(parsedDate.getTime())) {
-		return date;
-	}
-
-	return parsedDate.toLocaleDateString('fr-FR', {
-		day: 'numeric',
-		month: 'short',
-		year: 'numeric',
-	});
-}
-
-function formatDuration(duration?: string | number) {
-	if (!duration) {
-		return '--:--';
-	}
-
-	const totalSeconds = Number(duration);
-	const minutes = Math.floor(totalSeconds / 60);
-	const seconds = totalSeconds % 60;
-
-	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
-function ScrollingTitle({ title, explicit }: { title: string; explicit: boolean }) {
-	const scrollRef = useRef<ScrollView>(null);
-	const [contentWidth, setContentWidth] = useState(0);
-	const [containerWidth, setContainerWidth] = useState(0);
-
-	const isOverflowing = contentWidth > 0 && containerWidth > 0 && contentWidth > containerWidth;
-
-	useEffect(() => {
-		if (!isOverflowing) {
-			scrollRef.current?.scrollTo({
-				x: 0,
-				animated: false,
-			});
-
-			return;
-		}
-
-		let position = 0;
-		let animationFrame: number;
-
-		const speed = 0.35;
-
-		const animate = () => {
-			position += speed;
-
-			if (position >= contentWidth + 40) {
-				position = 0;
-			}
-
-			scrollRef.current?.scrollTo({
-				x: position,
-				animated: false,
-			});
-
-			animationFrame = requestAnimationFrame(animate);
-		};
-
-		const timeout = setTimeout(() => {
-			animationFrame = requestAnimationFrame(animate);
-		}, 1000);
-
-		return () => {
-			clearTimeout(timeout);
-			cancelAnimationFrame(animationFrame);
-		};
-	}, [isOverflowing, contentWidth]);
-
-	return (
-		<View
-			style={[styles.scrollingTitleWrapper, !isOverflowing && styles.scrollingTitleCentered]}
-			onLayout={(event) => {
-				setContainerWidth(event.nativeEvent.layout.width);
-			}}
-		>
-			<ScrollView
-				ref={scrollRef}
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				scrollEnabled={false}
-				contentContainerStyle={[styles.titleScrollContent, !isOverflowing && styles.titleScrollCentered]}
+			<Modal
+				visible={playlistPickerOpen}
+				transparent
+				animationType="fade"
+				onRequestClose={() => setPlaylistPickerOpen(false)}
 			>
-				<View
-					style={styles.titleContent}
-					onLayout={(event) => {
-						setContentWidth(event.nativeEvent.layout.width);
-					}}
-				>
-					<ThemedText style={styles.title}>{title}</ThemedText>
-
-					{explicit && <Banana size={18} color="rgba(255,255,255,0.7)" />}
-				</View>
-
-				{isOverflowing && (
-					<View style={styles.titleDuplicate}>
-						<ThemedText style={styles.title}>{title}</ThemedText>
-
-						{explicit && <Banana size={18} color="rgba(255,255,255,0.7)" />}
+				<Pressable style={styles.pickerBackdrop} onPress={() => setPlaylistPickerOpen(false)}>
+					<View style={styles.playlistPicker}>
+						<ThemedText style={styles.playlistPickerTitle}>Ajouter à une playlist</ThemedText>
+						{playlists.map((playlist) => (
+							<Pressable
+								key={playlist.id}
+								style={styles.playlistPickerItem}
+								onPress={() => {
+									if (token)
+										addMusicMutation.mutate({
+											token,
+											playlistId: playlist.id,
+											trackId: song.deezerCUID,
+										});
+									setPlaylistPickerOpen(false);
+								}}
+							>
+								<ThemedText style={styles.playlistPickerText}>{playlist.name}</ThemedText>
+							</Pressable>
+						))}
 					</View>
-				)}
-			</ScrollView>
+				</Pressable>
+			</Modal>
 		</View>
 	);
+}
+
+function formatDuration(value: number) {
+	const minutes = Math.floor(value / 60);
+	return `${minutes}:${String(value % 60).padStart(2, '0')}`;
 }
