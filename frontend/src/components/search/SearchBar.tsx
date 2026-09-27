@@ -26,12 +26,20 @@ export function SearchBar(props: SearchBarProps) {
 				onChangeText={props.setQuery}
 				placeholder="Search..."
 				placeholderTextColor="rgba(255,255,255,0.5)"
-				style={styles.searchInput}
+				style={[
+					styles.searchInput,
+					Platform.OS === 'web' &&
+						({
+							outline: 'none',
+							outlineWidth: 0,
+							outlineStyle: 'none',
+							boxShadow: 'none',
+						} as any),
+				]}
 				autoCapitalize="none"
 				autoCorrect={false}
 				selectionColor="rgba(255,255,255,0.7)"
 				underlineColorAndroid="transparent"
-				{...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : {})}
 			/>
 		</LiquidGlass>
 	);

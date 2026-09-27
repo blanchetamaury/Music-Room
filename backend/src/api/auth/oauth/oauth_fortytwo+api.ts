@@ -29,7 +29,10 @@ export async function GET(request: Request): Promise<Response> {
 			.replace(/[\x00-\x1F\x7F]/g, '')
 			.trim();
 
-		const redirectUrl = `${clientUrl}/oauth-callback?token=${encodeURIComponent(session.body)}`;
+		console.log(clientUrl);
+
+		const callbackPath = clientType === 'mobile' ? '/--/oauth-callback' : '/oauth-callback';
+		const redirectUrl = `${clientUrl}${callbackPath}?token=${encodeURIComponent(session.body)}`;
 
 		const headers = new Headers();
 		headers.append('Location', redirectUrl);

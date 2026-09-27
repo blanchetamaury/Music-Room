@@ -1,5 +1,6 @@
 import { styles } from '@/src/app/(tabs)/SearchPage.styles';
 import { TabKey } from '@/src/components/home/BottomNavigation';
+import { RouteShell } from '@/src/components/home/RouteShell';
 import { WebHomeHeader } from '@/src/components/home/WebHomeHeader';
 import { AlbumProfileMobile } from '@/src/components/search/AlbumProfileMobile';
 import { ArtistProfileMobile } from '@/src/components/search/ArtisteProfileMobile';
@@ -20,6 +21,7 @@ import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQu
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { Like } from '@/src/types/user/like';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, View, useWindowDimensions } from 'react-native';
 
@@ -220,8 +222,10 @@ export function SearchScreen(props: SearchPageProps) {
 								{popup.type === 'artist' && (
 									<ArtistProfileMobile
 										id={popup.id}
-										onSongPress={(song) => setPopup({ type: 'song', song: song })}
-										onAlbumPress={(album) => setPopup({ type: 'album', id: String(album.id) })}
+										onSongPress={(song) =>
+											setPopup({ type: 'song', song: song as unknown as OutputTrackDeezer })
+										}
+										onAlbumPress={(album) => setPopup({ type: 'album', id: album.deezerCUID })}
 									/>
 								)}
 
@@ -243,5 +247,21 @@ export function SearchScreen(props: SearchPageProps) {
 				</View>
 			</LinearGradient>
 		</ThemedView>
+	);
+}
+
+export default function SearchRoute() {
+	const router = useRouter();
+
+	return (
+		<RouteShell activeTab="search">
+			{(onPlayTrack) => (
+				<SearchScreen
+					onPlayTrack={onPlayTrack}
+					activeTab="search"
+					setActiveTab={(tab) => router.replace(`/(tabs)/${tab}`)}
+				/>
+			)}
+		</RouteShell>
 	);
 }

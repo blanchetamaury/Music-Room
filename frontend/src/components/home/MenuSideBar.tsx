@@ -1,20 +1,21 @@
+import { Home, LogOut, Menu, Search, User, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
-	useAnimatedStyle,
-	withTiming,
-	useSharedValue,
-	interpolate,
 	Extrapolation,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Home, Search, User, Menu, X } from 'lucide-react-native';
 
 export type TabKey = 'home' | 'search' | 'profile';
 
 interface SideMenuBarProps {
 	activeTab: TabKey;
 	onTabPress: (tab: TabKey) => void;
+	onLogout: () => Promise<void>;
 }
 
 interface TabItem {
@@ -32,7 +33,7 @@ const TABS: TabItem[] = [
 const PANEL_WIDTH = 240;
 const ITEM_HEIGHT = 52;
 
-export function SideMenuBar({ activeTab, onTabPress }: SideMenuBarProps) {
+export function SideMenuBar({ activeTab, onTabPress, onLogout }: SideMenuBarProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const progress = useSharedValue(0);
 	const insets = useSafeAreaInsets();
@@ -101,6 +102,10 @@ export function SideMenuBar({ activeTab, onTabPress }: SideMenuBarProps) {
 							onPress={() => handleTabPress(tab.key)}
 						/>
 					))}
+					<Pressable style={styles.logoutItem} onPress={onLogout}>
+						<LogOut color="#ff9b9b" size={20} />
+						<Animated.Text style={styles.logoutLabel}>Se déconnecter</Animated.Text>
+					</Pressable>
 				</View>
 			</Animated.View>
 
@@ -172,6 +177,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 10,
 		gap: 4,
+		alignContent: 'center',
+		justifyContent: 'center',
 	},
 	itemWrapper: {
 		width: '100%',
@@ -198,6 +205,17 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontWeight: '600',
 	},
+	logoutItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 12,
+		paddingHorizontal: 14,
+		height: ITEM_HEIGHT,
+		marginTop: 'auto',
+		borderRadius: 10,
+		backgroundColor: 'rgba(120,20,30,0.28)',
+	},
+	logoutLabel: { color: '#ff9b9b', fontSize: 15, fontWeight: '600' },
 	toggleWrapper: {
 		position: 'absolute',
 		left: 16,

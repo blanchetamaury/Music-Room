@@ -40,12 +40,22 @@ export function SongList(props: PlaylistListProps) {
 						bounces
 					>
 						{props.tracks.map((song, index) => (
-							<SongDisplayMobile
-								key={`${song.deezerCUID}-${index}`}
-								song={song}
-								onPress={() => props.setPopup({ type: 'song', song })}
-								playlists={props.playlists}
-							/>
+							<View
+								style={{
+									flexDirection: 'row',
+									gap: 10,
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<ThemedText>{index + 1}</ThemedText>
+								<SongDisplayMobile
+									key={`${song.deezerCUID}-${index}`}
+									song={song}
+									onPress={() => props.setPopup({ type: 'song', song })}
+									playlists={props.playlists}
+								/>
+							</View>
 						))}
 					</ScrollView>
 				)}

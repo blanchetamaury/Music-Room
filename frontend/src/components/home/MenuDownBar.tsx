@@ -1,11 +1,12 @@
+import { Home, LogOut, Search, User } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { Home, Search, User } from 'lucide-react-native';
 import { TabKey } from './BottomNavigation';
 
 interface SideMenuBarProps {
 	activeTab: TabKey;
 	onTabPress: (tab: TabKey) => void;
+	onLogout: () => Promise<void>;
 }
 
 interface TabItem {
@@ -19,17 +20,22 @@ const TABS: TabItem[] = [
 	{ key: 'profile', icon: User },
 ];
 
-export function DownMenuBar({ activeTab, onTabPress }: SideMenuBarProps) {
+export function DownMenuBar({ activeTab, onTabPress, onLogout }: SideMenuBarProps) {
 	return (
-		<View style={styles.container}>
-			{TABS.map((tab) => (
-				<TabButton
-					key={tab.key}
-					tab={tab}
-					isActive={activeTab === tab.key}
-					onPress={() => onTabPress(tab.key)}
-				/>
-			))}
+		<View style={styles.wrapper}>
+			<View style={styles.container}>
+				{TABS.map((tab) => (
+					<TabButton
+						key={tab.key}
+						tab={tab}
+						isActive={activeTab === tab.key}
+						onPress={() => onTabPress(tab.key)}
+					/>
+				))}
+			</View>
+			<Pressable style={styles.logoutButton} onPress={onLogout} accessibilityLabel="Se déconnecter">
+				<LogOut color="#ff9b9b" size={18} />
+			</Pressable>
 		</View>
 	);
 }
@@ -69,6 +75,20 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		flexDirection: 'row',
+	},
+	wrapper: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', zIndex: 30 },
+	logoutButton: {
+		position: 'absolute',
+		right: 16,
+		bottom: 24,
+		width: 38,
+		height: 38,
+		borderRadius: 19,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'rgba(120,20,30,0.65)',
+		borderWidth: 1,
+		borderColor: 'rgba(255,100,100,0.45)',
 	},
 	tabButton: {
 		alignItems: 'center',

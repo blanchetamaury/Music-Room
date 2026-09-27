@@ -1,7 +1,18 @@
 {
-	"plugins": ["expo-secure-store", "expo-web-browser"],
 	"expo": {
+		"name": "music room",
+		"slug": "music-room",
+		"version": "1.0.0",
 		"userInterfaceStyle": "automatic",
-		"plugins": ["expo-audio"]
+		"scheme": "votreapp",
+		"plugins": ["expo-secure-store", "expo-web-browser", "expo-audio"],
+		"extra": {
+			"eas": {
+				"projectId": "votre-project-id-ici"
+			}
+		},
+		"runtimeVersion": {
+			"policy": "appVersion"
+		}
 	}
 }

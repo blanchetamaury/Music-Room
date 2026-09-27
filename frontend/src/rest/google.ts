@@ -17,6 +17,7 @@ export function generateGoogleAuthorizationUrl(): RelativePathString {
 	url.searchParams.set('scope', 'openid email profile');
 	url.searchParams.set('redirect_uri', `${baseUrl}/api/auth/oauth/oauth_google`);
 	url.searchParams.set('response_type', 'code');
+	url.searchParams.set('state', Platform.OS === 'web' ? 'web' : 'mobile');
 
 	return url.toString() as RelativePathString;
 }
