@@ -28,13 +28,13 @@ export function RouteShell({ activeTab, children }: RouteShellProps) {
 	const [autoPlay, setAutoPlay] = useState(false);
 
 	useEffect(() => {
-		if (!loading && !token) router.replace('/(auth)/login');
+		if (!loading && !token) router.replace('/');
 	}, [loading, token, router]);
 
 	const navigate = (tab: TabKey) => router.replace(routes[tab]);
 	const logoutAndRedirect = async () => {
 		await logout();
-		router.replace('/(auth)/login');
+		router.replace('/');
 	};
 	const onPlayTrack = (track: OutputTrackDeezer) => {
 		setCurrentTrack(track);
