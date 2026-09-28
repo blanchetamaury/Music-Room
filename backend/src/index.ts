@@ -6,8 +6,13 @@ import * as path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import * as yaml from 'yamljs';
 import { createApiRouter } from './router';
+import { auditMiddleware, requestIdMiddleware, resolveUserMiddleware } from './lib/auditLog';
+import { csrfMiddleware, issueCsrfCookieMiddleware } from './lib/csrfMiddleware';
+import { sseHandler, type RealtimeTopic } from './lib/realtime';
+import { canManageDevice, canReadEvent, canReadPlaylist } from './lib/permissions';
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
@@ -32,11 +37,20 @@ app.use(
 		},
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Client-Type'], // 👈 AJOUTE X-Client-Type ICI
+		allowedHeaders: [
+			'Content-Type',
+			'Authorization',
+			'X-CSRF-Token',
+			'X-Client-Type',
+			'X-Client-Platform',
+			'X-Device-Id',
+			'X-Device-Model',
+			'X-App-Version',
+			'X-Request-Id',
+		],
 	})
 );
 
-// Ajoute explicitement la gestion des OPTIONS
 app.options(/.*/, cors());
 app.use(express.json());
 
@@ -64,13 +78,26 @@ app.get('/api/openapi.yaml', (req, res) => {
 	res.send(fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8'));
 });
 
-app.use(async (req, res, next) => {
-	console.log(`Incoming request: ${req.method} ${req.path}`);
-	next();
-});
+app.use(requestIdMiddleware);
+app.use(issueCsrfCookieMiddleware);
+app.use(resolveUserMiddleware);
+app.use(csrfMiddleware);
+app.use(auditMiddleware);
 
 app.get('/health', (req, res) => {
 	res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/stream', (req, res, next) => {
+	res.locals.canSubscribe = async (topic: RealtimeTopic, entityId: string): Promise<boolean> => {
+		const userId = req.userId ?? null;
+		if (!userId) return false;
+		if (topic === 'playlist') return canReadPlaylist(entityId, userId);
+		if (topic === 'event') return canReadEvent(entityId, userId);
+		if (topic === 'device') return canManageDevice(entityId, userId);
+		return false;
+	};
+	sseHandler(req, res, next);
 });
 
 createApiRouter()
@@ -99,10 +126,8 @@ createApiRouter()
 		console.log('--- Routes ---');
 		printRoutes(router.stack);
 
-		app.listen(PORT, () => {
-			/* ... */
-		});
+		app.listen(PORT, () => {});
 	})
 	.catch((err) => {
-		console.error('Failed to create API router:', err); // 👈 ajoute ça
+		console.error('Failed to create API router:', err);
 	});
