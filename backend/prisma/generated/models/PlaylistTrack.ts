@@ -35,26 +35,29 @@ export type PlaylistTrackSumAggregateOutputType = {
 
 export type PlaylistTrackMinAggregateOutputType = {
 	id: string | null;
-	position: number | null;
-	addedAt: Date | null;
 	playlistId: string | null;
 	trackId: string | null;
+	position: number | null;
+	addedBy: string | null;
+	addedAt: Date | null;
 };
 
 export type PlaylistTrackMaxAggregateOutputType = {
 	id: string | null;
-	position: number | null;
-	addedAt: Date | null;
 	playlistId: string | null;
 	trackId: string | null;
+	position: number | null;
+	addedBy: string | null;
+	addedAt: Date | null;
 };
 
 export type PlaylistTrackCountAggregateOutputType = {
 	id: number;
-	position: number;
-	addedAt: number;
 	playlistId: number;
 	trackId: number;
+	position: number;
+	addedBy: number;
+	addedAt: number;
 	_all: number;
 };
 
@@ -68,26 +71,29 @@ export type PlaylistTrackSumAggregateInputType = {
 
 export type PlaylistTrackMinAggregateInputType = {
 	id?: true;
-	position?: true;
-	addedAt?: true;
 	playlistId?: true;
 	trackId?: true;
+	position?: true;
+	addedBy?: true;
+	addedAt?: true;
 };
 
 export type PlaylistTrackMaxAggregateInputType = {
 	id?: true;
-	position?: true;
-	addedAt?: true;
 	playlistId?: true;
 	trackId?: true;
+	position?: true;
+	addedBy?: true;
+	addedAt?: true;
 };
 
 export type PlaylistTrackCountAggregateInputType = {
 	id?: true;
-	position?: true;
-	addedAt?: true;
 	playlistId?: true;
 	trackId?: true;
+	position?: true;
+	addedBy?: true;
+	addedAt?: true;
 	_all?: true;
 };
 
@@ -180,10 +186,11 @@ export type PlaylistTrackGroupByArgs<
 
 export type PlaylistTrackGroupByOutputType = {
 	id: string;
-	position: number;
-	addedAt: Date;
 	playlistId: string;
 	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt: Date;
 	_count: PlaylistTrackCountAggregateOutputType | null;
 	_avg: PlaylistTrackAvgAggregateOutputType | null;
 	_sum: PlaylistTrackSumAggregateOutputType | null;
@@ -208,47 +215,49 @@ export type PlaylistTrackWhereInput = {
 	OR?: Prisma.PlaylistTrackWhereInput[];
 	NOT?: Prisma.PlaylistTrackWhereInput | Prisma.PlaylistTrackWhereInput[];
 	id?: Prisma.StringFilter<'PlaylistTrack'> | string;
-	position?: Prisma.IntFilter<'PlaylistTrack'> | number;
-	addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 	playlistId?: Prisma.StringFilter<'PlaylistTrack'> | string;
 	trackId?: Prisma.StringFilter<'PlaylistTrack'> | string;
+	position?: Prisma.IntFilter<'PlaylistTrack'> | number;
+	addedBy?: Prisma.StringFilter<'PlaylistTrack'> | string;
+	addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 	playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>;
-	track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>;
 };
 
 export type PlaylistTrackOrderByWithRelationInput = {
 	id?: Prisma.SortOrder;
-	position?: Prisma.SortOrder;
-	addedAt?: Prisma.SortOrder;
 	playlistId?: Prisma.SortOrder;
 	trackId?: Prisma.SortOrder;
+	position?: Prisma.SortOrder;
+	addedBy?: Prisma.SortOrder;
+	addedAt?: Prisma.SortOrder;
 	playlist?: Prisma.PlaylistOrderByWithRelationInput;
-	track?: Prisma.TrackOrderByWithRelationInput;
 };
 
 export type PlaylistTrackWhereUniqueInput = Prisma.AtLeast<
 	{
 		id?: string;
+		playlistId_position?: Prisma.PlaylistTrackPlaylistIdPositionCompoundUniqueInput;
 		playlistId_trackId?: Prisma.PlaylistTrackPlaylistIdTrackIdCompoundUniqueInput;
 		AND?: Prisma.PlaylistTrackWhereInput | Prisma.PlaylistTrackWhereInput[];
 		OR?: Prisma.PlaylistTrackWhereInput[];
 		NOT?: Prisma.PlaylistTrackWhereInput | Prisma.PlaylistTrackWhereInput[];
-		position?: Prisma.IntFilter<'PlaylistTrack'> | number;
-		addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 		playlistId?: Prisma.StringFilter<'PlaylistTrack'> | string;
 		trackId?: Prisma.StringFilter<'PlaylistTrack'> | string;
+		position?: Prisma.IntFilter<'PlaylistTrack'> | number;
+		addedBy?: Prisma.StringFilter<'PlaylistTrack'> | string;
+		addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 		playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>;
-		track?: Prisma.XOR<Prisma.TrackScalarRelationFilter, Prisma.TrackWhereInput>;
 	},
-	'id' | 'playlistId_trackId'
+	'id' | 'playlistId_position' | 'playlistId_trackId'
 >;
 
 export type PlaylistTrackOrderByWithAggregationInput = {
 	id?: Prisma.SortOrder;
-	position?: Prisma.SortOrder;
-	addedAt?: Prisma.SortOrder;
 	playlistId?: Prisma.SortOrder;
 	trackId?: Prisma.SortOrder;
+	position?: Prisma.SortOrder;
+	addedBy?: Prisma.SortOrder;
+	addedAt?: Prisma.SortOrder;
 	_count?: Prisma.PlaylistTrackCountOrderByAggregateInput;
 	_avg?: Prisma.PlaylistTrackAvgOrderByAggregateInput;
 	_max?: Prisma.PlaylistTrackMaxOrderByAggregateInput;
@@ -261,64 +270,73 @@ export type PlaylistTrackScalarWhereWithAggregatesInput = {
 	OR?: Prisma.PlaylistTrackScalarWhereWithAggregatesInput[];
 	NOT?: Prisma.PlaylistTrackScalarWhereWithAggregatesInput | Prisma.PlaylistTrackScalarWhereWithAggregatesInput[];
 	id?: Prisma.StringWithAggregatesFilter<'PlaylistTrack'> | string;
-	position?: Prisma.IntWithAggregatesFilter<'PlaylistTrack'> | number;
-	addedAt?: Prisma.DateTimeWithAggregatesFilter<'PlaylistTrack'> | Date | string;
 	playlistId?: Prisma.StringWithAggregatesFilter<'PlaylistTrack'> | string;
 	trackId?: Prisma.StringWithAggregatesFilter<'PlaylistTrack'> | string;
+	position?: Prisma.IntWithAggregatesFilter<'PlaylistTrack'> | number;
+	addedBy?: Prisma.StringWithAggregatesFilter<'PlaylistTrack'> | string;
+	addedAt?: Prisma.DateTimeWithAggregatesFilter<'PlaylistTrack'> | Date | string;
 };
 
 export type PlaylistTrackCreateInput = {
 	id?: string;
-	position?: number;
+	trackId: string;
+	position: number;
+	addedBy: string;
 	addedAt?: Date | string;
-	playlist: Prisma.PlaylistCreateNestedOneWithoutMusicInput;
-	track: Prisma.TrackCreateNestedOneWithoutPlaylistTracksInput;
+	playlist: Prisma.PlaylistCreateNestedOneWithoutTracksInput;
 };
 
 export type PlaylistTrackUncheckedCreateInput = {
 	id?: string;
-	position?: number;
-	addedAt?: Date | string;
 	playlistId: string;
 	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt?: Date | string;
 };
 
 export type PlaylistTrackUpdateInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
 	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
 	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	playlist?: Prisma.PlaylistUpdateOneRequiredWithoutMusicNestedInput;
-	track?: Prisma.TrackUpdateOneRequiredWithoutPlaylistTracksNestedInput;
+	playlist?: Prisma.PlaylistUpdateOneRequiredWithoutTracksNestedInput;
 };
 
 export type PlaylistTrackUncheckedUpdateInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 	playlistId?: Prisma.StringFieldUpdateOperationsInput | string;
 	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
+	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
+	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistTrackCreateManyInput = {
 	id?: string;
-	position?: number;
-	addedAt?: Date | string;
 	playlistId: string;
 	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt?: Date | string;
 };
 
 export type PlaylistTrackUpdateManyMutationInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
 	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
 	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistTrackUncheckedUpdateManyInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 	playlistId?: Prisma.StringFieldUpdateOperationsInput | string;
 	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
+	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
+	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistTrackListRelationFilter = {
@@ -331,6 +349,11 @@ export type PlaylistTrackOrderByRelationAggregateInput = {
 	_count?: Prisma.SortOrder;
 };
 
+export type PlaylistTrackPlaylistIdPositionCompoundUniqueInput = {
+	playlistId: string;
+	position: number;
+};
+
 export type PlaylistTrackPlaylistIdTrackIdCompoundUniqueInput = {
 	playlistId: string;
 	trackId: string;
@@ -338,10 +361,11 @@ export type PlaylistTrackPlaylistIdTrackIdCompoundUniqueInput = {
 
 export type PlaylistTrackCountOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
-	position?: Prisma.SortOrder;
-	addedAt?: Prisma.SortOrder;
 	playlistId?: Prisma.SortOrder;
 	trackId?: Prisma.SortOrder;
+	position?: Prisma.SortOrder;
+	addedBy?: Prisma.SortOrder;
+	addedAt?: Prisma.SortOrder;
 };
 
 export type PlaylistTrackAvgOrderByAggregateInput = {
@@ -350,18 +374,20 @@ export type PlaylistTrackAvgOrderByAggregateInput = {
 
 export type PlaylistTrackMaxOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
-	position?: Prisma.SortOrder;
-	addedAt?: Prisma.SortOrder;
 	playlistId?: Prisma.SortOrder;
 	trackId?: Prisma.SortOrder;
+	position?: Prisma.SortOrder;
+	addedBy?: Prisma.SortOrder;
+	addedAt?: Prisma.SortOrder;
 };
 
 export type PlaylistTrackMinOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
-	position?: Prisma.SortOrder;
-	addedAt?: Prisma.SortOrder;
 	playlistId?: Prisma.SortOrder;
 	trackId?: Prisma.SortOrder;
+	position?: Prisma.SortOrder;
+	addedBy?: Prisma.SortOrder;
+	addedAt?: Prisma.SortOrder;
 };
 
 export type PlaylistTrackSumOrderByAggregateInput = {
@@ -454,88 +480,20 @@ export type PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput = {
 	deleteMany?: Prisma.PlaylistTrackScalarWhereInput | Prisma.PlaylistTrackScalarWhereInput[];
 };
 
-export type PlaylistTrackCreateNestedManyWithoutTrackInput = {
-	create?:
-		| Prisma.XOR<Prisma.PlaylistTrackCreateWithoutTrackInput, Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput>
-		| Prisma.PlaylistTrackCreateWithoutTrackInput[]
-		| Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput[];
-	connectOrCreate?:
-		Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput | Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput[];
-	createMany?: Prisma.PlaylistTrackCreateManyTrackInputEnvelope;
-	connect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-};
-
-export type PlaylistTrackUncheckedCreateNestedManyWithoutTrackInput = {
-	create?:
-		| Prisma.XOR<Prisma.PlaylistTrackCreateWithoutTrackInput, Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput>
-		| Prisma.PlaylistTrackCreateWithoutTrackInput[]
-		| Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput[];
-	connectOrCreate?:
-		Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput | Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput[];
-	createMany?: Prisma.PlaylistTrackCreateManyTrackInputEnvelope;
-	connect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-};
-
-export type PlaylistTrackUpdateManyWithoutTrackNestedInput = {
-	create?:
-		| Prisma.XOR<Prisma.PlaylistTrackCreateWithoutTrackInput, Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput>
-		| Prisma.PlaylistTrackCreateWithoutTrackInput[]
-		| Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput[];
-	connectOrCreate?:
-		Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput | Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput[];
-	upsert?:
-		| Prisma.PlaylistTrackUpsertWithWhereUniqueWithoutTrackInput
-		| Prisma.PlaylistTrackUpsertWithWhereUniqueWithoutTrackInput[];
-	createMany?: Prisma.PlaylistTrackCreateManyTrackInputEnvelope;
-	set?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	disconnect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	delete?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	connect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	update?:
-		| Prisma.PlaylistTrackUpdateWithWhereUniqueWithoutTrackInput
-		| Prisma.PlaylistTrackUpdateWithWhereUniqueWithoutTrackInput[];
-	updateMany?:
-		| Prisma.PlaylistTrackUpdateManyWithWhereWithoutTrackInput
-		| Prisma.PlaylistTrackUpdateManyWithWhereWithoutTrackInput[];
-	deleteMany?: Prisma.PlaylistTrackScalarWhereInput | Prisma.PlaylistTrackScalarWhereInput[];
-};
-
-export type PlaylistTrackUncheckedUpdateManyWithoutTrackNestedInput = {
-	create?:
-		| Prisma.XOR<Prisma.PlaylistTrackCreateWithoutTrackInput, Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput>
-		| Prisma.PlaylistTrackCreateWithoutTrackInput[]
-		| Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput[];
-	connectOrCreate?:
-		Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput | Prisma.PlaylistTrackCreateOrConnectWithoutTrackInput[];
-	upsert?:
-		| Prisma.PlaylistTrackUpsertWithWhereUniqueWithoutTrackInput
-		| Prisma.PlaylistTrackUpsertWithWhereUniqueWithoutTrackInput[];
-	createMany?: Prisma.PlaylistTrackCreateManyTrackInputEnvelope;
-	set?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	disconnect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	delete?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	connect?: Prisma.PlaylistTrackWhereUniqueInput | Prisma.PlaylistTrackWhereUniqueInput[];
-	update?:
-		| Prisma.PlaylistTrackUpdateWithWhereUniqueWithoutTrackInput
-		| Prisma.PlaylistTrackUpdateWithWhereUniqueWithoutTrackInput[];
-	updateMany?:
-		| Prisma.PlaylistTrackUpdateManyWithWhereWithoutTrackInput
-		| Prisma.PlaylistTrackUpdateManyWithWhereWithoutTrackInput[];
-	deleteMany?: Prisma.PlaylistTrackScalarWhereInput | Prisma.PlaylistTrackScalarWhereInput[];
-};
-
 export type PlaylistTrackCreateWithoutPlaylistInput = {
 	id?: string;
-	position?: number;
+	trackId: string;
+	position: number;
+	addedBy: string;
 	addedAt?: Date | string;
-	track: Prisma.TrackCreateNestedOneWithoutPlaylistTracksInput;
 };
 
 export type PlaylistTrackUncheckedCreateWithoutPlaylistInput = {
 	id?: string;
-	position?: number;
-	addedAt?: Date | string;
 	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt?: Date | string;
 };
 
 export type PlaylistTrackCreateOrConnectWithoutPlaylistInput = {
@@ -584,118 +542,43 @@ export type PlaylistTrackScalarWhereInput = {
 	OR?: Prisma.PlaylistTrackScalarWhereInput[];
 	NOT?: Prisma.PlaylistTrackScalarWhereInput | Prisma.PlaylistTrackScalarWhereInput[];
 	id?: Prisma.StringFilter<'PlaylistTrack'> | string;
-	position?: Prisma.IntFilter<'PlaylistTrack'> | number;
-	addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 	playlistId?: Prisma.StringFilter<'PlaylistTrack'> | string;
 	trackId?: Prisma.StringFilter<'PlaylistTrack'> | string;
-};
-
-export type PlaylistTrackCreateWithoutTrackInput = {
-	id?: string;
-	position?: number;
-	addedAt?: Date | string;
-	playlist: Prisma.PlaylistCreateNestedOneWithoutMusicInput;
-};
-
-export type PlaylistTrackUncheckedCreateWithoutTrackInput = {
-	id?: string;
-	position?: number;
-	addedAt?: Date | string;
-	playlistId: string;
-};
-
-export type PlaylistTrackCreateOrConnectWithoutTrackInput = {
-	where: Prisma.PlaylistTrackWhereUniqueInput;
-	create: Prisma.XOR<
-		Prisma.PlaylistTrackCreateWithoutTrackInput,
-		Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput
-	>;
-};
-
-export type PlaylistTrackCreateManyTrackInputEnvelope = {
-	data: Prisma.PlaylistTrackCreateManyTrackInput | Prisma.PlaylistTrackCreateManyTrackInput[];
-	skipDuplicates?: boolean;
-};
-
-export type PlaylistTrackUpsertWithWhereUniqueWithoutTrackInput = {
-	where: Prisma.PlaylistTrackWhereUniqueInput;
-	update: Prisma.XOR<
-		Prisma.PlaylistTrackUpdateWithoutTrackInput,
-		Prisma.PlaylistTrackUncheckedUpdateWithoutTrackInput
-	>;
-	create: Prisma.XOR<
-		Prisma.PlaylistTrackCreateWithoutTrackInput,
-		Prisma.PlaylistTrackUncheckedCreateWithoutTrackInput
-	>;
-};
-
-export type PlaylistTrackUpdateWithWhereUniqueWithoutTrackInput = {
-	where: Prisma.PlaylistTrackWhereUniqueInput;
-	data: Prisma.XOR<Prisma.PlaylistTrackUpdateWithoutTrackInput, Prisma.PlaylistTrackUncheckedUpdateWithoutTrackInput>;
-};
-
-export type PlaylistTrackUpdateManyWithWhereWithoutTrackInput = {
-	where: Prisma.PlaylistTrackScalarWhereInput;
-	data: Prisma.XOR<
-		Prisma.PlaylistTrackUpdateManyMutationInput,
-		Prisma.PlaylistTrackUncheckedUpdateManyWithoutTrackInput
-	>;
+	position?: Prisma.IntFilter<'PlaylistTrack'> | number;
+	addedBy?: Prisma.StringFilter<'PlaylistTrack'> | string;
+	addedAt?: Prisma.DateTimeFilter<'PlaylistTrack'> | Date | string;
 };
 
 export type PlaylistTrackCreateManyPlaylistInput = {
 	id?: string;
-	position?: number;
-	addedAt?: Date | string;
 	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt?: Date | string;
 };
 
 export type PlaylistTrackUpdateWithoutPlaylistInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
 	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
 	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	track?: Prisma.TrackUpdateOneRequiredWithoutPlaylistTracksNestedInput;
 };
 
 export type PlaylistTrackUncheckedUpdateWithoutPlaylistInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
+	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
+	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistTrackUncheckedUpdateManyWithoutPlaylistInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 	trackId?: Prisma.StringFieldUpdateOperationsInput | string;
-};
-
-export type PlaylistTrackCreateManyTrackInput = {
-	id?: string;
-	position?: number;
-	addedAt?: Date | string;
-	playlistId: string;
-};
-
-export type PlaylistTrackUpdateWithoutTrackInput = {
-	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	position?: Prisma.IntFieldUpdateOperationsInput | number;
+	addedBy?: Prisma.StringFieldUpdateOperationsInput | string;
 	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	playlist?: Prisma.PlaylistUpdateOneRequiredWithoutMusicNestedInput;
-};
-
-export type PlaylistTrackUncheckedUpdateWithoutTrackInput = {
-	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	playlistId?: Prisma.StringFieldUpdateOperationsInput | string;
-};
-
-export type PlaylistTrackUncheckedUpdateManyWithoutTrackInput = {
-	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	position?: Prisma.IntFieldUpdateOperationsInput | number;
-	addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	playlistId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type PlaylistTrackSelect<
@@ -703,12 +586,12 @@ export type PlaylistTrackSelect<
 > = runtime.Types.Extensions.GetSelect<
 	{
 		id?: boolean;
-		position?: boolean;
-		addedAt?: boolean;
 		playlistId?: boolean;
 		trackId?: boolean;
+		position?: boolean;
+		addedBy?: boolean;
+		addedAt?: boolean;
 		playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-		track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlistTrack']
 >;
@@ -718,12 +601,12 @@ export type PlaylistTrackSelectCreateManyAndReturn<
 > = runtime.Types.Extensions.GetSelect<
 	{
 		id?: boolean;
-		position?: boolean;
-		addedAt?: boolean;
 		playlistId?: boolean;
 		trackId?: boolean;
+		position?: boolean;
+		addedBy?: boolean;
+		addedAt?: boolean;
 		playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-		track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlistTrack']
 >;
@@ -733,47 +616,45 @@ export type PlaylistTrackSelectUpdateManyAndReturn<
 > = runtime.Types.Extensions.GetSelect<
 	{
 		id?: boolean;
-		position?: boolean;
-		addedAt?: boolean;
 		playlistId?: boolean;
 		trackId?: boolean;
+		position?: boolean;
+		addedBy?: boolean;
+		addedAt?: boolean;
 		playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-		track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlistTrack']
 >;
 
 export type PlaylistTrackSelectScalar = {
 	id?: boolean;
-	position?: boolean;
-	addedAt?: boolean;
 	playlistId?: boolean;
 	trackId?: boolean;
+	position?: boolean;
+	addedBy?: boolean;
+	addedAt?: boolean;
 };
 
 export type PlaylistTrackOmit<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-	'id' | 'position' | 'addedAt' | 'playlistId' | 'trackId',
+	'id' | 'playlistId' | 'trackId' | 'position' | 'addedBy' | 'addedAt',
 	ExtArgs['result']['playlistTrack']
 >;
 export type PlaylistTrackInclude<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
 	playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-	track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 };
 export type PlaylistTrackIncludeCreateManyAndReturn<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
 	playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-	track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 };
 export type PlaylistTrackIncludeUpdateManyAndReturn<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
 	playlist?: boolean | Prisma.PlaylistDefaultArgs<ExtArgs>;
-	track?: boolean | Prisma.TrackDefaultArgs<ExtArgs>;
 };
 
 export type $PlaylistTrackPayload<
@@ -782,15 +663,15 @@ export type $PlaylistTrackPayload<
 	name: 'PlaylistTrack';
 	objects: {
 		playlist: Prisma.$PlaylistPayload<ExtArgs>;
-		track: Prisma.$TrackPayload<ExtArgs>;
 	};
 	scalars: runtime.Types.Extensions.GetPayloadResult<
 		{
 			id: string;
-			position: number;
-			addedAt: Date;
 			playlistId: string;
 			trackId: string;
+			position: number;
+			addedBy: string;
+			addedAt: Date;
 		},
 		ExtArgs['result']['playlistTrack']
 	>;
@@ -1298,14 +1179,6 @@ export interface Prisma__PlaylistTrackClient<
 		ExtArgs,
 		GlobalOmitOptions
 	>;
-	track<T extends Prisma.TrackDefaultArgs<ExtArgs> = {}>(
-		args?: Prisma.Subset<T, Prisma.TrackDefaultArgs<ExtArgs>>
-	): Prisma.Prisma__TrackClient<
-		runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, 'findUniqueOrThrow', GlobalOmitOptions> | Null,
-		Null,
-		ExtArgs,
-		GlobalOmitOptions
-	>;
 	/**
 	 * Attaches callbacks for the resolution and/or rejection of the Promise.
 	 * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1338,10 +1211,11 @@ export interface Prisma__PlaylistTrackClient<
  */
 export interface PlaylistTrackFieldRefs {
 	readonly id: Prisma.FieldRef<'PlaylistTrack', 'String'>;
-	readonly position: Prisma.FieldRef<'PlaylistTrack', 'Int'>;
-	readonly addedAt: Prisma.FieldRef<'PlaylistTrack', 'DateTime'>;
 	readonly playlistId: Prisma.FieldRef<'PlaylistTrack', 'String'>;
 	readonly trackId: Prisma.FieldRef<'PlaylistTrack', 'String'>;
+	readonly position: Prisma.FieldRef<'PlaylistTrack', 'Int'>;
+	readonly addedBy: Prisma.FieldRef<'PlaylistTrack', 'String'>;
+	readonly addedAt: Prisma.FieldRef<'PlaylistTrack', 'DateTime'>;
 }
 
 // Custom InputTypes

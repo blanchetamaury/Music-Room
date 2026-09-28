@@ -27,6 +27,35 @@ export type Album = Prisma.AlbumModel;
  */
 export type Artist = Prisma.ArtistModel;
 /**
+ * Model AuditLog
+ *
+ */
+export type AuditLog = Prisma.AuditLogModel;
+/**
+ * Model Device
+ *
+ */
+export type Device = Prisma.DeviceModel;
+/**
+ * Model DevicePermission
+ *
+ */
+export type DevicePermission = Prisma.DevicePermissionModel;
+/**
+ * Model DevicePlaybackState
+ * Server-side playback state for a delegated speaker.
+ *
+ * Delegating `CONTROL` has to mean something more than a permission row: the commands
+ * (`play`, `pause`, `next`, `previous`, queue changes) mutate this row, so any client
+ * holding `CONTROL` sees the same player state and the owner sees it too.
+ */
+export type DevicePlaybackState = Prisma.DevicePlaybackStateModel;
+/**
+ * Model EmailVerification
+ *
+ */
+export type EmailVerification = Prisma.EmailVerificationModel;
+/**
  * Model Follow
  *
  */
@@ -52,6 +81,54 @@ export type GoogleOauth = Prisma.GoogleOauthModel;
  */
 export type Like = Prisma.LikeModel;
 /**
+ * Model MusicEvent
+ *
+ */
+export type MusicEvent = Prisma.MusicEventModel;
+/**
+ * Model MusicEventMember
+ *
+ */
+export type MusicEventMember = Prisma.MusicEventMemberModel;
+/**
+ * Model EventTrack
+ *
+ */
+export type EventTrack = Prisma.EventTrackModel;
+/**
+ * Model EventVote
+ *
+ */
+export type EventVote = Prisma.EventVoteModel;
+/**
+ * Model MusicPreference
+ * Musical tastes of a user, the "preferences musicales" the subject requires.
+ *
+ * Kept apart from `User` so the row can be created lazily and so the payload can be
+ * withheld independently of the profile itself. Every value here is exposed through
+ * `canReadProfile` under the `MUSIC_PREFERENCES` visibility.
+ */
+export type MusicPreference = Prisma.MusicPreferenceModel;
+/**
+ * Model ProfileVisibility
+ * Per-category visibility of a profile, so "public / friends / private" is decided one
+ * field at a time instead of one flag for the whole profile.
+ *
+ * `PUBLIC` wins for everyone, `PRIVATE` hides from everyone but the owner, and `FRIENDS`
+ * requires an accepted follow in the direction `requester -> target`.
+ */
+export type ProfileVisibility = Prisma.ProfileVisibilityModel;
+/**
+ * Model OauthState
+ * Single-use, short-lived `state` for the OAuth authorization-code flow.
+ *
+ * The authorization request stores an opaque random value here (hashed, so a database
+ * leak cannot be replayed) together with everything the callback needs but must not
+ * trust from the query string: which provider, which client surface to redirect back to
+ * and, for account linking, which already-authenticated account to attach the identity to.
+ */
+export type OauthState = Prisma.OauthStateModel;
+/**
  * Model PlayHistory
  *
  */
@@ -61,6 +138,11 @@ export type PlayHistory = Prisma.PlayHistoryModel;
  *
  */
 export type Playlist = Prisma.PlaylistModel;
+/**
+ * Model PlaylistMember
+ *
+ */
+export type PlaylistMember = Prisma.PlaylistMemberModel;
 /**
  * Model PlaylistTrack
  *
@@ -76,6 +158,21 @@ export type ratelimit_login = Prisma.ratelimit_loginModel;
  *
  */
 export type ResetPassword = Prisma.ResetPasswordModel;
+/**
+ * Model RevokedSession
+ * Denylist of session tokens invalidated before their natural expiry.
+ *
+ * A JWT stays valid until `exp` and cannot be recalled, so an explicit logout (or any
+ * server-side revocation) records the token id here. Verification treats a revoked `jti`
+ * exactly like an expired signature, which is what makes "logout really ends the
+ * session" true for a stolen copy of the cookie or the Bearer token.
+ */
+export type RevokedSession = Prisma.RevokedSessionModel;
+/**
+ * Model SessionExchange
+ *
+ */
+export type SessionExchange = Prisma.SessionExchangeModel;
 /**
  * Model Track
  *
