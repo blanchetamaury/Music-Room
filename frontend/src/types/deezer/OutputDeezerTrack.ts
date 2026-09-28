@@ -10,7 +10,7 @@ export interface OutputTrackDeezer {
 	trackPosition: number | null;
 	diskNumber: number | null;
 	bpm: number | null;
-	explicitContentCover: number;
+	explicitContentCover: number | null;
 
 	artist: [
 		{
@@ -27,6 +27,33 @@ export interface OutputTrackDeezer {
 		title: string;
 		coverSmall: string | null;
 		CoverMedium: string | null;
-		CoverBig: string;
+		CoverBig: string | null;
 	};
+}
+
+export interface OutputArtistDeezer {
+	deezerCUID: string;
+	name: string;
+	pictureSmall: string | null;
+	pictureMedium: string | null;
+	pictureBig: string | null;
+	nbFan: number;
+	nbAlbum: number;
+}
+
+export interface OutputAlbumDeezer {
+	deezerCUID: string;
+	title: string;
+	cover: string | null;
+	coverMedium: string | null;
+	coverBig: string | null;
+	label: string;
+	recordType: string;
+	nbTracks: number;
+	fans: number;
+	duration: number;
+	explicitLyrics: boolean;
+	explicitContentCover: number;
+	releaseDate: string;
+	genre: { deezerCUID: string; name: string } | null;
 }

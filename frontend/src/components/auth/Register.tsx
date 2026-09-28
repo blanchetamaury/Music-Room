@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from 'lucide-react-native';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 import { useThemeColor } from '../../hooks/use-theme-color';
 import { api } from '../../lib/fetcher/api/client';
@@ -30,7 +30,6 @@ export function Register({
 }) {
 	const [email, setEmail] = useState('');
 	const [page, setPage] = useState<boolean>(false);
-	const [confirmMailAccount, setConfirmMailAccount] = useState<boolean>(false);
 	const [username, setUsername] = useState('');
 	const [pw, setPw] = useState('');
 	const [confirm, setConfirm] = useState('');
@@ -44,31 +43,27 @@ export function Register({
 	const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 	const isPasswordValid = pw.length >= 6 && confirm === pw && completed === 3;
 
-	useEffect(() => {
-		const handleSubmit = async () => {
-			if (!isPasswordValid || isLoading) return;
+	const handleSubmit = async () => {
+		if (!isPasswordValid || isLoading) return;
 
-			setIsLoading(true);
-			onError(null);
+		setIsLoading(true);
+		onError(null);
 
-			try {
-				const response = await api.auth.signup(email, pw, username);
+		try {
+			const response = await api.auth.signup(email, pw, username);
 
-				if (!response.success) {
-					throw new Error(response.message || 'Registration failed');
-				}
-
-				onRegisterComplete?.();
-			} catch (err) {
-				onError(err instanceof Error ? err.message : 'Registration failed');
-			} finally {
-				setIsLoading(false);
+			if (!response.success) {
+				throw new Error(response.message || 'Registration failed');
 			}
-		};
-		if (confirmMailAccount == true) {
-			handleSubmit();
+
+			// The account now exists but is unverified; the backend has just mailed a link.
+			setPage(true);
+		} catch (err) {
+			onError(err instanceof Error ? err.message : 'Registration failed');
+		} finally {
+			setIsLoading(false);
 		}
-	}, [confirmMailAccount]);
+	};
 
 	return (
 		<LiquidGlass
@@ -190,7 +185,7 @@ export function Register({
 
 					<Pressable
 						style={[styles.createBtn, !isPasswordValid ? { opacity: 0.55 } : null]}
-						onPress={() => setPage(true)}
+						onPress={handleSubmit}
 						accessibilityRole="button"
 						disabled={!isPasswordValid || isLoading}
 					>
@@ -212,7 +207,11 @@ export function Register({
 				</>
 			)}
 			{page == true && (
-				<ConfirmMail email={email} onBack={setPage} onConfirmComplete={setConfirmMailAccount}></ConfirmMail>
+				<ConfirmMail
+					email={email}
+					onBack={() => onBack?.()}
+					onConfirmComplete={() => onRegisterComplete?.()}
+				></ConfirmMail>
 			)}
 		</LiquidGlass>
 	);

@@ -1,4 +1,5 @@
 import AuthBackground from '@/src/components/auth/AuthBackground';
+import { ConfirmMail } from '@/src/components/auth/ConfirmMail';
 import { LoginForm } from '@/src/components/auth/LoginForm';
 import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
@@ -9,26 +10,34 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+	Extrapolation,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from 'react-native-reanimated';
 
-export type AuthMode = 'login' | 'register' | 'reset-password';
+export type AuthMode = 'login' | 'register' | 'reset-password' | 'verify-email';
+
+const MODES: AuthMode[] = ['register', 'login', 'reset-password', 'verify-email'];
 
 const { width: SCREEN_W } = Dimensions.get('window');
+
+const isAuthMode = (value: string | undefined): value is AuthMode => MODES.includes(value as AuthMode);
 
 export default function LoginScreen() {
 	const router = useRouter();
 	const searchParams = useLocalSearchParams<{ mode?: string }>();
 	const { token, loading, login } = useAuth();
 	const [error, setError] = useState<string | null>(null);
+	const [verifyEmail, setVerifyEmail] = useState<string>('');
 	const [mode, setMode] = useState<AuthMode>(() => {
 		const modeParam = searchParams.mode;
-		if (modeParam === 'register' || modeParam === 'reset-password' || modeParam === 'login') {
-			return modeParam;
-		}
-		return 'login';
+		return isAuthMode(modeParam) ? modeParam : 'login';
 	});
 
-	const modeIndex = mode === 'register' ? 0 : mode === 'login' ? 1 : 2;
+	const modeIndex = MODES.indexOf(mode);
 	const progress = useSharedValue(modeIndex - 1);
 
 	useEffect(() => {
@@ -42,31 +51,29 @@ export default function LoginScreen() {
 		progress.value = withTiming(target, { duration: 420 });
 	}, [modeIndex, progress]);
 
-	const loginStyle = useAnimatedStyle(() => {
-		const tx = interpolate(progress.value, [-1, 0, 1], [SCREEN_W * 0.6, 0, -SCREEN_W * 0.6]);
-		const op = interpolate(progress.value, [-1, 0, 1], [0, 1, 0]);
-		return { transform: [{ translateX: tx }], opacity: op };
-	});
+	const usePanelStyle = (index: number) =>
+		useAnimatedStyle(() => {
+			const offset = index - 1 - progress.value;
+			return {
+				transform: [{ translateX: offset * SCREEN_W * 0.6 }],
+				opacity: interpolate(Math.abs(offset), [0, 1], [1, 0], Extrapolation.CLAMP),
+			};
+		});
 
-	const resetStyle = useAnimatedStyle(() => {
-		const tx = interpolate(progress.value, [-1, 0, 1], [SCREEN_W * 1.2, SCREEN_W * 0.6, 0]);
-		const op = interpolate(progress.value, [-1, 0, 1], [0, 0, 1]);
-		return { transform: [{ translateX: tx }], opacity: op };
-	});
-
-	const registerStyle = useAnimatedStyle(() => {
-		const tx = interpolate(progress.value, [-1, 0, 1], [0, -SCREEN_W * 0.6, -SCREEN_W * 1.2]);
-		const op = interpolate(progress.value, [-1, 0, 1], [1, 0, 0]);
-		return { transform: [{ translateX: tx }], opacity: op };
-	});
+	const registerStyle = usePanelStyle(0);
+	const loginStyle = usePanelStyle(1);
+	const resetStyle = usePanelStyle(2);
+	const verifyStyle = usePanelStyle(3);
 
 	const handleLogin = async (email: string, password: string) => {
-		try {
-			await login(email, password);
-			router.replace('/(tabs)/home');
-		} catch (err: unknown) {
-			setError(`Email ou mot de passe incorrect [${err}]`);
-		}
+		await login(email, password);
+		router.replace('/(tabs)/home');
+	};
+
+	const handleEmailVerificationRequired = (email: string) => {
+		setError(null);
+		setVerifyEmail(email);
+		setMode('verify-email');
 	};
 
 	const handleAuthComplete = () => {
@@ -74,6 +81,7 @@ export default function LoginScreen() {
 	};
 
 	const handleModeChange = (newMode: AuthMode) => {
+		setError(null);
 		setMode(newMode);
 	};
 
@@ -112,13 +120,17 @@ export default function LoginScreen() {
 				</View>
 			</Animated.View>
 
-			<Animated.View style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}>
+			<Animated.View
+				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, loginStyle]}
+				pointerEvents={mode === 'login' ? 'auto' : 'none'}
+			>
 				<View style={styles.container}>
 					<View style={styles.center}>
 						<LoginForm
 							onLogin={handleLogin}
 							onForgot={() => handleModeChange('reset-password')}
 							onRegister={() => handleModeChange('register')}
+							onEmailVerificationRequired={handleEmailVerificationRequired}
 						/>
 					</View>
 				</View>
@@ -130,6 +142,19 @@ export default function LoginScreen() {
 			>
 				<View style={styles.authContainer}>
 					<ResetPassword onBack={() => handleModeChange('login')} onResetComplete={handleAuthComplete} />
+				</View>
+			</Animated.View>
+
+			<Animated.View
+				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, verifyStyle]}
+				pointerEvents={mode === 'verify-email' ? 'auto' : 'none'}
+			>
+				<View style={styles.authContainer}>
+					<ConfirmMail
+						email={verifyEmail}
+						onBack={() => handleModeChange('login')}
+						onConfirmComplete={handleAuthComplete}
+					/>
 				</View>
 			</Animated.View>
 		</ThemedView>

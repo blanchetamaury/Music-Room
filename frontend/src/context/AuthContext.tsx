@@ -1,19 +1,18 @@
-import axios from 'axios';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { api } from '../lib/fetcher/api/client';
 import { storage } from '../lib/storage';
 import { performFortyTwoOAuth } from '../rest/fortytwo';
 import { performGoogleOAuth } from '../rest/google';
 import { privateUser } from '../types/user/PrivateUser';
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface AuthContextType {
 	user: privateUser | null;
 	token: string | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<void>;
-	register: (email: string, password: string) => Promise<void>;
+	register: (email: string, password: string, username: string) => Promise<{ email: string }>;
 	logout: () => Promise<void>;
+	refreshUser: () => Promise<void>;
 	updateProfile: (profile: { username?: string; avatarUrl?: string | null }) => Promise<void>;
 	oauthFortyTwo: () => Promise<void>;
 	oauthGoogle: () => Promise<void>;
@@ -30,103 +29,158 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	const [user, setUser] = useState<privateUser | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	async function checkToken() {
-		try {
-			const storedToken = await storage.getItem('session');
-
-			if (!storedToken) {
-				setToken(null);
-				setUser(null);
-				setLoading(false);
-				return;
-			}
-
-			const res = await axios.get(`${API_URL}/user/me`, {
-				headers: { Authorization: `Bearer ${storedToken}` },
-			});
-
-			setToken(storedToken);
-			setUser(res.data.data);
-		} catch {
-			await storage.deleteItem('session');
-			setToken(null);
-			setUser(null);
-		} finally {
-			setLoading(false);
-		}
-	}
-
-	useEffect(() => {
-		checkToken();
+	const applySession = useCallback(async (newToken: string, nextUser: privateUser) => {
+		await storage.setToken(newToken);
+		setToken(newToken);
+		setUser(nextUser);
 	}, []);
 
-	const login = async (mail: string, password: string) => {
-		const res = await axios.post(`${API_URL}/auth/login`, { mail, password });
-		await storage.setItem('session', res.data.token);
-		setToken(res.data.token);
-		setUser(res.data.user);
-	};
+	const exchangeCode = useCallback(
+		async (code: string) => {
+			const response = await api.auth.exchangeSession(code);
 
-	const oauthFortyTwo = async () => {
-		const token = await performFortyTwoOAuth();
-		if (!token) throw new Error('OAuth failed');
+			if (!response.success || !response.data) {
+				throw new Error(response.message ?? 'Could not open the session');
+			}
 
-		await storage.setItem('session', token);
-		setToken(token);
+			await applySession(response.data.token, response.data.user);
+		},
+		[applySession]
+	);
 
-		const res = await axios.get(`${API_URL}/user/me`, {
-			headers: { Authorization: `Bearer ${token}` },
-		});
-		setUser(res.data.user);
-	};
+	const refreshUser = useCallback(async () => {
+		const currentToken = await storage.getToken();
+		if (!currentToken) return;
 
-	const oauthGoogle = async () => {
-		const token = await performGoogleOAuth();
-		if (!token) throw new Error('OAuth failed');
+		const response = await api.user.me(currentToken);
 
-		await storage.setItem('session', token);
-		setToken(token);
+		if (!response.success) {
+			if (response.message?.includes('401')) {
+				await storage.clearToken();
+				setToken(null);
+				setUser(null);
+			}
+			return;
+		}
 
-		const res = await axios.get(`${API_URL}/user/me`, {
-			headers: { Authorization: `Bearer ${token}` },
-		});
-		setUser(res.data.user);
-	};
+		if (response.data) {
+			setUser(response.data);
+		}
+	}, []);
 
-	const register = async (mail: string, password: string) => {
-		const res = await axios.post(`${API_URL}/auth/register`, { mail, password });
-		await storage.setItem('session', res.data.token);
-		setToken(res.data.token);
-		setUser(res.data.user);
-	};
+	useEffect(() => {
+		let cancelled = false;
 
-	const logout = async () => {
-		await storage.deleteItem('session');
+		const restore = async () => {
+			try {
+				const storedToken = await storage.getToken();
+				if (!storedToken) return;
+
+				const response = await api.user.me(storedToken);
+
+				if (!cancelled && response.success && response.data) {
+					setToken(storedToken);
+					setUser(response.data);
+				} else if (!cancelled) {
+					await storage.clearToken();
+				}
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		};
+
+		void restore();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	const login = useCallback(
+		async (mail: string, password: string) => {
+			const response = await api.auth.login(mail, password);
+
+			if (!response.success || !response.data) {
+				throw new Error(response.message ?? 'Invalid email or password');
+			}
+
+			await exchangeCode(response.data.code);
+		},
+		[exchangeCode]
+	);
+
+	const register = useCallback(async (mail: string, password: string, username: string) => {
+		const response = await api.auth.signup(mail, password, username);
+
+		if (!response.success) {
+			throw new Error(response.message ?? 'Registration failed');
+		}
+
+		return { email: mail };
+	}, []);
+
+	const logout = useCallback(async () => {
+		try {
+			await api.auth.logout(token ?? '');
+		} catch {}
+
+		await storage.clearToken();
 		setToken(null);
 		setUser(null);
-	};
+	}, [token]);
 
-	const updateProfile = async (profile: { username?: string; avatarUrl?: string | null }) => {
-		if (!token) throw new Error('Not authenticated');
-		const response = await axios.patch(`${API_URL}/user/me`, profile, {
-			headers: { Authorization: `Bearer ${token}` },
-		});
-		setUser(response.data.data);
-	};
+	const updateProfile = useCallback(async (profile: { username?: string; avatarUrl?: string | null }) => {
+		const currentToken = await storage.getToken();
+		if (!currentToken) throw new Error('Not authenticated');
 
-	return (
-		<AuthContext.Provider
-			value={{ token, user, loading, login, register, logout, updateProfile, oauthFortyTwo, oauthGoogle }}
-		>
-			{children}
-		</AuthContext.Provider>
+		const response = await api.user.updateMe(currentToken, profile);
+
+		if (!response.success) {
+			throw new Error(response.message ?? 'Could not update your profile');
+		}
+
+		if (response.data) setUser(response.data);
+	}, []);
+
+	const completeOAuth = useCallback(
+		async (provider: () => Promise<string | null>) => {
+			const code = await provider();
+
+			if (!code) throw new Error('Authentication cancelled');
+
+			await exchangeCode(code);
+		},
+		[exchangeCode]
 	);
+
+	const oauthFortyTwo = useCallback(() => completeOAuth(performFortyTwoOAuth), [completeOAuth]);
+	const oauthGoogle = useCallback(() => completeOAuth(performGoogleOAuth), [completeOAuth]);
+
+	const value = useMemo<AuthContextType>(
+		() => ({
+			user,
+			token,
+			loading,
+			login,
+			register,
+			logout,
+			refreshUser,
+			updateProfile,
+			oauthFortyTwo,
+			oauthGoogle,
+		}),
+		[user, token, loading, login, register, logout, refreshUser, updateProfile, oauthFortyTwo, oauthGoogle]
+	);
+
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {
 	const context = useContext(AuthContext);
+
 	if (!context) {
 		throw new Error("useAuth doit être utilisé à l'intérieur d'un AuthProvider");
 	}
+
 	return context;
 }

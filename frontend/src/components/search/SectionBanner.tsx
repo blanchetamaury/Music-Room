@@ -43,14 +43,14 @@ export function SectionBanner({
 			: withTiming(0, { duration: 200 });
 	}, [loading, pulse]);
 
-	const barStyle = (offset: number) =>
+	const useBarStyle = (offset: number) =>
 		useAnimatedStyle(() => ({
 			height: interpolate(Math.min(1, Math.max(0, pulse.value - offset * 0.15 + 0.15)), [0, 1], [6, 18]),
 		}));
 
-	const b1 = barStyle(0);
-	const b2 = barStyle(1);
-	const b3 = barStyle(2);
+	const b1 = useBarStyle(0);
+	const b2 = useBarStyle(1);
+	const b3 = useBarStyle(2);
 
 	return (
 		<Animated.View

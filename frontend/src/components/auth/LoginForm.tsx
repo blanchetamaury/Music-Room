@@ -10,15 +10,20 @@ import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';
 import { InputPasswordForm } from './InputPasswordForm';
 
+const EMAIL_VERIFICATION_REQUIRED = /email verification required/i;
+
 export function LoginForm({
 	onLogin,
 	onForgot,
 	onRegister,
+	onEmailVerificationRequired,
 }: {
 	onLogin?: (email: string, password: string) => Promise<void>;
 	onForgot?: () => void;
 	onGoogle?: () => void;
 	onRegister?: () => void;
+	/** Called instead of showing a dead-end error when the mailbox is not verified yet. */
+	onEmailVerificationRequired?: (email: string) => void;
 }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -42,7 +47,14 @@ export function LoginForm({
 		try {
 			await onLogin?.(email, password);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Login failed');
+			const message = err instanceof Error ? err.message : 'Login failed';
+
+			if (EMAIL_VERIFICATION_REQUIRED.test(message)) {
+				onEmailVerificationRequired?.(email);
+				return;
+			}
+
+			setError(message);
 		} finally {
 			setIsLoading(false);
 		}

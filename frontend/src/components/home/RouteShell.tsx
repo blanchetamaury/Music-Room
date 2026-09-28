@@ -10,9 +10,10 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { TabKey } from './BottomNavigation';
 
-const routes: Record<TabKey, '/(tabs)/home' | '/(tabs)/search' | '/(tabs)/profile'> = {
+const routes: Record<TabKey, '/(tabs)/home' | '/(tabs)/search' | '/(tabs)/events' | '/(tabs)/profile'> = {
 	home: '/(tabs)/home',
 	search: '/(tabs)/search',
+	events: '/(tabs)/events',
 	profile: '/(tabs)/profile',
 };
 

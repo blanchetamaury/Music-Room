@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, View } from 'react-native';
-import { api, DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/lib/fetcher/api/client';
+import { api } from '@/src/lib/fetcher/api/client';
+import { OutputAlbumDeezer, OutputArtistDeezer, OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { setTracks as setDebugTracks, setProfile } from '@/src/utils/debug';
 import { SeparatorFull } from '../ui/separator';
 import { ThemedText } from '../utils/themed-text';
@@ -10,8 +11,8 @@ import { styles } from './ArtisteProfileMobile.style';
 
 interface ArtistProfileProps {
 	id: string;
-	onSongPress?: (song: DeezerTrack) => void;
-	onAlbumPress?: (album: DeezerAlbum) => void;
+	onSongPress?: (song: OutputTrackDeezer) => void;
+	onAlbumPress?: (album: OutputAlbumDeezer) => void;
 }
 
 type ArtistTab = 'tracks' | 'albums';
@@ -31,9 +32,9 @@ const debugBox = (color: string) => {
 };
 
 export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistProfileProps) {
-	const [artist, setArtist] = useState<DeezerArtist | null>(null);
-	const [tracks, setTracks] = useState<DeezerTrack[]>([]);
-	const [albums, setAlbums] = useState<DeezerAlbum[]>([]);
+	const [artist, setArtist] = useState<OutputArtistDeezer | null>(null);
+	const [tracks, setTracks] = useState<OutputTrackDeezer[]>([]);
+	const [albums, setAlbums] = useState<OutputAlbumDeezer[]>([]);
 	const [activeTab, setActiveTab] = useState<ArtistTab>('tracks');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -65,8 +66,8 @@ export function ArtistProfileMobile({ id, onSongPress, onAlbumPress }: ArtistPro
 				const artistData = artistResponse.data;
 
 				const [topTracksResponse, albumsResponse] = await Promise.all([
-					api.deezer.artistTopTracks(id),
-					api.deezer.artistAlbums(id),
+					api.deezer.artist.topTracks(id),
+					api.deezer.artist.albums(id),
 				]);
 
 				const artistTracks = topTracksResponse?.data ?? [];

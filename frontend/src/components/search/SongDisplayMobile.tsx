@@ -180,7 +180,11 @@ export function SongDisplayMobile(props: SongDisplayProps) {
 										setDisplayAddToPlaylistMenu(false);
 									}}
 								>
-									<Image source={{ uri: row.cover }} style={styles.cover}></Image>
+									{row.cover ? (
+										<Image source={{ uri: row.cover }} style={styles.cover}></Image>
+									) : (
+										<View style={styles.cover}></View>
+									)}
 									<ThemedText style={styles.menuItemText}>{row.name}</ThemedText>
 								</Pressable>
 							))}

@@ -10,7 +10,7 @@
 		"resolveJsonModule": true,
 		"target": "ES2023",
 		"esModuleInterop": true,
-		"types": ["node"]
+		"types": ["node", "jest"]
 	},
 	"include": ["**/*.ts", "**/*.tsx"]
 }

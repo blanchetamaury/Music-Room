@@ -1,40 +1,36 @@
-import { Album } from '../track/track';
+import { Track } from '../track/track';
 
-export interface PlaylistOutput {
-	name: string;
-	cover: string;
-	description: string;
-	private: boolean;
+export type PlaylistVisibility = 'PUBLIC' | 'PRIVATE';
+export type PlaylistEditPolicy = 'EVERYONE' | 'INVITED_ONLY';
+export type PlaylistRole = 'OWNER' | 'EDITOR' | 'VIEWER';
+
+export interface PlaylistTrackOutput {
 	id: string;
-	ownerId: string;
-	user: {
-		id: string;
-		username: string;
-		avatarUrl: string;
-	}[];
-	music: {
-		id: string;
-		position: number;
-		added_at: Date;
-		trackId: string;
-		track: Track;
-	}[];
+	playlistId: string;
+	trackId: string;
+	position: number;
+	addedBy: string;
+	addedAt: Date;
+	track: Track;
 }
 
-interface Track {
+export interface PlaylistMember {
 	id: string;
-	deezerCUID: string;
-	title: string;
-	titleShort: string | null;
-	duration: number;
-	explicit: boolean;
-	previewUrl: string | null;
-	releaseDate: Date | null;
-	rank: number | null;
-	trackPosition: number | null;
-	diskNumber: number | null;
-	bpm: number | null;
-	explicitContentCover: number;
-	albumId: string | null;
-	album: Album;
+	username: string;
+	avatarUrl: string | null;
+	role: PlaylistRole;
+	acceptedAt: Date | null;
+}
+
+export interface PlaylistOutput {
+	id: string;
+	name: string;
+	cover: string | null;
+	description: string | null;
+	ownerId: string;
+	visibility: PlaylistVisibility;
+	editPolicy: PlaylistEditPolicy;
+	version: number;
+	members: PlaylistMember[];
+	tracks: PlaylistTrackOutput[];
 }

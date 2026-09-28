@@ -1,4 +1,4 @@
-import { Home, LogOut, Search, User } from 'lucide-react-native';
+import { CalendarDays, Home, LogOut, Search, User } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { TabKey } from './BottomNavigation';
@@ -17,6 +17,7 @@ interface TabItem {
 const TABS: TabItem[] = [
 	{ key: 'home', icon: Home },
 	{ key: 'search', icon: Search },
+	{ key: 'events', icon: CalendarDays },
 	{ key: 'profile', icon: User },
 ];
 

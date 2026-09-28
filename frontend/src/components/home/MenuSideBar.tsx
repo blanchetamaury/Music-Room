@@ -1,16 +1,17 @@
-import { Home, LogOut, Menu, Search, User, X } from 'lucide-react-native';
+import { CalendarDays, Home, LogOut, Menu, Search, User, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
 	Extrapolation,
 	interpolate,
+	type SharedValue,
 	useAnimatedStyle,
 	useSharedValue,
 	withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export type TabKey = 'home' | 'search' | 'profile';
+export type TabKey = 'home' | 'search' | 'events' | 'profile';
 
 interface SideMenuBarProps {
 	activeTab: TabKey;
@@ -27,6 +28,7 @@ interface TabItem {
 const TABS: TabItem[] = [
 	{ key: 'home', icon: Home, label: 'Accueil' },
 	{ key: 'search', icon: Search, label: 'Recherche' },
+	{ key: 'events', icon: CalendarDays, label: 'Événements' },
 	{ key: 'profile', icon: User, label: 'Profil' },
 ];
 
@@ -129,7 +131,7 @@ function TabItemAnimated({
 }: {
 	tab: TabItem;
 	index: number;
-	progress: Animated.SharedValue<number>;
+	progress: SharedValue<number>;
 	isActive: boolean;
 	onPress: () => void;
 }) {
@@ -176,8 +178,8 @@ const styles = StyleSheet.create({
 	list: {
 		flex: 1,
 		paddingHorizontal: 10,
-		gap: 4,
-		alignContent: 'center',
+		gap: 10,
+		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	itemWrapper: {

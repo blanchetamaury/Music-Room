@@ -21,6 +21,7 @@ export default function TabLayout() {
 			>
 				<Tabs.Screen name="home" options={{ tabBarStyle: { display: 'none' } }} />
 				<Tabs.Screen name="search" options={{ tabBarStyle: { display: 'none' } }} />
+				<Tabs.Screen name="events" options={{ tabBarStyle: { display: 'none' } }} />
 				<Tabs.Screen name="profile" options={{ tabBarStyle: { display: 'none' } }} />
 			</Tabs>
 		</>

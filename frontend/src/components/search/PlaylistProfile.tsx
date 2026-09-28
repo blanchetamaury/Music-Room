@@ -77,15 +77,17 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 					<View style={styles.metaRow}>
 						<View style={styles.metaItem}>
 							<Music2 color="rgba(255,255,255,0.65)" size={15} />
-							<ThemedText style={styles.metaText}>{playlist.music.length} tracks</ThemedText>
+							<ThemedText style={styles.metaText}>{playlist.tracks.length} tracks</ThemedText>
 						</View>
 						<View style={styles.metaItem}>
-							{playlist.private ? (
+							{playlist.visibility === 'PRIVATE' ? (
 								<LockKeyhole color="rgba(255,255,255,0.65)" size={15} />
 							) : (
 								<Users color="rgba(255,255,255,0.65)" size={15} />
 							)}
-							<ThemedText style={styles.metaText}>{playlist.private ? 'Private' : 'Public'}</ThemedText>
+							<ThemedText style={styles.metaText}>
+								{playlist.visibility === 'PRIVATE' ? 'Private' : 'Public'}
+							</ThemedText>
 						</View>
 					</View>
 				</View>
@@ -93,23 +95,23 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 
 			<View style={styles.sectionHeader}>
 				<ThemedText style={styles.sectionTitle}>Tracks</ThemedText>
-				<ThemedText style={styles.sectionCount}>{playlist.music.length}</ThemedText>
+				<ThemedText style={styles.sectionCount}>{playlist.tracks.length}</ThemedText>
 			</View>
 
-			{playlist.music.length === 0 ? (
+			{playlist.tracks.length === 0 ? (
 				<View style={styles.emptyState}>
 					<Music2 color="rgba(255,255,255,0.4)" size={24} />
 					<ThemedText style={styles.mutedText}>This playlist is empty.</ThemedText>
 				</View>
 			) : (
 				<View style={styles.trackList}>
-					{playlist.music.map((track, index) => (
+					{playlist.tracks.map((track, index) => (
 						<View key={track.id} style={styles.trackRow}>
 							<View style={styles.trackNumber}>
 								<ThemedText style={styles.numberText}>{index + 1}</ThemedText>
 							</View>
 							<View style={styles.trackIcon}>
-								{track.track.album.cover == null ? (
+								{track.track.album?.cover == null ? (
 									<Music2 color="rgba(255,255,255,0.65)" size={17} />
 								) : (
 									<Image source={{ uri: track.track.album.cover }} style={styles.trackIcon}></Image>
@@ -119,7 +121,7 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 								<ThemedText numberOfLines={1} style={styles.trackTitle}>
 									{track.track.title}
 								</ThemedText>
-								<ThemedText style={styles.trackSubtitle}>Position {track.track.rank}</ThemedText>
+								<ThemedText style={styles.trackSubtitle}>Position {track.position + 1}</ThemedText>
 							</View>
 							<Pressable
 								onPress={() =>
@@ -205,7 +207,7 @@ export function PlaylistLikeProfile({ setPopup, like }: PlaylistLikeProfileProps
 									<ThemedText numberOfLines={1} style={styles.trackTitle}>
 										{track.track.title}
 									</ThemedText>
-									<ThemedText style={styles.trackSubtitle}>Position {track.track.rank}</ThemedText>
+									<ThemedText style={styles.trackSubtitle}>Liked track</ThemedText>
 								</View>
 							</View>
 						))}

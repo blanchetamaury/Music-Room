@@ -1,13 +1,14 @@
-import { Eye, EyeClosed } from 'lucide-react-native';
+import { Eye, EyeClosed, Globe, LockKeyhole, Users } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, View } from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
 import { useCreatePlaylistMutation } from '@/src/lib/fetcher/tanstack/user';
 import { ThemedText } from '../utils/themed-text';
 import { InputForm } from '../utils/InputForm';
 import { styles } from './PlaylistCreate.styles';
+import type { PlaylistEditPolicy, PlaylistVisibility } from '@/src/types/playlist/PlaylistOutput';
 
-interface PlaylistProfileMobileProps {
+interface PlaylistCreateProps {
 	setPopup: (value: null) => void;
 }
 
@@ -25,24 +26,33 @@ const debugBox = (color: string) => {
 	};
 };
 
-export function PlaylistCreate({ setPopup }: PlaylistProfileMobileProps) {
+export function PlaylistCreate({ setPopup }: PlaylistCreateProps) {
 	const [playlistName, setPlaylistName] = useState('');
 	const [playlistDescription, setPlaylistDescription] = useState('');
 	const [urlImage, setUrlImage] = useState('');
-	const [visibilityPlaylist, setVisibilityPlaylist] = useState(false);
+	const [visibility, setVisibility] = useState<PlaylistVisibility>('PUBLIC');
+	const [editPolicy, setEditPolicy] = useState<PlaylistEditPolicy>('EVERYONE');
 	const createPlaylistMutation = useCreatePlaylistMutation();
 	const { token } = useAuth();
 
-	const handleAddPlaylist = () => {
-		createPlaylistMutation.mutate({
-			name: playlistName,
-			cover: urlImage,
-			description: playlistDescription,
-			privatePlaylist: visibilityPlaylist,
-			token: token ?? '',
-		});
+	const canSubmit = playlistName.trim().length > 0 && Boolean(token) && !createPlaylistMutation.isPending;
 
-		setPopup(null);
+	const toggleVisibility = () => setVisibility((value) => (value === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC'));
+
+	const handleAddPlaylist = () => {
+		if (!token || !canSubmit) return;
+
+		createPlaylistMutation.mutate(
+			{
+				token,
+				name: playlistName.trim(),
+				cover: urlImage.trim() || null,
+				description: playlistDescription.trim() || undefined,
+				visibility,
+				editPolicy,
+			},
+			{ onSuccess: () => setPopup(null) }
+		);
 	};
 
 	return (
@@ -58,27 +68,58 @@ export function PlaylistCreate({ setPopup }: PlaylistProfileMobileProps) {
 					)}
 				</View>
 
-				<View style={[styles.visibility, debugBox('#0088ff')]}>
-					<ThemedText style={styles.visibilityText}>{visibilityPlaylist ? 'Public' : 'Private'}</ThemedText>
+				<Pressable
+					style={[styles.visibility, debugBox('#0088ff')]}
+					onPress={toggleVisibility}
+					accessibilityRole="button"
+					accessibilityLabel="Toggle playlist visibility"
+				>
+					<ThemedText style={styles.visibilityText}>
+						{visibility === 'PUBLIC' ? 'Public' : 'Private'}
+					</ThemedText>
 
 					<Pressable
-						style={[
-							styles.visibilityButton,
-							visibilityPlaylist && styles.visibilityButtonActive,
-							debugBox('#ff00ff'),
-						]}
-						onPress={() => setVisibilityPlaylist(!visibilityPlaylist)}
+						style={[styles.visibilityButton, visibility === 'PUBLIC' && styles.visibilityButtonActive]}
+						onPress={toggleVisibility}
+						accessibilityRole="button"
 					>
-						{visibilityPlaylist ? (
+						{visibility === 'PUBLIC' ? (
 							<Eye size={20} color="#ffffff" />
 						) : (
 							<EyeClosed size={20} color="#ffffff" />
 						)}
 					</Pressable>
-				</View>
+				</Pressable>
 
-				<Pressable style={[styles.addButton, debugBox('#00ff88')]} onPress={handleAddPlaylist}>
-					<ThemedText style={styles.addText}>ADD</ThemedText>
+				<Pressable
+					style={[styles.chip, editPolicy === 'EVERYONE' && styles.chipActive, debugBox('#ff00ff')]}
+					onPress={() => setEditPolicy((value) => (value === 'EVERYONE' ? 'INVITED_ONLY' : 'EVERYONE'))}
+					accessibilityRole="button"
+					accessibilityLabel="Toggle who can edit"
+				>
+					<ThemedText style={styles.chipLabel}>
+						{editPolicy === 'EVERYONE' ? (
+							<Globe color="rgba(255,255,255,0.7)" size={14} />
+						) : (
+							<Users color="rgba(255,255,255,0.7)" size={14} />
+						)}
+					</ThemedText>
+					<ThemedText style={styles.chipValue}>
+						{editPolicy === 'EVERYONE' ? 'Anyone can edit' : 'Invited only'}
+					</ThemedText>
+				</Pressable>
+
+				<Pressable
+					style={[styles.addButton, !canSubmit && { opacity: 0.5 }, debugBox('#00ff88')]}
+					onPress={handleAddPlaylist}
+					disabled={!canSubmit}
+					accessibilityRole="button"
+				>
+					{createPlaylistMutation.isPending ? (
+						<ActivityIndicator color="#000" size="small" />
+					) : (
+						<ThemedText style={styles.addText}>ADD</ThemedText>
+					)}
 				</Pressable>
 			</View>
 
@@ -106,6 +147,17 @@ export function PlaylistCreate({ setPopup }: PlaylistProfileMobileProps) {
 					setInputValue={setUrlImage}
 					style={styles.inputForm}
 				/>
+
+				<ThemedText style={styles.mutedText}>
+					{visibility === 'PRIVATE' ? (
+						<LockKeyhole color="rgba(255,255,255,0.5)" size={12} />
+					) : (
+						<Globe color="rgba(255,255,255,0.5)" size={12} />
+					)}{' '}
+					{visibility === 'PRIVATE'
+						? 'Only you and the invited members can see it.'
+						: 'Anyone can listen, editing depends on the policy above.'}
+				</ThemedText>
 			</View>
 		</View>
 	);

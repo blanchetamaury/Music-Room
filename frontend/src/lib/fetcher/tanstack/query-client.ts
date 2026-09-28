@@ -6,14 +6,18 @@ export const queryClient = new QueryClient({
 			staleTime: 30_000,
 			retry: 1,
 		},
+		mutations: {
+			retry: 0,
+		},
 	},
 });
 
 declare global {
 	interface Window {
-		__TANSTACK_QUERY_CLIENT__: import('@tanstack/query-core').QueryClient;
+		__TANSTACK_QUERY_CLIENT__?: import('@tanstack/query-core').QueryClient;
 	}
 }
 
-// This code is for all users
-window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+if (typeof window !== 'undefined') {
+	window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+}

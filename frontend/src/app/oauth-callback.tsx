@@ -1,24 +1,54 @@
-import { useEffect } from 'react';
-import { View, Platform } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
+import { ThemedText } from '../components/utils/themed-text';
 
 export default function OAuthCallback() {
-	const { token } = useLocalSearchParams<{ token?: string }>();
+	const { code, error } = useLocalSearchParams<{ code?: string; error?: string }>();
 
 	useEffect(() => {
-		if (Platform.OS !== 'web') return;
-
-		if (!token) {
+		if (error) {
+			if (Platform.OS === 'web' && window.opener) {
+				window.opener.postMessage({ type: 'oauth-success', code: null }, window.location.origin);
+				window.close();
+			}
 			return;
 		}
 
-		if (window.opener) {
-			window.opener.postMessage({ type: 'oauth-success', token }, window.location.origin);
-			window.close();
-		} else {
-			window.location.href = `/?token=${token}`;
-		}
-	}, [token]);
+		if (!code) return;
 
-	return <View />;
+		if (Platform.OS === 'web') {
+			if (window.opener) {
+				window.opener.postMessage({ type: 'oauth-success', code }, window.location.origin);
+				window.close();
+			}
+		}
+	}, [code, error]);
+
+	if (error) {
+		return (
+			<View style={styles.container}>
+				<ThemedText>Authentication failed. Please try again.</ThemedText>
+			</View>
+		);
+	}
+
+	return (
+		<View style={styles.container}>
+			<ActivityIndicator />
+			<ThemedText style={styles.label}>Signing you in…</ThemedText>
+		</View>
+	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: 12,
+	},
+	label: {
+		opacity: 0.7,
+	},
+});

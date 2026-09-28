@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Camera, Check, LogOut, Pencil, Plus, UserMinus, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { DevicesPanel } from '../devices/DevicesPanel';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './ProfileScreen.styles';
 
@@ -160,6 +161,10 @@ export function ProfileScreen() {
 						</Pressable>
 					</View>
 				</View>
+			</View>
+
+			<View style={styles.section}>
+				<DevicesPanel />
 			</View>
 
 			<View style={styles.section}>

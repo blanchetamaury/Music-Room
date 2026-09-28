@@ -14,21 +14,19 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }: PlayerCardProps) {
-	const [isPlaying, setIsPlaying] = useState(false);
+	const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
 	const player = useAudioPlayer(currentTrack.previewUrl);
 	const previousTrackId = useRef<string | null>(null);
+	const isPlaying = playingTrackId === currentTrack.deezerCUID;
 
 	useEffect(() => {
 		if (!currentTrack.previewUrl) {
-			setIsPlaying(false);
 			return;
 		}
 
 		if (previousTrackId.current === currentTrack.deezerCUID) return;
 
 		previousTrackId.current = currentTrack.deezerCUID;
-
-		setIsPlaying(false);
 
 		if (!autoPlay) {
 			onAutoPlayHandled?.();
@@ -38,7 +36,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 		const timeout = setTimeout(() => {
 			try {
 				player.play();
-				setIsPlaying(true);
+				setPlayingTrackId(currentTrack.deezerCUID);
 			} catch (error) {
 				console.error('[PlayerCard] Failed to autoplay:', error);
 			}
@@ -57,7 +55,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 
 		try {
 			player.play();
-			setIsPlaying(true);
+			setPlayingTrackId(currentTrack.deezerCUID);
 		} catch (error) {
 			console.error('[PlayerCard] Failed to play:', error);
 		}
@@ -65,7 +63,7 @@ export function PlayerCard({ currentTrack, autoPlay = true, onAutoPlayHandled }:
 
 	const handlePause = () => {
 		player.pause();
-		setIsPlaying(false);
+		setPlayingTrackId(null);
 	};
 
 	const handlePlayPause = () => {

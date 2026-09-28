@@ -1,5 +1,5 @@
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useThemeColor } from '../../hooks/use-theme-color';
@@ -27,34 +27,35 @@ export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void
 
 	const formBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
 
-	useEffect(() => {
-		if (codeSent) {
-			reveal.value = withTiming(1, { duration: 350 });
-			setCountdown(60);
-			timerRef.current = setInterval(() => {
-				setCountdown((c) => {
-					if (c <= 1) {
-						if (timerRef.current) clearInterval(timerRef.current as any);
-						return 0;
-					}
-					return c - 1;
-				});
-			}, 1000) as unknown as number;
-		} else {
-			reveal.value = withTiming(0, { duration: 300 });
-			if (timerRef.current) {
-				clearInterval(timerRef.current as any);
-				timerRef.current = null;
-			}
-			setCountdown(0);
-			setCode('');
-			setNewPassword('');
-			setConfirmPassword('');
+	const startCountdown = useCallback((seconds: number) => {
+		if (timerRef.current) {
+			clearInterval(timerRef.current as any);
+			timerRef.current = null;
 		}
+
+		setCountdown(seconds);
+
+		timerRef.current = setInterval(() => {
+			setCountdown((c) => {
+				if (c <= 1) {
+					if (timerRef.current) clearInterval(timerRef.current as any);
+					timerRef.current = null;
+					return 0;
+				}
+				return c - 1;
+			});
+		}, 1000) as unknown as number;
+	}, []);
+
+	useEffect(() => {
+		reveal.value = withTiming(codeSent ? 1 : 0, { duration: codeSent ? 350 : 300 });
+	}, [codeSent, reveal]);
+
+	useEffect(() => {
 		return () => {
 			if (timerRef.current) clearInterval(timerRef.current as any);
 		};
-	}, [codeSent]);
+	}, []);
 
 	const revealStyle = useAnimatedStyle(() => {
 		return {
@@ -75,6 +76,7 @@ export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void
 				throw new Error(response.message || 'Failed to send reset code');
 			}
 			setCodeSent(true);
+			startCountdown(60);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Failed to send reset code');
 		} finally {

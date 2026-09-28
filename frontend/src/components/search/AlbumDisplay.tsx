@@ -1,11 +1,20 @@
-import { DeezerAlbum } from '@/src/types/deezer/deezer';
+import { OutputAlbumDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { Image, Pressable, View } from 'react-native';
 import { HoverText } from '../ui/hoverText';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './AlbumDisplay.styles';
 
+function formatReleaseDate(value: string | null | undefined): string {
+	if (!value) return 'Unknown date';
+
+	const parsed = new Date(value);
+	if (Number.isNaN(parsed.getTime())) return 'Unknown date';
+
+	return parsed.toISOString().slice(0, 10);
+}
+
 interface AlbumDisplayProps {
-	album: DeezerAlbum;
+	album: OutputAlbumDeezer;
 	onPress?: () => void;
 }
 
@@ -28,7 +37,7 @@ export function AlbumDisplay({ album, onPress }: AlbumDisplayProps) {
 					{album.title}
 				</HoverText>
 
-				<ThemedText style={styles.date}>{album.releaseDate.toISOString() ?? 'Unknown date'}</ThemedText>
+				<ThemedText style={styles.date}>{formatReleaseDate(album.releaseDate)}</ThemedText>
 			</View>
 		</Pressable>
 	);

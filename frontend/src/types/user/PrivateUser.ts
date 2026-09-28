@@ -3,5 +3,6 @@ export interface privateUser {
 	email: string;
 	username: string;
 	avatarUrl: string | null;
+	emailVerified: boolean;
 	createdAt: Date;
 }

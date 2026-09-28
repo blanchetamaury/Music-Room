@@ -1,20 +1,21 @@
 import { useAuth } from '@/src/context/AuthContext';
-import { HomeIcon, SearchIcon, UserIcon } from 'lucide-react-native';
+import { CalendarDays, Home, Search, User } from 'lucide-react-native';
 import React from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LiquidGlass from '../utils/LiquidGlass';
 import { styles } from './BottomNavigation.styles';
 
-export type TabKey = 'home' | 'search' | 'profile';
+export type TabKey = 'home' | 'search' | 'events' | 'profile';
 
 export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; onSelect: (tab: TabKey) => void }) {
 	const { loading, user } = useAuth();
 	const insets = useSafeAreaInsets();
 
 	const tabs: { key: TabKey; icon: React.ReactNode }[] = [
-		{ key: 'search', icon: <SearchIcon size={22} color="#fff" /> },
-		{ key: 'home', icon: <HomeIcon size={22} color="#fff" /> },
+		{ key: 'search', icon: <Search size={22} color="#fff" /> },
+		{ key: 'home', icon: <Home size={22} color="#fff" /> },
+		{ key: 'events', icon: <CalendarDays size={22} color="#fff" /> },
 		{
 			key: 'profile',
 			icon:
@@ -24,7 +25,7 @@ export function BottomNavigation({ activeTab, onSelect }: { activeTab: TabKey; o
 						style={{ width: 22, height: 22, borderRadius: 11 }}
 					/>
 				) : (
-					<UserIcon size={22} color="#fff" />
+					<User size={22} color="#fff" />
 				),
 		},
 	];

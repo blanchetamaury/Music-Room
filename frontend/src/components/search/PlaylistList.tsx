@@ -4,7 +4,7 @@ import { AnimatedPressable } from '../ui/AnimatedPressable';
 import { PlaylistDisplay, PlaylistDisplayAdd } from './PlaylistDisplay';
 import { PlaylistOutput } from '@/src/types/playlist/PlaylistOutput';
 import { Like } from '@/src/types/user/like';
-import { Heart, MoreVertical } from 'lucide-react-native';
+import { Heart, MoreVertical, Music2 } from 'lucide-react-native';
 import { styles } from './PlaylistList.styles';
 import { PopupState } from '@/src/app/(tabs)/search';
 import LiquidGlass from '../utils/LiquidGlass';
@@ -16,7 +16,7 @@ interface PlaylistListProps {
 }
 
 export default function PlaylistList(props: PlaylistListProps) {
-	const playlists = [...(props.playlists ?? [])].sort((left, right) => right.music.length - left.music.length);
+	const playlists = [...(props.playlists ?? [])].sort((left, right) => right.tracks.length - left.tracks.length);
 
 	return (
 		<LiquidGlass
@@ -51,6 +51,10 @@ export default function PlaylistList(props: PlaylistListProps) {
 								title="Likes"
 								size={props.likesData.length}
 								backgroundColorCover="#2825c98a"
+								duration={props.likesData.reduce(
+									(total, item) => total + (item.track?.duration ?? 0),
+									0
+								)}
 							>
 								<Heart color="#fff" fill="#fff" />
 							</PlaylistDisplay>
@@ -67,14 +71,18 @@ export default function PlaylistList(props: PlaylistListProps) {
 							<PlaylistDisplay
 								id={playlist.id}
 								title={playlist.name}
-								size={playlist.music.length}
-								duration={playlist.music.reduce(
-									(total, item) => total + (item.track?.duration ?? 0),
+								size={playlist.tracks.length}
+								duration={playlist.tracks.reduce(
+									(total: number, item) => total + (item.track?.duration ?? 0),
 									0
 								)}
 								backgroundColorCover="#00000018"
 							>
-								<Image style={styles.playlistCover} source={{ uri: playlist.cover }} />
+								{playlist.cover ? (
+									<Image style={styles.playlistCover} source={{ uri: playlist.cover }} />
+								) : (
+									<Music2 color="rgba(255,255,255,0.65)" size={28} />
+								)}
 							</PlaylistDisplay>
 						</AnimatedPressable>
 						<Pressable
