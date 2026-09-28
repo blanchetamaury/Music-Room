@@ -14,7 +14,6 @@ model Track {
   explicitContentCover Int
   albumId              String?
   updatedAt            DateTime        @updatedAt
-  playlistTracks       PlaylistTrack[]
   album                Album?          @relation(fields: [albumId], references: [deezerCUID], onDelete: Cascade)
   likes                Like[]
   plays                PlayHistory[]

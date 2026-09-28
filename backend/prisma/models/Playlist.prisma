@@ -1,13 +1,66 @@
 model Playlist {
-  id          String          @id @default(cuid())
-  name        String
-  ownerId     String
-  cover       String?
-  description String?
-  private     Boolean         @default(true)
-  created_at  DateTime        @default(now())
-  music       PlaylistTrack[]
-  user        User[]          @relation("PlaylistToUser")
+  id            String          @id @default(cuid())
+  name          String
+  ownerId       String
+  cover         String?
+  description   String?
+  visibility    PlaylistVisibility @default(PUBLIC)
+  editPolicy    EditPolicy      @default(EVERYONE)
+  version       Int             @default(1)
+  lastEditedBy  String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  owner         User            @relation("PlaylistToUser", fields: [ownerId], references: [id], onDelete: Cascade)
+  members       PlaylistMember[]
+  tracks        PlaylistTrack[]
 
   @@unique([name, ownerId])
+  @@map("playlists")
+}
+
+model PlaylistMember {
+  id          String            @id @default(uuid())
+  playlistId  String
+  userId      String
+  role        PlaylistRole      @default(EDITOR)
+  invitedAt   DateTime          @default(now())
+  acceptedAt  DateTime?
+
+  playlist    Playlist          @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, userId])
+  @@map("playlist_members")
+}
+
+model PlaylistTrack {
+  id        String   @id @default(cuid())
+  playlistId String
+  trackId   String
+  position  Int
+  addedBy   String
+  addedAt   DateTime @default(now())
+
+  playlist  Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, position])
+  @@unique([playlistId, trackId])
+  @@map("playlist_tracks")
+}
+
+enum PlaylistVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum EditPolicy {
+  EVERYONE
+  INVITED_ONLY
+}
+
+enum PlaylistRole {
+  OWNER
+  EDITOR
+  VIEWER
 }

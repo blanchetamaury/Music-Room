@@ -1,0 +1,27 @@
+model DevicePlaybackState {
+  deviceId String @id
+
+  status PlaybackStatus @default(IDLE)
+
+  queue String[] @default([])
+
+  currentTrackId String?
+
+  positionMs Int @default(0)
+
+  volume Int @default(100)
+
+  updatedBy String?
+
+  updatedAt DateTime @updatedAt
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@map("device_playback_states")
+}
+
+enum PlaybackStatus {
+  IDLE
+  PLAYING
+  PAUSED
+}
