@@ -5,6 +5,7 @@ import {
 	createRateLimitLogin,
 } from '../../../prisma/database/ratelimitLogin';
 import { getUserByMail } from '../../../prisma/database/user';
+import { createSessionExchange } from '../../../prisma/database/sessionExchange';
 import { createCsrfCookie } from '../../lib/csrf';
 import { createSession, SESSION_MAX_AGE_SECONDS } from '../../lib/session';
 import { LoginParametersSchema } from '../../schema/LoginParamtersSchema';
@@ -48,9 +49,15 @@ export async function POST(req: Request): Promise<Response> {
 			throw ERRORS_DETAILS.two_factor_auth_required();
 		}
 
+		if (!user.emailVerified) {
+			await createRateLimitLogin(user.id, ip, false);
+			throw ERRORS_DETAILS.email_verification_required();
+		}
+
 		await createRateLimitLogin(user.id, ip, true);
 
 		const session = await createSession({ user_id: user.id });
+		const exchange = await createSessionExchange(user.id, req.headers.get('x-client-type'));
 
 		const { cookie: csrfCookie } = createCsrfCookie();
 
@@ -65,8 +72,17 @@ export async function POST(req: Request): Promise<Response> {
 		return new Response(
 			JSON.stringify({
 				success: true,
-				token: session.body,
-				user: { id: user.id, email: user.email },
+				data: {
+					code: exchange.code,
+					expiresIn: 60,
+					user: {
+						id: user.id,
+						email: user.email,
+						username: user.username,
+						avatarUrl: user.avatarUrl,
+						emailVerified: user.emailVerified,
+					},
+				},
 			}),
 			{
 				status: 200,
