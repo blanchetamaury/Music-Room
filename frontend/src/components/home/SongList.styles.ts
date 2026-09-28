@@ -10,14 +10,12 @@ export const styles = StyleSheet.create({
 	songSection: {
 		flex: 1,
 		width: '100%',
-		borderRadius: 15,
+		borderRadius: 8,
 	},
 	songListShell: {
 		flex: 1,
 		width: '100%',
 		position: 'relative',
-		borderTopLeftRadius: 15,
-		borderTopRightRadius: 15,
 		overflow: 'hidden',
 	},
 	songListScroll: {
@@ -37,18 +35,19 @@ export const styles = StyleSheet.create({
 		zIndex: 2,
 	},
 	songCard: {
-		borderRadius: 20,
 		minHeight: 74,
-	},
-	songCardContent: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingHorizontal: 12,
 		paddingVertical: 10,
+		borderRadius: 8,
+		borderStyle: 'solid',
+		borderWidth: 1,
+		borderColor: '#ffffff18',
 	},
 	songCardActive: {
 		borderWidth: 1,
-		borderRadius: 20,
+		borderColor: '#ffffff67',
 	},
 	songCover: {
 		width: 52,

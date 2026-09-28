@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
 	userSection: {
 		width: '100%',
+		backgroundColor: 'rgba(0, 0, 0, 0.75)',
 	},
 	sectionTitle: {
 		color: '#fff',
@@ -14,17 +15,22 @@ export const styles = StyleSheet.create({
 		paddingRight: 12,
 		gap: 8,
 		alignItems: 'flex-start',
+
 	},
 	userBubble: {
 		width: 60,
 		minHeight: 88,
-		borderRadius: 18,
-	},
-	userBubbleContent: {
 		alignItems: 'center',
 		justifyContent: 'center',
 		paddingVertical: 12,
 		paddingHorizontal: 4,
+		borderRadius: 8,
+		borderStyle: 'solid',
+		borderWidth: 1,
+		borderColor: '#ffffff18',
+	},
+	userBubbleContent: {
+		
 	},
 	avatar: {
 		width: 34,

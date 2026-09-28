@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		marginBottom: 8,
+		paddingLeft: 84,
 	},
 	headerTextWrap: {
 		flex: 1,

@@ -7,30 +7,30 @@ import { styles } from './UserStrip.styles';
 
 export function UserStrip() {
 	return (
-		<View style={styles.userSection}>
-			<ThemedText style={styles.sectionTitle}>Users list:</ThemedText>
-			<ScrollView
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={styles.userListContent}
+		<View style={{ width: '100%', paddingHorizontal: 10}}>
+			<LiquidGlass
+				style={styles.userSection}
+				intensity={16}
+				radius={8}
+				topLeftRadius={8}
+				topRightRadius={8}
+				bottomLeftRadius={8}
+				bottomRightRadius={8}
 			>
-				{playlistUsers.map((user, index) => (
-					<LiquidGlass
-						key={`${user.name}-${index}`}
-						style={styles.userBubble}
-						contentStyle={styles.userBubbleContent}
-						intensity={16}
-						radius={18}
-						topLeftRadius={18}
-						topRightRadius={18}
-						bottomLeftRadius={18}
-						bottomRightRadius={18}
-					>
-						<View style={[styles.avatar, { backgroundColor: user.color }]} />
-						<ThemedText style={styles.userName}>{user.name}</ThemedText>
-					</LiquidGlass>
-				))}
-			</ScrollView>
+				<ThemedText style={[styles.sectionTitle, { fontSize: 24 }]}>Friends</ThemedText>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={styles.userListContent}
+				>
+					{playlistUsers.map((user, index) => (
+						<View style={styles.userBubble}>
+							<View style={[styles.avatar, { backgroundColor: user.color }]} />
+							<ThemedText style={styles.userName}>{user.name}</ThemedText>
+						</View>
+					))}
+				</ScrollView>
+			</LiquidGlass>
 		</View>
 	);
 }

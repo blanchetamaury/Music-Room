@@ -32,6 +32,7 @@ const createOrUpdateFortyTwoUser = async (
 		},
 		update: {
 			fortytwoUserId: me.id,
+			emailVerified: true,
 			fortytwoOauth: {
 				upsert: {
 					update: { ...token_body },
@@ -63,6 +64,7 @@ const createOrUpdateGoogleUser = async (
 			googleOauth: { create: { ...token_body } },
 		},
 		update: {
+			emailVerified: true,
 			googleOauth: {
 				upsert: {
 					update: { ...token_body },

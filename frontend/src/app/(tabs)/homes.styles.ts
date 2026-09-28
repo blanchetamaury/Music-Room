@@ -111,8 +111,7 @@ export const homeStyles = StyleSheet.create({
 		zIndex: 2,
 		borderRadius: 16,
 		borderWidth: 1,
-		borderColor: 'rgba(255,255,255,0.07)',
-		backgroundColor: 'rgba(19,19,22,0.78)',
+		gap: 20,
 	},
 	homeContentInner: {
 		flex: 1,
