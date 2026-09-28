@@ -1,12 +1,11 @@
 import { errorHandler } from '@/utils/error';
-import { getUserFromToken } from '@/utils/token';
+import { requireVerifiedEmail } from '@/lib/require-verified-email';
 import { getUserById } from '../../../../prisma/database/user';
 import { createLikeUser, deleteLikeUser, findLikeUser } from '../../../../prisma/database/like';
 import { getTrack } from '../../../../prisma/database/deezer';
 
 export async function POST(req: Request): Promise<Response> {
 	return errorHandler(async () => {
-		const userId = await getUserFromToken(req);
 		const url = new URL(req.url);
 		const trackId = url.searchParams.get('track_id');
 
@@ -14,7 +13,7 @@ export async function POST(req: Request): Promise<Response> {
 			return Response.json({ error: 'missing query' }, { status: 400 });
 		}
 
-		if (!userId) return Response.json({ success: false, message: 'No token provided' }, { status: 401 });
+		const userId = await requireVerifiedEmail(req);
 
 		const user = await getUserById(userId, {});
 		if (!user) return Response.json({ success: false, message: 'User not found' }, { status: 404 });

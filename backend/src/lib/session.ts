@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
+import { randomUUID } from 'crypto';
 import { SignJWT, jwtVerify } from 'jose';
 import { JWTSessionPayload, SessionPayload } from '../types/session/SessionPayload';
 import { ERRORS_DETAILS } from '../utils/error';
+import { isSessionRevoked } from '../../prisma/database/revokedSession';
 import { getSessionSecret } from './session-secret';
 
 const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60;
@@ -12,10 +14,12 @@ interface CreatedSessionPayload {
 	expirationDate: number;
 }
 
-const encrypt = async (payload: JWTSessionPayload): Promise<string> => {
-	return new SignJWT(payload)
+const encrypt = async (payload: Omit<JWTSessionPayload, 'jti'> & { jti?: string }): Promise<string> => {
+	const jti = payload.jti ?? randomUUID();
+	return new SignJWT({ ...payload, jti })
 		.setProtectedHeader({ alg: 'HS256' })
-		.setExpirationTime(payload.exp)
+		.setJti(jti)
+		.setExpirationTime(payload.exp as number)
 		.sign(getSessionSecret());
 };
 
@@ -26,6 +30,9 @@ const decrypt = async (session: string | undefined = ''): Promise<JWTSessionPayl
 	});
 	if (payload.exp != null && Date.now() / 1000 >= payload.exp) {
 		throw new Error('Error, session cookie is not set');
+	}
+	if (typeof payload.jti === 'string' && (await isSessionRevoked(payload.jti))) {
+		throw new Error('Error, session has been revoked');
 	}
 	return payload as JWTSessionPayload;
 };
@@ -39,6 +46,7 @@ const createSession = async (payload: SessionPayload): Promise<CreatedSessionPay
 		iat: issuedAt,
 		iss: 'music room',
 		exp: expirationTime,
+		jti: randomUUID(),
 	});
 	return { body, expirationDate };
 };

@@ -1,26 +1,35 @@
 import { errorHandler } from '@/utils/error';
-import { getUserFromToken } from '@/utils/token';
-import { getUserById } from '../../../../prisma/database/user';
-import { getPlaylist } from '../../../../prisma/database/playlists';
+import { requireVerifiedEmail } from '@/lib/require-verified-email';
+import { canReadPlaylist } from '@/lib/permissions';
+import { getPlaylistById } from '../../../../prisma/database/playlists';
+import { getTrack } from '../../../../prisma/database/deezer';
 
 export async function GET(req: Request): Promise<Response> {
 	return errorHandler(async () => {
-		const userId = await getUserFromToken(req);
-
-		if (!userId) return Response.json({ success: false, message: 'No token provided' }, { status: 401 });
-
-		const user = await getUserById(userId, {});
-		if (!user) return Response.json({ success: false, message: 'User not found' }, { status: 404 });
+		const userId = await requireVerifiedEmail(req);
 
 		const playlistId = new URL(req.url).searchParams.get('playlist_id');
 		if (!playlistId) return Response.json({ success: false, message: 'No playlist ID provided' }, { status: 400 });
 
-		const data = await getPlaylist(playlistId, {
-			user: true,
-			music: { include: { track: { include: { album: true } } } },
+		const canRead = await canReadPlaylist(playlistId, userId);
+		if (!canRead) {
+			return Response.json({ success: false, message: 'Playlist not found' }, { status: 404 });
+		}
+
+		const data = await getPlaylistById(playlistId, {
+			owner: true,
+			members: { include: { user: true } },
+			tracks: true,
 		});
 		if (!data) return Response.json({ success: false, message: 'Playlist not found' }, { status: 404 });
 
-		return Response.json({ success: true, data: data }, { status: 200 });
+		const tracksWithDetails = await Promise.all(
+			data.tracks.map(async (t) => {
+				const track = await getTrack(t.trackId);
+				return { ...t, track };
+			})
+		);
+
+		return Response.json({ success: true, data: { ...data, tracks: tracksWithDetails } }, { status: 200 });
 	});
 }

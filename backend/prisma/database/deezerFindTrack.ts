@@ -11,6 +11,27 @@ import { prisma } from './prisma';
 
 const DEEZER_API = 'https://api.deezer.com';
 
+class DeezerTrackNotFoundError extends Error {
+	constructor(deezerId: string) {
+		super(`Deezer track ${deezerId} does not exist`);
+		this.name = 'DeezerTrackNotFoundError';
+	}
+}
+
+class DeezerUpstreamError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'DeezerUpstreamError';
+	}
+}
+
+class DeezerTrackNotPlayableError extends Error {
+	constructor(deezerId: string) {
+		super(`Deezer track ${deezerId} has no playable preview in this region`);
+		this.name = 'DeezerTrackNotPlayableError';
+	}
+}
+
 const findTrackToDb = async (deezerId: string) => {
 	const cached = await prisma.track.findUnique({
 		include: { album: true, artists: true },
@@ -27,14 +48,27 @@ const findTrackToDb = async (deezerId: string) => {
 };
 
 const getDeezerTrack = async (deezerId: string): Promise<OutputTrackDeezer> => {
+	if (!/^\d+$/.test(deezerId)) {
+		throw new DeezerTrackNotFoundError(deezerId);
+	}
+
 	const res = await fetch(`${DEEZER_API}/track/${deezerId}`);
+
+	if (res.status === 404) {
+		throw new DeezerTrackNotFoundError(deezerId);
+	}
+
 	if (!res.ok) {
-		throw new Error(`Deezer ${res.status}`);
+		throw new DeezerUpstreamError(`Deezer responded with status ${res.status}`);
 	}
 
 	const json = await res.json();
 	if (json.error) {
-		throw new Error(`Deezer error: ${json.error.message ?? 'unknown'} ${deezerId}`);
+		const type = json.error.type;
+		if (type === 'dataException' || type === 'DataException' || type === 'InvalidQueryException') {
+			throw new DeezerTrackNotFoundError(deezerId);
+		}
+		throw new DeezerUpstreamError(`Deezer error: ${json.error.message ?? 'unknown'} (${deezerId})`);
 	}
 	return mapTrack(json);
 };
@@ -58,11 +92,21 @@ const listArtist = async (track: OutputTrackDeezer, newTrack: createAllDataTrack
 };
 
 const getAlbumToDeezer = async (track: OutputTrackDeezer, newTrack: createAllDataTrack) => {
-	const albumToDb = await findAlbum({ genre: true }, track.album.deezerCUID);
+	const albumId = track.album?.deezerCUID;
+	if (albumId === undefined || albumId === null) {
+		newTrack.album = null;
+		return newTrack;
+	}
+
+	const albumToDb = await findAlbum({ genre: true }, albumId);
 	if (!albumToDb) {
-		const res = await fetch(`${DEEZER_API}/album/${track.album.deezerCUID}`);
-		if (!res.ok) throw new Error(`Deezer album ${res.status}`);
+		const res = await fetch(`${DEEZER_API}/album/${albumId}`);
+		if (!res.ok) throw new DeezerUpstreamError(`Deezer album responded with status ${res.status}`);
 		const albumJson = await res.json();
+		if (albumJson.error || !albumJson.title) {
+			newTrack.album = null;
+			return newTrack;
+		}
 
 		let genre = null;
 		if (albumJson.genre_id) {
@@ -90,4 +134,12 @@ const getAlbumToDeezer = async (track: OutputTrackDeezer, newTrack: createAllDat
 	return newTrack;
 };
 
-export { findTrackToDb, getAlbumToDeezer, getDeezerTrack, listArtist };
+export {
+	DeezerTrackNotFoundError,
+	DeezerTrackNotPlayableError,
+	DeezerUpstreamError,
+	findTrackToDb,
+	getAlbumToDeezer,
+	getDeezerTrack,
+	listArtist,
+};

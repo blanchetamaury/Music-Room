@@ -1,8 +1,13 @@
+import { rateLimit } from '@/lib/apply-rate-limit';
+import { RATE_LIMITS } from '@/lib/rate-limit';
 import { Request } from 'express';
 import { getChart } from '../../../../prisma/database/deezer';
 import { mapSearch } from '@/format/mapTrack';
 
-export async function GET(req: Request) {
+export async function GET(req: globalThis.Request) {
+	const limited = await rateLimit(req, RATE_LIMITS.deezerLookup);
+	if (limited) return limited;
+
 	const url = new URL(req.url);
 	const count = url.searchParams.get('count');
 

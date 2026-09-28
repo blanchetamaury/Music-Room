@@ -1,5 +1,7 @@
-const SESSION_SECRET_FALLBACK = 'fvsdvsdvoewfk3i4r4i5t984-0qwkdpwekopdp34rf3j4fijr';
-
 export function getSessionSecret(): Uint8Array {
-	return new TextEncoder().encode(process.env.SESSION_SECRET || SESSION_SECRET_FALLBACK);
+	const secret = process.env.SESSION_SECRET;
+	if (!secret || secret.length < 32) {
+		throw new Error('SESSION_SECRET must be set and at least 32 characters long');
+	}
+	return new TextEncoder().encode(secret);
 }

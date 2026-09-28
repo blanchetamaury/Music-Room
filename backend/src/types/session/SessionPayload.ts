@@ -6,4 +6,5 @@ export interface SessionPayload {
 
 export interface JWTSessionPayload extends JWTPayload, SessionPayload {
 	exp: number;
+	jti: string;
 }

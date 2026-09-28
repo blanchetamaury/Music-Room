@@ -1,20 +1,19 @@
 import { FortyTwoCursusUserDetails } from '../types/fortytwo/FortyTwoCursusUserDetails';
 import { FortyTwoOauthToken } from '../types/fortytwo/FortyTwoOauthToken';
 import { ERRORS_DETAILS } from '../utils/error';
+import { getProviderSecret, getRedirectUri } from './authorize';
 
 const FORTY_TWO_BASE_URL = 'https://api.intra.42.fr';
 
 export async function getFortyTwoOauthToken(code: string): Promise<FortyTwoOauthToken> {
-	const baseUrl = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:3000';
-	console.error(baseUrl);
 	const authorize_fetch: Response = await fetch(`${FORTY_TWO_BASE_URL}/oauth/token`, {
 		method: 'POST',
 		body: JSON.stringify({
 			grant_type: 'authorization_code',
 			client_id: process.env.EXPO_PUBLIC_OAUTH_42_CLIENTID,
-			client_secret: process.env.OAUTH_42_SECRET,
+			client_secret: getProviderSecret('fortytwo'),
 			code: code,
-			redirect_uri: `${baseUrl}/api/auth/oauth/oauth_fortytwo`,
+			redirect_uri: getRedirectUri('fortytwo'),
 		}),
 		headers: {
 			'Content-Type': 'application/json',
