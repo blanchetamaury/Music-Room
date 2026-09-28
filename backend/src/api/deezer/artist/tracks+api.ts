@@ -1,7 +1,8 @@
 import { errorHandler } from '@/utils/error';
 import { rateLimit } from '@/lib/apply-rate-limit';
 import { RATE_LIMITS } from '@/lib/rate-limit';
-import { findArtist } from '../../../../prisma/database/artist';
+import { getArtistTopTracks } from '../../../../prisma/database/deezer';
+import { mapSearch } from '@/format/mapTrack';
 
 export async function GET(req: Request): Promise<Response> {
 	return errorHandler(async () => {
@@ -15,18 +16,9 @@ export async function GET(req: Request): Promise<Response> {
 			return Response.json({ success: false, message: 'missing deezer_id' }, { status: 400 });
 		}
 
-		const artist = await findArtist(artistId);
+		const limit = Number(url.searchParams.get('limit') ?? 25);
+		const tracks = await getArtistTopTracks(artistId, Number.isFinite(limit) ? limit : 25);
 
-		if (!artist) return Response.json({ success: false, message: 'Artist not found' }, { status: 404 });
-
-		const { deezerCUID, name, pictureSmall, pictureMedium, pictureBig, nbFan, nbAlbum } = artist;
-
-		return Response.json(
-			{
-				success: true,
-				data: { deezerCUID, name, pictureSmall, pictureMedium, pictureBig, nbFan, nbAlbum },
-			},
-			{ status: 200 }
-		);
+		return Response.json({ success: true, data: mapSearch(tracks) }, { status: 200 });
 	});
 }
