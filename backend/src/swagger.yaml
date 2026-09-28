@@ -6,12 +6,12 @@ info:
         API for Music Room - A collaborative music application.
 
         This API follows REST principles with JSON as the exchange format.
-        All endpoints are versioned under `/api/v1`.
+        All endpoints are mounted under `/api`.
 
         ## Authentication
-        - **Cookie-based sessions**: Login/register endpoints set HttpOnly cookies
+        - **Cookie-based sessions**: Login/register endpoints set HttpOnly cookies (`token`)
         - **CSRF protection**: State-changing requests require `X-CSRF-Token` header
-        - **OAuth 42**: Available via `/api/v1/auth/oauth/42/callback`
+        - **OAuth 42**: Available via `/api/auth/oauth/42/callback`
 
         ## Rate Limiting
         - Login attempts: 5 per account / 15 min, 20 per IP / 15 min
@@ -37,9 +37,9 @@ info:
         name: MIT
 
 servers:
-    - url: http://localhost:3000/api/v1
+    - url: http://localhost:3000/api
       description: Development server
-    - url: https://api.music-room.example.com/api/v1
+    - url: https://api.music-room.example.com/api
       description: Production server
 
 tags:
@@ -50,18 +50,18 @@ tags:
     - name: Deezer
       description: Music track search and metadata (Deezer integration)
     - name: Events
-      description: Music events and track voting (Music Track Vote service)
+      description: Music events and track voting (Music Track Vote service) - NOT YET IMPLEMENTED
     - name: Playlists
-      description: Collaborative playlist editing (Music Playlist Editor service)
+      description: Collaborative playlist editing (Music Playlist Editor service) - PARTIALLY IMPLEMENTED
     - name: Devices
-      description: Device management and control delegation (Music Control Delegation service)
+      description: Device management and control delegation (Music Control Delegation service) - NOT YET IMPLEMENTED
 
 components:
     securitySchemes:
         cookieAuth:
             type: apiKey
             in: cookie
-            name: session
+            name: token
         csrfAuth:
             type: apiKey
             in: header
@@ -109,17 +109,26 @@ components:
         AuthResponse:
             type: object
             properties:
-                data:
+                success:
+                    type: boolean
+                user:
                     type: object
                     properties:
-                        user_id:
+                        id:
                             type: string
-                            example: 'cm1x2y3z4a5b6c7d8e9f0g1h2'
+                        email:
+                            type: string
+                            format: email
+                        username:
+                            type: string
 
         ErrorResponse:
             type: object
             properties:
-                error:
+                success:
+                    type: boolean
+                    example: false
+                message:
                     type: string
                     example: 'Invalid password or mail'
                 statusCode:
@@ -501,14 +510,21 @@ paths:
                             $ref: '#/components/schemas/RegisterRequest'
             responses:
                 '201':
-                    description: User created successfully
+                    description: User created successfully (email verification required)
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/AuthResponse'
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    message:
+                                        type: string
+                                    email_verification_required:
+                                        type: boolean
                     headers:
                         Set-Cookie:
-                            description: Session and CSRF cookies
+                            description: CSRF cookie
                             schema:
                                 type: string
                 '400':
@@ -540,7 +556,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/AuthResponse'
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    user:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                            email:
+                                                type: string
+                                                format: email
                     headers:
                         Set-Cookie:
                             description: Session and CSRF cookies
@@ -548,6 +575,12 @@ paths:
                                 type: string
                 '401':
                     description: Invalid credentials
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: Email not verified
                     content:
                         application/json:
                             schema:
@@ -574,11 +607,8 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    data:
-                                        type: object
-                                        properties:
-                                            message:
-                                                type: string
+                                    success:
+                                        type: boolean
                     headers:
                         Set-Cookie:
                             description: Cleared session and CSRF cookies
@@ -586,6 +616,41 @@ paths:
                                 type: string
                 '403':
                     description: Invalid CSRF token
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+    /auth/confirm-email:
+        post:
+            tags: [Authentication]
+            summary: Confirm email with token
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - token
+                            properties:
+                                token:
+                                    type: string
+                                    minLength: 32
+            responses:
+                '200':
+                    description: Email verified successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    message:
+                                        type: string
+                '400':
+                    description: Invalid or expired token
                     content:
                         application/json:
                             schema:
@@ -615,11 +680,10 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    data:
-                                        type: object
-                                        properties:
-                                            message:
-                                                type: string
+                                    success:
+                                        type: boolean
+                                    message:
+                                        type: string
 
     /auth/password/reset/confirm:
         post:
@@ -653,11 +717,10 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    data:
-                                        type: object
-                                        properties:
-                                            message:
-                                                type: string
+                                    success:
+                                        type: boolean
+                                    message:
+                                        type: string
                 '400':
                     description: Invalid or expired code
                     content:
