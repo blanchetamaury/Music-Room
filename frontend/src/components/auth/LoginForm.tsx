@@ -2,22 +2,13 @@ import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useState } from 'react';
-import {
-	ActivityIndicator,
-	KeyboardAvoidingView,
-	Platform,
-	Pressable,
-	StyleSheet,
-	useColorScheme,
-	View,
-} from 'react-native';
-import { useThemeColor } from '../../hooks/use-theme-color';
-import { InputForm } from '../InputForm';
-import { InputPasswordForm } from '../InputPasswordForm';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { FortyTwoIcon, GoogleIcon } from '../ui/icon';
 import { Separator, SeparatorFull } from '../ui/separator';
+import { InputForm } from '../utils/InputForm';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
+import { InputPasswordForm } from './InputPasswordForm';
 
 export function LoginForm({
 	onLogin,
@@ -36,12 +27,11 @@ export function LoginForm({
 	const [error, setError] = useState<string | null>(null);
 	const { oauthFortyTwo, oauthGoogle } = useAuth();
 	const router = useRouter();
-	const colorScheme = useColorScheme();
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const canSubmit = emailRegex.test(email) && password.length >= 6;
 
-	const glassBg = useThemeColor({ light: 'rgba(255, 255, 255, 0.72)', dark: 'rgba(18, 18, 18, 0.75)' }, 'background');
+	const glassBg = 'rgba(13, 15, 30, 0.78)';
 
 	const handleSubmit = async () => {
 		if (!canSubmit || isLoading) return;
@@ -86,10 +76,7 @@ export function LoginForm({
 				bottomLeftRadius={16}
 				bottomRightRadius={16}
 			>
-				<ThemedText
-					type="title"
-					style={[styles.title, { color: `${colorScheme === 'light' ? '#000000' : '#ffffff'}`, height: 40 }]}
-				>
+				<ThemedText type="title" style={[styles.title, { color: '#ffffff', height: 40 }]}>
 					Log in
 				</ThemedText>
 
@@ -117,17 +104,15 @@ export function LoginForm({
 						style={styles.showBtn}
 						accessibilityRole="button"
 					>
-						{showPassword != true && (
-							<EyeOff color={colorScheme === 'light' ? '#000000' : '#ffffff'}></EyeOff>
-						)}
-						{showPassword == true && <Eye color={colorScheme === 'light' ? '#000000' : '#ffffff'}></Eye>}
+						{showPassword !== true && <EyeOff color="#ffffff"></EyeOff>}
+						{showPassword === true && <Eye color="#ffffff"></Eye>}
 					</Pressable>
 				</InputPasswordForm>
 				<Pressable onPress={() => onForgot?.()} style={styles.forgotBtn} accessibilityRole="button">
 					<ThemedText
 						type="link"
 						style={{
-							color: '#0fa6d8',
+							color: '#56e0ff',
 							fontSize: 13,
 						}}
 					>
@@ -155,36 +140,22 @@ export function LoginForm({
 
 				<Separator sepText="or"></Separator>
 
-				<Pressable
-					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
-					accessibilityRole="button"
-					onPress={handleoauthFortyTwo}
-				>
+				<Pressable style={styles.socialBtn} accessibilityRole="button" onPress={handleoauthFortyTwo}>
 					<FortyTwoIcon></FortyTwoIcon>
 					<ThemedText
 						style={{
-							color: Platform.select({
-								web: '#000000',
-								default: colorScheme === 'dark' ? '#0000' : '#ffff',
-							}),
+							color: '#ffffff',
 						}}
 					>
 						Log in with 42
 					</ThemedText>
 				</Pressable>
 
-				<Pressable
-					style={colorScheme === 'light' ? styles.darkBtn : styles.ligthBtn}
-					accessibilityRole="button"
-					onPress={handleoauthGoogle}
-				>
+				<Pressable style={styles.socialBtn} accessibilityRole="button" onPress={handleoauthGoogle}>
 					<GoogleIcon></GoogleIcon>
 					<ThemedText
 						style={{
-							color: Platform.select({
-								web: '#000000',
-								default: colorScheme === 'dark' ? '#0000' : '#ffff',
-							}),
+							color: '#ffffff',
 						}}
 					>
 						Log in with Google
@@ -196,11 +167,11 @@ export function LoginForm({
 				<View style={styles.registerContainer}>
 					<ThemedText
 						style={{
-							color: colorScheme === 'light' ? '#000000' : '#ffffff',
+							color: '#ffffff',
 							fontSize: 13,
 						}}
 					>
-						Don't have an account yet ?
+						Don&apos;t have an account yet ?
 					</ThemedText>
 
 					<Pressable
@@ -216,7 +187,7 @@ export function LoginForm({
 						<ThemedText
 							type="link"
 							style={{
-								color: colorScheme === 'light' ? '#000000' : '#ffffff',
+								color: '#ffffff',
 								fontWeight: '600',
 							}}
 						>
@@ -267,13 +238,13 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		borderRadius: 12,
 		alignItems: 'center',
-		backgroundColor: '#0a7ea4',
+		backgroundColor: '#56e0ff',
 	},
 	loginBtnDisabled: {
-		backgroundColor: 'rgba(10,126,164,0.45)',
+		backgroundColor: 'rgba(86,224,255,0.34)',
 	},
 	loginBtnText: {
-		color: '#fff',
+		color: '#061018',
 	},
 	separatorRow: {
 		flexDirection: 'row',
@@ -289,26 +260,16 @@ const styles = StyleSheet.create({
 	separatorText: {
 		opacity: 0.8,
 	},
-	darkBtn: {
+	socialBtn: {
 		paddingLeft: 10,
 		paddingRight: 10,
 		marginTop: 12,
 		paddingVertical: 10,
 		borderRadius: 12,
 		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.69)',
-		flexDirection: 'row',
-		gap: 10,
-		justifyContent: 'center',
-	},
-	ligthBtn: {
-		paddingLeft: 10,
-		paddingRight: 10,
-		marginTop: 12,
-		paddingVertical: 10,
-		borderRadius: 12,
-		alignItems: 'center',
-		backgroundColor: 'rgba(255, 255, 255, 0.69)',
+		backgroundColor: 'rgba(255,255,255,0.07)',
+		borderWidth: 1,
+		borderColor: 'rgba(255,255,255,0.12)',
 		flexDirection: 'row',
 		gap: 10,
 		justifyContent: 'center',

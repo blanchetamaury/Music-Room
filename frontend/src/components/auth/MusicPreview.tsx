@@ -1,4 +1,5 @@
 import { useThemeColor } from '@/src/hooks/use-theme-color';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import React, { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -13,9 +14,8 @@ import Animated, {
 	withSequence,
 	withTiming,
 } from 'react-native-reanimated';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
 
 export function MusicPreview({
 	color = '#ddd',

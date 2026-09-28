@@ -1,10 +1,10 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
-import { api } from '../../lib/api/client';
+import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { api } from '../../lib/fetcher/api/client';
 import DotGrid from './DotGrid';
 import { MusicPreview } from './MusicPreview';
-import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 
 function rnd(min: number, max: number) {
 	return Math.random() * (max - min) + min;

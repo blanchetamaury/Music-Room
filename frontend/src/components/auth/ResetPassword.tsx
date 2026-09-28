@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useThemeColor } from '../../hooks/use-theme-color';
-import { api } from '../../lib/api/client';
-import { InputForm } from '../InputForm';
-import { InputPasswordForm } from '../InputPasswordForm';
-import LiquidGlass from '../LiquidGlass';
-import { ThemedText } from '../themed-text';
+import { api } from '../../lib/fetcher/api/client';
+import LiquidGlass from '../utils/LiquidGlass';
+import { ThemedText } from '../utils/themed-text';
+import { InputPasswordForm } from './InputPasswordForm';
+import { InputForm } from '../utils/InputForm';
 
 export function ResetPassword({ onBack, onResetComplete }: { onBack?: () => void; onResetComplete?: () => void }) {
 	const [email, setEmail] = useState('');

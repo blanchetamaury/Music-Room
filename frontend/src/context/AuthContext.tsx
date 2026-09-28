@@ -14,6 +14,7 @@ interface AuthContextType {
 	login: (email: string, password: string) => Promise<void>;
 	register: (email: string, password: string) => Promise<void>;
 	logout: () => Promise<void>;
+	updateProfile: (profile: { username?: string; avatarUrl?: string | null }) => Promise<void>;
 	oauthFortyTwo: () => Promise<void>;
 	oauthGoogle: () => Promise<void>;
 }
@@ -29,11 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	const [user, setUser] = useState<privateUser | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	useEffect(() => {
-		checkToken();
-	}, []);
-
-	const checkToken = async () => {
+	async function checkToken() {
 		try {
 			const storedToken = await storage.getItem('session');
 
@@ -49,15 +46,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			});
 
 			setToken(storedToken);
-			setUser(res.data.user.privateUser);
-		} catch (error) {
+			setUser(res.data.data);
+		} catch {
 			await storage.deleteItem('session');
 			setToken(null);
 			setUser(null);
 		} finally {
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		checkToken();
+	}, []);
 
 	const login = async (mail: string, password: string) => {
 		const res = await axios.post(`${API_URL}/auth/login`, { mail, password });
@@ -105,8 +106,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		setUser(null);
 	};
 
+	const updateProfile = async (profile: { username?: string; avatarUrl?: string | null }) => {
+		if (!token) throw new Error('Not authenticated');
+		const response = await axios.patch(`${API_URL}/user/me`, profile, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
+		setUser(response.data.data);
+	};
+
 	return (
-		<AuthContext.Provider value={{ token, user, loading, login, register, logout, oauthFortyTwo, oauthGoogle }}>
+		<AuthContext.Provider
+			value={{ token, user, loading, login, register, logout, updateProfile, oauthFortyTwo, oauthGoogle }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

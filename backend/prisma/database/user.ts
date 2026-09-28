@@ -130,6 +130,10 @@ const getUserById = async <T extends Prisma.UserInclude>(
 	});
 };
 
+const updateUser = async (id: string, data: { username?: string; avatarUrl?: string | null }) => {
+	return prisma.user.update({ where: { id }, data });
+};
+
 export {
 	createOrUpdateFortyTwoUser,
 	createOrUpdateGoogleUser,
@@ -137,5 +141,6 @@ export {
 	existUserByMail,
 	getUserById,
 	getUserByMail,
+	updateUser,
 	updateUserPassword,
 };

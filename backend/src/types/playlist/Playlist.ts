@@ -6,8 +6,15 @@ export interface CreatePlaylist {
 }
 
 export interface AddMusicToPlaylist {
-	playlistName: string;
+	playlistId: string;
 	trackId: string;
+}
+
+export interface UpdatePlaylist {
+	playlistId: string;
+	name: string;
+	cover?: string;
+	private?: boolean;
 }
 
 export interface OutputPlaylist {

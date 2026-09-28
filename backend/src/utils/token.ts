@@ -1,8 +1,5 @@
 import { jwtVerify } from 'jose';
-
-const JWT_SECRET = new TextEncoder().encode(
-	process.env.SESSION_SECRET || 'jgn3rjngrjendkjjtr54u35iu43ioi1ri3or1ejditjdc.sw;sp[3flpr3mfknrj'
-);
+import { getSessionSecret } from '../lib/session-secret';
 
 export async function getUserFromToken(req: Request): Promise<string | null> {
 	const authHeader = req.headers.get('Authorization');
@@ -11,8 +8,9 @@ export async function getUserFromToken(req: Request): Promise<string | null> {
 
 	const token = authHeader.split(' ')[1];
 	try {
-		const { payload } = await jwtVerify(token, JWT_SECRET, {
+		const { payload } = await jwtVerify(token, getSessionSecret(), {
 			issuer: 'music room',
+			algorithms: ['HS256'],
 		});
 		return payload.user_id as string;
 	} catch (err) {

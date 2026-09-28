@@ -2,11 +2,13 @@ import AuthBackground from '@/src/components/auth/AuthBackground';
 import { LoginForm } from '@/src/components/auth/LoginForm';
 import { Register } from '@/src/components/auth/Register';
 import { ResetPassword } from '@/src/components/auth/ResetPassword';
-import { ThemedView } from '@/src/components/themed-view';
+import { ThemedView } from '@/src/components/utils/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export type AuthMode = 'login' | 'register' | 'reset-password';
@@ -80,8 +82,22 @@ export default function LoginScreen() {
 	}
 
 	return (
-		<ThemedView style={styles.container}>
+		<ThemedView style={[styles.container, styles.pageBackground]}>
+			<LinearGradient
+				colors={['#070712', '#15102d', '#071820']}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				style={StyleSheet.absoluteFill}
+			/>
 			<AuthBackground />
+			<Pressable
+				accessibilityRole="button"
+				accessibilityLabel="Retour à la page d'accueil"
+				onPress={() => router.replace('/')}
+				style={styles.backButton}
+			>
+				<ArrowLeft color="#fff" size={20} />
+			</Pressable>
 			<Animated.View
 				style={[{ position: 'absolute', width: '100%', alignItems: 'center' }, registerStyle]}
 				pointerEvents={mode === 'register' ? 'auto' : 'none'}
@@ -126,6 +142,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	pageBackground: {
+		backgroundColor: '#070712',
+	},
 	authContainer: {
 		flex: 1,
 		justifyContent: 'center',
@@ -137,5 +156,19 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		position: 'relative',
 		zIndex: 10,
+	},
+	backButton: {
+		position: 'absolute',
+		top: 18,
+		left: 18,
+		width: 42,
+		height: 42,
+		borderRadius: 21,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'rgba(0,0,0,0.42)',
+		borderWidth: 1,
+		borderColor: 'rgba(255,255,255,0.18)',
+		zIndex: 20,
 	},
 });
