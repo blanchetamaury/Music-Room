@@ -1,0 +1,27 @@
+model OauthState {
+  id String @id @default(uuid())
+
+  stateHash String @unique
+
+  provider OAuthProvider
+
+  clientType String
+
+  linkUserId String?
+
+  expiresAt DateTime
+
+  usedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  linkUser User?   @relation(fields: [linkUserId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@map("oauth_states")
+}
+
+enum OAuthProvider {
+  GOOGLE
+  FORTYTWO
+}

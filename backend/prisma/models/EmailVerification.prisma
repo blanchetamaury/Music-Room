@@ -1,10 +1,10 @@
-model ResetPassword {
+model EmailVerification {
   id        String   @id @default(uuid())
-  mail      String
-  codeHash  String
+  userId    String
+  tokenHash String   @unique
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime @default(now())
 
-  @@index([mail, expiresAt])
+  @@index([userId, expiresAt])
 }
