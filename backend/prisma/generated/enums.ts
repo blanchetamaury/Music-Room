@@ -8,5 +8,97 @@
  * 🟢 You can import this file directly.
  */
 
-// This file is empty because there are no enums in the schema.
-export {};
+export const DevicePermissionType = {
+	CONTROL: 'CONTROL',
+	VIEW: 'VIEW',
+} as const;
+
+export type DevicePermissionType = (typeof DevicePermissionType)[keyof typeof DevicePermissionType];
+
+export const PlaybackStatus = {
+	IDLE: 'IDLE',
+	PLAYING: 'PLAYING',
+	PAUSED: 'PAUSED',
+} as const;
+
+export type PlaybackStatus = (typeof PlaybackStatus)[keyof typeof PlaybackStatus];
+
+export const Visibility = {
+	PUBLIC: 'PUBLIC',
+	PRIVATE: 'PRIVATE',
+} as const;
+
+export type Visibility = (typeof Visibility)[keyof typeof Visibility];
+
+export const VotingPolicy = {
+	EVERYONE: 'EVERYONE',
+	INVITED_ONLY: 'INVITED_ONLY',
+	LOCATION_TIME: 'LOCATION_TIME',
+} as const;
+
+export type VotingPolicy = (typeof VotingPolicy)[keyof typeof VotingPolicy];
+
+export const EventRole = {
+	OWNER: 'OWNER',
+	ADMIN: 'ADMIN',
+	MEMBER: 'MEMBER',
+} as const;
+
+export type EventRole = (typeof EventRole)[keyof typeof EventRole];
+
+export const TrackStatus = {
+	PENDING: 'PENDING',
+	APPROVED: 'APPROVED',
+	REJECTED: 'REJECTED',
+	PLAYING: 'PLAYING',
+	PLAYED: 'PLAYED',
+} as const;
+
+export type TrackStatus = (typeof TrackStatus)[keyof typeof TrackStatus];
+
+export const ProfileField = {
+	PROFILE_BASICS: 'PROFILE_BASICS',
+	MUSIC_PREFERENCES: 'MUSIC_PREFERENCES',
+	LIKES: 'LIKES',
+	PLAYLISTS: 'PLAYLISTS',
+	PLAY_HISTORY: 'PLAY_HISTORY',
+} as const;
+
+export type ProfileField = (typeof ProfileField)[keyof typeof ProfileField];
+
+export const ProfileVisibilityLevel = {
+	PUBLIC: 'PUBLIC',
+	FRIENDS: 'FRIENDS',
+	PRIVATE: 'PRIVATE',
+} as const;
+
+export type ProfileVisibilityLevel = (typeof ProfileVisibilityLevel)[keyof typeof ProfileVisibilityLevel];
+
+export const OAuthProvider = {
+	GOOGLE: 'GOOGLE',
+	FORTYTWO: 'FORTYTWO',
+} as const;
+
+export type OAuthProvider = (typeof OAuthProvider)[keyof typeof OAuthProvider];
+
+export const PlaylistVisibility = {
+	PUBLIC: 'PUBLIC',
+	PRIVATE: 'PRIVATE',
+} as const;
+
+export type PlaylistVisibility = (typeof PlaylistVisibility)[keyof typeof PlaylistVisibility];
+
+export const EditPolicy = {
+	EVERYONE: 'EVERYONE',
+	INVITED_ONLY: 'INVITED_ONLY',
+} as const;
+
+export type EditPolicy = (typeof EditPolicy)[keyof typeof EditPolicy];
+
+export const PlaylistRole = {
+	OWNER: 'OWNER',
+	EDITOR: 'EDITOR',
+	VIEWER: 'VIEWER',
+} as const;
+
+export type PlaylistRole = (typeof PlaylistRole)[keyof typeof PlaylistRole];

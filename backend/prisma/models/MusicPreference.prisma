@@ -1,0 +1,46 @@
+model MusicPreference {
+  userId String @id
+
+  favoriteGenres String[] @default([])
+
+  favoriteArtists String[] @default([])
+
+  favoriteAlbums String[] @default([])
+
+  favoriteTracks String[] @default([])
+
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("music_preferences")
+}
+
+model ProfileVisibility {
+  userId String
+
+  field ProfileField
+
+  visibility ProfileVisibilityLevel @default(PUBLIC)
+
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, field])
+  @@map("profile_visibilities")
+}
+
+enum ProfileField {
+  PROFILE_BASICS
+  MUSIC_PREFERENCES
+  LIKES
+  PLAYLISTS
+  PLAY_HISTORY
+}
+
+enum ProfileVisibilityLevel {
+  PUBLIC
+  FRIENDS
+  PRIVATE
+}

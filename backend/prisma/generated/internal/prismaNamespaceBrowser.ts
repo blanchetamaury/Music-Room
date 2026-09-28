@@ -50,16 +50,31 @@ export const AnyNull = runtime.AnyNull;
 export const ModelName = {
 	Album: 'Album',
 	Artist: 'Artist',
+	AuditLog: 'AuditLog',
+	Device: 'Device',
+	DevicePermission: 'DevicePermission',
+	DevicePlaybackState: 'DevicePlaybackState',
+	EmailVerification: 'EmailVerification',
 	Follow: 'Follow',
 	FortytwoOauth: 'FortytwoOauth',
 	Genre: 'Genre',
 	GoogleOauth: 'GoogleOauth',
 	Like: 'Like',
+	MusicEvent: 'MusicEvent',
+	MusicEventMember: 'MusicEventMember',
+	EventTrack: 'EventTrack',
+	EventVote: 'EventVote',
+	MusicPreference: 'MusicPreference',
+	ProfileVisibility: 'ProfileVisibility',
+	OauthState: 'OauthState',
 	PlayHistory: 'PlayHistory',
 	Playlist: 'Playlist',
+	PlaylistMember: 'PlaylistMember',
 	PlaylistTrack: 'PlaylistTrack',
 	ratelimit_login: 'ratelimit_login',
 	ResetPassword: 'ResetPassword',
+	RevokedSession: 'RevokedSession',
+	SessionExchange: 'SessionExchange',
 	Track: 'Track',
 	User: 'User',
 } as const;
@@ -115,6 +130,76 @@ export const ArtistScalarFieldEnum = {
 
 export type ArtistScalarFieldEnum = (typeof ArtistScalarFieldEnum)[keyof typeof ArtistScalarFieldEnum];
 
+export const AuditLogScalarFieldEnum = {
+	id: 'id',
+	userId: 'userId',
+	action: 'action',
+	resourceType: 'resourceType',
+	resourceId: 'resourceId',
+	platform: 'platform',
+	deviceId: 'deviceId',
+	deviceModel: 'deviceModel',
+	appVersion: 'appVersion',
+	ip: 'ip',
+	success: 'success',
+	statusCode: 'statusCode',
+	requestId: 'requestId',
+	createdAt: 'createdAt',
+} as const;
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum];
+
+export const DeviceScalarFieldEnum = {
+	id: 'id',
+	ownerId: 'ownerId',
+	deviceName: 'deviceName',
+	platform: 'platform',
+	appVersion: 'appVersion',
+	lastSeenAt: 'lastSeenAt',
+	revokedAt: 'revokedAt',
+} as const;
+
+export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum];
+
+export const DevicePermissionScalarFieldEnum = {
+	id: 'id',
+	deviceId: 'deviceId',
+	delegateUserId: 'delegateUserId',
+	permission: 'permission',
+	expiresAt: 'expiresAt',
+	createdBy: 'createdBy',
+	createdAt: 'createdAt',
+} as const;
+
+export type DevicePermissionScalarFieldEnum =
+	(typeof DevicePermissionScalarFieldEnum)[keyof typeof DevicePermissionScalarFieldEnum];
+
+export const DevicePlaybackStateScalarFieldEnum = {
+	deviceId: 'deviceId',
+	status: 'status',
+	queue: 'queue',
+	currentTrackId: 'currentTrackId',
+	positionMs: 'positionMs',
+	volume: 'volume',
+	updatedBy: 'updatedBy',
+	updatedAt: 'updatedAt',
+} as const;
+
+export type DevicePlaybackStateScalarFieldEnum =
+	(typeof DevicePlaybackStateScalarFieldEnum)[keyof typeof DevicePlaybackStateScalarFieldEnum];
+
+export const EmailVerificationScalarFieldEnum = {
+	id: 'id',
+	userId: 'userId',
+	tokenHash: 'tokenHash',
+	expiresAt: 'expiresAt',
+	usedAt: 'usedAt',
+	createdAt: 'createdAt',
+} as const;
+
+export type EmailVerificationScalarFieldEnum =
+	(typeof EmailVerificationScalarFieldEnum)[keyof typeof EmailVerificationScalarFieldEnum];
+
 export const FollowScalarFieldEnum = {
 	followerId: 'followerId',
 	followingId: 'followingId',
@@ -162,6 +247,94 @@ export const LikeScalarFieldEnum = {
 
 export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum];
 
+export const MusicEventScalarFieldEnum = {
+	id: 'id',
+	ownerId: 'ownerId',
+	name: 'name',
+	description: 'description',
+	visibility: 'visibility',
+	votingPolicy: 'votingPolicy',
+	latitude: 'latitude',
+	longitude: 'longitude',
+	radius: 'radius',
+	startAt: 'startAt',
+	endAt: 'endAt',
+	createdAt: 'createdAt',
+	updatedAt: 'updatedAt',
+} as const;
+
+export type MusicEventScalarFieldEnum = (typeof MusicEventScalarFieldEnum)[keyof typeof MusicEventScalarFieldEnum];
+
+export const MusicEventMemberScalarFieldEnum = {
+	id: 'id',
+	eventId: 'eventId',
+	userId: 'userId',
+	role: 'role',
+	invitedAt: 'invitedAt',
+	acceptedAt: 'acceptedAt',
+} as const;
+
+export type MusicEventMemberScalarFieldEnum =
+	(typeof MusicEventMemberScalarFieldEnum)[keyof typeof MusicEventMemberScalarFieldEnum];
+
+export const EventTrackScalarFieldEnum = {
+	id: 'id',
+	eventId: 'eventId',
+	trackId: 'trackId',
+	status: 'status',
+	voteCount: 'voteCount',
+	suggestedBy: 'suggestedBy',
+	createdAt: 'createdAt',
+	updatedAt: 'updatedAt',
+} as const;
+
+export type EventTrackScalarFieldEnum = (typeof EventTrackScalarFieldEnum)[keyof typeof EventTrackScalarFieldEnum];
+
+export const EventVoteScalarFieldEnum = {
+	id: 'id',
+	eventId: 'eventId',
+	trackId: 'trackId',
+	userId: 'userId',
+	createdAt: 'createdAt',
+} as const;
+
+export type EventVoteScalarFieldEnum = (typeof EventVoteScalarFieldEnum)[keyof typeof EventVoteScalarFieldEnum];
+
+export const MusicPreferenceScalarFieldEnum = {
+	userId: 'userId',
+	favoriteGenres: 'favoriteGenres',
+	favoriteArtists: 'favoriteArtists',
+	favoriteAlbums: 'favoriteAlbums',
+	favoriteTracks: 'favoriteTracks',
+	updatedAt: 'updatedAt',
+} as const;
+
+export type MusicPreferenceScalarFieldEnum =
+	(typeof MusicPreferenceScalarFieldEnum)[keyof typeof MusicPreferenceScalarFieldEnum];
+
+export const ProfileVisibilityScalarFieldEnum = {
+	userId: 'userId',
+	field: 'field',
+	visibility: 'visibility',
+	updatedAt: 'updatedAt',
+} as const;
+
+export type ProfileVisibilityScalarFieldEnum =
+	(typeof ProfileVisibilityScalarFieldEnum)[keyof typeof ProfileVisibilityScalarFieldEnum];
+
+export const OauthStateScalarFieldEnum = {
+	id: 'id',
+	stateHash: 'stateHash',
+	provider: 'provider',
+	clientType: 'clientType',
+	linkUserId: 'linkUserId',
+	expiresAt: 'expiresAt',
+	usedAt: 'usedAt',
+	createdAt: 'createdAt',
+} as const;
+
+export type OauthStateScalarFieldEnum = (typeof OauthStateScalarFieldEnum)[keyof typeof OauthStateScalarFieldEnum];
+
 export const PlayHistoryScalarFieldEnum = {
 	id: 'id',
 	userId: 'userId',
@@ -178,18 +351,35 @@ export const PlaylistScalarFieldEnum = {
 	ownerId: 'ownerId',
 	cover: 'cover',
 	description: 'description',
-	private: 'private',
-	created_at: 'created_at',
+	visibility: 'visibility',
+	editPolicy: 'editPolicy',
+	version: 'version',
+	lastEditedBy: 'lastEditedBy',
+	createdAt: 'createdAt',
+	updatedAt: 'updatedAt',
 } as const;
 
 export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum];
 
+export const PlaylistMemberScalarFieldEnum = {
+	id: 'id',
+	playlistId: 'playlistId',
+	userId: 'userId',
+	role: 'role',
+	invitedAt: 'invitedAt',
+	acceptedAt: 'acceptedAt',
+} as const;
+
+export type PlaylistMemberScalarFieldEnum =
+	(typeof PlaylistMemberScalarFieldEnum)[keyof typeof PlaylistMemberScalarFieldEnum];
+
 export const PlaylistTrackScalarFieldEnum = {
 	id: 'id',
-	position: 'position',
-	addedAt: 'addedAt',
 	playlistId: 'playlistId',
 	trackId: 'trackId',
+	position: 'position',
+	addedBy: 'addedBy',
+	addedAt: 'addedAt',
 } as const;
 
 export type PlaylistTrackScalarFieldEnum =
@@ -209,12 +399,37 @@ export type Ratelimit_loginScalarFieldEnum =
 export const ResetPasswordScalarFieldEnum = {
 	id: 'id',
 	mail: 'mail',
-	code: 'code',
-	created_at: 'created_at',
+	codeHash: 'codeHash',
+	expiresAt: 'expiresAt',
+	usedAt: 'usedAt',
+	createdAt: 'createdAt',
 } as const;
 
 export type ResetPasswordScalarFieldEnum =
 	(typeof ResetPasswordScalarFieldEnum)[keyof typeof ResetPasswordScalarFieldEnum];
+
+export const RevokedSessionScalarFieldEnum = {
+	jti: 'jti',
+	userId: 'userId',
+	expiresAt: 'expiresAt',
+	revokedAt: 'revokedAt',
+} as const;
+
+export type RevokedSessionScalarFieldEnum =
+	(typeof RevokedSessionScalarFieldEnum)[keyof typeof RevokedSessionScalarFieldEnum];
+
+export const SessionExchangeScalarFieldEnum = {
+	id: 'id',
+	userId: 'userId',
+	codeHash: 'codeHash',
+	clientType: 'clientType',
+	expiresAt: 'expiresAt',
+	usedAt: 'usedAt',
+	createdAt: 'createdAt',
+} as const;
+
+export type SessionExchangeScalarFieldEnum =
+	(typeof SessionExchangeScalarFieldEnum)[keyof typeof SessionExchangeScalarFieldEnum];
 
 export const TrackScalarFieldEnum = {
 	id: 'id',
@@ -242,6 +457,7 @@ export const UserScalarFieldEnum = {
 	username: 'username',
 	passwordHash: 'passwordHash',
 	avatarUrl: 'avatarUrl',
+	emailVerified: 'emailVerified',
 	deezerUserId: 'deezerUserId',
 	deezerAccessToken: 'deezerAccessToken',
 	fortytwoOauthId: 'fortytwoOauthId',

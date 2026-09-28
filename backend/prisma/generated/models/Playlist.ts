@@ -19,8 +19,18 @@ export type PlaylistModel = runtime.Types.Result.DefaultSelection<Prisma.$Playli
 
 export type AggregatePlaylist = {
 	_count: PlaylistCountAggregateOutputType | null;
+	_avg: PlaylistAvgAggregateOutputType | null;
+	_sum: PlaylistSumAggregateOutputType | null;
 	_min: PlaylistMinAggregateOutputType | null;
 	_max: PlaylistMaxAggregateOutputType | null;
+};
+
+export type PlaylistAvgAggregateOutputType = {
+	version: number | null;
+};
+
+export type PlaylistSumAggregateOutputType = {
+	version: number | null;
 };
 
 export type PlaylistMinAggregateOutputType = {
@@ -29,8 +39,12 @@ export type PlaylistMinAggregateOutputType = {
 	ownerId: string | null;
 	cover: string | null;
 	description: string | null;
-	private: boolean | null;
-	created_at: Date | null;
+	visibility: $Enums.PlaylistVisibility | null;
+	editPolicy: $Enums.EditPolicy | null;
+	version: number | null;
+	lastEditedBy: string | null;
+	createdAt: Date | null;
+	updatedAt: Date | null;
 };
 
 export type PlaylistMaxAggregateOutputType = {
@@ -39,8 +53,12 @@ export type PlaylistMaxAggregateOutputType = {
 	ownerId: string | null;
 	cover: string | null;
 	description: string | null;
-	private: boolean | null;
-	created_at: Date | null;
+	visibility: $Enums.PlaylistVisibility | null;
+	editPolicy: $Enums.EditPolicy | null;
+	version: number | null;
+	lastEditedBy: string | null;
+	createdAt: Date | null;
+	updatedAt: Date | null;
 };
 
 export type PlaylistCountAggregateOutputType = {
@@ -49,9 +67,21 @@ export type PlaylistCountAggregateOutputType = {
 	ownerId: number;
 	cover: number;
 	description: number;
-	private: number;
-	created_at: number;
+	visibility: number;
+	editPolicy: number;
+	version: number;
+	lastEditedBy: number;
+	createdAt: number;
+	updatedAt: number;
 	_all: number;
+};
+
+export type PlaylistAvgAggregateInputType = {
+	version?: true;
+};
+
+export type PlaylistSumAggregateInputType = {
+	version?: true;
 };
 
 export type PlaylistMinAggregateInputType = {
@@ -60,8 +90,12 @@ export type PlaylistMinAggregateInputType = {
 	ownerId?: true;
 	cover?: true;
 	description?: true;
-	private?: true;
-	created_at?: true;
+	visibility?: true;
+	editPolicy?: true;
+	version?: true;
+	lastEditedBy?: true;
+	createdAt?: true;
+	updatedAt?: true;
 };
 
 export type PlaylistMaxAggregateInputType = {
@@ -70,8 +104,12 @@ export type PlaylistMaxAggregateInputType = {
 	ownerId?: true;
 	cover?: true;
 	description?: true;
-	private?: true;
-	created_at?: true;
+	visibility?: true;
+	editPolicy?: true;
+	version?: true;
+	lastEditedBy?: true;
+	createdAt?: true;
+	updatedAt?: true;
 };
 
 export type PlaylistCountAggregateInputType = {
@@ -80,8 +118,12 @@ export type PlaylistCountAggregateInputType = {
 	ownerId?: true;
 	cover?: true;
 	description?: true;
-	private?: true;
-	created_at?: true;
+	visibility?: true;
+	editPolicy?: true;
+	version?: true;
+	lastEditedBy?: true;
+	createdAt?: true;
+	updatedAt?: true;
 	_all?: true;
 };
 
@@ -125,6 +167,18 @@ export type PlaylistAggregateArgs<
 	/**
 	 * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
 	 *
+	 * Select which fields to average
+	 **/
+	_avg?: PlaylistAvgAggregateInputType;
+	/**
+	 * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+	 *
+	 * Select which fields to sum
+	 **/
+	_sum?: PlaylistSumAggregateInputType;
+	/**
+	 * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+	 *
 	 * Select which fields to find the minimum value
 	 **/
 	_min?: PlaylistMinAggregateInputType;
@@ -154,6 +208,8 @@ export type PlaylistGroupByArgs<
 	take?: number;
 	skip?: number;
 	_count?: PlaylistCountAggregateInputType | true;
+	_avg?: PlaylistAvgAggregateInputType;
+	_sum?: PlaylistSumAggregateInputType;
 	_min?: PlaylistMinAggregateInputType;
 	_max?: PlaylistMaxAggregateInputType;
 };
@@ -164,9 +220,15 @@ export type PlaylistGroupByOutputType = {
 	ownerId: string;
 	cover: string | null;
 	description: string | null;
-	private: boolean;
-	created_at: Date;
+	visibility: $Enums.PlaylistVisibility;
+	editPolicy: $Enums.EditPolicy;
+	version: number;
+	lastEditedBy: string | null;
+	createdAt: Date;
+	updatedAt: Date;
 	_count: PlaylistCountAggregateOutputType | null;
+	_avg: PlaylistAvgAggregateOutputType | null;
+	_sum: PlaylistSumAggregateOutputType | null;
 	_min: PlaylistMinAggregateOutputType | null;
 	_max: PlaylistMaxAggregateOutputType | null;
 };
@@ -192,10 +254,15 @@ export type PlaylistWhereInput = {
 	ownerId?: Prisma.StringFilter<'Playlist'> | string;
 	cover?: Prisma.StringNullableFilter<'Playlist'> | string | null;
 	description?: Prisma.StringNullableFilter<'Playlist'> | string | null;
-	private?: Prisma.BoolFilter<'Playlist'> | boolean;
-	created_at?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
-	music?: Prisma.PlaylistTrackListRelationFilter;
-	user?: Prisma.UserListRelationFilter;
+	visibility?: Prisma.EnumPlaylistVisibilityFilter<'Playlist'> | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFilter<'Playlist'> | $Enums.EditPolicy;
+	version?: Prisma.IntFilter<'Playlist'> | number;
+	lastEditedBy?: Prisma.StringNullableFilter<'Playlist'> | string | null;
+	createdAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+	updatedAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+	owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+	members?: Prisma.PlaylistMemberListRelationFilter;
+	tracks?: Prisma.PlaylistTrackListRelationFilter;
 };
 
 export type PlaylistOrderByWithRelationInput = {
@@ -204,10 +271,15 @@ export type PlaylistOrderByWithRelationInput = {
 	ownerId?: Prisma.SortOrder;
 	cover?: Prisma.SortOrderInput | Prisma.SortOrder;
 	description?: Prisma.SortOrderInput | Prisma.SortOrder;
-	private?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
-	music?: Prisma.PlaylistTrackOrderByRelationAggregateInput;
-	user?: Prisma.UserOrderByRelationAggregateInput;
+	visibility?: Prisma.SortOrder;
+	editPolicy?: Prisma.SortOrder;
+	version?: Prisma.SortOrder;
+	lastEditedBy?: Prisma.SortOrderInput | Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
+	updatedAt?: Prisma.SortOrder;
+	owner?: Prisma.UserOrderByWithRelationInput;
+	members?: Prisma.PlaylistMemberOrderByRelationAggregateInput;
+	tracks?: Prisma.PlaylistTrackOrderByRelationAggregateInput;
 };
 
 export type PlaylistWhereUniqueInput = Prisma.AtLeast<
@@ -221,10 +293,15 @@ export type PlaylistWhereUniqueInput = Prisma.AtLeast<
 		ownerId?: Prisma.StringFilter<'Playlist'> | string;
 		cover?: Prisma.StringNullableFilter<'Playlist'> | string | null;
 		description?: Prisma.StringNullableFilter<'Playlist'> | string | null;
-		private?: Prisma.BoolFilter<'Playlist'> | boolean;
-		created_at?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
-		music?: Prisma.PlaylistTrackListRelationFilter;
-		user?: Prisma.UserListRelationFilter;
+		visibility?: Prisma.EnumPlaylistVisibilityFilter<'Playlist'> | $Enums.PlaylistVisibility;
+		editPolicy?: Prisma.EnumEditPolicyFilter<'Playlist'> | $Enums.EditPolicy;
+		version?: Prisma.IntFilter<'Playlist'> | number;
+		lastEditedBy?: Prisma.StringNullableFilter<'Playlist'> | string | null;
+		createdAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+		updatedAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+		owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+		members?: Prisma.PlaylistMemberListRelationFilter;
+		tracks?: Prisma.PlaylistTrackListRelationFilter;
 	},
 	'id' | 'name_ownerId'
 >;
@@ -235,11 +312,17 @@ export type PlaylistOrderByWithAggregationInput = {
 	ownerId?: Prisma.SortOrder;
 	cover?: Prisma.SortOrderInput | Prisma.SortOrder;
 	description?: Prisma.SortOrderInput | Prisma.SortOrder;
-	private?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	visibility?: Prisma.SortOrder;
+	editPolicy?: Prisma.SortOrder;
+	version?: Prisma.SortOrder;
+	lastEditedBy?: Prisma.SortOrderInput | Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
+	updatedAt?: Prisma.SortOrder;
 	_count?: Prisma.PlaylistCountOrderByAggregateInput;
+	_avg?: Prisma.PlaylistAvgOrderByAggregateInput;
 	_max?: Prisma.PlaylistMaxOrderByAggregateInput;
 	_min?: Prisma.PlaylistMinOrderByAggregateInput;
+	_sum?: Prisma.PlaylistSumOrderByAggregateInput;
 };
 
 export type PlaylistScalarWhereWithAggregatesInput = {
@@ -251,20 +334,28 @@ export type PlaylistScalarWhereWithAggregatesInput = {
 	ownerId?: Prisma.StringWithAggregatesFilter<'Playlist'> | string;
 	cover?: Prisma.StringNullableWithAggregatesFilter<'Playlist'> | string | null;
 	description?: Prisma.StringNullableWithAggregatesFilter<'Playlist'> | string | null;
-	private?: Prisma.BoolWithAggregatesFilter<'Playlist'> | boolean;
-	created_at?: Prisma.DateTimeWithAggregatesFilter<'Playlist'> | Date | string;
+	visibility?: Prisma.EnumPlaylistVisibilityWithAggregatesFilter<'Playlist'> | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyWithAggregatesFilter<'Playlist'> | $Enums.EditPolicy;
+	version?: Prisma.IntWithAggregatesFilter<'Playlist'> | number;
+	lastEditedBy?: Prisma.StringNullableWithAggregatesFilter<'Playlist'> | string | null;
+	createdAt?: Prisma.DateTimeWithAggregatesFilter<'Playlist'> | Date | string;
+	updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Playlist'> | Date | string;
 };
 
 export type PlaylistCreateInput = {
 	id?: string;
 	name: string;
-	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	music?: Prisma.PlaylistTrackCreateNestedManyWithoutPlaylistInput;
-	user?: Prisma.UserCreateNestedManyWithoutPlaylistInput;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	owner: Prisma.UserCreateNestedOneWithoutPlaylistInput;
+	members?: Prisma.PlaylistMemberCreateNestedManyWithoutPlaylistInput;
+	tracks?: Prisma.PlaylistTrackCreateNestedManyWithoutPlaylistInput;
 };
 
 export type PlaylistUncheckedCreateInput = {
@@ -273,22 +364,30 @@ export type PlaylistUncheckedCreateInput = {
 	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	music?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutPlaylistInput;
-	user?: Prisma.UserUncheckedCreateNestedManyWithoutPlaylistInput;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	members?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutPlaylistInput;
+	tracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutPlaylistInput;
 };
 
 export type PlaylistUpdateInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
-	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	music?: Prisma.PlaylistTrackUpdateManyWithoutPlaylistNestedInput;
-	user?: Prisma.UserUpdateManyWithoutPlaylistNestedInput;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	owner?: Prisma.UserUpdateOneRequiredWithoutPlaylistNestedInput;
+	members?: Prisma.PlaylistMemberUpdateManyWithoutPlaylistNestedInput;
+	tracks?: Prisma.PlaylistTrackUpdateManyWithoutPlaylistNestedInput;
 };
 
 export type PlaylistUncheckedUpdateInput = {
@@ -297,10 +396,14 @@ export type PlaylistUncheckedUpdateInput = {
 	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	music?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput;
-	user?: Prisma.UserUncheckedUpdateManyWithoutPlaylistNestedInput;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	members?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutPlaylistNestedInput;
+	tracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput;
 };
 
 export type PlaylistCreateManyInput = {
@@ -309,18 +412,25 @@ export type PlaylistCreateManyInput = {
 	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
 };
 
 export type PlaylistUpdateManyMutationInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
-	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistUncheckedUpdateManyInput = {
@@ -329,8 +439,12 @@ export type PlaylistUncheckedUpdateManyInput = {
 	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type PlaylistNameOwnerIdCompoundUniqueInput = {
@@ -344,8 +458,16 @@ export type PlaylistCountOrderByAggregateInput = {
 	ownerId?: Prisma.SortOrder;
 	cover?: Prisma.SortOrder;
 	description?: Prisma.SortOrder;
-	private?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	visibility?: Prisma.SortOrder;
+	editPolicy?: Prisma.SortOrder;
+	version?: Prisma.SortOrder;
+	lastEditedBy?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
+	updatedAt?: Prisma.SortOrder;
+};
+
+export type PlaylistAvgOrderByAggregateInput = {
+	version?: Prisma.SortOrder;
 };
 
 export type PlaylistMaxOrderByAggregateInput = {
@@ -354,8 +476,12 @@ export type PlaylistMaxOrderByAggregateInput = {
 	ownerId?: Prisma.SortOrder;
 	cover?: Prisma.SortOrder;
 	description?: Prisma.SortOrder;
-	private?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	visibility?: Prisma.SortOrder;
+	editPolicy?: Prisma.SortOrder;
+	version?: Prisma.SortOrder;
+	lastEditedBy?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
+	updatedAt?: Prisma.SortOrder;
 };
 
 export type PlaylistMinOrderByAggregateInput = {
@@ -364,8 +490,16 @@ export type PlaylistMinOrderByAggregateInput = {
 	ownerId?: Prisma.SortOrder;
 	cover?: Prisma.SortOrder;
 	description?: Prisma.SortOrder;
-	private?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	visibility?: Prisma.SortOrder;
+	editPolicy?: Prisma.SortOrder;
+	version?: Prisma.SortOrder;
+	lastEditedBy?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
+	updatedAt?: Prisma.SortOrder;
+};
+
+export type PlaylistSumOrderByAggregateInput = {
+	version?: Prisma.SortOrder;
 };
 
 export type PlaylistScalarRelationFilter = {
@@ -383,180 +517,318 @@ export type PlaylistOrderByRelationAggregateInput = {
 	_count?: Prisma.SortOrder;
 };
 
-export type PlaylistCreateNestedOneWithoutMusicInput = {
-	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutMusicInput, Prisma.PlaylistUncheckedCreateWithoutMusicInput>;
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutMusicInput;
+export type EnumPlaylistVisibilityFieldUpdateOperationsInput = {
+	set?: $Enums.PlaylistVisibility;
+};
+
+export type EnumEditPolicyFieldUpdateOperationsInput = {
+	set?: $Enums.EditPolicy;
+};
+
+export type PlaylistCreateNestedOneWithoutMembersInput = {
+	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutMembersInput, Prisma.PlaylistUncheckedCreateWithoutMembersInput>;
+	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutMembersInput;
 	connect?: Prisma.PlaylistWhereUniqueInput;
 };
 
-export type PlaylistUpdateOneRequiredWithoutMusicNestedInput = {
-	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutMusicInput, Prisma.PlaylistUncheckedCreateWithoutMusicInput>;
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutMusicInput;
-	upsert?: Prisma.PlaylistUpsertWithoutMusicInput;
+export type PlaylistUpdateOneRequiredWithoutMembersNestedInput = {
+	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutMembersInput, Prisma.PlaylistUncheckedCreateWithoutMembersInput>;
+	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutMembersInput;
+	upsert?: Prisma.PlaylistUpsertWithoutMembersInput;
 	connect?: Prisma.PlaylistWhereUniqueInput;
 	update?: Prisma.XOR<
-		Prisma.XOR<Prisma.PlaylistUpdateToOneWithWhereWithoutMusicInput, Prisma.PlaylistUpdateWithoutMusicInput>,
-		Prisma.PlaylistUncheckedUpdateWithoutMusicInput
+		Prisma.XOR<Prisma.PlaylistUpdateToOneWithWhereWithoutMembersInput, Prisma.PlaylistUpdateWithoutMembersInput>,
+		Prisma.PlaylistUncheckedUpdateWithoutMembersInput
 	>;
 };
 
-export type PlaylistCreateNestedManyWithoutUserInput = {
+export type PlaylistCreateNestedOneWithoutTracksInput = {
+	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>;
+	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput;
+	connect?: Prisma.PlaylistWhereUniqueInput;
+};
+
+export type PlaylistUpdateOneRequiredWithoutTracksNestedInput = {
+	create?: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>;
+	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutTracksInput;
+	upsert?: Prisma.PlaylistUpsertWithoutTracksInput;
+	connect?: Prisma.PlaylistWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<Prisma.PlaylistUpdateToOneWithWhereWithoutTracksInput, Prisma.PlaylistUpdateWithoutTracksInput>,
+		Prisma.PlaylistUncheckedUpdateWithoutTracksInput
+	>;
+};
+
+export type PlaylistCreateNestedManyWithoutOwnerInput = {
 	create?:
-		| Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>
-		| Prisma.PlaylistCreateWithoutUserInput[]
-		| Prisma.PlaylistUncheckedCreateWithoutUserInput[];
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutUserInput | Prisma.PlaylistCreateOrConnectWithoutUserInput[];
+		| Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>
+		| Prisma.PlaylistCreateWithoutOwnerInput[]
+		| Prisma.PlaylistUncheckedCreateWithoutOwnerInput[];
+	connectOrCreate?:
+		Prisma.PlaylistCreateOrConnectWithoutOwnerInput | Prisma.PlaylistCreateOrConnectWithoutOwnerInput[];
+	createMany?: Prisma.PlaylistCreateManyOwnerInputEnvelope;
 	connect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 };
 
-export type PlaylistUncheckedCreateNestedManyWithoutUserInput = {
+export type PlaylistUncheckedCreateNestedManyWithoutOwnerInput = {
 	create?:
-		| Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>
-		| Prisma.PlaylistCreateWithoutUserInput[]
-		| Prisma.PlaylistUncheckedCreateWithoutUserInput[];
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutUserInput | Prisma.PlaylistCreateOrConnectWithoutUserInput[];
+		| Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>
+		| Prisma.PlaylistCreateWithoutOwnerInput[]
+		| Prisma.PlaylistUncheckedCreateWithoutOwnerInput[];
+	connectOrCreate?:
+		Prisma.PlaylistCreateOrConnectWithoutOwnerInput | Prisma.PlaylistCreateOrConnectWithoutOwnerInput[];
+	createMany?: Prisma.PlaylistCreateManyOwnerInputEnvelope;
 	connect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 };
 
-export type PlaylistUpdateManyWithoutUserNestedInput = {
+export type PlaylistUpdateManyWithoutOwnerNestedInput = {
 	create?:
-		| Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>
-		| Prisma.PlaylistCreateWithoutUserInput[]
-		| Prisma.PlaylistUncheckedCreateWithoutUserInput[];
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutUserInput | Prisma.PlaylistCreateOrConnectWithoutUserInput[];
+		| Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>
+		| Prisma.PlaylistCreateWithoutOwnerInput[]
+		| Prisma.PlaylistUncheckedCreateWithoutOwnerInput[];
+	connectOrCreate?:
+		Prisma.PlaylistCreateOrConnectWithoutOwnerInput | Prisma.PlaylistCreateOrConnectWithoutOwnerInput[];
 	upsert?:
-		Prisma.PlaylistUpsertWithWhereUniqueWithoutUserInput | Prisma.PlaylistUpsertWithWhereUniqueWithoutUserInput[];
+		Prisma.PlaylistUpsertWithWhereUniqueWithoutOwnerInput | Prisma.PlaylistUpsertWithWhereUniqueWithoutOwnerInput[];
+	createMany?: Prisma.PlaylistCreateManyOwnerInputEnvelope;
 	set?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	disconnect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	delete?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	connect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	update?:
-		Prisma.PlaylistUpdateWithWhereUniqueWithoutUserInput | Prisma.PlaylistUpdateWithWhereUniqueWithoutUserInput[];
+		Prisma.PlaylistUpdateWithWhereUniqueWithoutOwnerInput | Prisma.PlaylistUpdateWithWhereUniqueWithoutOwnerInput[];
 	updateMany?:
-		Prisma.PlaylistUpdateManyWithWhereWithoutUserInput | Prisma.PlaylistUpdateManyWithWhereWithoutUserInput[];
+		Prisma.PlaylistUpdateManyWithWhereWithoutOwnerInput | Prisma.PlaylistUpdateManyWithWhereWithoutOwnerInput[];
 	deleteMany?: Prisma.PlaylistScalarWhereInput | Prisma.PlaylistScalarWhereInput[];
 };
 
-export type PlaylistUncheckedUpdateManyWithoutUserNestedInput = {
+export type PlaylistUncheckedUpdateManyWithoutOwnerNestedInput = {
 	create?:
-		| Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>
-		| Prisma.PlaylistCreateWithoutUserInput[]
-		| Prisma.PlaylistUncheckedCreateWithoutUserInput[];
-	connectOrCreate?: Prisma.PlaylistCreateOrConnectWithoutUserInput | Prisma.PlaylistCreateOrConnectWithoutUserInput[];
+		| Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>
+		| Prisma.PlaylistCreateWithoutOwnerInput[]
+		| Prisma.PlaylistUncheckedCreateWithoutOwnerInput[];
+	connectOrCreate?:
+		Prisma.PlaylistCreateOrConnectWithoutOwnerInput | Prisma.PlaylistCreateOrConnectWithoutOwnerInput[];
 	upsert?:
-		Prisma.PlaylistUpsertWithWhereUniqueWithoutUserInput | Prisma.PlaylistUpsertWithWhereUniqueWithoutUserInput[];
+		Prisma.PlaylistUpsertWithWhereUniqueWithoutOwnerInput | Prisma.PlaylistUpsertWithWhereUniqueWithoutOwnerInput[];
+	createMany?: Prisma.PlaylistCreateManyOwnerInputEnvelope;
 	set?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	disconnect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	delete?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	connect?: Prisma.PlaylistWhereUniqueInput | Prisma.PlaylistWhereUniqueInput[];
 	update?:
-		Prisma.PlaylistUpdateWithWhereUniqueWithoutUserInput | Prisma.PlaylistUpdateWithWhereUniqueWithoutUserInput[];
+		Prisma.PlaylistUpdateWithWhereUniqueWithoutOwnerInput | Prisma.PlaylistUpdateWithWhereUniqueWithoutOwnerInput[];
 	updateMany?:
-		Prisma.PlaylistUpdateManyWithWhereWithoutUserInput | Prisma.PlaylistUpdateManyWithWhereWithoutUserInput[];
+		Prisma.PlaylistUpdateManyWithWhereWithoutOwnerInput | Prisma.PlaylistUpdateManyWithWhereWithoutOwnerInput[];
 	deleteMany?: Prisma.PlaylistScalarWhereInput | Prisma.PlaylistScalarWhereInput[];
 };
 
-export type PlaylistCreateWithoutMusicInput = {
+export type PlaylistCreateWithoutMembersInput = {
+	id?: string;
+	name: string;
+	cover?: string | null;
+	description?: string | null;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	owner: Prisma.UserCreateNestedOneWithoutPlaylistInput;
+	tracks?: Prisma.PlaylistTrackCreateNestedManyWithoutPlaylistInput;
+};
+
+export type PlaylistUncheckedCreateWithoutMembersInput = {
 	id?: string;
 	name: string;
 	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	user?: Prisma.UserCreateNestedManyWithoutPlaylistInput;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	tracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutPlaylistInput;
 };
 
-export type PlaylistUncheckedCreateWithoutMusicInput = {
-	id?: string;
-	name: string;
-	ownerId: string;
-	cover?: string | null;
-	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	user?: Prisma.UserUncheckedCreateNestedManyWithoutPlaylistInput;
-};
-
-export type PlaylistCreateOrConnectWithoutMusicInput = {
+export type PlaylistCreateOrConnectWithoutMembersInput = {
 	where: Prisma.PlaylistWhereUniqueInput;
-	create: Prisma.XOR<Prisma.PlaylistCreateWithoutMusicInput, Prisma.PlaylistUncheckedCreateWithoutMusicInput>;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutMembersInput, Prisma.PlaylistUncheckedCreateWithoutMembersInput>;
 };
 
-export type PlaylistUpsertWithoutMusicInput = {
-	update: Prisma.XOR<Prisma.PlaylistUpdateWithoutMusicInput, Prisma.PlaylistUncheckedUpdateWithoutMusicInput>;
-	create: Prisma.XOR<Prisma.PlaylistCreateWithoutMusicInput, Prisma.PlaylistUncheckedCreateWithoutMusicInput>;
+export type PlaylistUpsertWithoutMembersInput = {
+	update: Prisma.XOR<Prisma.PlaylistUpdateWithoutMembersInput, Prisma.PlaylistUncheckedUpdateWithoutMembersInput>;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutMembersInput, Prisma.PlaylistUncheckedCreateWithoutMembersInput>;
 	where?: Prisma.PlaylistWhereInput;
 };
 
-export type PlaylistUpdateToOneWithWhereWithoutMusicInput = {
+export type PlaylistUpdateToOneWithWhereWithoutMembersInput = {
 	where?: Prisma.PlaylistWhereInput;
-	data: Prisma.XOR<Prisma.PlaylistUpdateWithoutMusicInput, Prisma.PlaylistUncheckedUpdateWithoutMusicInput>;
+	data: Prisma.XOR<Prisma.PlaylistUpdateWithoutMembersInput, Prisma.PlaylistUncheckedUpdateWithoutMembersInput>;
 };
 
-export type PlaylistUpdateWithoutMusicInput = {
+export type PlaylistUpdateWithoutMembersInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	name?: Prisma.StringFieldUpdateOperationsInput | string;
+	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	owner?: Prisma.UserUpdateOneRequiredWithoutPlaylistNestedInput;
+	tracks?: Prisma.PlaylistTrackUpdateManyWithoutPlaylistNestedInput;
+};
+
+export type PlaylistUncheckedUpdateWithoutMembersInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
 	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	user?: Prisma.UserUpdateManyWithoutPlaylistNestedInput;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	tracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput;
 };
 
-export type PlaylistUncheckedUpdateWithoutMusicInput = {
+export type PlaylistCreateWithoutTracksInput = {
+	id?: string;
+	name: string;
+	cover?: string | null;
+	description?: string | null;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	owner: Prisma.UserCreateNestedOneWithoutPlaylistInput;
+	members?: Prisma.PlaylistMemberCreateNestedManyWithoutPlaylistInput;
+};
+
+export type PlaylistUncheckedCreateWithoutTracksInput = {
+	id?: string;
+	name: string;
+	ownerId: string;
+	cover?: string | null;
+	description?: string | null;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	members?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutPlaylistInput;
+};
+
+export type PlaylistCreateOrConnectWithoutTracksInput = {
+	where: Prisma.PlaylistWhereUniqueInput;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>;
+};
+
+export type PlaylistUpsertWithoutTracksInput = {
+	update: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutTracksInput, Prisma.PlaylistUncheckedCreateWithoutTracksInput>;
+	where?: Prisma.PlaylistWhereInput;
+};
+
+export type PlaylistUpdateToOneWithWhereWithoutTracksInput = {
+	where?: Prisma.PlaylistWhereInput;
+	data: Prisma.XOR<Prisma.PlaylistUpdateWithoutTracksInput, Prisma.PlaylistUncheckedUpdateWithoutTracksInput>;
+};
+
+export type PlaylistUpdateWithoutTracksInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	name?: Prisma.StringFieldUpdateOperationsInput | string;
+	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	owner?: Prisma.UserUpdateOneRequiredWithoutPlaylistNestedInput;
+	members?: Prisma.PlaylistMemberUpdateManyWithoutPlaylistNestedInput;
+};
+
+export type PlaylistUncheckedUpdateWithoutTracksInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
 	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	user?: Prisma.UserUncheckedUpdateManyWithoutPlaylistNestedInput;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	members?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutPlaylistNestedInput;
 };
 
-export type PlaylistCreateWithoutUserInput = {
+export type PlaylistCreateWithoutOwnerInput = {
 	id?: string;
 	name: string;
-	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	music?: Prisma.PlaylistTrackCreateNestedManyWithoutPlaylistInput;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	members?: Prisma.PlaylistMemberCreateNestedManyWithoutPlaylistInput;
+	tracks?: Prisma.PlaylistTrackCreateNestedManyWithoutPlaylistInput;
 };
 
-export type PlaylistUncheckedCreateWithoutUserInput = {
+export type PlaylistUncheckedCreateWithoutOwnerInput = {
 	id?: string;
 	name: string;
-	ownerId: string;
 	cover?: string | null;
 	description?: string | null;
-	private?: boolean;
-	created_at?: Date | string;
-	music?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutPlaylistInput;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
+	members?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutPlaylistInput;
+	tracks?: Prisma.PlaylistTrackUncheckedCreateNestedManyWithoutPlaylistInput;
 };
 
-export type PlaylistCreateOrConnectWithoutUserInput = {
+export type PlaylistCreateOrConnectWithoutOwnerInput = {
 	where: Prisma.PlaylistWhereUniqueInput;
-	create: Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>;
 };
 
-export type PlaylistUpsertWithWhereUniqueWithoutUserInput = {
+export type PlaylistCreateManyOwnerInputEnvelope = {
+	data: Prisma.PlaylistCreateManyOwnerInput | Prisma.PlaylistCreateManyOwnerInput[];
+	skipDuplicates?: boolean;
+};
+
+export type PlaylistUpsertWithWhereUniqueWithoutOwnerInput = {
 	where: Prisma.PlaylistWhereUniqueInput;
-	update: Prisma.XOR<Prisma.PlaylistUpdateWithoutUserInput, Prisma.PlaylistUncheckedUpdateWithoutUserInput>;
-	create: Prisma.XOR<Prisma.PlaylistCreateWithoutUserInput, Prisma.PlaylistUncheckedCreateWithoutUserInput>;
+	update: Prisma.XOR<Prisma.PlaylistUpdateWithoutOwnerInput, Prisma.PlaylistUncheckedUpdateWithoutOwnerInput>;
+	create: Prisma.XOR<Prisma.PlaylistCreateWithoutOwnerInput, Prisma.PlaylistUncheckedCreateWithoutOwnerInput>;
 };
 
-export type PlaylistUpdateWithWhereUniqueWithoutUserInput = {
+export type PlaylistUpdateWithWhereUniqueWithoutOwnerInput = {
 	where: Prisma.PlaylistWhereUniqueInput;
-	data: Prisma.XOR<Prisma.PlaylistUpdateWithoutUserInput, Prisma.PlaylistUncheckedUpdateWithoutUserInput>;
+	data: Prisma.XOR<Prisma.PlaylistUpdateWithoutOwnerInput, Prisma.PlaylistUncheckedUpdateWithoutOwnerInput>;
 };
 
-export type PlaylistUpdateManyWithWhereWithoutUserInput = {
+export type PlaylistUpdateManyWithWhereWithoutOwnerInput = {
 	where: Prisma.PlaylistScalarWhereInput;
-	data: Prisma.XOR<Prisma.PlaylistUpdateManyMutationInput, Prisma.PlaylistUncheckedUpdateManyWithoutUserInput>;
+	data: Prisma.XOR<Prisma.PlaylistUpdateManyMutationInput, Prisma.PlaylistUncheckedUpdateManyWithoutOwnerInput>;
 };
 
 export type PlaylistScalarWhereInput = {
@@ -568,40 +840,68 @@ export type PlaylistScalarWhereInput = {
 	ownerId?: Prisma.StringFilter<'Playlist'> | string;
 	cover?: Prisma.StringNullableFilter<'Playlist'> | string | null;
 	description?: Prisma.StringNullableFilter<'Playlist'> | string | null;
-	private?: Prisma.BoolFilter<'Playlist'> | boolean;
-	created_at?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+	visibility?: Prisma.EnumPlaylistVisibilityFilter<'Playlist'> | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFilter<'Playlist'> | $Enums.EditPolicy;
+	version?: Prisma.IntFilter<'Playlist'> | number;
+	lastEditedBy?: Prisma.StringNullableFilter<'Playlist'> | string | null;
+	createdAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
+	updatedAt?: Prisma.DateTimeFilter<'Playlist'> | Date | string;
 };
 
-export type PlaylistUpdateWithoutUserInput = {
-	id?: Prisma.StringFieldUpdateOperationsInput | string;
-	name?: Prisma.StringFieldUpdateOperationsInput | string;
-	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
-	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	music?: Prisma.PlaylistTrackUpdateManyWithoutPlaylistNestedInput;
+export type PlaylistCreateManyOwnerInput = {
+	id?: string;
+	name: string;
+	cover?: string | null;
+	description?: string | null;
+	visibility?: $Enums.PlaylistVisibility;
+	editPolicy?: $Enums.EditPolicy;
+	version?: number;
+	lastEditedBy?: string | null;
+	createdAt?: Date | string;
+	updatedAt?: Date | string;
 };
 
-export type PlaylistUncheckedUpdateWithoutUserInput = {
+export type PlaylistUpdateWithoutOwnerInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
-	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-	music?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	members?: Prisma.PlaylistMemberUpdateManyWithoutPlaylistNestedInput;
+	tracks?: Prisma.PlaylistTrackUpdateManyWithoutPlaylistNestedInput;
 };
 
-export type PlaylistUncheckedUpdateManyWithoutUserInput = {
+export type PlaylistUncheckedUpdateWithoutOwnerInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	name?: Prisma.StringFieldUpdateOperationsInput | string;
-	ownerId?: Prisma.StringFieldUpdateOperationsInput | string;
 	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-	private?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	members?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutPlaylistNestedInput;
+	tracks?: Prisma.PlaylistTrackUncheckedUpdateManyWithoutPlaylistNestedInput;
+};
+
+export type PlaylistUncheckedUpdateManyWithoutOwnerInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	name?: Prisma.StringFieldUpdateOperationsInput | string;
+	cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	visibility?: Prisma.EnumPlaylistVisibilityFieldUpdateOperationsInput | $Enums.PlaylistVisibility;
+	editPolicy?: Prisma.EnumEditPolicyFieldUpdateOperationsInput | $Enums.EditPolicy;
+	version?: Prisma.IntFieldUpdateOperationsInput | number;
+	lastEditedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 /**
@@ -609,15 +909,15 @@ export type PlaylistUncheckedUpdateManyWithoutUserInput = {
  */
 
 export type PlaylistCountOutputType = {
-	music: number;
-	user: number;
+	members: number;
+	tracks: number;
 };
 
 export type PlaylistCountOutputTypeSelect<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-	music?: boolean | PlaylistCountOutputTypeCountMusicArgs;
-	user?: boolean | PlaylistCountOutputTypeCountUserArgs;
+	members?: boolean | PlaylistCountOutputTypeCountMembersArgs;
+	tracks?: boolean | PlaylistCountOutputTypeCountTracksArgs;
 };
 
 /**
@@ -635,19 +935,19 @@ export type PlaylistCountOutputTypeDefaultArgs<
 /**
  * PlaylistCountOutputType without action
  */
-export type PlaylistCountOutputTypeCountMusicArgs<
+export type PlaylistCountOutputTypeCountMembersArgs<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-	where?: Prisma.PlaylistTrackWhereInput;
+	where?: Prisma.PlaylistMemberWhereInput;
 };
 
 /**
  * PlaylistCountOutputType without action
  */
-export type PlaylistCountOutputTypeCountUserArgs<
+export type PlaylistCountOutputTypeCountTracksArgs<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-	where?: Prisma.UserWhereInput;
+	where?: Prisma.PlaylistTrackWhereInput;
 };
 
 export type PlaylistSelect<
@@ -659,10 +959,15 @@ export type PlaylistSelect<
 		ownerId?: boolean;
 		cover?: boolean;
 		description?: boolean;
-		private?: boolean;
-		created_at?: boolean;
-		music?: boolean | Prisma.Playlist$musicArgs<ExtArgs>;
-		user?: boolean | Prisma.Playlist$userArgs<ExtArgs>;
+		visibility?: boolean;
+		editPolicy?: boolean;
+		version?: boolean;
+		lastEditedBy?: boolean;
+		createdAt?: boolean;
+		updatedAt?: boolean;
+		owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+		members?: boolean | Prisma.Playlist$membersArgs<ExtArgs>;
+		tracks?: boolean | Prisma.Playlist$tracksArgs<ExtArgs>;
 		_count?: boolean | Prisma.PlaylistCountOutputTypeDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlist']
@@ -677,8 +982,13 @@ export type PlaylistSelectCreateManyAndReturn<
 		ownerId?: boolean;
 		cover?: boolean;
 		description?: boolean;
-		private?: boolean;
-		created_at?: boolean;
+		visibility?: boolean;
+		editPolicy?: boolean;
+		version?: boolean;
+		lastEditedBy?: boolean;
+		createdAt?: boolean;
+		updatedAt?: boolean;
+		owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlist']
 >;
@@ -692,8 +1002,13 @@ export type PlaylistSelectUpdateManyAndReturn<
 		ownerId?: boolean;
 		cover?: boolean;
 		description?: boolean;
-		private?: boolean;
-		created_at?: boolean;
+		visibility?: boolean;
+		editPolicy?: boolean;
+		version?: boolean;
+		lastEditedBy?: boolean;
+		createdAt?: boolean;
+		updatedAt?: boolean;
+		owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 	},
 	ExtArgs['result']['playlist']
 >;
@@ -704,36 +1019,56 @@ export type PlaylistSelectScalar = {
 	ownerId?: boolean;
 	cover?: boolean;
 	description?: boolean;
-	private?: boolean;
-	created_at?: boolean;
+	visibility?: boolean;
+	editPolicy?: boolean;
+	version?: boolean;
+	lastEditedBy?: boolean;
+	createdAt?: boolean;
+	updatedAt?: boolean;
 };
 
 export type PlaylistOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
 	runtime.Types.Extensions.GetOmit<
-		'id' | 'name' | 'ownerId' | 'cover' | 'description' | 'private' | 'created_at',
+		| 'id'
+		| 'name'
+		| 'ownerId'
+		| 'cover'
+		| 'description'
+		| 'visibility'
+		| 'editPolicy'
+		| 'version'
+		| 'lastEditedBy'
+		| 'createdAt'
+		| 'updatedAt',
 		ExtArgs['result']['playlist']
 	>;
 export type PlaylistInclude<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-	music?: boolean | Prisma.Playlist$musicArgs<ExtArgs>;
-	user?: boolean | Prisma.Playlist$userArgs<ExtArgs>;
+	owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+	members?: boolean | Prisma.Playlist$membersArgs<ExtArgs>;
+	tracks?: boolean | Prisma.Playlist$tracksArgs<ExtArgs>;
 	_count?: boolean | Prisma.PlaylistCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type PlaylistIncludeCreateManyAndReturn<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {};
+> = {
+	owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+};
 export type PlaylistIncludeUpdateManyAndReturn<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {};
+> = {
+	owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+};
 
 export type $PlaylistPayload<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
 	name: 'Playlist';
 	objects: {
-		music: Prisma.$PlaylistTrackPayload<ExtArgs>[];
-		user: Prisma.$UserPayload<ExtArgs>[];
+		owner: Prisma.$UserPayload<ExtArgs>;
+		members: Prisma.$PlaylistMemberPayload<ExtArgs>[];
+		tracks: Prisma.$PlaylistTrackPayload<ExtArgs>[];
 	};
 	scalars: runtime.Types.Extensions.GetPayloadResult<
 		{
@@ -742,8 +1077,12 @@ export type $PlaylistPayload<
 			ownerId: string;
 			cover: string | null;
 			description: string | null;
-			private: boolean;
-			created_at: Date;
+			visibility: $Enums.PlaylistVisibility;
+			editPolicy: $Enums.EditPolicy;
+			version: number;
+			lastEditedBy: string | null;
+			createdAt: Date;
+			updatedAt: Date;
 		},
 		ExtArgs['result']['playlist']
 	>;
@@ -1222,15 +1561,23 @@ export interface Prisma__PlaylistClient<
 	GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
 	readonly [Symbol.toStringTag]: 'PrismaPromise';
-	music<T extends Prisma.Playlist$musicArgs<ExtArgs> = {}>(
-		args?: Prisma.Subset<T, Prisma.Playlist$musicArgs<ExtArgs>>
+	owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>
+	): Prisma.Prisma__UserClient<
+		runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow', GlobalOmitOptions> | Null,
+		Null,
+		ExtArgs,
+		GlobalOmitOptions
+	>;
+	members<T extends Prisma.Playlist$membersArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.Playlist$membersArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$PlaylistMemberPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
+	tracks<T extends Prisma.Playlist$tracksArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.Playlist$tracksArgs<ExtArgs>>
 	): Prisma.PrismaPromise<
 		runtime.Types.Result.GetResult<Prisma.$PlaylistTrackPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
-	>;
-	user<T extends Prisma.Playlist$userArgs<ExtArgs> = {}>(
-		args?: Prisma.Subset<T, Prisma.Playlist$userArgs<ExtArgs>>
-	): Prisma.PrismaPromise<
-		runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
 	>;
 	/**
 	 * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1268,8 +1615,12 @@ export interface PlaylistFieldRefs {
 	readonly ownerId: Prisma.FieldRef<'Playlist', 'String'>;
 	readonly cover: Prisma.FieldRef<'Playlist', 'String'>;
 	readonly description: Prisma.FieldRef<'Playlist', 'String'>;
-	readonly private: Prisma.FieldRef<'Playlist', 'Boolean'>;
-	readonly created_at: Prisma.FieldRef<'Playlist', 'DateTime'>;
+	readonly visibility: Prisma.FieldRef<'Playlist', 'PlaylistVisibility'>;
+	readonly editPolicy: Prisma.FieldRef<'Playlist', 'EditPolicy'>;
+	readonly version: Prisma.FieldRef<'Playlist', 'Int'>;
+	readonly lastEditedBy: Prisma.FieldRef<'Playlist', 'String'>;
+	readonly createdAt: Prisma.FieldRef<'Playlist', 'DateTime'>;
+	readonly updatedAt: Prisma.FieldRef<'Playlist', 'DateTime'>;
 }
 
 // Custom InputTypes
@@ -1539,6 +1890,10 @@ export type PlaylistCreateManyAndReturnArgs<
 	 */
 	data: Prisma.PlaylistCreateManyInput | Prisma.PlaylistCreateManyInput[];
 	skipDuplicates?: boolean;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.PlaylistIncludeCreateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -1615,6 +1970,10 @@ export type PlaylistUpdateManyAndReturnArgs<
 	 * Limit how many Playlists to update.
 	 */
 	limit?: number;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.PlaylistIncludeUpdateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -1690,9 +2049,35 @@ export type PlaylistDeleteManyArgs<
 };
 
 /**
- * Playlist.music
+ * Playlist.members
  */
-export type Playlist$musicArgs<
+export type Playlist$membersArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the PlaylistMember
+	 */
+	select?: Prisma.PlaylistMemberSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the PlaylistMember
+	 */
+	omit?: Prisma.PlaylistMemberOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.PlaylistMemberInclude<ExtArgs> | null;
+	where?: Prisma.PlaylistMemberWhereInput;
+	orderBy?: Prisma.PlaylistMemberOrderByWithRelationInput | Prisma.PlaylistMemberOrderByWithRelationInput[];
+	cursor?: Prisma.PlaylistMemberWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.PlaylistMemberScalarFieldEnum | Prisma.PlaylistMemberScalarFieldEnum[];
+};
+
+/**
+ * Playlist.tracks
+ */
+export type Playlist$tracksArgs<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
 	/**
@@ -1713,32 +2098,6 @@ export type Playlist$musicArgs<
 	take?: number;
 	skip?: number;
 	distinct?: Prisma.PlaylistTrackScalarFieldEnum | Prisma.PlaylistTrackScalarFieldEnum[];
-};
-
-/**
- * Playlist.user
- */
-export type Playlist$userArgs<
-	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-	/**
-	 * Select specific fields to fetch from the User
-	 */
-	select?: Prisma.UserSelect<ExtArgs> | null;
-	/**
-	 * Omit specific fields from the User
-	 */
-	omit?: Prisma.UserOmit<ExtArgs> | null;
-	/**
-	 * Choose, which related nodes to fetch as well
-	 */
-	include?: Prisma.UserInclude<ExtArgs> | null;
-	where?: Prisma.UserWhereInput;
-	orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[];
-	cursor?: Prisma.UserWhereUniqueInput;
-	take?: number;
-	skip?: number;
-	distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[];
 };
 
 /**

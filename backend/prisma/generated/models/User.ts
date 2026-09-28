@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
 	username: string | null;
 	passwordHash: string | null;
 	avatarUrl: string | null;
+	emailVerified: boolean | null;
 	deezerUserId: string | null;
 	deezerAccessToken: string | null;
 	fortytwoOauthId: string | null;
@@ -53,6 +54,7 @@ export type UserMaxAggregateOutputType = {
 	username: string | null;
 	passwordHash: string | null;
 	avatarUrl: string | null;
+	emailVerified: boolean | null;
 	deezerUserId: string | null;
 	deezerAccessToken: string | null;
 	fortytwoOauthId: string | null;
@@ -67,6 +69,7 @@ export type UserCountAggregateOutputType = {
 	username: number;
 	passwordHash: number;
 	avatarUrl: number;
+	emailVerified: number;
 	deezerUserId: number;
 	deezerAccessToken: number;
 	fortytwoOauthId: number;
@@ -90,6 +93,7 @@ export type UserMinAggregateInputType = {
 	username?: true;
 	passwordHash?: true;
 	avatarUrl?: true;
+	emailVerified?: true;
 	deezerUserId?: true;
 	deezerAccessToken?: true;
 	fortytwoOauthId?: true;
@@ -104,6 +108,7 @@ export type UserMaxAggregateInputType = {
 	username?: true;
 	passwordHash?: true;
 	avatarUrl?: true;
+	emailVerified?: true;
 	deezerUserId?: true;
 	deezerAccessToken?: true;
 	fortytwoOauthId?: true;
@@ -118,6 +123,7 @@ export type UserCountAggregateInputType = {
 	username?: true;
 	passwordHash?: true;
 	avatarUrl?: true;
+	emailVerified?: true;
 	deezerUserId?: true;
 	deezerAccessToken?: true;
 	fortytwoOauthId?: true;
@@ -220,6 +226,7 @@ export type UserGroupByOutputType = {
 	username: string;
 	passwordHash: string | null;
 	avatarUrl: string | null;
+	emailVerified: boolean;
 	deezerUserId: string | null;
 	deezerAccessToken: string | null;
 	fortytwoOauthId: string | null;
@@ -254,6 +261,7 @@ export type UserWhereInput = {
 	username?: Prisma.StringFilter<'User'> | string;
 	passwordHash?: Prisma.StringNullableFilter<'User'> | string | null;
 	avatarUrl?: Prisma.StringNullableFilter<'User'> | string | null;
+	emailVerified?: Prisma.BoolFilter<'User'> | boolean;
 	deezerUserId?: Prisma.StringNullableFilter<'User'> | string | null;
 	deezerAccessToken?: Prisma.StringNullableFilter<'User'> | string | null;
 	fortytwoOauthId?: Prisma.StringNullableFilter<'User'> | string | null;
@@ -267,6 +275,17 @@ export type UserWhereInput = {
 	fortytwoOauth?: Prisma.XOR<Prisma.FortytwoOauthNullableScalarRelationFilter, Prisma.FortytwoOauthWhereInput> | null;
 	googleOauth?: Prisma.XOR<Prisma.GoogleOauthNullableScalarRelationFilter, Prisma.GoogleOauthWhereInput> | null;
 	playlist?: Prisma.PlaylistListRelationFilter;
+	ownedEvents?: Prisma.MusicEventListRelationFilter;
+	eventMemberships?: Prisma.MusicEventMemberListRelationFilter;
+	playlistMemberships?: Prisma.PlaylistMemberListRelationFilter;
+	devices?: Prisma.DeviceListRelationFilter;
+	sessionExchanges?: Prisma.SessionExchangeListRelationFilter;
+	musicPreference?: Prisma.XOR<
+		Prisma.MusicPreferenceNullableScalarRelationFilter,
+		Prisma.MusicPreferenceWhereInput
+	> | null;
+	profileVisibility?: Prisma.ProfileVisibilityListRelationFilter;
+	oauthStates?: Prisma.OauthStateListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -275,6 +294,7 @@ export type UserOrderByWithRelationInput = {
 	username?: Prisma.SortOrder;
 	passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder;
 	avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+	emailVerified?: Prisma.SortOrder;
 	deezerUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
 	deezerAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder;
 	fortytwoOauthId?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -288,6 +308,14 @@ export type UserOrderByWithRelationInput = {
 	fortytwoOauth?: Prisma.FortytwoOauthOrderByWithRelationInput;
 	googleOauth?: Prisma.GoogleOauthOrderByWithRelationInput;
 	playlist?: Prisma.PlaylistOrderByRelationAggregateInput;
+	ownedEvents?: Prisma.MusicEventOrderByRelationAggregateInput;
+	eventMemberships?: Prisma.MusicEventMemberOrderByRelationAggregateInput;
+	playlistMemberships?: Prisma.PlaylistMemberOrderByRelationAggregateInput;
+	devices?: Prisma.DeviceOrderByRelationAggregateInput;
+	sessionExchanges?: Prisma.SessionExchangeOrderByRelationAggregateInput;
+	musicPreference?: Prisma.MusicPreferenceOrderByWithRelationInput;
+	profileVisibility?: Prisma.ProfileVisibilityOrderByRelationAggregateInput;
+	oauthStates?: Prisma.OauthStateOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -304,6 +332,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
 		username?: Prisma.StringFilter<'User'> | string;
 		passwordHash?: Prisma.StringNullableFilter<'User'> | string | null;
 		avatarUrl?: Prisma.StringNullableFilter<'User'> | string | null;
+		emailVerified?: Prisma.BoolFilter<'User'> | boolean;
 		deezerAccessToken?: Prisma.StringNullableFilter<'User'> | string | null;
 		createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
 		follows?: Prisma.FollowListRelationFilter;
@@ -316,6 +345,17 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
 		> | null;
 		googleOauth?: Prisma.XOR<Prisma.GoogleOauthNullableScalarRelationFilter, Prisma.GoogleOauthWhereInput> | null;
 		playlist?: Prisma.PlaylistListRelationFilter;
+		ownedEvents?: Prisma.MusicEventListRelationFilter;
+		eventMemberships?: Prisma.MusicEventMemberListRelationFilter;
+		playlistMemberships?: Prisma.PlaylistMemberListRelationFilter;
+		devices?: Prisma.DeviceListRelationFilter;
+		sessionExchanges?: Prisma.SessionExchangeListRelationFilter;
+		musicPreference?: Prisma.XOR<
+			Prisma.MusicPreferenceNullableScalarRelationFilter,
+			Prisma.MusicPreferenceWhereInput
+		> | null;
+		profileVisibility?: Prisma.ProfileVisibilityListRelationFilter;
+		oauthStates?: Prisma.OauthStateListRelationFilter;
 	},
 	'id' | 'email' | 'deezerUserId' | 'fortytwoOauthId' | 'fortytwoUserId' | 'googleOauthId'
 >;
@@ -326,6 +366,7 @@ export type UserOrderByWithAggregationInput = {
 	username?: Prisma.SortOrder;
 	passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder;
 	avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+	emailVerified?: Prisma.SortOrder;
 	deezerUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
 	deezerAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder;
 	fortytwoOauthId?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -348,6 +389,7 @@ export type UserScalarWhereWithAggregatesInput = {
 	username?: Prisma.StringWithAggregatesFilter<'User'> | string;
 	passwordHash?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
 	avatarUrl?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
+	emailVerified?: Prisma.BoolWithAggregatesFilter<'User'> | boolean;
 	deezerUserId?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
 	deezerAccessToken?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
 	fortytwoOauthId?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
@@ -362,6 +404,7 @@ export type UserCreateInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -372,7 +415,15 @@ export type UserCreateInput = {
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -381,6 +432,7 @@ export type UserUncheckedCreateInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -391,7 +443,15 @@ export type UserUncheckedCreateInput = {
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUpdateInput = {
@@ -400,6 +460,7 @@ export type UserUpdateInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -410,7 +471,15 @@ export type UserUpdateInput = {
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -419,6 +488,7 @@ export type UserUncheckedUpdateInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -429,7 +499,15 @@ export type UserUncheckedUpdateInput = {
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -438,6 +516,7 @@ export type UserCreateManyInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -452,6 +531,7 @@ export type UserUpdateManyMutationInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -464,6 +544,7 @@ export type UserUncheckedUpdateManyInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -482,22 +563,13 @@ export type UserNullableScalarRelationFilter = {
 	isNot?: Prisma.UserWhereInput | null;
 };
 
-export type UserListRelationFilter = {
-	every?: Prisma.UserWhereInput;
-	some?: Prisma.UserWhereInput;
-	none?: Prisma.UserWhereInput;
-};
-
-export type UserOrderByRelationAggregateInput = {
-	_count?: Prisma.SortOrder;
-};
-
 export type UserCountOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
 	email?: Prisma.SortOrder;
 	username?: Prisma.SortOrder;
 	passwordHash?: Prisma.SortOrder;
 	avatarUrl?: Prisma.SortOrder;
+	emailVerified?: Prisma.SortOrder;
 	deezerUserId?: Prisma.SortOrder;
 	deezerAccessToken?: Prisma.SortOrder;
 	fortytwoOauthId?: Prisma.SortOrder;
@@ -516,6 +588,7 @@ export type UserMaxOrderByAggregateInput = {
 	username?: Prisma.SortOrder;
 	passwordHash?: Prisma.SortOrder;
 	avatarUrl?: Prisma.SortOrder;
+	emailVerified?: Prisma.SortOrder;
 	deezerUserId?: Prisma.SortOrder;
 	deezerAccessToken?: Prisma.SortOrder;
 	fortytwoOauthId?: Prisma.SortOrder;
@@ -530,6 +603,7 @@ export type UserMinOrderByAggregateInput = {
 	username?: Prisma.SortOrder;
 	passwordHash?: Prisma.SortOrder;
 	avatarUrl?: Prisma.SortOrder;
+	emailVerified?: Prisma.SortOrder;
 	deezerUserId?: Prisma.SortOrder;
 	deezerAccessToken?: Prisma.SortOrder;
 	fortytwoOauthId?: Prisma.SortOrder;
@@ -540,6 +614,23 @@ export type UserMinOrderByAggregateInput = {
 
 export type UserSumOrderByAggregateInput = {
 	fortytwoUserId?: Prisma.SortOrder;
+};
+
+export type UserCreateNestedOneWithoutDevicesInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutDevicesInput, Prisma.UserUncheckedCreateWithoutDevicesInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutDevicesInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutDevicesNestedInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutDevicesInput, Prisma.UserUncheckedCreateWithoutDevicesInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutDevicesInput;
+	upsert?: Prisma.UserUpsertWithoutDevicesInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDevicesInput, Prisma.UserUpdateWithoutDevicesInput>,
+		Prisma.UserUncheckedUpdateWithoutDevicesInput
+	>;
 };
 
 export type UserCreateNestedOneWithoutFollowsInput = {
@@ -687,6 +778,120 @@ export type UserUpdateOneRequiredWithoutLikesNestedInput = {
 	>;
 };
 
+export type UserCreateNestedOneWithoutOwnedEventsInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedEventsInput, Prisma.UserUncheckedCreateWithoutOwnedEventsInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedEventsInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutOwnedEventsNestedInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedEventsInput, Prisma.UserUncheckedCreateWithoutOwnedEventsInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedEventsInput;
+	upsert?: Prisma.UserUpsertWithoutOwnedEventsInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedEventsInput, Prisma.UserUpdateWithoutOwnedEventsInput>,
+		Prisma.UserUncheckedUpdateWithoutOwnedEventsInput
+	>;
+};
+
+export type UserCreateNestedOneWithoutEventMembershipsInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutEventMembershipsInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventMembershipsInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutEventMembershipsNestedInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutEventMembershipsInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventMembershipsInput;
+	upsert?: Prisma.UserUpsertWithoutEventMembershipsInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<
+			Prisma.UserUpdateToOneWithWhereWithoutEventMembershipsInput,
+			Prisma.UserUpdateWithoutEventMembershipsInput
+		>,
+		Prisma.UserUncheckedUpdateWithoutEventMembershipsInput
+	>;
+};
+
+export type UserCreateNestedOneWithoutMusicPreferenceInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedCreateWithoutMusicPreferenceInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutMusicPreferenceInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutMusicPreferenceNestedInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedCreateWithoutMusicPreferenceInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutMusicPreferenceInput;
+	upsert?: Prisma.UserUpsertWithoutMusicPreferenceInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<
+			Prisma.UserUpdateToOneWithWhereWithoutMusicPreferenceInput,
+			Prisma.UserUpdateWithoutMusicPreferenceInput
+		>,
+		Prisma.UserUncheckedUpdateWithoutMusicPreferenceInput
+	>;
+};
+
+export type UserCreateNestedOneWithoutProfileVisibilityInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedCreateWithoutProfileVisibilityInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileVisibilityInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutProfileVisibilityNestedInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedCreateWithoutProfileVisibilityInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileVisibilityInput;
+	upsert?: Prisma.UserUpsertWithoutProfileVisibilityInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<
+			Prisma.UserUpdateToOneWithWhereWithoutProfileVisibilityInput,
+			Prisma.UserUpdateWithoutProfileVisibilityInput
+		>,
+		Prisma.UserUncheckedUpdateWithoutProfileVisibilityInput
+	>;
+};
+
+export type UserCreateNestedOneWithoutOauthStatesInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutOauthStatesInput, Prisma.UserUncheckedCreateWithoutOauthStatesInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthStatesInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneWithoutOauthStatesNestedInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutOauthStatesInput, Prisma.UserUncheckedCreateWithoutOauthStatesInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthStatesInput;
+	upsert?: Prisma.UserUpsertWithoutOauthStatesInput;
+	disconnect?: Prisma.UserWhereInput | boolean;
+	delete?: Prisma.UserWhereInput | boolean;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOauthStatesInput, Prisma.UserUpdateWithoutOauthStatesInput>,
+		Prisma.UserUncheckedUpdateWithoutOauthStatesInput
+	>;
+};
+
 export type UserCreateNestedOneWithoutPlaysInput = {
 	create?: Prisma.XOR<Prisma.UserCreateWithoutPlaysInput, Prisma.UserUncheckedCreateWithoutPlaysInput>;
 	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaysInput;
@@ -704,60 +909,197 @@ export type UserUpdateOneRequiredWithoutPlaysNestedInput = {
 	>;
 };
 
-export type UserCreateNestedManyWithoutPlaylistInput = {
-	create?:
-		| Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>
-		| Prisma.UserCreateWithoutPlaylistInput[]
-		| Prisma.UserUncheckedCreateWithoutPlaylistInput[];
-	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput | Prisma.UserCreateOrConnectWithoutPlaylistInput[];
-	connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
+export type UserCreateNestedOneWithoutPlaylistInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput;
+	connect?: Prisma.UserWhereUniqueInput;
 };
 
-export type UserUncheckedCreateNestedManyWithoutPlaylistInput = {
-	create?:
-		| Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>
-		| Prisma.UserCreateWithoutPlaylistInput[]
-		| Prisma.UserUncheckedCreateWithoutPlaylistInput[];
-	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput | Prisma.UserCreateOrConnectWithoutPlaylistInput[];
-	connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
+export type UserUpdateOneRequiredWithoutPlaylistNestedInput = {
+	create?: Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput;
+	upsert?: Prisma.UserUpsertWithoutPlaylistInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlaylistInput, Prisma.UserUpdateWithoutPlaylistInput>,
+		Prisma.UserUncheckedUpdateWithoutPlaylistInput
+	>;
 };
 
-export type UserUpdateManyWithoutPlaylistNestedInput = {
-	create?:
-		| Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>
-		| Prisma.UserCreateWithoutPlaylistInput[]
-		| Prisma.UserUncheckedCreateWithoutPlaylistInput[];
-	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput | Prisma.UserCreateOrConnectWithoutPlaylistInput[];
-	upsert?:
-		Prisma.UserUpsertWithWhereUniqueWithoutPlaylistInput | Prisma.UserUpsertWithWhereUniqueWithoutPlaylistInput[];
-	set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	update?:
-		Prisma.UserUpdateWithWhereUniqueWithoutPlaylistInput | Prisma.UserUpdateWithWhereUniqueWithoutPlaylistInput[];
-	updateMany?:
-		Prisma.UserUpdateManyWithWhereWithoutPlaylistInput | Prisma.UserUpdateManyWithWhereWithoutPlaylistInput[];
-	deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[];
+export type UserCreateNestedOneWithoutPlaylistMembershipsInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutPlaylistMembershipsInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistMembershipsInput;
+	connect?: Prisma.UserWhereUniqueInput;
 };
 
-export type UserUncheckedUpdateManyWithoutPlaylistNestedInput = {
-	create?:
-		| Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>
-		| Prisma.UserCreateWithoutPlaylistInput[]
-		| Prisma.UserUncheckedCreateWithoutPlaylistInput[];
-	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistInput | Prisma.UserCreateOrConnectWithoutPlaylistInput[];
-	upsert?:
-		Prisma.UserUpsertWithWhereUniqueWithoutPlaylistInput | Prisma.UserUpsertWithWhereUniqueWithoutPlaylistInput[];
-	set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[];
-	update?:
-		Prisma.UserUpdateWithWhereUniqueWithoutPlaylistInput | Prisma.UserUpdateWithWhereUniqueWithoutPlaylistInput[];
-	updateMany?:
-		Prisma.UserUpdateManyWithWhereWithoutPlaylistInput | Prisma.UserUpdateManyWithWhereWithoutPlaylistInput[];
-	deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[];
+export type UserUpdateOneRequiredWithoutPlaylistMembershipsNestedInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutPlaylistMembershipsInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlaylistMembershipsInput;
+	upsert?: Prisma.UserUpsertWithoutPlaylistMembershipsInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<
+			Prisma.UserUpdateToOneWithWhereWithoutPlaylistMembershipsInput,
+			Prisma.UserUpdateWithoutPlaylistMembershipsInput
+		>,
+		Prisma.UserUncheckedUpdateWithoutPlaylistMembershipsInput
+	>;
+};
+
+export type UserCreateNestedOneWithoutSessionExchangesInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedCreateWithoutSessionExchangesInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionExchangesInput;
+	connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutSessionExchangesNestedInput = {
+	create?: Prisma.XOR<
+		Prisma.UserCreateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedCreateWithoutSessionExchangesInput
+	>;
+	connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionExchangesInput;
+	upsert?: Prisma.UserUpsertWithoutSessionExchangesInput;
+	connect?: Prisma.UserWhereUniqueInput;
+	update?: Prisma.XOR<
+		Prisma.XOR<
+			Prisma.UserUpdateToOneWithWhereWithoutSessionExchangesInput,
+			Prisma.UserUpdateWithoutSessionExchangesInput
+		>,
+		Prisma.UserUncheckedUpdateWithoutSessionExchangesInput
+	>;
+};
+
+export type UserCreateWithoutDevicesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutDevicesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutDevicesInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<Prisma.UserCreateWithoutDevicesInput, Prisma.UserUncheckedCreateWithoutDevicesInput>;
+};
+
+export type UserUpsertWithoutDevicesInput = {
+	update: Prisma.XOR<Prisma.UserUpdateWithoutDevicesInput, Prisma.UserUncheckedUpdateWithoutDevicesInput>;
+	create: Prisma.XOR<Prisma.UserCreateWithoutDevicesInput, Prisma.UserUncheckedCreateWithoutDevicesInput>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutDevicesInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<Prisma.UserUpdateWithoutDevicesInput, Prisma.UserUncheckedUpdateWithoutDevicesInput>;
+};
+
+export type UserUpdateWithoutDevicesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutDevicesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateWithoutFollowsInput = {
@@ -766,6 +1108,7 @@ export type UserCreateWithoutFollowsInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -775,7 +1118,15 @@ export type UserCreateWithoutFollowsInput = {
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutFollowsInput = {
@@ -784,6 +1135,7 @@ export type UserUncheckedCreateWithoutFollowsInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -793,7 +1145,15 @@ export type UserUncheckedCreateWithoutFollowsInput = {
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutFollowsInput = {
@@ -807,6 +1167,7 @@ export type UserCreateWithoutFollowersInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -816,7 +1177,15 @@ export type UserCreateWithoutFollowersInput = {
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutFollowersInput = {
@@ -825,6 +1194,7 @@ export type UserUncheckedCreateWithoutFollowersInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -834,7 +1204,15 @@ export type UserUncheckedCreateWithoutFollowersInput = {
 	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutFollowersInput = {
@@ -859,6 +1237,7 @@ export type UserUpdateWithoutFollowsInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -868,7 +1247,15 @@ export type UserUpdateWithoutFollowsInput = {
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutFollowsInput = {
@@ -877,6 +1264,7 @@ export type UserUncheckedUpdateWithoutFollowsInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -886,7 +1274,15 @@ export type UserUncheckedUpdateWithoutFollowsInput = {
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUpsertWithoutFollowersInput = {
@@ -906,6 +1302,7 @@ export type UserUpdateWithoutFollowersInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -915,7 +1312,15 @@ export type UserUpdateWithoutFollowersInput = {
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -924,6 +1329,7 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -933,7 +1339,15 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
 	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateWithoutFortytwoOauthInput = {
@@ -942,6 +1356,7 @@ export type UserCreateWithoutFortytwoOauthInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -951,7 +1366,15 @@ export type UserCreateWithoutFortytwoOauthInput = {
 	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutFortytwoOauthInput = {
@@ -960,6 +1383,7 @@ export type UserUncheckedCreateWithoutFortytwoOauthInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -969,7 +1393,15 @@ export type UserUncheckedCreateWithoutFortytwoOauthInput = {
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutFortytwoOauthInput = {
@@ -994,6 +1426,7 @@ export type UserUpdateWithoutFortytwoOauthInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1003,7 +1436,15 @@ export type UserUpdateWithoutFortytwoOauthInput = {
 	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutFortytwoOauthInput = {
@@ -1012,6 +1453,7 @@ export type UserUncheckedUpdateWithoutFortytwoOauthInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1021,7 +1463,15 @@ export type UserUncheckedUpdateWithoutFortytwoOauthInput = {
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateWithoutGoogleOauthInput = {
@@ -1030,6 +1480,7 @@ export type UserCreateWithoutGoogleOauthInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -1039,7 +1490,15 @@ export type UserCreateWithoutGoogleOauthInput = {
 	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutGoogleOauthInput = {
@@ -1048,6 +1507,7 @@ export type UserUncheckedCreateWithoutGoogleOauthInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -1057,7 +1517,15 @@ export type UserUncheckedCreateWithoutGoogleOauthInput = {
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutGoogleOauthInput = {
@@ -1082,6 +1550,7 @@ export type UserUpdateWithoutGoogleOauthInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1091,7 +1560,15 @@ export type UserUpdateWithoutGoogleOauthInput = {
 	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutGoogleOauthInput = {
@@ -1100,6 +1577,7 @@ export type UserUncheckedUpdateWithoutGoogleOauthInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1109,7 +1587,15 @@ export type UserUncheckedUpdateWithoutGoogleOauthInput = {
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateWithoutLikesInput = {
@@ -1118,6 +1604,7 @@ export type UserCreateWithoutLikesInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -1127,7 +1614,15 @@ export type UserCreateWithoutLikesInput = {
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -1136,6 +1631,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -1145,7 +1641,15 @@ export type UserUncheckedCreateWithoutLikesInput = {
 	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -1170,6 +1674,7 @@ export type UserUpdateWithoutLikesInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1179,7 +1684,15 @@ export type UserUpdateWithoutLikesInput = {
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -1188,6 +1701,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1197,15 +1711,24 @@ export type UserUncheckedUpdateWithoutLikesInput = {
 	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
-export type UserCreateWithoutPlaysInput = {
+export type UserCreateWithoutOwnedEventsInput = {
 	id?: string;
 	email: string;
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -1213,17 +1736,26 @@ export type UserCreateWithoutPlaysInput = {
 	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
 	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
-	playlist?: Prisma.PlaylistCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
-export type UserUncheckedCreateWithoutPlaysInput = {
+export type UserUncheckedCreateWithoutOwnedEventsInput = {
 	id?: string;
 	email: string;
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -1233,7 +1765,671 @@ export type UserUncheckedCreateWithoutPlaysInput = {
 	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
-	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutOwnedEventsInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<Prisma.UserCreateWithoutOwnedEventsInput, Prisma.UserUncheckedCreateWithoutOwnedEventsInput>;
+};
+
+export type UserUpsertWithoutOwnedEventsInput = {
+	update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedEventsInput, Prisma.UserUncheckedUpdateWithoutOwnedEventsInput>;
+	create: Prisma.XOR<Prisma.UserCreateWithoutOwnedEventsInput, Prisma.UserUncheckedCreateWithoutOwnedEventsInput>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutOwnedEventsInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedEventsInput, Prisma.UserUncheckedUpdateWithoutOwnedEventsInput>;
+};
+
+export type UserUpdateWithoutOwnedEventsInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutOwnedEventsInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserCreateWithoutEventMembershipsInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutEventMembershipsInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutEventMembershipsInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutEventMembershipsInput
+	>;
+};
+
+export type UserUpsertWithoutEventMembershipsInput = {
+	update: Prisma.XOR<
+		Prisma.UserUpdateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedUpdateWithoutEventMembershipsInput
+	>;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutEventMembershipsInput
+	>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutEventMembershipsInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<
+		Prisma.UserUpdateWithoutEventMembershipsInput,
+		Prisma.UserUncheckedUpdateWithoutEventMembershipsInput
+	>;
+};
+
+export type UserUpdateWithoutEventMembershipsInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutEventMembershipsInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserCreateWithoutMusicPreferenceInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutMusicPreferenceInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutMusicPreferenceInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedCreateWithoutMusicPreferenceInput
+	>;
+};
+
+export type UserUpsertWithoutMusicPreferenceInput = {
+	update: Prisma.XOR<
+		Prisma.UserUpdateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedUpdateWithoutMusicPreferenceInput
+	>;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedCreateWithoutMusicPreferenceInput
+	>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutMusicPreferenceInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<
+		Prisma.UserUpdateWithoutMusicPreferenceInput,
+		Prisma.UserUncheckedUpdateWithoutMusicPreferenceInput
+	>;
+};
+
+export type UserUpdateWithoutMusicPreferenceInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutMusicPreferenceInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserCreateWithoutProfileVisibilityInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutProfileVisibilityInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutProfileVisibilityInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedCreateWithoutProfileVisibilityInput
+	>;
+};
+
+export type UserUpsertWithoutProfileVisibilityInput = {
+	update: Prisma.XOR<
+		Prisma.UserUpdateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedUpdateWithoutProfileVisibilityInput
+	>;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedCreateWithoutProfileVisibilityInput
+	>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutProfileVisibilityInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<
+		Prisma.UserUpdateWithoutProfileVisibilityInput,
+		Prisma.UserUncheckedUpdateWithoutProfileVisibilityInput
+	>;
+};
+
+export type UserUpdateWithoutProfileVisibilityInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutProfileVisibilityInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserCreateWithoutOauthStatesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutOauthStatesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutOauthStatesInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<Prisma.UserCreateWithoutOauthStatesInput, Prisma.UserUncheckedCreateWithoutOauthStatesInput>;
+};
+
+export type UserUpsertWithoutOauthStatesInput = {
+	update: Prisma.XOR<Prisma.UserUpdateWithoutOauthStatesInput, Prisma.UserUncheckedUpdateWithoutOauthStatesInput>;
+	create: Prisma.XOR<Prisma.UserCreateWithoutOauthStatesInput, Prisma.UserUncheckedCreateWithoutOauthStatesInput>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutOauthStatesInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<Prisma.UserUpdateWithoutOauthStatesInput, Prisma.UserUncheckedUpdateWithoutOauthStatesInput>;
+};
+
+export type UserUpdateWithoutOauthStatesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutOauthStatesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutPlaysInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutPlaysInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutPlaysInput = {
@@ -1258,6 +2454,7 @@ export type UserUpdateWithoutPlaysInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1267,7 +2464,15 @@ export type UserUpdateWithoutPlaysInput = {
 	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutPlaysInput = {
@@ -1276,6 +2481,7 @@ export type UserUncheckedUpdateWithoutPlaysInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1285,7 +2491,15 @@ export type UserUncheckedUpdateWithoutPlaysInput = {
 	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
-	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserCreateWithoutPlaylistInput = {
@@ -1294,6 +2508,7 @@ export type UserCreateWithoutPlaylistInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoUserId?: number | null;
@@ -1304,6 +2519,14 @@ export type UserCreateWithoutPlaylistInput = {
 	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
 	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
 	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserUncheckedCreateWithoutPlaylistInput = {
@@ -1312,6 +2535,7 @@ export type UserUncheckedCreateWithoutPlaylistInput = {
 	username: string;
 	passwordHash?: string | null;
 	avatarUrl?: string | null;
+	emailVerified?: boolean;
 	deezerUserId?: string | null;
 	deezerAccessToken?: string | null;
 	fortytwoOauthId?: string | null;
@@ -1322,6 +2546,14 @@ export type UserUncheckedCreateWithoutPlaylistInput = {
 	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
 	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
 	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
 };
 
 export type UserCreateOrConnectWithoutPlaylistInput = {
@@ -1329,37 +2561,15 @@ export type UserCreateOrConnectWithoutPlaylistInput = {
 	create: Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>;
 };
 
-export type UserUpsertWithWhereUniqueWithoutPlaylistInput = {
-	where: Prisma.UserWhereUniqueInput;
+export type UserUpsertWithoutPlaylistInput = {
 	update: Prisma.XOR<Prisma.UserUpdateWithoutPlaylistInput, Prisma.UserUncheckedUpdateWithoutPlaylistInput>;
 	create: Prisma.XOR<Prisma.UserCreateWithoutPlaylistInput, Prisma.UserUncheckedCreateWithoutPlaylistInput>;
+	where?: Prisma.UserWhereInput;
 };
 
-export type UserUpdateWithWhereUniqueWithoutPlaylistInput = {
-	where: Prisma.UserWhereUniqueInput;
+export type UserUpdateToOneWithWhereWithoutPlaylistInput = {
+	where?: Prisma.UserWhereInput;
 	data: Prisma.XOR<Prisma.UserUpdateWithoutPlaylistInput, Prisma.UserUncheckedUpdateWithoutPlaylistInput>;
-};
-
-export type UserUpdateManyWithWhereWithoutPlaylistInput = {
-	where: Prisma.UserScalarWhereInput;
-	data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutPlaylistInput>;
-};
-
-export type UserScalarWhereInput = {
-	AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[];
-	OR?: Prisma.UserScalarWhereInput[];
-	NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[];
-	id?: Prisma.StringFilter<'User'> | string;
-	email?: Prisma.StringFilter<'User'> | string;
-	username?: Prisma.StringFilter<'User'> | string;
-	passwordHash?: Prisma.StringNullableFilter<'User'> | string | null;
-	avatarUrl?: Prisma.StringNullableFilter<'User'> | string | null;
-	deezerUserId?: Prisma.StringNullableFilter<'User'> | string | null;
-	deezerAccessToken?: Prisma.StringNullableFilter<'User'> | string | null;
-	fortytwoOauthId?: Prisma.StringNullableFilter<'User'> | string | null;
-	fortytwoUserId?: Prisma.IntNullableFilter<'User'> | number | null;
-	googleOauthId?: Prisma.StringNullableFilter<'User'> | string | null;
-	createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
 };
 
 export type UserUpdateWithoutPlaylistInput = {
@@ -1368,6 +2578,7 @@ export type UserUpdateWithoutPlaylistInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
@@ -1378,6 +2589,14 @@ export type UserUpdateWithoutPlaylistInput = {
 	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
 	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
 	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutPlaylistInput = {
@@ -1386,6 +2605,7 @@ export type UserUncheckedUpdateWithoutPlaylistInput = {
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1396,20 +2616,286 @@ export type UserUncheckedUpdateWithoutPlaylistInput = {
 	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
 	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
 	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
-export type UserUncheckedUpdateManyWithoutPlaylistInput = {
+export type UserCreateWithoutPlaylistMembershipsInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutPlaylistMembershipsInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedCreateNestedManyWithoutUserInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutPlaylistMembershipsInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutPlaylistMembershipsInput
+	>;
+};
+
+export type UserUpsertWithoutPlaylistMembershipsInput = {
+	update: Prisma.XOR<
+		Prisma.UserUpdateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedUpdateWithoutPlaylistMembershipsInput
+	>;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedCreateWithoutPlaylistMembershipsInput
+	>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutPlaylistMembershipsInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<
+		Prisma.UserUpdateWithoutPlaylistMembershipsInput,
+		Prisma.UserUncheckedUpdateWithoutPlaylistMembershipsInput
+	>;
+};
+
+export type UserUpdateWithoutPlaylistMembershipsInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	email?: Prisma.StringFieldUpdateOperationsInput | string;
 	username?: Prisma.StringFieldUpdateOperationsInput | string;
 	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutPlaylistMembershipsInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
 	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	sessionExchanges?: Prisma.SessionExchangeUncheckedUpdateManyWithoutUserNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserCreateWithoutSessionExchangesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoUserId?: number | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryCreateNestedManyWithoutUserInput;
+	fortytwoOauth?: Prisma.FortytwoOauthCreateNestedOneWithoutUserInput;
+	googleOauth?: Prisma.GoogleOauthCreateNestedOneWithoutUserInput;
+	playlist?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceCreateNestedManyWithoutOwnerInput;
+	musicPreference?: Prisma.MusicPreferenceCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserUncheckedCreateWithoutSessionExchangesInput = {
+	id?: string;
+	email: string;
+	username: string;
+	passwordHash?: string | null;
+	avatarUrl?: string | null;
+	emailVerified?: boolean;
+	deezerUserId?: string | null;
+	deezerAccessToken?: string | null;
+	fortytwoOauthId?: string | null;
+	fortytwoUserId?: number | null;
+	googleOauthId?: string | null;
+	createdAt?: Date | string;
+	follows?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput;
+	followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput;
+	likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput;
+	plays?: Prisma.PlayHistoryUncheckedCreateNestedManyWithoutUserInput;
+	playlist?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput;
+	ownedEvents?: Prisma.MusicEventUncheckedCreateNestedManyWithoutOwnerInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedCreateNestedManyWithoutUserInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedCreateNestedManyWithoutUserInput;
+	devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutOwnerInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedCreateNestedOneWithoutUserInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedCreateNestedManyWithoutUserInput;
+	oauthStates?: Prisma.OauthStateUncheckedCreateNestedManyWithoutLinkUserInput;
+};
+
+export type UserCreateOrConnectWithoutSessionExchangesInput = {
+	where: Prisma.UserWhereUniqueInput;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedCreateWithoutSessionExchangesInput
+	>;
+};
+
+export type UserUpsertWithoutSessionExchangesInput = {
+	update: Prisma.XOR<
+		Prisma.UserUpdateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedUpdateWithoutSessionExchangesInput
+	>;
+	create: Prisma.XOR<
+		Prisma.UserCreateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedCreateWithoutSessionExchangesInput
+	>;
+	where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutSessionExchangesInput = {
+	where?: Prisma.UserWhereInput;
+	data: Prisma.XOR<
+		Prisma.UserUpdateWithoutSessionExchangesInput,
+		Prisma.UserUncheckedUpdateWithoutSessionExchangesInput
+	>;
+};
+
+export type UserUpdateWithoutSessionExchangesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUpdateManyWithoutUserNestedInput;
+	fortytwoOauth?: Prisma.FortytwoOauthUpdateOneWithoutUserNestedInput;
+	googleOauth?: Prisma.GoogleOauthUpdateOneWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUpdateManyWithoutOwnerNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUpdateManyWithoutLinkUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutSessionExchangesInput = {
+	id?: Prisma.StringFieldUpdateOperationsInput | string;
+	email?: Prisma.StringFieldUpdateOperationsInput | string;
+	username?: Prisma.StringFieldUpdateOperationsInput | string;
+	passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+	deezerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	deezerAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	fortytwoUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+	googleOauthId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	follows?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput;
+	followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput;
+	likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput;
+	plays?: Prisma.PlayHistoryUncheckedUpdateManyWithoutUserNestedInput;
+	playlist?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput;
+	ownedEvents?: Prisma.MusicEventUncheckedUpdateManyWithoutOwnerNestedInput;
+	eventMemberships?: Prisma.MusicEventMemberUncheckedUpdateManyWithoutUserNestedInput;
+	playlistMemberships?: Prisma.PlaylistMemberUncheckedUpdateManyWithoutUserNestedInput;
+	devices?: Prisma.DeviceUncheckedUpdateManyWithoutOwnerNestedInput;
+	musicPreference?: Prisma.MusicPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+	profileVisibility?: Prisma.ProfileVisibilityUncheckedUpdateManyWithoutUserNestedInput;
+	oauthStates?: Prisma.OauthStateUncheckedUpdateManyWithoutLinkUserNestedInput;
 };
 
 /**
@@ -1422,6 +2908,13 @@ export type UserCountOutputType = {
 	likes: number;
 	plays: number;
 	playlist: number;
+	ownedEvents: number;
+	eventMemberships: number;
+	playlistMemberships: number;
+	devices: number;
+	sessionExchanges: number;
+	profileVisibility: number;
+	oauthStates: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -1432,6 +2925,13 @@ export type UserCountOutputTypeSelect<
 	likes?: boolean | UserCountOutputTypeCountLikesArgs;
 	plays?: boolean | UserCountOutputTypeCountPlaysArgs;
 	playlist?: boolean | UserCountOutputTypeCountPlaylistArgs;
+	ownedEvents?: boolean | UserCountOutputTypeCountOwnedEventsArgs;
+	eventMemberships?: boolean | UserCountOutputTypeCountEventMembershipsArgs;
+	playlistMemberships?: boolean | UserCountOutputTypeCountPlaylistMembershipsArgs;
+	devices?: boolean | UserCountOutputTypeCountDevicesArgs;
+	sessionExchanges?: boolean | UserCountOutputTypeCountSessionExchangesArgs;
+	profileVisibility?: boolean | UserCountOutputTypeCountProfileVisibilityArgs;
+	oauthStates?: boolean | UserCountOutputTypeCountOauthStatesArgs;
 };
 
 /**
@@ -1491,6 +2991,69 @@ export type UserCountOutputTypeCountPlaylistArgs<
 	where?: Prisma.PlaylistWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnedEventsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.MusicEventWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEventMembershipsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.MusicEventMemberWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPlaylistMembershipsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.PlaylistMemberWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDevicesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.DeviceWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSessionExchangesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.SessionExchangeWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProfileVisibilityArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.ProfileVisibilityWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOauthStatesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	where?: Prisma.OauthStateWhereInput;
+};
+
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
 	runtime.Types.Extensions.GetSelect<
 		{
@@ -1499,6 +3062,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 			username?: boolean;
 			passwordHash?: boolean;
 			avatarUrl?: boolean;
+			emailVerified?: boolean;
 			deezerUserId?: boolean;
 			deezerAccessToken?: boolean;
 			fortytwoOauthId?: boolean;
@@ -1512,6 +3076,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 			fortytwoOauth?: boolean | Prisma.User$fortytwoOauthArgs<ExtArgs>;
 			googleOauth?: boolean | Prisma.User$googleOauthArgs<ExtArgs>;
 			playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>;
+			ownedEvents?: boolean | Prisma.User$ownedEventsArgs<ExtArgs>;
+			eventMemberships?: boolean | Prisma.User$eventMembershipsArgs<ExtArgs>;
+			playlistMemberships?: boolean | Prisma.User$playlistMembershipsArgs<ExtArgs>;
+			devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
+			sessionExchanges?: boolean | Prisma.User$sessionExchangesArgs<ExtArgs>;
+			musicPreference?: boolean | Prisma.User$musicPreferenceArgs<ExtArgs>;
+			profileVisibility?: boolean | Prisma.User$profileVisibilityArgs<ExtArgs>;
+			oauthStates?: boolean | Prisma.User$oauthStatesArgs<ExtArgs>;
 			_count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 		},
 		ExtArgs['result']['user']
@@ -1526,6 +3098,7 @@ export type UserSelectCreateManyAndReturn<
 		username?: boolean;
 		passwordHash?: boolean;
 		avatarUrl?: boolean;
+		emailVerified?: boolean;
 		deezerUserId?: boolean;
 		deezerAccessToken?: boolean;
 		fortytwoOauthId?: boolean;
@@ -1547,6 +3120,7 @@ export type UserSelectUpdateManyAndReturn<
 		username?: boolean;
 		passwordHash?: boolean;
 		avatarUrl?: boolean;
+		emailVerified?: boolean;
 		deezerUserId?: boolean;
 		deezerAccessToken?: boolean;
 		fortytwoOauthId?: boolean;
@@ -1565,6 +3139,7 @@ export type UserSelectScalar = {
 	username?: boolean;
 	passwordHash?: boolean;
 	avatarUrl?: boolean;
+	emailVerified?: boolean;
 	deezerUserId?: boolean;
 	deezerAccessToken?: boolean;
 	fortytwoOauthId?: boolean;
@@ -1580,6 +3155,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 		| 'username'
 		| 'passwordHash'
 		| 'avatarUrl'
+		| 'emailVerified'
 		| 'deezerUserId'
 		| 'deezerAccessToken'
 		| 'fortytwoOauthId'
@@ -1597,6 +3173,14 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 		fortytwoOauth?: boolean | Prisma.User$fortytwoOauthArgs<ExtArgs>;
 		googleOauth?: boolean | Prisma.User$googleOauthArgs<ExtArgs>;
 		playlist?: boolean | Prisma.User$playlistArgs<ExtArgs>;
+		ownedEvents?: boolean | Prisma.User$ownedEventsArgs<ExtArgs>;
+		eventMemberships?: boolean | Prisma.User$eventMembershipsArgs<ExtArgs>;
+		playlistMemberships?: boolean | Prisma.User$playlistMembershipsArgs<ExtArgs>;
+		devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
+		sessionExchanges?: boolean | Prisma.User$sessionExchangesArgs<ExtArgs>;
+		musicPreference?: boolean | Prisma.User$musicPreferenceArgs<ExtArgs>;
+		profileVisibility?: boolean | Prisma.User$profileVisibilityArgs<ExtArgs>;
+		oauthStates?: boolean | Prisma.User$oauthStatesArgs<ExtArgs>;
 		_count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 	};
 export type UserIncludeCreateManyAndReturn<
@@ -1623,6 +3207,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 			fortytwoOauth: Prisma.$FortytwoOauthPayload<ExtArgs> | null;
 			googleOauth: Prisma.$GoogleOauthPayload<ExtArgs> | null;
 			playlist: Prisma.$PlaylistPayload<ExtArgs>[];
+			ownedEvents: Prisma.$MusicEventPayload<ExtArgs>[];
+			eventMemberships: Prisma.$MusicEventMemberPayload<ExtArgs>[];
+			playlistMemberships: Prisma.$PlaylistMemberPayload<ExtArgs>[];
+			devices: Prisma.$DevicePayload<ExtArgs>[];
+			sessionExchanges: Prisma.$SessionExchangePayload<ExtArgs>[];
+			musicPreference: Prisma.$MusicPreferencePayload<ExtArgs> | null;
+			profileVisibility: Prisma.$ProfileVisibilityPayload<ExtArgs>[];
+			oauthStates: Prisma.$OauthStatePayload<ExtArgs>[];
 		};
 		scalars: runtime.Types.Extensions.GetPayloadResult<
 			{
@@ -1631,6 +3223,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 				username: string;
 				passwordHash: string | null;
 				avatarUrl: string | null;
+				emailVerified: boolean;
 				deezerUserId: string | null;
 				deezerAccessToken: string | null;
 				fortytwoOauthId: string | null;
@@ -2168,6 +3761,56 @@ export interface Prisma__UserClient<
 	): Prisma.PrismaPromise<
 		runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
 	>;
+	ownedEvents<T extends Prisma.User$ownedEventsArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$ownedEventsArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$MusicEventPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
+	eventMemberships<T extends Prisma.User$eventMembershipsArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$eventMembershipsArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		| runtime.Types.Result.GetResult<Prisma.$MusicEventMemberPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
+		| Null
+	>;
+	playlistMemberships<T extends Prisma.User$playlistMembershipsArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$playlistMembershipsArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$PlaylistMemberPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
+	devices<T extends Prisma.User$devicesArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$devicesArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
+	sessionExchanges<T extends Prisma.User$sessionExchangesArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$sessionExchangesArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$SessionExchangePayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
+	musicPreference<T extends Prisma.User$musicPreferenceArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$musicPreferenceArgs<ExtArgs>>
+	): Prisma.Prisma__MusicPreferenceClient<
+		runtime.Types.Result.GetResult<
+			Prisma.$MusicPreferencePayload<ExtArgs>,
+			T,
+			'findUniqueOrThrow',
+			GlobalOmitOptions
+		> | null,
+		null,
+		ExtArgs,
+		GlobalOmitOptions
+	>;
+	profileVisibility<T extends Prisma.User$profileVisibilityArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$profileVisibilityArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		| runtime.Types.Result.GetResult<Prisma.$ProfileVisibilityPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
+		| Null
+	>;
+	oauthStates<T extends Prisma.User$oauthStatesArgs<ExtArgs> = {}>(
+		args?: Prisma.Subset<T, Prisma.User$oauthStatesArgs<ExtArgs>>
+	): Prisma.PrismaPromise<
+		runtime.Types.Result.GetResult<Prisma.$OauthStatePayload<ExtArgs>, T, 'findMany', GlobalOmitOptions> | Null
+	>;
 	/**
 	 * Attaches callbacks for the resolution and/or rejection of the Promise.
 	 * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2204,6 +3847,7 @@ export interface UserFieldRefs {
 	readonly username: Prisma.FieldRef<'User', 'String'>;
 	readonly passwordHash: Prisma.FieldRef<'User', 'String'>;
 	readonly avatarUrl: Prisma.FieldRef<'User', 'String'>;
+	readonly emailVerified: Prisma.FieldRef<'User', 'Boolean'>;
 	readonly deezerUserId: Prisma.FieldRef<'User', 'String'>;
 	readonly deezerAccessToken: Prisma.FieldRef<'User', 'String'>;
 	readonly fortytwoOauthId: Prisma.FieldRef<'User', 'String'>;
@@ -2807,6 +4451,209 @@ export type User$playlistArgs<
 	take?: number;
 	skip?: number;
 	distinct?: Prisma.PlaylistScalarFieldEnum | Prisma.PlaylistScalarFieldEnum[];
+};
+
+/**
+ * User.ownedEvents
+ */
+export type User$ownedEventsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the MusicEvent
+	 */
+	select?: Prisma.MusicEventSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the MusicEvent
+	 */
+	omit?: Prisma.MusicEventOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.MusicEventInclude<ExtArgs> | null;
+	where?: Prisma.MusicEventWhereInput;
+	orderBy?: Prisma.MusicEventOrderByWithRelationInput | Prisma.MusicEventOrderByWithRelationInput[];
+	cursor?: Prisma.MusicEventWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.MusicEventScalarFieldEnum | Prisma.MusicEventScalarFieldEnum[];
+};
+
+/**
+ * User.eventMemberships
+ */
+export type User$eventMembershipsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the MusicEventMember
+	 */
+	select?: Prisma.MusicEventMemberSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the MusicEventMember
+	 */
+	omit?: Prisma.MusicEventMemberOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.MusicEventMemberInclude<ExtArgs> | null;
+	where?: Prisma.MusicEventMemberWhereInput;
+	orderBy?: Prisma.MusicEventMemberOrderByWithRelationInput | Prisma.MusicEventMemberOrderByWithRelationInput[];
+	cursor?: Prisma.MusicEventMemberWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.MusicEventMemberScalarFieldEnum | Prisma.MusicEventMemberScalarFieldEnum[];
+};
+
+/**
+ * User.playlistMemberships
+ */
+export type User$playlistMembershipsArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the PlaylistMember
+	 */
+	select?: Prisma.PlaylistMemberSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the PlaylistMember
+	 */
+	omit?: Prisma.PlaylistMemberOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.PlaylistMemberInclude<ExtArgs> | null;
+	where?: Prisma.PlaylistMemberWhereInput;
+	orderBy?: Prisma.PlaylistMemberOrderByWithRelationInput | Prisma.PlaylistMemberOrderByWithRelationInput[];
+	cursor?: Prisma.PlaylistMemberWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.PlaylistMemberScalarFieldEnum | Prisma.PlaylistMemberScalarFieldEnum[];
+};
+
+/**
+ * User.devices
+ */
+export type User$devicesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the Device
+	 */
+	select?: Prisma.DeviceSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the Device
+	 */
+	omit?: Prisma.DeviceOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.DeviceInclude<ExtArgs> | null;
+	where?: Prisma.DeviceWhereInput;
+	orderBy?: Prisma.DeviceOrderByWithRelationInput | Prisma.DeviceOrderByWithRelationInput[];
+	cursor?: Prisma.DeviceWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.DeviceScalarFieldEnum | Prisma.DeviceScalarFieldEnum[];
+};
+
+/**
+ * User.sessionExchanges
+ */
+export type User$sessionExchangesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the SessionExchange
+	 */
+	select?: Prisma.SessionExchangeSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the SessionExchange
+	 */
+	omit?: Prisma.SessionExchangeOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.SessionExchangeInclude<ExtArgs> | null;
+	where?: Prisma.SessionExchangeWhereInput;
+	orderBy?: Prisma.SessionExchangeOrderByWithRelationInput | Prisma.SessionExchangeOrderByWithRelationInput[];
+	cursor?: Prisma.SessionExchangeWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.SessionExchangeScalarFieldEnum | Prisma.SessionExchangeScalarFieldEnum[];
+};
+
+/**
+ * User.musicPreference
+ */
+export type User$musicPreferenceArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the MusicPreference
+	 */
+	select?: Prisma.MusicPreferenceSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the MusicPreference
+	 */
+	omit?: Prisma.MusicPreferenceOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.MusicPreferenceInclude<ExtArgs> | null;
+	where?: Prisma.MusicPreferenceWhereInput;
+};
+
+/**
+ * User.profileVisibility
+ */
+export type User$profileVisibilityArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the ProfileVisibility
+	 */
+	select?: Prisma.ProfileVisibilitySelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the ProfileVisibility
+	 */
+	omit?: Prisma.ProfileVisibilityOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.ProfileVisibilityInclude<ExtArgs> | null;
+	where?: Prisma.ProfileVisibilityWhereInput;
+	orderBy?: Prisma.ProfileVisibilityOrderByWithRelationInput | Prisma.ProfileVisibilityOrderByWithRelationInput[];
+	cursor?: Prisma.ProfileVisibilityWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.ProfileVisibilityScalarFieldEnum | Prisma.ProfileVisibilityScalarFieldEnum[];
+};
+
+/**
+ * User.oauthStates
+ */
+export type User$oauthStatesArgs<
+	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+	/**
+	 * Select specific fields to fetch from the OauthState
+	 */
+	select?: Prisma.OauthStateSelect<ExtArgs> | null;
+	/**
+	 * Omit specific fields from the OauthState
+	 */
+	omit?: Prisma.OauthStateOmit<ExtArgs> | null;
+	/**
+	 * Choose, which related nodes to fetch as well
+	 */
+	include?: Prisma.OauthStateInclude<ExtArgs> | null;
+	where?: Prisma.OauthStateWhereInput;
+	orderBy?: Prisma.OauthStateOrderByWithRelationInput | Prisma.OauthStateOrderByWithRelationInput[];
+	cursor?: Prisma.OauthStateWhereUniqueInput;
+	take?: number;
+	skip?: number;
+	distinct?: Prisma.OauthStateScalarFieldEnum | Prisma.OauthStateScalarFieldEnum[];
 };
 
 /**

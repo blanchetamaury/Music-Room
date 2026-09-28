@@ -4,6 +4,7 @@ model User {
   username          String
   passwordHash      String?
   avatarUrl         String?
+  emailVerified     Boolean        @default(false)
   deezerUserId      String?        @unique
   deezerAccessToken String?
   fortytwoOauthId   String?        @unique
@@ -17,6 +18,14 @@ model User {
   fortytwoOauth     FortytwoOauth? @relation(fields: [fortytwoOauthId], references: [id], onDelete: Cascade)
   googleOauth       GoogleOauth?   @relation(fields: [googleOauthId], references: [id], onDelete: Cascade)
   playlist          Playlist[]     @relation("PlaylistToUser")
+  ownedEvents       MusicEvent[]   @relation("EventOwner")
+  eventMemberships  MusicEventMember[]
+  playlistMemberships PlaylistMember[]
+  devices           Device[]
+  sessionExchanges  SessionExchange[]
+  musicPreference   MusicPreference?
+  profileVisibility ProfileVisibility[]
+  oauthStates       OauthState[]
 
   @@map("users")
 }

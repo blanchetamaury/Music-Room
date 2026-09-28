@@ -26,44 +26,56 @@ export type AggregateResetPassword = {
 export type ResetPasswordMinAggregateOutputType = {
 	id: string | null;
 	mail: string | null;
-	code: string | null;
-	created_at: Date | null;
+	codeHash: string | null;
+	expiresAt: Date | null;
+	usedAt: Date | null;
+	createdAt: Date | null;
 };
 
 export type ResetPasswordMaxAggregateOutputType = {
 	id: string | null;
 	mail: string | null;
-	code: string | null;
-	created_at: Date | null;
+	codeHash: string | null;
+	expiresAt: Date | null;
+	usedAt: Date | null;
+	createdAt: Date | null;
 };
 
 export type ResetPasswordCountAggregateOutputType = {
 	id: number;
 	mail: number;
-	code: number;
-	created_at: number;
+	codeHash: number;
+	expiresAt: number;
+	usedAt: number;
+	createdAt: number;
 	_all: number;
 };
 
 export type ResetPasswordMinAggregateInputType = {
 	id?: true;
 	mail?: true;
-	code?: true;
-	created_at?: true;
+	codeHash?: true;
+	expiresAt?: true;
+	usedAt?: true;
+	createdAt?: true;
 };
 
 export type ResetPasswordMaxAggregateInputType = {
 	id?: true;
 	mail?: true;
-	code?: true;
-	created_at?: true;
+	codeHash?: true;
+	expiresAt?: true;
+	usedAt?: true;
+	createdAt?: true;
 };
 
 export type ResetPasswordCountAggregateInputType = {
 	id?: true;
 	mail?: true;
-	code?: true;
-	created_at?: true;
+	codeHash?: true;
+	expiresAt?: true;
+	usedAt?: true;
+	createdAt?: true;
 	_all?: true;
 };
 
@@ -143,8 +155,10 @@ export type ResetPasswordGroupByArgs<
 export type ResetPasswordGroupByOutputType = {
 	id: string;
 	mail: string;
-	code: string;
-	created_at: Date;
+	codeHash: string;
+	expiresAt: Date;
+	usedAt: Date | null;
+	createdAt: Date;
 	_count: ResetPasswordCountAggregateOutputType | null;
 	_min: ResetPasswordMinAggregateOutputType | null;
 	_max: ResetPasswordMaxAggregateOutputType | null;
@@ -168,36 +182,43 @@ export type ResetPasswordWhereInput = {
 	NOT?: Prisma.ResetPasswordWhereInput | Prisma.ResetPasswordWhereInput[];
 	id?: Prisma.StringFilter<'ResetPassword'> | string;
 	mail?: Prisma.StringFilter<'ResetPassword'> | string;
-	code?: Prisma.StringFilter<'ResetPassword'> | string;
-	created_at?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
+	codeHash?: Prisma.StringFilter<'ResetPassword'> | string;
+	expiresAt?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
+	usedAt?: Prisma.DateTimeNullableFilter<'ResetPassword'> | Date | string | null;
+	createdAt?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
 };
 
 export type ResetPasswordOrderByWithRelationInput = {
 	id?: Prisma.SortOrder;
 	mail?: Prisma.SortOrder;
-	code?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	codeHash?: Prisma.SortOrder;
+	expiresAt?: Prisma.SortOrder;
+	usedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
 };
 
 export type ResetPasswordWhereUniqueInput = Prisma.AtLeast<
 	{
 		id?: string;
-		mail_code?: Prisma.ResetPasswordMailCodeCompoundUniqueInput;
 		AND?: Prisma.ResetPasswordWhereInput | Prisma.ResetPasswordWhereInput[];
 		OR?: Prisma.ResetPasswordWhereInput[];
 		NOT?: Prisma.ResetPasswordWhereInput | Prisma.ResetPasswordWhereInput[];
 		mail?: Prisma.StringFilter<'ResetPassword'> | string;
-		code?: Prisma.StringFilter<'ResetPassword'> | string;
-		created_at?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
+		codeHash?: Prisma.StringFilter<'ResetPassword'> | string;
+		expiresAt?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
+		usedAt?: Prisma.DateTimeNullableFilter<'ResetPassword'> | Date | string | null;
+		createdAt?: Prisma.DateTimeFilter<'ResetPassword'> | Date | string;
 	},
-	'id' | 'mail_code'
+	'id'
 >;
 
 export type ResetPasswordOrderByWithAggregationInput = {
 	id?: Prisma.SortOrder;
 	mail?: Prisma.SortOrder;
-	code?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	codeHash?: Prisma.SortOrder;
+	expiresAt?: Prisma.SortOrder;
+	usedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
 	_count?: Prisma.ResetPasswordCountOrderByAggregateInput;
 	_max?: Prisma.ResetPasswordMaxOrderByAggregateInput;
 	_min?: Prisma.ResetPasswordMinOrderByAggregateInput;
@@ -209,83 +230,100 @@ export type ResetPasswordScalarWhereWithAggregatesInput = {
 	NOT?: Prisma.ResetPasswordScalarWhereWithAggregatesInput | Prisma.ResetPasswordScalarWhereWithAggregatesInput[];
 	id?: Prisma.StringWithAggregatesFilter<'ResetPassword'> | string;
 	mail?: Prisma.StringWithAggregatesFilter<'ResetPassword'> | string;
-	code?: Prisma.StringWithAggregatesFilter<'ResetPassword'> | string;
-	created_at?: Prisma.DateTimeWithAggregatesFilter<'ResetPassword'> | Date | string;
+	codeHash?: Prisma.StringWithAggregatesFilter<'ResetPassword'> | string;
+	expiresAt?: Prisma.DateTimeWithAggregatesFilter<'ResetPassword'> | Date | string;
+	usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'ResetPassword'> | Date | string | null;
+	createdAt?: Prisma.DateTimeWithAggregatesFilter<'ResetPassword'> | Date | string;
 };
 
 export type ResetPasswordCreateInput = {
 	id?: string;
 	mail: string;
-	code: string;
-	created_at?: Date | string;
+	codeHash: string;
+	expiresAt: Date | string;
+	usedAt?: Date | string | null;
+	createdAt?: Date | string;
 };
 
 export type ResetPasswordUncheckedCreateInput = {
 	id?: string;
 	mail: string;
-	code: string;
-	created_at?: Date | string;
+	codeHash: string;
+	expiresAt: Date | string;
+	usedAt?: Date | string | null;
+	createdAt?: Date | string;
 };
 
 export type ResetPasswordUpdateInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	mail?: Prisma.StringFieldUpdateOperationsInput | string;
-	code?: Prisma.StringFieldUpdateOperationsInput | string;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	codeHash?: Prisma.StringFieldUpdateOperationsInput | string;
+	expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ResetPasswordUncheckedUpdateInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	mail?: Prisma.StringFieldUpdateOperationsInput | string;
-	code?: Prisma.StringFieldUpdateOperationsInput | string;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	codeHash?: Prisma.StringFieldUpdateOperationsInput | string;
+	expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ResetPasswordCreateManyInput = {
 	id?: string;
 	mail: string;
-	code: string;
-	created_at?: Date | string;
+	codeHash: string;
+	expiresAt: Date | string;
+	usedAt?: Date | string | null;
+	createdAt?: Date | string;
 };
 
 export type ResetPasswordUpdateManyMutationInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	mail?: Prisma.StringFieldUpdateOperationsInput | string;
-	code?: Prisma.StringFieldUpdateOperationsInput | string;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	codeHash?: Prisma.StringFieldUpdateOperationsInput | string;
+	expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ResetPasswordUncheckedUpdateManyInput = {
 	id?: Prisma.StringFieldUpdateOperationsInput | string;
 	mail?: Prisma.StringFieldUpdateOperationsInput | string;
-	code?: Prisma.StringFieldUpdateOperationsInput | string;
-	created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
-
-export type ResetPasswordMailCodeCompoundUniqueInput = {
-	mail: string;
-	code: string;
+	codeHash?: Prisma.StringFieldUpdateOperationsInput | string;
+	expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+	usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+	createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ResetPasswordCountOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
 	mail?: Prisma.SortOrder;
-	code?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	codeHash?: Prisma.SortOrder;
+	expiresAt?: Prisma.SortOrder;
+	usedAt?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
 };
 
 export type ResetPasswordMaxOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
 	mail?: Prisma.SortOrder;
-	code?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	codeHash?: Prisma.SortOrder;
+	expiresAt?: Prisma.SortOrder;
+	usedAt?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
 };
 
 export type ResetPasswordMinOrderByAggregateInput = {
 	id?: Prisma.SortOrder;
 	mail?: Prisma.SortOrder;
-	code?: Prisma.SortOrder;
-	created_at?: Prisma.SortOrder;
+	codeHash?: Prisma.SortOrder;
+	expiresAt?: Prisma.SortOrder;
+	usedAt?: Prisma.SortOrder;
+	createdAt?: Prisma.SortOrder;
 };
 
 export type ResetPasswordSelect<
@@ -294,8 +332,10 @@ export type ResetPasswordSelect<
 	{
 		id?: boolean;
 		mail?: boolean;
-		code?: boolean;
-		created_at?: boolean;
+		codeHash?: boolean;
+		expiresAt?: boolean;
+		usedAt?: boolean;
+		createdAt?: boolean;
 	},
 	ExtArgs['result']['resetPassword']
 >;
@@ -306,8 +346,10 @@ export type ResetPasswordSelectCreateManyAndReturn<
 	{
 		id?: boolean;
 		mail?: boolean;
-		code?: boolean;
-		created_at?: boolean;
+		codeHash?: boolean;
+		expiresAt?: boolean;
+		usedAt?: boolean;
+		createdAt?: boolean;
 	},
 	ExtArgs['result']['resetPassword']
 >;
@@ -318,8 +360,10 @@ export type ResetPasswordSelectUpdateManyAndReturn<
 	{
 		id?: boolean;
 		mail?: boolean;
-		code?: boolean;
-		created_at?: boolean;
+		codeHash?: boolean;
+		expiresAt?: boolean;
+		usedAt?: boolean;
+		createdAt?: boolean;
 	},
 	ExtArgs['result']['resetPassword']
 >;
@@ -327,13 +371,18 @@ export type ResetPasswordSelectUpdateManyAndReturn<
 export type ResetPasswordSelectScalar = {
 	id?: boolean;
 	mail?: boolean;
-	code?: boolean;
-	created_at?: boolean;
+	codeHash?: boolean;
+	expiresAt?: boolean;
+	usedAt?: boolean;
+	createdAt?: boolean;
 };
 
 export type ResetPasswordOmit<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetOmit<'id' | 'mail' | 'code' | 'created_at', ExtArgs['result']['resetPassword']>;
+> = runtime.Types.Extensions.GetOmit<
+	'id' | 'mail' | 'codeHash' | 'expiresAt' | 'usedAt' | 'createdAt',
+	ExtArgs['result']['resetPassword']
+>;
 
 export type $ResetPasswordPayload<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
@@ -344,8 +393,10 @@ export type $ResetPasswordPayload<
 		{
 			id: string;
 			mail: string;
-			code: string;
-			created_at: Date;
+			codeHash: string;
+			expiresAt: Date;
+			usedAt: Date | null;
+			createdAt: Date;
 		},
 		ExtArgs['result']['resetPassword']
 	>;
@@ -877,8 +928,10 @@ export interface Prisma__ResetPasswordClient<
 export interface ResetPasswordFieldRefs {
 	readonly id: Prisma.FieldRef<'ResetPassword', 'String'>;
 	readonly mail: Prisma.FieldRef<'ResetPassword', 'String'>;
-	readonly code: Prisma.FieldRef<'ResetPassword', 'String'>;
-	readonly created_at: Prisma.FieldRef<'ResetPassword', 'DateTime'>;
+	readonly codeHash: Prisma.FieldRef<'ResetPassword', 'String'>;
+	readonly expiresAt: Prisma.FieldRef<'ResetPassword', 'DateTime'>;
+	readonly usedAt: Prisma.FieldRef<'ResetPassword', 'DateTime'>;
+	readonly createdAt: Prisma.FieldRef<'ResetPassword', 'DateTime'>;
 }
 
 // Custom InputTypes

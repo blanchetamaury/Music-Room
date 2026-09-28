@@ -1,0 +1,13 @@
+model RevokedSession {
+  jti String @id
+
+  userId String?
+
+  expiresAt DateTime
+
+  revokedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("revoked_sessions")
+}

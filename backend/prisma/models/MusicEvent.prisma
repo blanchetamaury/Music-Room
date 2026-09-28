@@ -1,0 +1,91 @@
+model MusicEvent {
+  id            String    @id @default(uuid())
+  ownerId       String
+  name          String
+  description   String?
+  visibility    Visibility @default(PUBLIC)
+  votingPolicy  VotingPolicy @default(EVERYONE)
+  latitude      Float?
+  longitude     Float?
+  radius        Int?
+  startAt       DateTime?
+  endAt         DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  owner         User      @relation("EventOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members       MusicEventMember[]
+  tracks        EventTrack[]
+
+  @@map("music_events")
+}
+
+model MusicEventMember {
+  id           String    @id @default(uuid())
+  eventId      String
+  userId       String
+  role         EventRole @default(MEMBER)
+  invitedAt    DateTime  @default(now())
+  acceptedAt   DateTime?
+
+  event        MusicEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("music_event_members")
+}
+
+model EventTrack {
+  id           String    @id @default(uuid())
+  eventId      String
+  trackId      String
+  status       TrackStatus @default(PENDING)
+  voteCount    Int       @default(0)
+  suggestedBy  String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  event        MusicEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  votes        EventVote[]
+
+  @@unique([eventId, trackId])
+  @@map("event_tracks")
+}
+
+model EventVote {
+  id        String   @id @default(uuid())
+  eventId   String
+  trackId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  track     EventTrack @relation(fields: [eventId, trackId], references: [eventId, trackId], onDelete: Cascade)
+
+  @@unique([eventId, userId, trackId])
+  @@map("event_votes")
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum VotingPolicy {
+  EVERYONE
+  INVITED_ONLY
+  LOCATION_TIME
+}
+
+enum EventRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum TrackStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PLAYING
+  PLAYED
+}

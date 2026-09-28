@@ -1,0 +1,35 @@
+model Device {
+  id            String              @id @default(uuid())
+  ownerId       String
+  deviceName    String
+  platform      String
+  appVersion    String
+  lastSeenAt    DateTime            @default(now())
+  revokedAt     DateTime?
+
+  owner         User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  permissions   DevicePermission[]
+  playbackState DevicePlaybackState?
+
+  @@map("devices")
+}
+
+model DevicePermission {
+  id              String   @id @default(uuid())
+  deviceId        String
+  delegateUserId  String
+  permission      DevicePermissionType
+  expiresAt       DateTime?
+  createdBy       String
+  createdAt       DateTime @default(now())
+
+  device          Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@unique([deviceId, delegateUserId])
+  @@map("device_permissions")
+}
+
+enum DevicePermissionType {
+  CONTROL
+  VIEW
+}

@@ -1,0 +1,21 @@
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?
+  action       String
+  resourceType String?
+  resourceId   String?
+  platform     String?
+  deviceId     String?
+  deviceModel  String?
+  appVersion   String?
+  ip           String?
+  success      Boolean
+  statusCode   Int
+  requestId    String
+  createdAt    DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([requestId])
+  @@index([resourceType, resourceId])
+  @@map("audit_logs")
+}
