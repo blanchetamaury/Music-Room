@@ -1,28 +1,16 @@
-import { Router, Request as ExpressRequest, Response as ExpressResponse, NextFunction } from 'express';
-import { dirname, join, resolve } from 'path';
+import { Router, Request as ExpressRequest, Response as ExpressResponse, NextFunction, RequestHandler } from 'express';
+import { join, resolve } from 'path';
 import { readdirSync } from 'fs';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const __filename = require.resolve('.');
-const __dirname = dirname(__filename);
-
-interface WebResponse {
-	status: number;
-	headers: Headers;
-	text(): Promise<string>;
-	json(): Promise<any>;
-}
 
 interface RouteHandler {
-	GET?: (req: Request) => Promise<WebResponse>;
-	POST?: (req: Request) => Promise<WebResponse>;
-	PUT?: (req: Request) => Promise<WebResponse>;
-	DELETE?: (req: Request) => Promise<WebResponse>;
-	PATCH?: (req: Request) => Promise<WebResponse>;
+	GET?: RequestHandler;
+	POST?: RequestHandler;
+	PUT?: RequestHandler;
+	DELETE?: RequestHandler;
+	PATCH?: RequestHandler;
 }
 
-function convertToExpressHandler(handler: (req: Request) => Promise<WebResponse>) {
+function convertToExpressHandler(handler: (req: Request) => Promise<Response>) {
 	return async (expressReq: ExpressRequest, expressRes: ExpressResponse, next: NextFunction) => {
 		try {
 			const webReq = createWebRequest(expressReq);
@@ -54,12 +42,14 @@ function createWebRequest(expressReq: ExpressRequest): Request {
 		}
 	}
 
-	const body = expressReq.body ? JSON.stringify(expressReq.body) : undefined;
+	const method = expressReq.method.toUpperCase();
+	const canHaveBody = !['GET', 'HEAD', 'OPTIONS'].includes(method);
+	const body = canHaveBody && expressReq.body ? JSON.stringify(expressReq.body) : undefined;
 
 	return new Request(url, {
-		method: expressReq.method,
+		method,
 		headers,
-		body,
+		...(body !== undefined ? { body } : {}),
 	});
 }
 
@@ -85,7 +75,7 @@ async function loadRoutes(dir: string, prefix = ''): Promise<Router> {
 				for (const [httpMethod, handler] of Object.entries(module)) {
 					if (['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(httpMethod.toUpperCase())) {
 						handlers[httpMethod.toUpperCase() as keyof RouteHandler] = convertToExpressHandler(
-							handler as (req: Request) => Promise<WebResponse>
+							handler as (req: Request) => Promise<Response>
 						);
 					}
 				}

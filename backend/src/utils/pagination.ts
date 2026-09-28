@@ -4,7 +4,7 @@ import { PaginationResponse } from '@/types/pagination/PaginationResponse';
 const DEFAULT_PAGINATION = { page: 1, limit: 20 };
 
 const getPaginationParams = (params: URLSearchParams): PaginationParameters => {
-	const pagination: PaginationParameters = DEFAULT_PAGINATION;
+	const pagination: PaginationParameters = { ...DEFAULT_PAGINATION };
 
 	if (params.has('limit')) {
 		const limit = Number(params.get('limit')!);
