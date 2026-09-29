@@ -113,6 +113,11 @@ export const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: 'rgba(255,255,255,0.07)',
 	},
+	moveGroup: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 10,
+	},
 	trackNumber: {
 		width: 22,
 		alignItems: 'center',

@@ -39,7 +39,7 @@ export const decidePlaylistEdit = (playlist: PlaylistAuthRow, userId: string): b
 	return member !== undefined;
 };
 
-const readPlaylistAuthRow = (playlistId: string, userId: string) =>
+const readPlaylistAuthRow = (playlistId: string, userId: string, acceptedOnly = false) =>
 	readRow(() =>
 		prisma.playlist.findUnique({
 			where: { id: playlistId },
@@ -47,7 +47,7 @@ const readPlaylistAuthRow = (playlistId: string, userId: string) =>
 				visibility: true,
 				ownerId: true,
 				editPolicy: true,
-				members: { where: { userId, acceptedAt: { not: null } } },
+				members: { where: acceptedOnly ? { userId, acceptedAt: { not: null } } : { userId } },
 			},
 		})
 	);
@@ -59,7 +59,7 @@ export async function canReadPlaylist(playlistId: string, userId: string): Promi
 }
 
 export async function canEditPlaylist(playlistId: string, userId: string): Promise<boolean> {
-	const playlist = await readPlaylistAuthRow(playlistId, userId);
+	const playlist = await readPlaylistAuthRow(playlistId, userId, true);
 	if (!playlist) return false;
 	return decidePlaylistEdit(playlist, userId);
 }
@@ -81,7 +81,7 @@ export async function canReadEvent(eventId: string, userId: string): Promise<boo
 				visibility: true,
 				ownerId: true,
 				votingPolicy: true,
-				members: { where: { userId, acceptedAt: { not: null } } },
+				members: { where: { userId } },
 			},
 		})
 	);
@@ -218,37 +218,6 @@ export async function canManageDevice(deviceId: string, userId: string): Promise
 
 	return decideDeviceManage(device, userId);
 }
-
-export async function canControlDevice(deviceId: string, userId: string): Promise<boolean> {
-	const device = await readRow(() =>
-		prisma.device.findUnique({
-			where: { id: deviceId },
-			select: {
-				ownerId: true,
-				revokedAt: true,
-				permissions: {
-					where: {
-						delegateUserId: userId,
-						permission: 'CONTROL',
-						OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-					},
-					select: { id: true },
-				},
-			},
-		})
-	);
-
-	return decideDeviceControl(device, userId);
-}
-
-export const decideDeviceControl = (
-	device: { ownerId: string; revokedAt: Date | null; permissions: unknown[] } | null,
-	userId: string
-): boolean => {
-	if (!device || device.revokedAt) return false;
-	if (device.ownerId === userId) return true;
-	return device.permissions.length > 0;
-};
 
 export type VisibilityLevel = 'PUBLIC' | 'FRIENDS' | 'PRIVATE';
 

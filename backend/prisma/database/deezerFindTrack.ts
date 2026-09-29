@@ -8,6 +8,7 @@ import { findAlbum } from './album';
 import { findArtist } from './artist';
 import { findGenre } from './genre';
 import { prisma } from './prisma';
+import { isPreviewFresh } from './preview-freshness';
 
 const DEEZER_API = 'https://api.deezer.com';
 
@@ -38,12 +39,8 @@ const findTrackToDb = async (deezerId: string) => {
 		where: { deezerCUID: deezerId },
 	});
 
-	if (cached?.previewUrl) {
-		const match = cached.previewUrl.match(/exp=(\d+)/);
-		const exp = match ? parseInt(match[1], 10) : null;
+	if (cached && isPreviewFresh(cached.previewUrl)) return [cached, true];
 
-		if (Date.now() < Number(exp)) return [cached, true];
-	}
 	return [cached, false];
 };
 

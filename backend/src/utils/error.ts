@@ -1,5 +1,9 @@
+import { isRetryableConnectionError } from '../../prisma/database/prisma';
+
 const ERRORS_DETAILS: Record<string, (...args: string[]) => Response> = {
 	internal_error: () => Response.json({ success: false, message: 'Internal server error' }, { status: 501 }),
+	service_unavailable: () =>
+		Response.json({ success: false, message: 'Database temporarily unavailable, please retry' }, { status: 503 }),
 	invalid_oauth_error: () => Response.json({ success: false, message: 'Invalid code' }, { status: 400 }),
 	invalid_oauth_state: () =>
 		Response.json(
@@ -54,6 +58,10 @@ const errorHandler = async (fn: () => Promise<Response>): Promise<Response> => {
 		return await fn();
 	} catch (error: unknown) {
 		if (error instanceof Response) return error;
+		if (isRetryableConnectionError(error)) {
+			console.error(error);
+			return ERRORS_DETAILS.service_unavailable();
+		}
 		console.error(error);
 		return ERRORS_DETAILS.internal_error();
 	}

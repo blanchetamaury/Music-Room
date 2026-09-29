@@ -33,15 +33,18 @@ export async function POST(req: Request): Promise<Response> {
 			throw e;
 		}
 
+		let version: number;
 		try {
-			await addTrack(data.playlistId, data.trackId, data.position, userId);
+			({ version } = await addTrack(data.playlistId, data.trackId, data.position, userId));
 		} catch (e) {
 			const mapped = mapUpstreamError(e);
 			if (mapped) return mapped;
 			throw e;
 		}
 
-		publishPlaylistChange(data.playlistId, 'track.added', userId);
+		// The version travels with the event so a client on `expectedVersion` can tell that
+		// it missed this insert instead of assuming its own base was still current.
+		publishPlaylistChange(data.playlistId, 'track.added', userId, version);
 		return Response.json({ success: true }, { status: 200 });
 	});
 }

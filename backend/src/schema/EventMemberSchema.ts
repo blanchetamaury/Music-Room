@@ -9,7 +9,7 @@ export const EventMemberInviteSchema = z.object({
 
 export const EventMemberRefSchema = z.object({
 	eventId: z.string().min(1),
-	userId: z.string().min(1),
+	userId: z.string().min(1).optional(),
 });
 
 export const AcceptEventInvitationSchema = z.object({

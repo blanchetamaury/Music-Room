@@ -16,16 +16,14 @@ export async function GET(req: Request): Promise<Response> {
 			return Response.json({ success: false, message: 'Playlist not found' }, { status: 404 });
 		}
 
-		const data = await getPlaylistById(playlistId, {
-			owner: true,
-			members: { include: { user: true } },
-			tracks: true,
-		});
+		const data = await getPlaylistById(playlistId);
 		if (!data) return Response.json({ success: false, message: 'Playlist not found' }, { status: 404 });
 
+		// Same tolerance as the list endpoint: an unplayable track yields `track: null`
+		// rather than failing the whole playlist.
 		const tracksWithDetails = await Promise.all(
 			data.tracks.map(async (t) => {
-				const track = await getTrack(t.trackId);
+				const track = await getTrack(t.trackId).catch(() => null);
 				return { ...t, track };
 			})
 		);

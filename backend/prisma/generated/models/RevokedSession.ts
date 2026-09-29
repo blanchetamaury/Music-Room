@@ -13,12 +13,7 @@ import type * as Prisma from '../internal/prismaNamespace';
 
 /**
  * Model RevokedSession
- * Denylist of session tokens invalidated before their natural expiry.
  *
- * A JWT stays valid until `exp` and cannot be recalled, so an explicit logout (or any
- * server-side revocation) records the token id here. Verification treats a revoked `jti`
- * exactly like an expired signature, which is what makes "logout really ends the
- * session" true for a stolen copy of the cookie or the Bearer token.
  */
 export type RevokedSessionModel = runtime.Types.Result.DefaultSelection<Prisma.$RevokedSessionPayload>;
 

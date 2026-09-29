@@ -1,6 +1,7 @@
 import { rateLimit } from '@/lib/apply-rate-limit';
 import { RATE_LIMITS } from '@/lib/rate-limit';
 import { getTrack } from '../../../../prisma/database/deezer';
+import { mapUpstreamError } from '@/utils/upstream';
 
 export async function GET(_req: Request) {
 	const limited = await rateLimit(_req, RATE_LIMITS.deezerLookup);
@@ -15,7 +16,10 @@ export async function GET(_req: Request) {
 
 		return Response.json({ success: true, data: track });
 	} catch (err) {
+		const mapped = mapUpstreamError(err);
+		if (mapped) return mapped;
+
 		console.error('[getTrack]', err);
-		return Response.json({ error: 'not found' }, { status: 404 });
+		return Response.json({ success: false, message: 'not found' }, { status: 404 });
 	}
 }

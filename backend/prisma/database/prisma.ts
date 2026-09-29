@@ -41,6 +41,7 @@ const isRetryableConnectionError = (error: unknown): boolean => {
 		normalized.includes('portal "" does not exist') ||
 		normalized.includes('prepared statement') ||
 		normalized.includes('terminating connection') ||
+		normalized.includes('connection terminated') ||
 		normalized.includes('closed the connection') ||
 		normalized.includes('connection was closed') ||
 		normalized.includes('econnreset') ||

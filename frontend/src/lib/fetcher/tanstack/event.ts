@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 import { unwrapApiResponse, unwrapApiResponseVoid } from './helpers';
-import type { GeoPosition, MusicEvent } from '@/src/types/event/MusicEvent';
+import type { EventRole, GeoPosition, MusicEvent } from '@/src/types/event/MusicEvent';
 
 export const eventQueryKeys = {
 	all: ['event'] as const,
@@ -101,5 +101,52 @@ export function useVoteEventTrackMutation() {
 			);
 			queryClient.invalidateQueries({ queryKey: eventQueryKeys.event(variables.token, variables.eventId) });
 		},
+	});
+}
+
+const useInvalidateEvent = () => {
+	const queryClient = useQueryClient();
+	return ({ token, eventId }: { token: string; eventId: string }) => {
+		queryClient.invalidateQueries({ queryKey: eventQueryKeys.event(token, eventId) });
+		queryClient.invalidateQueries({ queryKey: eventQueryKeys.events(token) });
+	};
+};
+
+export function useInviteEventMemberMutation() {
+	const invalidate = useInvalidateEvent();
+
+	return useMutation({
+		mutationFn: ({
+			token,
+			eventId,
+			username,
+			role = 'MEMBER',
+		}: {
+			token: string;
+			eventId: string;
+			username: string;
+			role?: EventRole;
+		}) => api.user.event.inviteMember(token, eventId, username, role).then(unwrapApiResponse),
+		onSuccess: (_data, variables) => invalidate(variables),
+	});
+}
+
+export function useAcceptEventInvitationMutation() {
+	const invalidate = useInvalidateEvent();
+
+	return useMutation({
+		mutationFn: ({ token, eventId }: { token: string; eventId: string }) =>
+			api.user.event.acceptInvitation(token, eventId).then(unwrapApiResponse),
+		onSuccess: (_data, variables) => invalidate(variables),
+	});
+}
+
+export function useLeaveEventMutation() {
+	const invalidate = useInvalidateEvent();
+
+	return useMutation({
+		mutationFn: ({ token, eventId }: { token: string; eventId: string }) =>
+			api.user.event.leaveEvent(token, eventId).then(unwrapApiResponseVoid),
+		onSuccess: (_data, variables) => invalidate(variables),
 	});
 }

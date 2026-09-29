@@ -1,6 +1,12 @@
 import { useAuth } from '@/src/context/AuthContext';
-import { usePlaylistQuery, useRemoveMusicMutation } from '@/src/lib/fetcher/tanstack/user';
-import { ChevronLeft, Heart, LockKeyhole, Music2, Trash2, Users } from 'lucide-react-native';
+import {
+	useMoveTrackMutation,
+	usePlaylistQuery,
+	useRemoveMusicMutation,
+	VersionConflictError,
+} from '@/src/lib/fetcher/tanstack/user';
+import { realtimeInvalidation, useRealtimeSubscription } from '@/src/lib/realtime/useRealtimeSubscription';
+import { ChevronLeft, ChevronDown, ChevronUp, Heart, LockKeyhole, Music2, Trash2, Users } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, View } from 'react-native';
 import { ThemedText } from '../utils/themed-text';
@@ -22,6 +28,31 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 	const { token } = useAuth();
 	const { data: playlist, isLoading, isError } = usePlaylistQuery(token, id);
 	const removeMusicMutation = useRemoveMusicMutation();
+	const moveMutation = useMoveTrackMutation();
+
+	const { status: liveStatus } = useRealtimeSubscription({
+		topic: 'playlist',
+		entityId: id,
+		token,
+		ignoreOwnChanges: true,
+		invalidate: (queryClient, tok) => realtimeInvalidation.playlist(queryClient, tok, id),
+	});
+
+	const handleMove = (index: number, direction: -1 | 1) => {
+		if (!token || !playlist) return;
+		const target = index + direction;
+		if (target < 0 || target >= playlist.tracks.length) return;
+
+		moveMutation.mutate({
+			token,
+			playlistId: id,
+			trackId: playlist.tracks[index].trackId,
+			newPosition: target,
+			// Optimistic concurrency: if another editor moved something in the meantime the
+			// server answers 409 and we refetch instead of overwriting their order.
+			expectedVersion: playlist.version,
+		});
+	};
 
 	if (isLoading) {
 		return (
@@ -45,6 +76,14 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 
 	return (
 		<ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+			{(moveMutation.error || liveStatus === 'reconnecting') && (
+				<ThemedText style={styles.errorText}>
+					{moveMutation.error instanceof VersionConflictError
+						? 'Someone else changed this playlist. The list has been refreshed.'
+						: (moveMutation.error?.message ?? 'Reconnecting to live updates...')}
+				</ThemedText>
+			)}
+
 			<View style={styles.headerRow}>
 				<Pressable accessibilityLabel="Close playlist" onPress={() => setPopup(null)} style={styles.iconButton}>
 					<ChevronLeft color="#ffffff" size={22} />
@@ -111,7 +150,7 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 								<ThemedText style={styles.numberText}>{index + 1}</ThemedText>
 							</View>
 							<View style={styles.trackIcon}>
-								{track.track.album?.cover == null ? (
+								{track.track?.album?.cover == null ? (
 									<Music2 color="rgba(255,255,255,0.65)" size={17} />
 								) : (
 									<Image source={{ uri: track.track.album.cover }} style={styles.trackIcon}></Image>
@@ -119,19 +158,49 @@ export function PlaylistProfile({ setPopup, id }: PlaylistProfileProps) {
 							</View>
 							<View style={styles.trackInfo}>
 								<ThemedText numberOfLines={1} style={styles.trackTitle}>
-									{track.track.title}
+									{track.track?.title ?? 'Unavailable track'}
 								</ThemedText>
 								<ThemedText style={styles.trackSubtitle}>Position {track.position + 1}</ThemedText>
 							</View>
-							<Pressable
-								onPress={() =>
-									token &&
-									removeMusicMutation.mutate({ token, playlistId: id, trackId: track.trackId })
-								}
-								accessibilityLabel="Remove track"
-							>
-								<Trash2 color="rgba(255,155,155,0.8)" size={17} />
-							</Pressable>
+							<View style={styles.moveGroup}>
+								<Pressable
+									onPress={() => handleMove(index, -1)}
+									disabled={index === 0 || moveMutation.isPending}
+									accessibilityLabel={`Move ${track.track?.title ?? 'track'} up`}
+									accessibilityState={{ disabled: index === 0 || moveMutation.isPending }}
+								>
+									<ChevronUp
+										color={index === 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)'}
+										size={17}
+									/>
+								</Pressable>
+								<Pressable
+									onPress={() => handleMove(index, 1)}
+									disabled={index === playlist.tracks.length - 1 || moveMutation.isPending}
+									accessibilityLabel={`Move ${track.track?.title ?? 'track'} down`}
+									accessibilityState={{
+										disabled: index === playlist.tracks.length - 1 || moveMutation.isPending,
+									}}
+								>
+									<ChevronDown
+										color={
+											index === playlist.tracks.length - 1
+												? 'rgba(255,255,255,0.2)'
+												: 'rgba(255,255,255,0.75)'
+										}
+										size={17}
+									/>
+								</Pressable>
+								<Pressable
+									onPress={() =>
+										token &&
+										removeMusicMutation.mutate({ token, playlistId: id, trackId: track.trackId })
+									}
+									accessibilityLabel="Remove track"
+								>
+									<Trash2 color="rgba(255,155,155,0.8)" size={17} />
+								</Pressable>
+							</View>
 						</View>
 					))}
 				</View>

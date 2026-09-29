@@ -17,8 +17,10 @@ import LiquidGlass from '@/src/components/utils/LiquidGlass';
 import { ThemedText } from '@/src/components/utils/themed-text';
 import { ThemedView } from '@/src/components/utils/themed-view';
 import { useAuth } from '@/src/context/AuthContext';
+import { usePlayer } from '@/src/context/PlayerContext';
 import { useLikesQuery, usePlaylistsInfiniteQuery, useSearchQuery, useTopMusicQuery } from '@/src/lib/fetcher/tanstack';
 import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
+import { toPlayerTrack } from '@/src/types/player/PlayerTrack';
 import { Like } from '@/src/types/user/like';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -26,7 +28,6 @@ import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, View, useWindowDimensions } from 'react-native';
 
 interface SearchPageProps {
-	onPlayTrack?: (track: OutputTrackDeezer) => void;
 	setActiveTab: (value: TabKey) => void;
 	activeTab: TabKey;
 }
@@ -54,6 +55,7 @@ function formatDuration(totalSeconds: number) {
 
 export function SearchScreen(props: SearchPageProps) {
 	const { token } = useAuth();
+	const { playQueue } = usePlayer();
 	const { width } = useWindowDimensions();
 
 	const [query, setQuery] = useState('');
@@ -224,7 +226,7 @@ export function SearchScreen(props: SearchPageProps) {
 										playlists={playlists}
 										onAddToQueue={addToQueue}
 										onPlay={() => {
-											props.onPlayTrack?.(popup.song);
+											playQueue([toPlayerTrack(popup.song)]);
 											setPopup(null);
 										}}
 										onArtistPress={(artistId) => setPopup({ type: 'artist', id: String(artistId) })}
@@ -268,13 +270,7 @@ export default function SearchRoute() {
 
 	return (
 		<RouteShell activeTab="search">
-			{(onPlayTrack) => (
-				<SearchScreen
-					onPlayTrack={onPlayTrack}
-					activeTab="search"
-					setActiveTab={(tab) => router.replace(`/(tabs)/${tab}`)}
-				/>
-			)}
+			<SearchScreen activeTab="search" setActiveTab={(tab) => router.replace(`/(tabs)/${tab}`)} />
 		</RouteShell>
 	);
 }

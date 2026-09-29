@@ -134,21 +134,23 @@ export async function DELETE(req: Request): Promise<Response> {
 
 		const body = await parseBody<z.infer<typeof EventMemberRefSchema>>(req, EventMemberRefSchema);
 
+		const targetId = body.userId ?? requesterId;
+
 		const event = await prisma.musicEvent.findUnique({
 			where: { id: body.eventId },
 			select: { ownerId: true },
 		});
 		if (!event) return Response.json({ success: false, message: 'Event not found' }, { status: 404 });
 
-		if (body.userId === event.ownerId) throw ERRORS_DETAILS.permission_denied();
+		if (targetId === event.ownerId) throw ERRORS_DETAILS.permission_denied();
 
-		const isSelf = body.userId === requesterId;
+		const isSelf = targetId === requesterId;
 		if (!isSelf && !(await canEditEvent(body.eventId, requesterId))) {
 			throw ERRORS_DETAILS.permission_denied();
 		}
 
 		const membership = await prisma.musicEventMember.findUnique({
-			where: { eventId_userId: { eventId: body.eventId, userId: body.userId } },
+			where: { eventId_userId: { eventId: body.eventId, userId: targetId } },
 		});
 		if (!membership) {
 			return Response.json({ success: false, message: 'Member not found' }, { status: 404 });

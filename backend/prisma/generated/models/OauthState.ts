@@ -13,12 +13,7 @@ import type * as Prisma from '../internal/prismaNamespace';
 
 /**
  * Model OauthState
- * Single-use, short-lived `state` for the OAuth authorization-code flow.
  *
- * The authorization request stores an opaque random value here (hashed, so a database
- * leak cannot be replayed) together with everything the callback needs but must not
- * trust from the query string: which provider, which client surface to redirect back to
- * and, for account linking, which already-authenticated account to attach the identity to.
  */
 export type OauthStateModel = runtime.Types.Result.DefaultSelection<Prisma.$OauthStatePayload>;
 
@@ -670,10 +665,6 @@ export type $OauthStatePayload<
 			stateHash: string;
 			provider: $Enums.OAuthProvider;
 			clientType: string;
-			/**
-			 * Set when the flow is a linking flow: the callback attaches the provider identity to
-			 * this account instead of signing the user in.
-			 */
 			linkUserId: string | null;
 			expiresAt: Date;
 			usedAt: Date | null;

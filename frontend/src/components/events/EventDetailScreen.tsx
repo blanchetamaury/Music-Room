@@ -1,4 +1,5 @@
 import { ThemedText } from '@/src/components/utils/themed-text';
+import { EventMembership } from '@/src/components/events/EventMembership';
 import { useAuth } from '@/src/context/AuthContext';
 import { useSearchQuery } from '@/src/lib/fetcher/tanstack/deezer';
 import { useAddEventTrackMutation, useEventQuery, useVoteEventTrackMutation } from '@/src/lib/fetcher/tanstack/event';
@@ -6,7 +7,7 @@ import { OutputTrackDeezer } from '@/src/types/deezer/OutputDeezerTrack';
 import { EventTrack } from '@/src/types/event/MusicEvent';
 import { useDebouncedValue } from '@/src/hooks/useDebouncedValue';
 import { useEventPosition } from '@/src/hooks/useEventPosition';
-import { ArrowLeft, Check, Globe, LockKeyhole, Plus, ThumbsUp, Users } from 'lucide-react-native';
+import { ArrowLeft, Check, Globe, LockKeyhole, Plus, ThumbsUp } from 'lucide-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, StyleSheet, TextInput, View } from 'react-native';
@@ -120,12 +121,6 @@ export function EventDetailScreen() {
 									{event.visibility === 'PUBLIC' ? 'Public' : 'Privé'}
 								</ThemedText>
 							</View>
-							<View style={styles.metaItem}>
-								<Users color="#9aa0b5" size={12} />
-								<ThemedText style={styles.metaText}>
-									{event.members.length} membre{event.members.length > 1 ? 's' : ''}
-								</ThemedText>
-							</View>
 							<ThemedText style={styles.metaText}>Vote : {event.votingPolicy}</ThemedText>
 						</View>
 						{event.tracks.length === 0 ? (
@@ -133,6 +128,8 @@ export function EventDetailScreen() {
 								Aucun morceau proposé. Utilisez + pour en ajouter un.
 							</ThemedText>
 						) : null}
+
+						<EventMembership event={event} />
 					</View>
 				}
 				renderItem={({ item }) => (

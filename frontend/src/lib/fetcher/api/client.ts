@@ -9,12 +9,26 @@ import { privateUser } from '@/src/types/user/PrivateUser';
 import { Like } from '@/src/types/user/like';
 import { auth } from './auth';
 import { getCsrfToken } from '../../storage';
+import { clientAuditHeaders } from '../../clientContext';
 import type { PlaylistMember, PlaylistMembersResponse } from '@/src/types/playlist/PlaylistMember';
-import type { GeoPosition, MusicEvent, MusicEventSummary, VoteResult } from '@/src/types/event/MusicEvent';
+import type {
+	EventMember,
+	EventMembersResponse,
+	EventRole,
+	GeoPosition,
+	MusicEvent,
+	MusicEventSummary,
+	VoteResult,
+} from '@/src/types/event/MusicEvent';
 import type { Device, DeviceDelegation, DevicePermission } from '@/src/types/device/Device';
 import type { SessionExchangeResult } from '@/src/types/auth/SessionExchange';
 
 export type { DeezerAlbum, DeezerArtist, DeezerTrack } from '@/src/types/deezer/deezer';
+
+export interface MoveTrackResult {
+	version: number;
+	tracks: { trackId: string; position: number }[];
+}
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000/api';
 const REQUEST_TIMEOUT_MS = 15_000;
@@ -25,6 +39,7 @@ const buildHeaders = (options: RequestInit): HeadersInit => {
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		'X-Client-Type': clientType,
+		...clientAuditHeaders(),
 	};
 
 	const csrfToken = getCsrfToken();
@@ -65,10 +80,11 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
 			return {
 				success: false,
 				message: data?.message ?? `HTTP error ${response.status}`,
+				status: response.status,
 			};
 		}
 
-		return { success: true, data: (data?.data ?? undefined) as T, message: data?.message };
+		return { success: true, data: (data?.data ?? undefined) as T, message: data?.message, status: response.status };
 	} catch (error) {
 		if (error instanceof Error && error.name === 'AbortError') {
 			return { success: false, message: 'The request timed out. Please try again.' };
@@ -196,6 +212,24 @@ export const api = {
 					headers: authHeaders(token),
 				}),
 
+			moveTrack: (
+				token: string,
+				playlistId: string,
+				trackId: string,
+				newPosition: number,
+				expectedVersion?: number
+			) =>
+				fetchApi<MoveTrackResult>('/user/playlist/move', {
+					method: 'POST',
+					body: JSON.stringify({
+						playlistId,
+						trackId,
+						newPosition,
+						...(expectedVersion !== undefined ? { expectedVersion } : {}),
+					}),
+					headers: authHeaders(token),
+				}),
+
 			members: (token: string, playlistId: string) =>
 				fetchApi<PlaylistMembersResponse>(
 					`/user/playlist/members?playlist_id=${encodeURIComponent(playlistId)}`,
@@ -269,6 +303,32 @@ export const api = {
 					headers: authHeaders(token),
 				}),
 
+			members: (token: string, eventId: string) =>
+				fetchApi<EventMembersResponse>(`/user/event/members?event_id=${encodeURIComponent(eventId)}`, {
+					headers: authHeaders(token),
+				}),
+
+			inviteMember: (token: string, eventId: string, username: string, role: EventRole) =>
+				fetchApi<EventMember>('/user/event/members', {
+					method: 'POST',
+					body: JSON.stringify({ eventId, username, role }),
+					headers: authHeaders(token),
+				}),
+
+			acceptInvitation: (token: string, eventId: string) =>
+				fetchApi<{ status: 'ACCEPTED' }>('/user/event/members', {
+					method: 'PATCH',
+					body: JSON.stringify({ eventId }),
+					headers: authHeaders(token),
+				}),
+
+			leaveEvent: (token: string, eventId: string, userId?: string) =>
+				fetchApi<void>('/user/event/members', {
+					method: 'DELETE',
+					body: JSON.stringify({ eventId, ...(userId ? { userId } : {}) }),
+					headers: authHeaders(token),
+				}),
+
 			addTrack: (token: string, eventId: string, trackId: string) =>
 				fetchApi<void>('/user/event/track', {
 					method: 'POST',
@@ -334,8 +394,8 @@ export const api = {
 	deezer: {
 		music: {
 			top_music: (count: number) => fetchApi<OutputTrackDeezer[]>(`/deezer/music/top_music?count=${count}`),
-			music: (music_deezer_id: number) =>
-				fetchApi<Track>(`/deezer/music/music?music_id=${music_deezer_id.toString()}`),
+			music: (music_deezer_id: string | number) =>
+				fetchApi<Track>(`/deezer/music/music?music_id=${encodeURIComponent(String(music_deezer_id))}`),
 		},
 		album: {
 			album: (deezerCUID: string) =>

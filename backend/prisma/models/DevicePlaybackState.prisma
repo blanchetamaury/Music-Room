@@ -5,6 +5,8 @@ model DevicePlaybackState {
 
   queue String[] @default([])
 
+  history String[] @default([])
+
   currentTrackId String?
 
   positionMs Int @default(0)

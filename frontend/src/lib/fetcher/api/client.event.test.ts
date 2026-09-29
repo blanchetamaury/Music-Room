@@ -34,7 +34,7 @@ describe('event vote client', () => {
 		expect(lastCall?.url).toBe(`${API_URL}/user/event/vote`);
 		expect(lastCall?.init.method).toBe('PUT');
 		expect(body()).toEqual({ eventId: 'event-1', trackId: 'track-1' });
-		expect(result).toEqual({ success: true, data: { voted: true, voteCount: 3 } });
+		expect(result).toEqual({ success: true, data: { voted: true, voteCount: 3 }, status: 200 });
 	});
 
 	it('removes a vote with DELETE', async () => {

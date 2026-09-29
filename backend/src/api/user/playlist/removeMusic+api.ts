@@ -22,8 +22,8 @@ export async function DELETE(req: Request): Promise<Response> {
 			return Response.json({ success: false, message: 'Not allowed to edit this playlist' }, { status: 403 });
 		}
 
-		await removeTrack(data.playlistId, data.trackId, userId);
-		publishPlaylistChange(data.playlistId, 'track.removed', userId);
+		const { version } = await removeTrack(data.playlistId, data.trackId, userId);
+		publishPlaylistChange(data.playlistId, 'track.removed', userId, version);
 		return Response.json({ success: true }, { status: 200 });
 	});
 }

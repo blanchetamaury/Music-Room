@@ -1,0 +1,16 @@
+apis:
+    music-room:
+        root: src/swagger.yaml
+
+extends:
+    - recommended
+
+rules:
+    # The only server we can honestly publish is the local development one; there is no
+    # deployed host to point at yet.
+    no-server-example.com: off
+    # Every operation carries an explicit `security` (empty array for public routes), which
+    # is what this rule asks for, but it still fires on the operations that only define it
+    # per-path. Keeping it on would mean duplicating a root-level `security` that would be
+    # wrong for the public authentication and Deezer routes.
+    security-defined: error

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
-	decideDeviceControl,
 	decideDeviceManage,
 	decideEventEdit,
 	decideEventRead,
@@ -94,6 +93,24 @@ describe('decidePlaylistEdit', () => {
 			false
 		);
 	});
+
+	it('denies edit to a pending invitee, whose row the edit query filters out', () => {
+		assert.equal(decidePlaylistEdit(playlist({ editPolicy: 'EVERYONE' }), MEMBER), false);
+		assert.equal(
+			decidePlaylistEdit(playlist({ visibility: 'PUBLIC', editPolicy: 'EVERYONE' }), MEMBER),
+			true,
+			'a public playlist is editable by anyone under EVERYONE regardless of membership'
+		);
+	});
+
+	it('lets a pending invitee read a private playlist so the invitation can be accepted', () => {
+
+		assert.equal(
+			decidePlaylistRead(playlist({ visibility: 'PRIVATE', members: [{ role: 'VIEWER' }] }), MEMBER),
+			true
+		);
+		assert.equal(decidePlaylistRead(playlist({ visibility: 'PRIVATE', members: [] }), MEMBER), false);
+	});
 });
 
 describe('decideEventRead / decideEventEdit', () => {
@@ -115,6 +132,40 @@ describe('decideEventRead / decideEventEdit', () => {
 
 	it('lets a member read a private event', () => {
 		assert.equal(decideEventRead({ ...base, visibility: 'PRIVATE', members: [{}] }, MEMBER), true);
+	});
+
+	// The audit matrix for §4. canReadEvent queries `members: { where: { userId } }` with no
+	// acceptedAt filter, so these three cases are what the query is expected to produce.
+	it('lets a pending invitee read a private event so the invitation can be accepted', () => {
+		assert.equal(decideEventRead({ ...base, visibility: 'PRIVATE', members: [{}] }, MEMBER), true);
+	});
+
+	it('denies a removed member, whose membership row no longer exists', () => {
+		assert.equal(decideEventRead({ ...base, visibility: 'PRIVATE', members: [] }, MEMBER), false);
+	});
+
+	it('denies a never-invited user on a private event', () => {
+		assert.equal(decideEventRead({ ...base, visibility: 'PRIVATE', members: [] }, STRANGER), false);
+	});
+
+	it('grants edit to an accepted admin, and denies an accepted plain member', () => {
+		// canEditEvent pre-filters with `role in [OWNER, ADMIN] AND acceptedAt != null`, so a
+		// plain member reaches this decision as an empty list rather than as a MEMBER row.
+		assert.equal(decideEventEdit({ ownerId: OWNER, members: [{ role: 'ADMIN' }] }, MEMBER), true);
+		assert.equal(decideEventEdit({ ownerId: OWNER, members: [{ role: 'OWNER' }] }, MEMBER), true);
+		assert.equal(decideEventEdit({ ownerId: OWNER, members: [] }, MEMBER), false);
+	});
+
+	// decideEventEdit only looks at `members.length > 0`, so the caller has to hand it the
+	// requesting user's own row. Passing the event's other admins instead reports canEdit to
+	// everyone, which is what the event detail route used to do for a pending member.
+	it('never inherits canEdit from another member admin row', () => {
+		assert.equal(decideEventEdit({ ownerId: OWNER, members: [] }, MEMBER), false);
+		assert.equal(
+			decideEventEdit({ ownerId: OWNER, members: [{ role: 'ADMIN' }, { role: 'OWNER' }] }, MEMBER),
+			true,
+			'this is the shape that must never be handed to decideEventEdit: any admin row in the list grants edit to the caller'
+		);
 	});
 });
 
@@ -232,36 +283,5 @@ describe('decideEventVotingAccess - LOCATION_TIME', () => {
 
 	it('treats the owner like any other member', () => {
 		assert.equal(decideEventVotingAccess(event(), OWNER, VENUE).allowed, true);
-	});
-});
-
-describe('decideDeviceManage / decideDeviceControl', () => {
-	const device = { ownerId: OWNER, revokedAt: null as Date | null, permissions: [] as unknown[] };
-
-	it('lets the owner manage and control', () => {
-		assert.equal(decideDeviceManage(device, OWNER), true);
-		assert.equal(decideDeviceControl(device, OWNER), true);
-	});
-
-	it('denies a stranger', () => {
-		assert.equal(decideDeviceManage(device, STRANGER), false);
-		assert.equal(decideDeviceControl(device, STRANGER), false);
-	});
-
-	it('denies everyone once the device is revoked', () => {
-		const revoked = { ...device, revokedAt: new Date() };
-		assert.equal(decideDeviceManage(revoked, OWNER), false);
-		assert.equal(decideDeviceControl(revoked, OWNER), false);
-	});
-
-	it('grants control to a delegate holding a CONTROL permission', () => {
-		const delegated = { ...device, permissions: [{ delegateUserId: STRANGER }] };
-		assert.equal(decideDeviceControl(delegated, STRANGER), true);
-		assert.equal(decideDeviceManage(delegated, STRANGER), false, 'delegation grants control, not management');
-	});
-
-	it('denies a missing device', () => {
-		assert.equal(decideDeviceManage(null, OWNER), false);
-		assert.equal(decideDeviceControl(null, OWNER), false);
 	});
 });

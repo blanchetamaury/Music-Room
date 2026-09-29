@@ -27,25 +27,46 @@ const createPlaylist = async (data: {
 	});
 };
 
-const getPlaylistById = async <T extends Prisma.PlaylistInclude>(
-	playlistId: string,
-	include: T
-): Promise<Prisma.PlaylistGetPayload<{ include: T }> | null> => {
-	return prisma.playlist.findUnique({
+type PlaylistDetail = Prisma.PlaylistGetPayload<{
+	include: {
+		owner: true;
+		members: { include: { user: true } };
+		tracks: true;
+	};
+}>;
+
+const getPlaylistById = async (playlistId: string): Promise<PlaylistDetail | null> => {
+	const playlist = await prisma.playlist.findUnique({
 		where: { id: playlistId },
-		include,
+		include: { tracks: true },
 	});
+	if (!playlist) return null;
+
+	const [owner, members] = await Promise.all([
+		prisma.user.findUnique({ where: { id: playlist.ownerId } }),
+		prisma.playlistMember.findMany({ where: { playlistId }, include: { user: true } }),
+	]);
+
+	// ownerId is a required foreign key, so the owner is always there.
+	return { ...playlist, owner: owner!, members };
 };
 
-const getPlaylists = async <T extends Prisma.PlaylistInclude>(
+type PlaylistListRow = Prisma.PlaylistGetPayload<{
+	include: {
+		owner: true;
+		members: { include: { user: { select: { id: true; username: true; avatarUrl: true } } } };
+		tracks: true;
+	};
+}>;
+
+const getPlaylists = async (
 	userId: string,
-	include: T,
 	options?: { visibility?: 'PUBLIC' | 'PRIVATE'; page?: number; limit?: number }
-) => {
+): Promise<{ playlists: PlaylistListRow[]; total: number; page: number; limit: number; totalPages: number }> => {
 	const where: Prisma.PlaylistWhereInput = {
 		OR: [
 			{ ownerId: userId },
-			{ members: { some: { userId, acceptedAt: { not: null } } } },
+			{ members: { some: { userId } } },
 			{ visibility: 'PUBLIC' },
 		],
 	};
@@ -57,16 +78,37 @@ const getPlaylists = async <T extends Prisma.PlaylistInclude>(
 	const page = options?.page ?? 1;
 	const limit = options?.limit ?? 20;
 
-	const [playlists, total] = await Promise.all([
+	const [rows, total] = await Promise.all([
 		prisma.playlist.findMany({
 			where,
-			include,
+			include: { tracks: true },
 			skip: (page - 1) * limit,
 			take: limit,
 			orderBy: { updatedAt: 'desc' },
 		}),
 		prisma.playlist.count({ where }),
 	]);
+
+	if (rows.length === 0) return { playlists: [], total, page, limit, totalPages: Math.ceil(total / limit) };
+
+	const playlistIds = rows.map((row) => row.id);
+	const ownerIds = [...new Set(rows.map((row) => row.ownerId))];
+
+	const [owners, members] = await Promise.all([
+		prisma.user.findMany({ where: { id: { in: ownerIds } } }),
+		prisma.playlistMember.findMany({
+			where: { playlistId: { in: playlistIds } },
+			include: { user: { select: { id: true, username: true, avatarUrl: true } } },
+		}),
+	]);
+
+	const ownersById = new Map(owners.map((owner) => [owner.id, owner]));
+
+	const playlists: PlaylistListRow[] = rows.map((row) => ({
+		...row,
+		owner: ownersById.get(row.ownerId)!,
+		members: members.filter((member) => member.playlistId === row.id),
+	}));
 
 	return { playlists, total, page, limit, totalPages: Math.ceil(total / limit) };
 };
@@ -119,20 +161,26 @@ const addTrack = async (playlistId: string, trackId: string, position: number | 
 			data: { playlistId, trackId, position: newPosition, addedBy },
 		});
 
-		await tx.playlist.update({
+		const updated = await tx.playlist.update({
 			where: { id: playlistId },
 			data: { version: { increment: 1 }, lastEditedBy: addedBy, updatedAt: new Date() },
+			select: { version: true },
 		});
+
+		return { version: updated.version };
 	});
 };
 
 const removeTrack = async (playlistId: string, trackId: string, userId: string) => {
 	return runTransaction(async (tx) => {
 		await tx.playlistTrack.delete({ where: { playlistId_trackId: { playlistId, trackId } } });
-		await tx.playlist.update({
+		const updated = await tx.playlist.update({
 			where: { id: playlistId },
 			data: { version: { increment: 1 }, lastEditedBy: userId, updatedAt: new Date() },
+			select: { version: true },
 		});
+
+		return { version: updated.version };
 	});
 };
 

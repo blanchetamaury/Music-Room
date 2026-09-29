@@ -197,3 +197,36 @@ export function useManageLikeMutation() {
 		},
 	});
 }
+
+export class VersionConflictError extends Error {
+	constructor() {
+		super('This playlist was modified by someone else.');
+		this.name = 'VersionConflictError';
+	}
+}
+
+export function useMoveTrackMutation() {
+	const invalidate = usePlaylistInvalidation();
+
+	return useMutation({
+		mutationFn: ({
+			token,
+			playlistId,
+			trackId,
+			newPosition,
+			expectedVersion,
+		}: {
+			token: string;
+			playlistId: string;
+			trackId: string;
+			newPosition: number;
+			expectedVersion?: number;
+		}) =>
+			api.user.playlist.moveTrack(token, playlistId, trackId, newPosition, expectedVersion).then((response) => {
+				if (response.status === 409) throw new VersionConflictError();
+				return unwrapApiResponse(response);
+			}),
+		onSuccess: (_data, variables) => invalidate(variables.token, variables.playlistId),
+		onError: (_error, variables) => invalidate(variables.token, variables.playlistId),
+	});
+}

@@ -13,11 +13,7 @@ import type * as Prisma from '../internal/prismaNamespace';
 
 /**
  * Model MusicPreference
- * Musical tastes of a user, the "preferences musicales" the subject requires.
  *
- * Kept apart from `User` so the row can be created lazily and so the payload can be
- * withheld independently of the profile itself. Every value here is exposed through
- * `canReadProfile` under the `MUSIC_PREFERENCES` visibility.
  */
 export type MusicPreferenceModel = runtime.Types.Result.DefaultSelection<Prisma.$MusicPreferencePayload>;
 

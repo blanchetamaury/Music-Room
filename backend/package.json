@@ -10,9 +10,12 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "node --import tsx --test \"src/**/*.test.ts\"",
-    "test:watch": "node --import tsx --test --watch \"src/**/*.test.ts\"",
-    "typecheck": "tsc --noEmit"
+    "test": "node --import tsx --test \"src/**/*.test.ts\" \"prisma/**/*.test.ts\"",
+    "test:watch": "node --import tsx --test --watch \"src/**/*.test.ts\" \"prisma/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "bench": "node --import tsx scripts/benchmark.ts",
+    "seed": "node --import tsx prisma/seed.ts",
+    "lint:api": "redocly lint src/swagger.yaml"
   },
   "keywords": [],
   "author": "",
@@ -34,12 +37,15 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@redocly/cli": "^2.55.0",
+    "@types/autocannon": "^7.12.7",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/nodemailer": "^8.0.1",
     "@typescript-eslint/eslint-plugin": "^8.68.0",
     "@typescript-eslint/parser": "^8.68.0",
+    "autocannon": "^8.0.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",

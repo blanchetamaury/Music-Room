@@ -13,11 +13,7 @@ import type * as Prisma from '../internal/prismaNamespace';
 
 /**
  * Model ProfileVisibility
- * Per-category visibility of a profile, so "public / friends / private" is decided one
- * field at a time instead of one flag for the whole profile.
  *
- * `PUBLIC` wins for everyone, `PRIVATE` hides from everyone but the owner, and `FRIENDS`
- * requires an accepted follow in the direction `requester -> target`.
  */
 export type ProfileVisibilityModel = runtime.Types.Result.DefaultSelection<Prisma.$ProfileVisibilityPayload>;
 

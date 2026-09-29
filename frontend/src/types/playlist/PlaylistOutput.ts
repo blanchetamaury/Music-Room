@@ -11,7 +11,7 @@ export interface PlaylistTrackOutput {
 	position: number;
 	addedBy: string;
 	addedAt: Date;
-	track: Track;
+	track: Track | null;
 }
 
 export interface PlaylistMember {

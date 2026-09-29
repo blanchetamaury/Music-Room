@@ -11,15 +11,11 @@ export async function GET(req: Request): Promise<Response> {
 		const pagination = getPaginationParams(url.searchParams);
 		const visibility = url.searchParams.get('visibility') as 'PUBLIC' | 'PRIVATE' | null;
 
-		const data = await getPlaylists(
-			userId,
-			{
-				owner: true,
-				members: { include: { user: { select: { id: true, username: true, avatarUrl: true } } } },
-				tracks: true,
-			},
-			{ visibility: visibility ?? undefined, page: pagination.page, limit: pagination.limit }
-		);
+		const data = await getPlaylists(userId, {
+			visibility: visibility ?? undefined,
+			page: pagination.page,
+			limit: pagination.limit,
+		});
 
 		const list = await Promise.all(
 			data.playlists.map(async (row) => {
@@ -43,6 +39,9 @@ export async function GET(req: Request): Promise<Response> {
 						username: m.user.username,
 						avatarUrl: m.user.avatarUrl,
 						role: m.role,
+						// Without this the client cannot tell an accepted member from a pending
+						// invitation, so every collaborator looked like they had not joined.
+						acceptedAt: m.acceptedAt,
 					})),
 					tracks: tracksWithDetails,
 				};

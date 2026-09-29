@@ -178,6 +178,7 @@ export const DevicePlaybackStateScalarFieldEnum = {
 	deviceId: 'deviceId',
 	status: 'status',
 	queue: 'queue',
+	history: 'history',
 	currentTrackId: 'currentTrackId',
 	positionMs: 'positionMs',
 	volume: 'volume',

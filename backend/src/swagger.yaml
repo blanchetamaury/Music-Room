@@ -3,58 +3,83 @@ info:
     title: Music Room API
     version: 1.0.0
     description: |
-        API for Music Room - A collaborative music application.
+        API for Music Room - a collaborative music application.
 
-        This API follows REST principles with JSON as the exchange format.
-        All endpoints are mounted under `/api`.
+        All endpoints are mounted under `/api`, which is already part of the server URL
+        below, so the paths in this document are relative to it.
 
         ## Authentication
-        - **Cookie-based sessions**: Login/register endpoints set HttpOnly cookies (`token`)
-        - **CSRF protection**: State-changing requests require `X-CSRF-Token` header
-        - **OAuth 42**: Available via `/api/auth/oauth/42/callback`
+        Two interchangeable mechanisms, both ending in the same `token` HttpOnly cookie:
 
-        ## Rate Limiting
-        - Login attempts: 5 per account / 15 min, 20 per IP / 15 min
-        - Other endpoints: Standard Express rate limits apply
+        - **Email**: `POST /auth/signup`, `POST /auth/login`, `POST /auth/confirm`,
+          `POST /auth/resend-verification`, `POST /auth/reset-password/request`,
+          `POST /auth/reset-password/verify`.
+        - **OAuth**: `POST /auth/oauth/start` returns a `code`, the mobile app opens the
+          returned provider URL, then exchanges it with `POST /auth/session/exchange`.
+          Providers are `oauth_fortytwo` and `oauth_google`.
 
-        ## Error Format
+        The session cookie is sent as `Authorization: Bearer <token>` by the mobile
+        client, or as a plain cookie by the web client.
+
+        ## CSRF protection
+        Cookie-authenticated state-changing requests must send the `X-CSRF-Token`
+        header, matching the `csrf` cookie. Requests authenticated with the
+        `Authorization` header are exempt.
+
+        ## Permissions
+        Ownership and membership are enforced server side on every route:
+        - playlists: `OWNER`, `EDITOR`, `VIEWER`; a pending invitation is read-only
+        - events: `OWNER`, `ADMIN`, `MEMBER`; a pending invitation is read-only
+        - devices: the owner, or a delegate granted `CONTROL` / `VIEW`
+
+        ## Realtime
+        Playlist and event mutations are published over Server-Sent Events, see
+        `GET /events/{eventId}/stream` and `GET /playlists/{playlistId}/stream`.
+
+        ## Rate limiting
+        Login: 5 attempts per account and 20 per IP every 15 minutes, persisted in the
+        database so it survives a restart. Mutations are rate limited per user.
+
+        ## Pagination
+        List routes accept `page` and `limit` and answer with a `pagination` object.
+
+        ## Error format
+        Every failure uses the same envelope and a meaningful status code:
         ```json
-        {
-          "error": "Human readable message",
-          "statusCode": 400
-        }
+        { "success": false, "message": "Human readable message" }
         ```
+        `400` invalid input, `401` missing or expired session, `403` not allowed,
+        `404` not found (also used to hide private resources), `409` concurrent
+        modification, `429` rate limited, `500` unexpected, `503` database
+        temporarily unavailable (retry).
 
-        ## Success Format
+        ## Success format
         ```json
-        {
-          "data": { ... }
-        }
+        { "success": true, "data": ... }
         ```
     contact:
         name: Music Room Team
     license:
         name: MIT
+        url: https://opensource.org/license/mit
 
 servers:
     - url: http://localhost:3000/api
-      description: Development server
-    - url: https://api.music-room.example.com/api
-      description: Production server
+      description: Local development server
 
 tags:
     - name: Authentication
-      description: User authentication and session management
+      description: Signup, login, email verification, password reset and OAuth sessions
     - name: Users
-      description: User profile and account management
+      description: Profile, preferences, field visibility, follows and likes
     - name: Deezer
-      description: Music track search and metadata (Deezer integration)
+      description: Track, album, artist and playlist metadata proxied from Deezer
     - name: Events
-      description: Music events and track voting (Music Track Vote service) - NOT YET IMPLEMENTED
+      description: Collaborative listening events, track suggestions and votes
     - name: Playlists
-      description: Collaborative playlist editing (Music Playlist Editor service) - PARTIALLY IMPLEMENTED
+      description: Collaborative playlist editing with optimistic concurrency
     - name: Devices
-      description: Device management and control delegation (Music Control Delegation service) - NOT YET IMPLEMENTED
+      description: Device registration, playback control and delegation
 
 components:
     securitySchemes:
@@ -71,10 +96,7 @@ components:
         # Auth schemas
         RegisterRequest:
             type: object
-            required:
-                - mail
-                - password
-                - username
+            required: [mail, password, username]
             properties:
                 mail:
                     type: string
@@ -84,11 +106,15 @@ components:
                     type: string
                     format: password
                     minLength: 8
+                    pattern: '^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$'
+                    description: >
+                        At least 8 characters, with a letter, a digit and a special
+                        character.
                     example: 'SecurePass123!'
                 username:
                     type: string
                     minLength: 3
-                    maxLength: 20
+                    maxLength: 10
                     example: 'musiclover'
 
         LoginRequest:
@@ -111,16 +137,24 @@ components:
             properties:
                 success:
                     type: boolean
-                user:
-                    type: object
-                    properties:
-                        id:
-                            type: string
-                        email:
-                            type: string
-                            format: email
-                        username:
-                            type: string
+                    example: true
+            description: >
+                The session itself is delivered in the `token` HttpOnly cookie, so there is
+                nothing sensitive in the body. Mobile clients read the cookie and replay it
+                as `Authorization: Bearer <token>`.
+
+        DeviceListResponse:
+            type: object
+            description: A non-paginated list of devices; the array sits directly under `data`.
+            required: [success, data]
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Device'
 
         ErrorResponse:
             type: object
@@ -131,36 +165,59 @@ components:
                 message:
                     type: string
                     example: 'Invalid password or mail'
-                statusCode:
-                    type: integer
-                    example: 401
+            required: [success, message]
 
-        # User schemas
+        PaginatedResponse:
+            type: object
+            description: >
+                The inner payload of a paginated list. It is nested under `data` by the
+                response envelope, so a list endpoint returns
+                `{ "success": true, "data": { "data": [...], "page": 1, ... } }`.
+            required: [data, page, page_size, total_pages]
+            properties:
+                data:
+                    type: array
+                    items: {}
+                page:
+                    type: integer
+                    minimum: 1
+                page_size:
+                    type: integer
+                    minimum: 1
+                total_pages:
+                    type: integer
+                    minimum: 0
+
+        ListEnvelope:
+            type: object
+            required: [success, data]
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                data:
+                    $ref: '#/components/schemas/PaginatedResponse'
+
         UserProfile:
             type: object
             properties:
                 id:
                     type: string
-                    example: 'cm1x2y3z4a5b6c7d8e9f0g1h2'
                 email:
                     type: string
                     format: email
-                    example: 'user@example.com'
                 username:
                     type: string
-                    example: 'musiclover'
                 avatarUrl:
                     type: string
                     format: uri
                     nullable: true
+                emailVerified:
+                    type: boolean
                 createdAt:
                     type: string
                     format: date-time
-                fortytwo_oauth:
-                    type: boolean
-                    example: false
 
-        # Deezer schemas
         DeezerArtist:
             type: object
             properties:
@@ -236,101 +293,125 @@ components:
                     type: string
                 description:
                     type: string
+                    nullable: true
                 visibility:
                     type: string
-                    enum: [public, private]
-                    default: public
-                license_type:
+                    enum: [PUBLIC, PRIVATE]
+                votingPolicy:
                     type: string
-                    enum: [open, invited_only, location_time]
-                    default: open
-                location:
-                    type: object
-                    properties:
-                        latitude:
-                            type: number
-                        longitude:
-                            type: number
-                        radius:
-                            type: integer
+                    enum: [EVERYONE, INVITED_ONLY, LOCATION_TIME]
+                latitude:
+                    type: number
                     nullable: true
-                time_window_start:
-                    type: string
-                    format: time
+                longitude:
+                    type: number
                     nullable: true
-                time_window_end:
-                    type: string
-                    format: time
+                radius:
+                    type: integer
                     nullable: true
-                created_by:
-                    type: string
-                created_at:
+                startAt:
                     type: string
                     format: date-time
+                    nullable: true
+                endAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+                ownerId:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                myRole:
+                    type: string
+                    enum: [OWNER, ADMIN, MEMBER]
+                    nullable: true
+                    description: Null while the caller only holds a pending invitation.
+                myInvitationStatus:
+                    type: string
+                    enum: [PENDING, ACCEPTED, DECLINED]
+                    nullable: true
+                canEdit:
+                    type: boolean
+                owner:
+                    $ref: '#/components/schemas/UserProfile'
+                members:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventMember'
+                tracks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EventTrack'
 
-        EventCreateRequest:
-            type: object
-            required:
-                - name
-            properties:
-                name:
-                    type: string
-                description:
-                    type: string
-                visibility:
-                    type: string
-                    enum: [public, private]
-                    default: public
-                license_type:
-                    type: string
-                    enum: [open, invited_only, location_time]
-                    default: open
-                location:
-                    type: object
-                    properties:
-                        latitude:
-                            type: number
-                        longitude:
-                            type: number
-                        radius:
-                            type: integer
-                    nullable: true
-                time_window_start:
-                    type: string
-                    format: time
-                    nullable: true
-                time_window_end:
-                    type: string
-                    format: time
-                    nullable: true
-
-        TrackSuggestion:
+        EventMember:
             type: object
             properties:
                 id:
                     type: string
-                event_id:
+                role:
                     type: string
-                track_id:
+                    enum: [ADMIN, MEMBER]
+                status:
                     type: string
-                suggested_by:
+                    enum: [PENDING, ACCEPTED, DECLINED]
+                    description: A pending member can read the event but not take part in it.
+                user:
+                    $ref: '#/components/schemas/UserProfile'
+
+        EventCreateRequest:
+            type: object
+            required: [name]
+            properties:
+                name:
                     type: string
-                votes_count:
+                    minLength: 1
+                    maxLength: 100
+                description:
+                    type: string
+                    maxLength: 500
+                visibility:
+                    type: string
+                    enum: [PUBLIC, PRIVATE]
+                    default: PUBLIC
+                votingPolicy:
+                    type: string
+                    enum: [EVERYONE, INVITED_ONLY, LOCATION_TIME]
+                    default: EVERYONE
+                latitude:
+                    type: number
+                    minimum: -90
+                    maximum: 90
+                longitude:
+                    type: number
+                    minimum: -180
+                    maximum: 180
+                radius:
                     type: integer
-                    default: 0
-                created_at:
+                    minimum: 1
+                    maximum: 100000
+                startAt:
                     type: string
                     format: date-time
+                endAt:
+                    type: string
+                    format: date-time
+            description: >
+                Coordinates and the time window are only meaningful for the
+                LOCATION_TIME voting policy.
 
         VoteRequest:
             type: object
-            required:
-                - track_suggestion_id
+            required: [eventId, trackId]
             properties:
-                track_suggestion_id:
+                eventId:
                     type: string
+                trackId:
+                    type: string
+            description: >
+                Vote for a suggested track. Voting twice for the same track keeps a single
+                vote; DELETE with the same body withdraws it.
 
-        # Playlist schemas (Music Playlist Editor)
         Playlist:
             type: object
             properties:
@@ -338,1132 +419,3597 @@ components:
                     type: string
                 name:
                     type: string
-                description:
+                ownerId:
                     type: string
-                cover_url:
+                cover:
                     type: string
                     format: uri
                     nullable: true
+                description:
+                    type: string
+                    nullable: true
                 visibility:
                     type: string
-                    enum: [public, private]
-                    default: public
-                license_type:
+                    enum: [PUBLIC, PRIVATE]
+                editPolicy:
                     type: string
-                    enum: [open, invited_only]
-                    default: open
-                owner_id:
+                    enum: [EVERYONE, INVITED_ONLY]
+                version:
+                    type: integer
+                    description: Incremented on every edit; send it back as `expectedVersion`.
+                lastEditedBy:
                     type: string
-                created_at:
+                    nullable: true
+                createdAt:
                     type: string
                     format: date-time
-                updated_at:
+                updatedAt:
                     type: string
                     format: date-time
+                owner:
+                    $ref: '#/components/schemas/UserProfile'
+                members:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PlaylistMember'
+                tracks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PlaylistTrack'
+
+        PlaylistMember:
+            type: object
+            properties:
+                id:
+                    type: string
+                playlistId:
+                    type: string
+                userId:
+                    type: string
+                role:
+                    type: string
+                    enum: [OWNER, EDITOR, VIEWER]
+                invitedAt:
+                    type: string
+                    format: date-time
+                acceptedAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+                user:
+                    $ref: '#/components/schemas/UserProfile'
 
         PlaylistCreateRequest:
             type: object
-            required:
-                - name
+            required: [name]
             properties:
                 name:
                     type: string
-                description:
-                    type: string
-                cover_url:
+                    minLength: 1
+                    maxLength: 100
+                cover:
                     type: string
                     format: uri
                     nullable: true
+                description:
+                    type: string
+                    maxLength: 500
                 visibility:
                     type: string
-                    enum: [public, private]
-                    default: public
-                license_type:
+                    enum: [PUBLIC, PRIVATE]
+                    default: PUBLIC
+                editPolicy:
                     type: string
-                    enum: [open, invited_only]
-                    default: open
+                    enum: [EVERYONE, INVITED_ONLY]
+                    default: EVERYONE
+            description: >
+                `editPolicy` decides who may add tracks once the playlist is public:
+                EVERYONE, or INVITED_ONLY to restrict edits to accepted members.
 
         PlaylistTrack:
             type: object
             properties:
                 id:
                     type: string
-                playlist_id:
+                playlistId:
                     type: string
-                track_id:
+                trackId:
                     type: string
+                    description: Deezer track id.
                 position:
                     type: integer
-                added_by:
+                addedBy:
                     type: string
-                added_at:
+                addedAt:
                     type: string
                     format: date-time
+                track:
+                    allOf:
+                        - $ref: '#/components/schemas/DeezerTrack'
+                    description: Present on the single playlist route, omitted from the list route.
 
         PlaylistTrackAddRequest:
             type: object
-            required:
-                - track_id
+            required: [playlistId, trackId]
             properties:
-                track_id:
+                playlistId:
                     type: string
+                trackId:
+                    type: string
+                    description: Deezer track id.
                 position:
                     type: integer
+                    description: Insertion index; appended when omitted.
 
         PlaylistTrackMoveRequest:
             type: object
-            required:
-                - new_position
+            required: [playlistId, trackId, newPosition]
             properties:
-                new_position:
+                playlistId:
+                    type: string
+                trackId:
+                    type: string
+                newPosition:
                     type: integer
+                expectedVersion:
+                    type: integer
+                    description: Optimistic concurrency guard; omit to overwrite.
 
-        # Device schemas (Music Control Delegation)
         Device:
             type: object
             properties:
                 id:
                     type: string
-                user_id:
-                    type: string
-                name:
+                deviceName:
                     type: string
                 platform:
                     type: string
-                    example: 'iOS'
-                device_model:
+                    enum: [ios, android, web]
+                appVersion:
                     type: string
-                    example: 'iPhone 15'
-                app_version:
-                    type: string
-                    example: '1.0.0'
-                last_active:
+                lastSeenAt:
                     type: string
                     format: date-time
-                control_delegated_to:
+                revokedAt:
                     type: string
+                    format: date-time
                     nullable: true
+                permissions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DevicePermission'
 
-        DeviceControlDelegateRequest:
+        DevicePermission:
             type: object
-            required:
-                - device_id
-                - delegate_to_user_id
             properties:
-                device_id:
+                id:
                     type: string
-                delegate_to_user_id:
+                delegateUserId:
                     type: string
+                permission:
+                    type: string
+                    enum: [CONTROL, VIEW]
+                expiresAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+                createdAt:
+                    type: string
+                    format: date-time
+
+        EventTrack:
+            type: object
+            properties:
+                trackId:
+                    type: string
+                status:
+                    type: string
+                    enum: [PENDING, APPROVED, REJECTED, PLAYING, PLAYED]
+                voteCount:
+                    type: integer
+                suggestedBy:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                votedByMe:
+                    type: boolean
+
+        DeviceState:
+            type: object
+            properties:
+                deviceId:
+                    type: string
+                level:
+                    type: string
+                    enum: [OWNER, DELEGATE]
+                    description: How the caller reaches this device.
+                state:
+                    type: object
+                    properties:
+                        deviceId:
+                            type: string
+                        status:
+                            type: string
+                            enum: [IDLE, PLAYING, PAUSED]
+                        queue:
+                            type: array
+                            items:
+                                type: string
+                        history:
+                            type: array
+                            items:
+                                type: string
+                        currentTrackId:
+                            type: string
+                            nullable: true
+                        positionMs:
+                            type: integer
+                        volume:
+                            type: integer
+                            minimum: 0
+                            maximum: 100
+                        updatedBy:
+                            type: string
+                            nullable: true
+                        updatedAt:
+                            type: string
+                            format: date-time
 
         DeviceControlRevokeRequest:
             type: object
-            required:
-                - device_id
+            required: [deviceId]
             properties:
-                device_id:
+                deviceId:
                     type: string
+            description: Revoke a device you own, ending every delegation it carries.
 
-        # Pagination
-        PaginationParams:
+        UpdatePlaylistRequest:
             type: object
             properties:
-                page:
+                playlistId:
+                    type: string
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 100
+                cover:
+                    type: string
+                    format: uri
+                    nullable: true
+                description:
+                    type: string
+                    maxLength: 500
+                visibility:
+                    type: string
+                    enum: [PUBLIC, PRIVATE]
+                editPolicy:
+                    type: string
+                    enum: [EVERYONE, INVITED_ONLY]
+                expectedVersion:
                     type: integer
-                    default: 1
-                    minimum: 1
-                limit:
-                    type: integer
-                    default: 20
-                    minimum: 1
-                    maximum: 100
+                    description: Optimistic concurrency guard. Send the version you read.
+            description: Every field is optional; send `expectedVersion` to detect a concurrent edit.
 
-        PaginatedResponse:
+        UpdateEventRequest:
+            type: object
+            required: [eventId]
+            properties:
+                eventId:
+                    type: string
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 100
+                description:
+                    type: string
+                    maxLength: 500
+                    nullable: true
+                visibility:
+                    type: string
+                    enum: [PUBLIC, PRIVATE]
+                votingPolicy:
+                    type: string
+                    enum: [EVERYONE, INVITED_ONLY, LOCATION_TIME]
+                latitude:
+                    type: number
+                    minimum: -90
+                    maximum: 90
+                    nullable: true
+                longitude:
+                    type: number
+                    minimum: -180
+                    maximum: 180
+                    nullable: true
+                radius:
+                    type: integer
+                    minimum: 1
+                    maximum: 100000
+                    nullable: true
+                startAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+                endAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+
+        EventTrackRequest:
+            type: object
+            required: [eventId, trackId]
+            properties:
+                eventId:
+                    type: string
+                trackId:
+                    type: string
+                latitude:
+                    type: number
+                    minimum: -90
+                    maximum: 90
+                longitude:
+                    type: number
+                    minimum: -180
+                    maximum: 180
+            description: >
+                Suggest a track on an event. `latitude` and `longitude` must be sent
+                together and are required when the event voting policy is
+                LOCATION_TIME.
+
+        DeviceDelegationRequest:
+            type: object
+            required: [deviceId, delegateUserId]
+            properties:
+                deviceId:
+                    type: string
+                delegateUserId:
+                    type: string
+                permission:
+                    type: string
+                    enum: [CONTROL, VIEW]
+                    default: CONTROL
+                expiresAt:
+                    type: string
+                    format: date-time
+                    description: Optional expiry; omit for a permanent delegation.
+
+        # --- Session / OAuth -------------------------------------------------
+        SessionExchangeRequest:
+            type: object
+            required: [code]
+            properties:
+                code:
+                    type: string
+                    minLength: 32
+                    description: Opaque code returned by POST /auth/oauth/start.
+            additionalProperties: false
+
+        OAuthStartRequest:
+            type: object
+            required: [provider]
+            properties:
+                provider:
+                    type: string
+                    enum: [oauth_fortytwo, oauth_google]
+                redirectUri:
+                    type: string
+                    format: uri
+                    description: Where the provider should send the user back.
+                    nullable: true
+
+        OAuthStartResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                data:
+                    type: object
+                    properties:
+                        code:
+                            type: string
+                        url:
+                            type: string
+                            format: uri
+
+        ConfirmTokenRequest:
+            type: object
+            required: [token]
+            properties:
+                token:
+                    type: string
+                    minLength: 32
+
+        ResendVerificationRequest:
+            type: object
+            required: [mail]
+            properties:
+                mail:
+                    type: string
+                    format: email
+
+        ResetPasswordRequest:
+            type: object
+            required: [mail]
+            properties:
+                mail:
+                    type: string
+                    format: email
+
+        ResetPasswordVerifyRequest:
+            type: object
+            required: [mail, code, password]
+            properties:
+                mail:
+                    type: string
+                    format: email
+                code:
+                    type: string
+                    minLength: 6
+                    maxLength: 6
+                password:
+                    type: string
+                    minLength: 6
+
+        # --- Users -----------------------------------------------------------
+        UpdateUserRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                    minLength: 2
+                    maxLength: 40
+                avatarUrl:
+                    type: string
+                    format: uri
+                    nullable: true
+            description: Both fields are optional; an empty avatarUrl clears the avatar.
+
+        FollowRequest:
+            type: object
+            required: [user_id]
+            properties:
+                user_id:
+                    type: string
+            additionalProperties: false
+
+        FollowState:
+            type: object
+            properties:
+                following:
+                    type: boolean
+                followersCount:
+                    type: integer
+                followingCount:
+                    type: integer
+
+        LikeManageRequest:
+            type: object
+            required: [track_id]
+            properties:
+                track_id:
+                    type: string
+            description: Likes a track when it is not liked yet, unlikes it otherwise.
+
+        VisibilityUpdateRequest:
+            type: object
+            description: >
+                At least one field is required. `FRIENDS` requires an accepted friend
+                relationship; `HIDDEN` removes the field from the public profile.
+            properties:
+                PROFILE_BASICS:
+                    $ref: '#/components/schemas/VisibilityLevel'
+                MUSIC_PREFERENCES:
+                    $ref: '#/components/schemas/VisibilityLevel'
+                LIKES:
+                    $ref: '#/components/schemas/VisibilityLevel'
+                PLAYLISTS:
+                    $ref: '#/components/schemas/VisibilityLevel'
+                PLAY_HISTORY:
+                    $ref: '#/components/schemas/VisibilityLevel'
+            additionalProperties: false
+
+        VisibilityLevel:
+            type: string
+            enum: [PUBLIC, FRIENDS, PRIVATE]
+
+        MusicPreferencesUpdateRequest:
+            type: object
+            properties:
+                favoriteGenres:
+                    $ref: '#/components/schemas/PreferenceIdList'
+                favoriteArtists:
+                    $ref: '#/components/schemas/PreferenceIdList'
+                favoriteAlbums:
+                    $ref: '#/components/schemas/PreferenceIdList'
+                favoriteTracks:
+                    $ref: '#/components/schemas/PreferenceIdList'
+            additionalProperties: false
+
+        PreferenceIdList:
+            type: array
+            maxItems: 100
+            items:
+                type: string
+
+        # --- Playlists -------------------------------------------------------
+        PlaylistMemberRequest:
+            type: object
+            required: [playlistId, userId]
+            properties:
+                playlistId:
+                    type: string
+                userId:
+                    type: string
+                role:
+                    type: string
+                    enum: [OWNER, EDITOR, VIEWER]
+                    default: EDITOR
+
+        PlaylistInviteRequest:
+            type: object
+            required: [playlistId, username]
+            properties:
+                playlistId:
+                    type: string
+                username:
+                    type: string
+                    minLength: 3
+                    maxLength: 10
+                role:
+                    type: string
+                    enum: [EDITOR, VIEWER]
+                    default: EDITOR
+
+        PlaylistAcceptRequest:
+            type: object
+            required: [playlistId]
+            properties:
+                playlistId:
+                    type: string
+                userId:
+                    type: string
+                    description: Optional, defaults to the caller. Needed to accept for somebody else.
+
+        PlaylistRemoveMusicRequest:
+            type: object
+            required: [playlistId, trackId]
+            properties:
+                playlistId:
+                    type: string
+                trackId:
+                    type: string
+
+        # --- Events ----------------------------------------------------------
+        EventMemberInviteRequest:
+            type: object
+            required: [eventId]
+            properties:
+                eventId:
+                    type: string
+                username:
+                    type: string
+                    minLength: 3
+                    maxLength: 30
+                userId:
+                    type: string
+                role:
+                    type: string
+                    enum: [ADMIN, MEMBER]
+                    default: MEMBER
+            description: Provide either username or userId to identify the invitee.
+
+        EventMemberRefRequest:
+            type: object
+            required: [eventId]
+            properties:
+                eventId:
+                    type: string
+                userId:
+                    type: string
+                    description: Optional so a member can leave or decline without an id.
+
+        EventMemberRoleRequest:
+            type: object
+            required: [eventId]
+            properties:
+                eventId:
+                    type: string
+                userId:
+                    type: string
+                role:
+                    type: string
+                    enum: [ADMIN, MEMBER]
+
+        EventStatusRequest:
+            type: object
+            required: [eventId, status]
+            properties:
+                eventId:
+                    type: string
+                status:
+                    type: string
+                    enum: [IDLE, PLAYING, PAUSED, ENDED]
+
+        # --- Devices ---------------------------------------------------------
+        RegisterDeviceRequest:
+            type: object
+            required: [deviceName, platform, appVersion]
+            properties:
+                deviceName:
+                    type: string
+                    minLength: 1
+                    maxLength: 100
+                platform:
+                    type: string
+                    enum: [ios, android, web]
+                appVersion:
+                    type: string
+                    minLength: 1
+                    maxLength: 30
+
+        DeviceControlRequest:
+            type: object
+            required: [deviceId, command]
+            properties:
+                deviceId:
+                    type: string
+                command:
+                    type: string
+                    enum: [play, pause, next, previous, setQueue, skipTo, setVolume]
+                tracks:
+                    type: array
+                    maxItems: 200
+                    items:
+                        type: string
+                    description: Required by setQueue.
+                trackId:
+                    type: string
+                    description: Required by skipTo.
+                volume:
+                    type: integer
+                    minimum: 0
+                    maximum: 100
+                    description: Required by setVolume.
+
+        # --- Generic ---------------------------------------------------------
+        DeezerAlbumListResponse:
             type: object
             properties:
                 data:
                     type: array
                     items:
-                        type: object
-                pagination:
-                    type: object
-                    properties:
-                        page:
-                            type: integer
-                        limit:
-                            type: integer
-                        total:
-                            type: integer
-                        total_pages:
-                            type: integer
+                        $ref: '#/components/schemas/DeezerAlbum'
+                total:
+                    type: integer
+
+        OkResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
 
 paths:
-    # Authentication
-    /auth/register:
-        post:
-            tags: [Authentication]
-            summary: Register a new user
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/RegisterRequest'
-            responses:
-                '201':
-                    description: User created successfully (email verification required)
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    message:
-                                        type: string
-                                    email_verification_required:
-                                        type: boolean
-                    headers:
-                        Set-Cookie:
-                            description: CSRF cookie
-                            schema:
-                                type: string
-                '400':
-                    description: Validation error
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '409':
-                    description: Email already exists
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /auth/login:
-        post:
-            tags: [Authentication]
-            summary: Login user
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/LoginRequest'
-            responses:
-                '200':
-                    description: Login successful
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    user:
-                                        type: object
-                                        properties:
-                                            id:
-                                                type: string
-                                            email:
-                                                type: string
-                                                format: email
-                    headers:
-                        Set-Cookie:
-                            description: Session and CSRF cookies
-                            schema:
-                                type: string
-                '401':
-                    description: Invalid credentials
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '403':
-                    description: Email not verified
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '429':
-                    description: Too many attempts
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /auth/logout:
-        post:
-            tags: [Authentication]
-            summary: Logout user
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            responses:
-                '200':
-                    description: Logout successful
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                    headers:
-                        Set-Cookie:
-                            description: Cleared session and CSRF cookies
-                            schema:
-                                type: string
-                '403':
-                    description: Invalid CSRF token
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /auth/confirm-email:
-        post:
-            tags: [Authentication]
-            summary: Confirm email with token
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - token
-                            properties:
-                                token:
-                                    type: string
-                                    minLength: 32
-            responses:
-                '200':
-                    description: Email verified successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    message:
-                                        type: string
-                '400':
-                    description: Invalid or expired token
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /auth/password/reset:
-        post:
-            tags: [Authentication]
-            summary: Request password reset
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - mail
-                            properties:
-                                mail:
-                                    type: string
-                                    format: email
-            responses:
-                '200':
-                    description: Reset email sent (if account exists)
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    message:
-                                        type: string
-
-    /auth/password/reset/confirm:
-        post:
-            tags: [Authentication]
-            summary: Confirm password reset with code
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - mail
-                                - code
-                                - password
-                            properties:
-                                mail:
-                                    type: string
-                                    format: email
-                                code:
-                                    type: string
-                                    pattern: '^\d{6}$'
-                                password:
-                                    type: string
-                                    minLength: 8
-            responses:
-                '200':
-                    description: Password reset successful
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    message:
-                                        type: string
-                '400':
-                    description: Invalid or expired code
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /auth/oauth/42/callback:
-        get:
-            tags: [Authentication]
-            summary: 42 OAuth callback
-            parameters:
-                - name: code
-                  in: query
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '302':
-                    description: Redirect to frontend with session cookies
-                    headers:
-                        Set-Cookie:
-                            description: Session and CSRF cookies
-                            schema:
-                                type: string
-                        Location:
-                            description: Frontend redirect URL
-                            schema:
-                                type: string
-
-    # Users
-    /users/me:
-        get:
-            tags: [Users]
-            summary: Get current user profile
-            security:
-                - cookieAuth: []
-            responses:
-                '200':
-                    description: User profile
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/UserProfile'
-                '401':
-                    description: Unauthorized
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    # Deezer
-    /deezer/tracks:
-        get:
-            tags: [Deezer]
-            summary: Search tracks
-            parameters:
-                - name: q
-                  in: query
-                  required: true
-                  schema:
-                      type: string
-                  description: Search query
-                - name: limit
-                  in: query
-                  schema:
-                      type: integer
-                      default: 25
-                      minimum: 1
-                      maximum: 50
-                  description: Maximum results
-            responses:
-                '200':
-                    description: Search results
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeezerTrackListResponse'
-                '400':
-                    description: Missing query parameter
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /deezer/tracks/{id}:
-        get:
-            tags: [Deezer]
-            summary: Get track by ID
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Track details
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeezerTrackResponse'
-                '404':
-                    description: Track not found
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /deezer/charts:
-        get:
-            tags: [Deezer]
-            summary: Get top charts
-            parameters:
-                - name: limit
-                  in: query
-                  schema:
-                      type: integer
-                      default: 50
-                      minimum: 1
-                      maximum: 200
-            responses:
-                '200':
-                    description: Chart tracks
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeezerTrackListResponse'
-
-    # Events (Music Track Vote)
-    /events:
-        get:
-            tags: [Events]
-            summary: List events (with filters)
-            security:
-                - cookieAuth: []
-            parameters:
-                - name: visibility
-                  in: query
-                  schema:
-                      type: string
-                      enum: [public, private]
-                - name: page
-                  in: query
-                  schema:
-                      type: integer
-                      default: 1
-                - name: limit
-                  in: query
-                  schema:
-                      type: integer
-                      default: 20
-            responses:
-                '200':
-                    description: List of events
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/Event'
-                                    pagination:
-                                        $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
-
-        post:
-            tags: [Events]
-            summary: Create a new event
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/EventCreateRequest'
-            responses:
-                '201':
-                    description: Event created
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Event'
-                '400':
-                    description: Validation error
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '401':
-                    description: Unauthorized
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /events/{id}:
-        get:
-            tags: [Events]
-            summary: Get event details
-            security:
-                - cookieAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Event details
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Event'
-                '404':
-                    description: Event not found
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-        delete:
-            tags: [Events]
-            summary: Delete event (owner only)
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '204':
-                    description: Event deleted
-                '403':
-                    description: Not owner
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /events/{id}/suggestions:
-        get:
-            tags: [Events]
-            summary: Get track suggestions for event
-            security:
-                - cookieAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: List of track suggestions
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/TrackSuggestion'
-
-        post:
-            tags: [Events]
-            summary: Suggest a track for the event
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - track_id
-                            properties:
-                                track_id:
-                                    type: string
-            responses:
-                '201':
-                    description: Track suggested
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/TrackSuggestion'
-                '403':
-                    description: Not allowed to vote (license/visibility)
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /events/{id}/suggestions/{suggestionId}/vote:
-        post:
-            tags: [Events]
-            summary: Vote for a track suggestion
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                - name: suggestionId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Vote recorded
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: object
-                                        properties:
-                                            votes_count:
-                                                type: integer
-                '403':
-                    description: Not allowed to vote
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '409':
-                    description: Already voted
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-        delete:
-            tags: [Events]
-            summary: Remove vote
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                - name: suggestionId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Vote removed
-
-    # Playlists (Music Playlist Editor)
-    /playlists:
-        get:
-            tags: [Playlists]
-            summary: List playlists
-            security:
-                - cookieAuth: []
-            parameters:
-                - name: visibility
-                  in: query
-                  schema:
-                      type: string
-                      enum: [public, private]
-                - name: page
-                  in: query
-                  schema:
-                      type: integer
-                      default: 1
-                - name: limit
-                  in: query
-                  schema:
-                      type: integer
-                      default: 20
-            responses:
-                '200':
-                    description: List of playlists
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/Playlist'
-                                    pagination:
-                                        $ref: '#/components/schemas/PaginatedResponse/properties/pagination'
-
-        post:
-            tags: [Playlists]
-            summary: Create a new playlist
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PlaylistCreateRequest'
-            responses:
-                '201':
-                    description: Playlist created
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Playlist'
-
-    /playlists/{id}:
-        get:
-            tags: [Playlists]
-            summary: Get playlist details with tracks
-            security:
-                - cookieAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Playlist with tracks
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: object
-                                        properties:
-                                            playlist:
-                                                $ref: '#/components/schemas/Playlist'
-                                            tracks:
-                                                type: array
-                                                items:
-                                                    $ref: '#/components/schemas/PlaylistTrack'
-
-        put:
-            tags: [Playlists]
-            summary: Update playlist (owner/invited with license)
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PlaylistCreateRequest'
-            responses:
-                '200':
-                    description: Playlist updated
-                '403':
-                    description: Not allowed to edit
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-        delete:
-            tags: [Playlists]
-            summary: Delete playlist (owner only)
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '204':
-                    description: Playlist deleted
-
-    /playlists/{id}/tracks:
-        post:
-            tags: [Playlists]
-            summary: Add track to playlist
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PlaylistTrackAddRequest'
-            responses:
-                '201':
-                    description: Track added
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/PlaylistTrack'
-                '403':
-                    description: Not allowed to edit
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '409':
-                    description: Conflict (concurrent edit)
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /playlists/{id}/tracks/{trackId}:
-        put:
-            tags: [Playlists]
-            summary: Move track in playlist
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                - name: trackId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PlaylistTrackMoveRequest'
-            responses:
-                '200':
-                    description: Track moved
-                '403':
-                    description: Not allowed to edit
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '409':
-                    description: Conflict (concurrent edit)
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-        delete:
-            tags: [Playlists]
-            summary: Remove track from playlist
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                - name: trackId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '204':
-                    description: Track removed
-
-    # Devices (Music Control Delegation)
-    /devices:
-        get:
-            tags: [Devices]
-            summary: List user's devices
-            security:
-                - cookieAuth: []
-            responses:
-                '200':
-                    description: List of devices
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/Device'
-
-        post:
-            tags: [Devices]
-            summary: Register a new device
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - name
-                                - platform
-                                - device_model
-                                - app_version
-                            properties:
-                                name:
-                                    type: string
-                                platform:
-                                    type: string
-                                device_model:
-                                    type: string
-                                app_version:
-                                    type: string
-            responses:
-                '201':
-                    description: Device registered
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Device'
-
-    /devices/{id}/delegate:
-        post:
-            tags: [Devices]
-            summary: Delegate control of device to another user
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/DeviceControlDelegateRequest'
-            responses:
-                '200':
-                    description: Control delegated
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Device'
-                '403':
-                    description: Not device owner
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-    /devices/{id}/revoke:
-        post:
-            tags: [Devices]
-            summary: Revoke control delegation
-            security:
-                - cookieAuth: []
-                - csrfAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Delegation revoked
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    data:
-                                        $ref: '#/components/schemas/Device'
-                '403':
-                    description: Not device owner
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
+  /auth/signup:
+    post:
+      tags:
+      - Authentication
+      summary: Create an account
+      operationId: signup
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Account created, verification email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '201':
+          description: Account created, verification email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email already used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Sign in with email and password
+      operationId: login
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Session created; sets the `token` and `csrf` cookies
+          headers:
+            Set-Cookie:
+              description: HttpOnly `token` session cookie and readable `csrf` cookie
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid password or mail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Email not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: 'Rate limited: 5 per account and 20 per IP every 15 minutes'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/logout:
+    post:
+      tags:
+      - Authentication
+      summary: Destroy the current session
+      operationId: logout
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401':
+          description: Missing session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/confirm:
+    post:
+      tags:
+      - Authentication
+      summary: Confirm an email address with the token from the verification email
+      operationId: confirmEmail
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmTokenRequest'
+      responses:
+        '200':
+          description: Email confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Already confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/resend-verification:
+    post:
+      tags:
+      - Authentication
+      summary: Send a new verification email
+      operationId: resendVerification
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendVerificationRequest'
+      responses:
+        '200':
+          description: Email sent when the address needs it
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/reset-password/request:
+    post:
+      tags:
+      - Authentication
+      summary: Ask for a password reset code
+      operationId: requestPasswordReset
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Reset email sent when the address exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/reset-password/verify:
+    post:
+      tags:
+      - Authentication
+      summary: Set a new password with a reset code
+      operationId: verifyPasswordReset
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordVerifyRequest'
+      responses:
+        '200':
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input or code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Code already used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/oauth/start:
+    post:
+      tags:
+      - Authentication
+      summary: Begin an OAuth login
+      operationId: oauthStart
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthStartRequest'
+      responses:
+        '200':
+          description: Code to store locally and provider URL to open
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthStartResponse'
+        '400':
+          description: Unknown provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/oauth/oauth_fortytwo:
+    get:
+      tags:
+      - Authentication
+      summary: 42 OAuth callback
+      operationId: oauthCallback42
+      security: []
+      parameters:
+      - name: code
+        in: query
+        description: Authorization code returned by 42
+        required: false
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Anti-forgery state
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid code or state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Account already linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/oauth/oauth_google:
+    get:
+      tags:
+      - Authentication
+      summary: Google OAuth callback
+      operationId: oauthCallbackGoogle
+      security: []
+      parameters:
+      - name: code
+        in: query
+        description: Authorization code returned by Google
+        required: false
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Anti-forgery state
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid code or state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Account already linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/session/exchange:
+    post:
+      tags:
+      - Authentication
+      summary: Exchange an OAuth code for a session
+      operationId: sessionExchange
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionExchangeRequest'
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid or expired code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Account already linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/search:
+    get:
+      tags:
+      - Deezer
+      summary: Search tracks
+      operationId: deezerSearch
+      security: []
+      parameters:
+      - name: q
+        in: query
+        description: Search query
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerTrackListResponse'
+        '400':
+          description: Missing query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/music/music:
+    get:
+      tags:
+      - Deezer
+      summary: Track by id
+      operationId: deezerTrack
+      security: []
+      parameters:
+      - name: music_id
+        in: query
+        description: Deezer track id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerTrackResponse'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown track
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/music/musics:
+    get:
+      tags:
+      - Deezer
+      summary: Multiple tracks by id
+      operationId: deezerTracksByIds
+      security: []
+      parameters:
+      - name: music_id
+        in: query
+        description: Comma separated Deezer track ids
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerTrackListResponse'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/music/top_music:
+    get:
+      tags:
+      - Deezer
+      summary: Charts
+      operationId: deezerCharts
+      security: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerTrackListResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/artist/artists:
+    get:
+      tags:
+      - Deezer
+      summary: Artist by id
+      operationId: deezerArtist
+      security: []
+      parameters:
+      - name: deezer_id
+        in: query
+        description: Deezer artist id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerArtist'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown artist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/artist/albums:
+    get:
+      tags:
+      - Deezer
+      summary: Artist albums
+      operationId: deezerArtistAlbums
+      security: []
+      parameters:
+      - name: deezer_id
+        in: query
+        description: Deezer artist id
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum albums
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerAlbumListResponse'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/artist/tracks:
+    get:
+      tags:
+      - Deezer
+      summary: Artist top tracks
+      operationId: deezerArtistTracks
+      security: []
+      parameters:
+      - name: deezer_id
+        in: query
+        description: Deezer artist id
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum tracks
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerTrackListResponse'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/album/album:
+    get:
+      tags:
+      - Deezer
+      summary: Album by id
+      operationId: deezerAlbum
+      security: []
+      parameters:
+      - name: deezer_id
+        in: query
+        description: Deezer album id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeezerAlbum'
+        '400':
+          description: Missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown album
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /deezer/playlist/create:
+    post:
+      tags:
+      - Deezer
+      summary: Create a Deezer playlist
+      operationId: deezerCreatePlaylist
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Playlist created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Deezer unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/me:
+    get:
+      tags:
+      - Users
+      summary: Current profile
+      operationId: getMe
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - Users
+      summary: Update username or avatar
+      operationId: updateMe
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+  /user/user:
+    get:
+      tags:
+      - Users
+      summary: Public profile of a user
+      operationId: getUser
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: user_id
+        in: query
+        description: Target user id
+        required: true
+        schema:
+          type: string
+  /user/visibility:
+    get:
+      tags:
+      - Users
+      summary: Field visibility settings
+      operationId: getVisibility
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - Users
+      summary: Update field visibility
+      operationId: updateVisibility
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisibilityUpdateRequest'
+  /user/preferences:
+    get:
+      tags:
+      - Users
+      summary: Music preferences
+      operationId: getPreferences
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - Users
+      summary: Update music preferences
+      operationId: updatePreferences
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MusicPreferencesUpdateRequest'
+  /user/follow:
+    get:
+      tags:
+      - Users
+      summary: Follow state for a user
+      operationId: followState
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowState'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: user_id
+        in: query
+        description: Target user id
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - Users
+      summary: Follow a user
+      operationId: followUser
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowState'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowRequest'
+    delete:
+      tags:
+      - Users
+      summary: Unfollow a user
+      operationId: unfollowUser
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowState'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Unknown user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: user_id
+        in: query
+        description: Target user id
+        required: true
+        schema:
+          type: string
+  /user/like/likes:
+    get:
+      tags:
+      - Users
+      summary: Liked tracks
+      operationId: listLikes
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Liked tracks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/like/like:
+    get:
+      tags:
+      - Users
+      summary: Like state for a track
+      operationId: getLike
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Like state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Track not liked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: track_id
+        in: query
+        description: Deezer track id
+        required: true
+        schema:
+          type: string
+  /user/like/manage:
+    post:
+      tags:
+      - Users
+      summary: Like or unlike a track
+      operationId: toggleLike
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: New like state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LikeManageRequest'
+  /user/playlist/playlists:
+    get:
+      tags:
+      - Playlists
+      summary: Playlists visible to the caller
+      operationId: listPlaylists
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Owned, invited and public playlists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelope'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: visibility
+        in: query
+        description: Filter by visibility
+        required: false
+        schema:
+          type: string
+          enum:
+          - PUBLIC
+          - PRIVATE
+      - name: page
+        in: query
+        description: Page number
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: limit
+        in: query
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+          default: 20
+          minimum: 1
+          maximum: 100
+  /user/playlist/playlist:
+    get:
+      tags:
+      - Playlists
+      summary: One playlist with its tracks and members
+      operationId: getPlaylist
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Playlist'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: playlist_id
+        in: query
+        description: Playlist id
+        required: true
+        schema:
+          type: string
+  /user/playlist/create:
+    post:
+      tags:
+      - Playlists
+      summary: Create a playlist
+      operationId: createPlaylist
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistCreateRequest'
+  /user/playlist/update:
+    patch:
+      tags:
+      - Playlists
+      summary: Update a playlist
+      operationId: updatePlaylist
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePlaylistRequest'
+  /user/playlist/delete:
+    delete:
+      tags:
+      - Playlists
+      summary: Delete a playlist
+      operationId: deletePlaylist
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistRemoveMusicRequest'
+        description: Body only needs `playlistId`.
+  /user/playlist/addMusic:
+    post:
+      tags:
+      - Playlists
+      summary: Add a track to a playlist
+      operationId: addPlaylistTrack
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistTrackAddRequest'
+  /user/playlist/removeMusic:
+    delete:
+      tags:
+      - Playlists
+      summary: Remove a track from a playlist
+      operationId: removePlaylistTrack
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistRemoveMusicRequest'
+  /user/playlist/move:
+    post:
+      tags:
+      - Playlists
+      summary: Move a track inside a playlist (alias of PATCH)
+      operationId: movePlaylistTrackPost
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      deprecated: true
+      description: Kept for older clients. Prefer PATCH on the same path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistTrackMoveRequest'
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - Playlists
+      summary: Move a track inside a playlist
+      operationId: movePlaylistTrack
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistTrackMoveRequest'
+  /user/playlist/members:
+    get:
+      tags:
+      - Playlists
+      summary: Members and pending invitations
+      operationId: listPlaylistMembers
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Playlist'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: playlist_id
+        in: query
+        description: Playlist id
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - Playlists
+      summary: Invite a user by username
+      operationId: invitePlaylistMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistInviteRequest'
+    patch:
+      tags:
+      - Playlists
+      summary: Change a member role or accept an invitation
+      operationId: updatePlaylistMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistMemberRequest'
+    delete:
+      tags:
+      - Playlists
+      summary: Remove a member or decline an invitation
+      operationId: removePlaylistMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification, retry with the latest version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistAcceptRequest'
+  /user/event/events:
+    get:
+      tags:
+      - Events
+      summary: Events visible to the caller
+      operationId: listEvents
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelope'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: limit
+        in: query
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+          default: 20
+          minimum: 1
+          maximum: 100
+  /user/event/event:
+    get:
+      tags:
+      - Events
+      summary: One event with its tracks, votes and members
+      operationId: getEvent
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found or not readable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: event_id
+        in: query
+        description: Event id
+        required: true
+        schema:
+          type: string
+  /user/event/create:
+    post:
+      tags:
+      - Events
+      summary: Create an event
+      operationId: createEvent
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+  /user/event/update:
+    patch:
+      tags:
+      - Events
+      summary: Update an event
+      operationId: updateEvent
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
+  /user/event/delete:
+    delete:
+      tags:
+      - Events
+      summary: Delete an event
+      operationId: deleteEvent
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMemberRefRequest'
+        description: Body only needs `eventId`.
+  /user/event/track:
+    post:
+      tags:
+      - Events
+      summary: Suggest a track
+      operationId: suggestTrack
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventTrackRequest'
+  /user/event/vote:
+    put:
+      tags:
+      - Events
+      summary: Vote for a suggested track
+      operationId: voteTrack
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteRequest'
+        description: Body needs `eventId` and `trackId`.
+    delete:
+      tags:
+      - Events
+      summary: Withdraw a vote
+      operationId: removeVote
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteRequest'
+        description: Body needs `eventId` and `trackId`.
+  /user/event/queue:
+    get:
+      tags:
+      - Events
+      summary: Approved queue with the current track
+      operationId: eventQueue
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: event_id
+        in: query
+        description: Event id
+        required: true
+        schema:
+          type: string
+  /user/event/status:
+    patch:
+      tags:
+      - Events
+      summary: Change the playback status
+      operationId: updateEventStatus
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventStatusRequest'
+  /user/event/members:
+    get:
+      tags:
+      - Events
+      summary: Members and pending invitations
+      operationId: listEventMembers
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: event_id
+        in: query
+        description: Event id
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - Events
+      summary: Invite a user to an event
+      operationId: inviteEventMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMemberInviteRequest'
+    patch:
+      tags:
+      - Events
+      summary: Change a role, accept or decline an invitation
+      operationId: updateEventMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMemberRoleRequest'
+    delete:
+      tags:
+      - Events
+      summary: Remove a member, leave or decline
+      operationId: removeEventMember
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Concurrent modification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMemberRefRequest'
+  /user/device/devices:
+    get:
+      tags:
+      - Devices
+      summary: Devices owned or delegated to the caller
+      operationId: listDevices
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Devices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceListResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/device/register:
+    post:
+      tags:
+      - Devices
+      summary: Register or refresh a device
+      operationId: registerDevice
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDeviceRequest'
+  /user/device/state:
+    get:
+      tags:
+      - Devices
+      summary: Playback state of a device
+      operationId: deviceState
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceState'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: device_id
+        in: query
+        description: Device id
+        required: true
+        schema:
+          type: string
+  /user/device/control:
+    post:
+      tags:
+      - Devices
+      summary: Run a playback command
+      operationId: controlDevice
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceControlRequest'
+  /user/device/delegate:
+    post:
+      tags:
+      - Devices
+      summary: Grant CONTROL or VIEW to a user
+      operationId: delegateDevice
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceDelegationRequest'
+    delete:
+      tags:
+      - Devices
+      summary: Revoke a delegation
+      operationId: revokeDelegation
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceDelegationRequest'
+  /user/device/revoke:
+    post:
+      tags:
+      - Devices
+      summary: Revoke a device
+      operationId: revokeDevice
+      security:
+      - cookieAuth: []
+      - csrfAuth: []
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceControlRevokeRequest'

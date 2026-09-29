@@ -1,6 +1,6 @@
 import { errorHandler } from '@/utils/error';
 import { requireVerifiedEmail } from '@/lib/require-verified-email';
-import { canReadEvent } from '@/lib/permissions';
+import { canReadEvent, decideEventEdit } from '@/lib/permissions';
 import { getEventById } from '../../../../prisma/database/musicEvent';
 import { getTrack } from '../../../../prisma/database/deezer';
 
@@ -40,6 +40,8 @@ export async function GET(req: Request): Promise<Response> {
 
 		tracks.sort((a, b) => b.voteCount - a.voteCount || a.createdAt.getTime() - b.createdAt.getTime());
 
+		const mine = event.members.find((m) => m.userId === userId);
+
 		return Response.json(
 			{
 				success: true,
@@ -61,9 +63,18 @@ export async function GET(req: Request): Promise<Response> {
 						username: m.user.username,
 						avatarUrl: m.user.avatarUrl,
 						role: m.role,
+						status: m.acceptedAt ? 'ACCEPTED' : 'PENDING',
 					})),
+					myRole: mine?.role ?? null,
+					myInvitationStatus: mine ? (mine.acceptedAt ? 'ACCEPTED' : 'PENDING') : null,
+					canEdit: decideEventEdit(
+						{
+							ownerId: event.ownerId,
+							members: mine?.acceptedAt && mine.role !== 'MEMBER' ? [mine] : [],
+						},
+						userId
+					),
 					tracks,
-					canEdit: event.ownerId === userId,
 				},
 			},
 			{ status: 200 }

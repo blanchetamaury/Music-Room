@@ -12,8 +12,9 @@ import {
 const DEEZER_API = 'https://api.deezer.com';
 
 async function getTrack(deezerId: string) {
-	const [trackToDb, checkToDb] = await findTrackToDb(deezerId);
-	if (trackToDb != null) return trackToDb;
+	const [trackToDb, isFresh] = await findTrackToDb(deezerId);
+
+	if (trackToDb != null && isFresh) return trackToDb;
 
 	const track = await getDeezerTrack(deezerId);
 
@@ -21,34 +22,34 @@ async function getTrack(deezerId: string) {
 		throw new DeezerTrackNotPlayableError(deezerId);
 	}
 
-	if (checkToDb == true) {
-		return updatePreviewTrack({ album: true, artists: true }, track.previewUrl!, track.deezerCUID);
-	} else {
-		const trackData: createAllDataTrack = {
-			deezerCUID: track.deezerCUID,
-			title: track.title,
-			titleShort: track.titleShort,
-			duration: track.duration,
-			explicit: track.explicit,
-			previewUrl: track.previewUrl,
-			releaseDate: track.releaseDate,
-			rank: track.rank,
-			trackPosition: track.trackPosition,
-			diskNumber: track.diskNumber,
-			bpm: track.bpm,
-			explicitContentCover: track.explicitContentCover,
-			artists: [],
-			albumId: null,
-			album: null,
-		};
-
-		const newTrack = await listArtist(track, trackData);
-
-		const finalTrack = await getAlbumToDeezer(track, newTrack);
-
-		await createOrUpdateAllDataTrack({ album: true, artists: true }, finalTrack);
-		return finalTrack;
+	if (trackToDb != null) {
+		return updatePreviewTrack({ album: true, artists: true }, track.previewUrl, track.deezerCUID);
 	}
+
+	const trackData: createAllDataTrack = {
+		deezerCUID: track.deezerCUID,
+		title: track.title,
+		titleShort: track.titleShort,
+		duration: track.duration,
+		explicit: track.explicit,
+		previewUrl: track.previewUrl,
+		releaseDate: track.releaseDate,
+		rank: track.rank,
+		trackPosition: track.trackPosition,
+		diskNumber: track.diskNumber,
+		bpm: track.bpm,
+		explicitContentCover: track.explicitContentCover,
+		artists: [],
+		albumId: null,
+		album: null,
+	};
+
+	const newTrack = await listArtist(track, trackData);
+
+	const finalTrack = await getAlbumToDeezer(track, newTrack);
+
+	await createOrUpdateAllDataTrack({ album: true, artists: true }, finalTrack);
+	return finalTrack;
 }
 
 async function searchTracks(query: string, limit = 25) {

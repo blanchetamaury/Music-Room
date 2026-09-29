@@ -7,14 +7,16 @@ const createEvent = async (data: Prisma.MusicEventCreateInput) => {
 };
 
 const getEventById = async (id: string) => {
-	return prisma.musicEvent.findUnique({
-		where: { id },
-		include: {
-			owner: true,
-			members: { include: { user: true } },
-			tracks: { include: { votes: true } },
-		},
-	});
+	const event = await prisma.musicEvent.findUnique({ where: { id } });
+	if (!event) return null;
+
+	const [owner, members, tracks] = await Promise.all([
+		prisma.user.findUnique({ where: { id: event.ownerId } }),
+		prisma.musicEventMember.findMany({ where: { eventId: id }, include: { user: true } }),
+		prisma.eventTrack.findMany({ where: { eventId: id }, include: { votes: true } }),
+	]);
+
+	return { ...event, owner, members, tracks };
 };
 
 const getEvents = async (
@@ -22,7 +24,11 @@ const getEvents = async (
 	options?: { visibility?: 'PUBLIC' | 'PRIVATE'; page?: number; limit?: number }
 ) => {
 	const where: Prisma.MusicEventWhereInput = {
-		OR: [{ visibility: 'PUBLIC' }, { members: { some: { userId, acceptedAt: { not: null } } } }],
+		OR: [
+			{ visibility: 'PUBLIC' },
+			{ ownerId: userId },
+			{ members: { some: { userId } } },
+		],
 	};
 
 	if (options?.visibility) {
@@ -35,7 +41,7 @@ const getEvents = async (
 	const [events, total] = await Promise.all([
 		prisma.musicEvent.findMany({
 			where,
-			include: { owner: true, members: true },
+			include: { owner: true, members: { where: { acceptedAt: { not: null } } } },
 			skip: (page - 1) * limit,
 			take: limit,
 			orderBy: { createdAt: 'desc' },
@@ -166,7 +172,6 @@ const assertTrackInEvent = async (tx: Prisma.TransactionClient, eventId: string,
 	if (!track) throw new TrackNotInEventError();
 };
 
-/** Idempotent add-vote: voting twice is not an error and never double counts. */
 const addVote = async (
 	eventId: string,
 	trackId: string,
@@ -188,8 +193,6 @@ const addVote = async (
 		try {
 			await tx.eventVote.create({ data: { eventId, trackId, userId } });
 		} catch (e) {
-			// Two concurrent votes for the same user and track both pass the pre-check;
-			// the loser must still observe a successful, idempotent state.
 			if (isUniqueViolation(e)) {
 				const voteCount = await syncVoteCount(tx, eventId, trackId);
 				return { voted: true, voteCount, created: false };
@@ -202,7 +205,6 @@ const addVote = async (
 	});
 };
 
-/** Idempotent remove-vote: removing a vote that does not exist is a no-op, not a 404. */
 const removeVote = async (
 	eventId: string,
 	trackId: string,

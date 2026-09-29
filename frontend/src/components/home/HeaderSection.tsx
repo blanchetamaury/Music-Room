@@ -1,12 +1,12 @@
 import { useAuth } from '@/src/context/AuthContext';
-import { DeezerTrack } from '@/src/types/deezer/deezer';
+import { PlayerTrack } from '@/src/types/player/PlayerTrack';
 import { View } from 'react-native';
 import LiquidGlass from '../utils/LiquidGlass';
 import { ThemedText } from '../utils/themed-text';
 import { styles } from './HeaderSection.styles';
 
 interface HeaderSectionProps {
-	currentTrack: DeezerTrack | null;
+	currentTrack: Pick<PlayerTrack, 'title'> | null;
 }
 
 export function HeaderSection({ currentTrack }: HeaderSectionProps) {

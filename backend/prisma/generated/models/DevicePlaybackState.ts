@@ -13,11 +13,7 @@ import type * as Prisma from '../internal/prismaNamespace';
 
 /**
  * Model DevicePlaybackState
- * Server-side playback state for a delegated speaker.
  *
- * Delegating `CONTROL` has to mean something more than a permission row: the commands
- * (`play`, `pause`, `next`, `previous`, queue changes) mutate this row, so any client
- * holding `CONTROL` sees the same player state and the owner sees it too.
  */
 export type DevicePlaybackStateModel = runtime.Types.Result.DefaultSelection<Prisma.$DevicePlaybackStatePayload>;
 
@@ -63,6 +59,7 @@ export type DevicePlaybackStateCountAggregateOutputType = {
 	deviceId: number;
 	status: number;
 	queue: number;
+	history: number;
 	currentTrackId: number;
 	positionMs: number;
 	volume: number;
@@ -105,6 +102,7 @@ export type DevicePlaybackStateCountAggregateInputType = {
 	deviceId?: true;
 	status?: true;
 	queue?: true;
+	history?: true;
 	currentTrackId?: true;
 	positionMs?: true;
 	volume?: true;
@@ -205,6 +203,7 @@ export type DevicePlaybackStateGroupByOutputType = {
 	deviceId: string;
 	status: $Enums.PlaybackStatus;
 	queue: string[];
+	history: string[];
 	currentTrackId: string | null;
 	positionMs: number;
 	volume: number;
@@ -236,6 +235,7 @@ export type DevicePlaybackStateWhereInput = {
 	deviceId?: Prisma.StringFilter<'DevicePlaybackState'> | string;
 	status?: Prisma.EnumPlaybackStatusFilter<'DevicePlaybackState'> | $Enums.PlaybackStatus;
 	queue?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
+	history?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
 	currentTrackId?: Prisma.StringNullableFilter<'DevicePlaybackState'> | string | null;
 	positionMs?: Prisma.IntFilter<'DevicePlaybackState'> | number;
 	volume?: Prisma.IntFilter<'DevicePlaybackState'> | number;
@@ -248,6 +248,7 @@ export type DevicePlaybackStateOrderByWithRelationInput = {
 	deviceId?: Prisma.SortOrder;
 	status?: Prisma.SortOrder;
 	queue?: Prisma.SortOrder;
+	history?: Prisma.SortOrder;
 	currentTrackId?: Prisma.SortOrderInput | Prisma.SortOrder;
 	positionMs?: Prisma.SortOrder;
 	volume?: Prisma.SortOrder;
@@ -264,6 +265,7 @@ export type DevicePlaybackStateWhereUniqueInput = Prisma.AtLeast<
 		NOT?: Prisma.DevicePlaybackStateWhereInput | Prisma.DevicePlaybackStateWhereInput[];
 		status?: Prisma.EnumPlaybackStatusFilter<'DevicePlaybackState'> | $Enums.PlaybackStatus;
 		queue?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
+		history?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
 		currentTrackId?: Prisma.StringNullableFilter<'DevicePlaybackState'> | string | null;
 		positionMs?: Prisma.IntFilter<'DevicePlaybackState'> | number;
 		volume?: Prisma.IntFilter<'DevicePlaybackState'> | number;
@@ -278,6 +280,7 @@ export type DevicePlaybackStateOrderByWithAggregationInput = {
 	deviceId?: Prisma.SortOrder;
 	status?: Prisma.SortOrder;
 	queue?: Prisma.SortOrder;
+	history?: Prisma.SortOrder;
 	currentTrackId?: Prisma.SortOrderInput | Prisma.SortOrder;
 	positionMs?: Prisma.SortOrder;
 	volume?: Prisma.SortOrder;
@@ -301,6 +304,7 @@ export type DevicePlaybackStateScalarWhereWithAggregatesInput = {
 	deviceId?: Prisma.StringWithAggregatesFilter<'DevicePlaybackState'> | string;
 	status?: Prisma.EnumPlaybackStatusWithAggregatesFilter<'DevicePlaybackState'> | $Enums.PlaybackStatus;
 	queue?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
+	history?: Prisma.StringNullableListFilter<'DevicePlaybackState'>;
 	currentTrackId?: Prisma.StringNullableWithAggregatesFilter<'DevicePlaybackState'> | string | null;
 	positionMs?: Prisma.IntWithAggregatesFilter<'DevicePlaybackState'> | number;
 	volume?: Prisma.IntWithAggregatesFilter<'DevicePlaybackState'> | number;
@@ -311,6 +315,7 @@ export type DevicePlaybackStateScalarWhereWithAggregatesInput = {
 export type DevicePlaybackStateCreateInput = {
 	status?: $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateCreatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateCreatehistoryInput | string[];
 	currentTrackId?: string | null;
 	positionMs?: number;
 	volume?: number;
@@ -323,6 +328,7 @@ export type DevicePlaybackStateUncheckedCreateInput = {
 	deviceId: string;
 	status?: $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateCreatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateCreatehistoryInput | string[];
 	currentTrackId?: string | null;
 	positionMs?: number;
 	volume?: number;
@@ -333,6 +339,7 @@ export type DevicePlaybackStateUncheckedCreateInput = {
 export type DevicePlaybackStateUpdateInput = {
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -345,6 +352,7 @@ export type DevicePlaybackStateUncheckedUpdateInput = {
 	deviceId?: Prisma.StringFieldUpdateOperationsInput | string;
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -356,6 +364,7 @@ export type DevicePlaybackStateCreateManyInput = {
 	deviceId: string;
 	status?: $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateCreatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateCreatehistoryInput | string[];
 	currentTrackId?: string | null;
 	positionMs?: number;
 	volume?: number;
@@ -366,6 +375,7 @@ export type DevicePlaybackStateCreateManyInput = {
 export type DevicePlaybackStateUpdateManyMutationInput = {
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -377,6 +387,7 @@ export type DevicePlaybackStateUncheckedUpdateManyInput = {
 	deviceId?: Prisma.StringFieldUpdateOperationsInput | string;
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -401,6 +412,7 @@ export type DevicePlaybackStateCountOrderByAggregateInput = {
 	deviceId?: Prisma.SortOrder;
 	status?: Prisma.SortOrder;
 	queue?: Prisma.SortOrder;
+	history?: Prisma.SortOrder;
 	currentTrackId?: Prisma.SortOrder;
 	positionMs?: Prisma.SortOrder;
 	volume?: Prisma.SortOrder;
@@ -498,6 +510,10 @@ export type DevicePlaybackStateCreatequeueInput = {
 	set: string[];
 };
 
+export type DevicePlaybackStateCreatehistoryInput = {
+	set: string[];
+};
+
 export type EnumPlaybackStatusFieldUpdateOperationsInput = {
 	set?: $Enums.PlaybackStatus;
 };
@@ -507,9 +523,15 @@ export type DevicePlaybackStateUpdatequeueInput = {
 	push?: string | string[];
 };
 
+export type DevicePlaybackStateUpdatehistoryInput = {
+	set?: string[];
+	push?: string | string[];
+};
+
 export type DevicePlaybackStateCreateWithoutDeviceInput = {
 	status?: $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateCreatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateCreatehistoryInput | string[];
 	currentTrackId?: string | null;
 	positionMs?: number;
 	volume?: number;
@@ -520,6 +542,7 @@ export type DevicePlaybackStateCreateWithoutDeviceInput = {
 export type DevicePlaybackStateUncheckedCreateWithoutDeviceInput = {
 	status?: $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateCreatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateCreatehistoryInput | string[];
 	currentTrackId?: string | null;
 	positionMs?: number;
 	volume?: number;
@@ -558,6 +581,7 @@ export type DevicePlaybackStateUpdateToOneWithWhereWithoutDeviceInput = {
 export type DevicePlaybackStateUpdateWithoutDeviceInput = {
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -568,6 +592,7 @@ export type DevicePlaybackStateUpdateWithoutDeviceInput = {
 export type DevicePlaybackStateUncheckedUpdateWithoutDeviceInput = {
 	status?: Prisma.EnumPlaybackStatusFieldUpdateOperationsInput | $Enums.PlaybackStatus;
 	queue?: Prisma.DevicePlaybackStateUpdatequeueInput | string[];
+	history?: Prisma.DevicePlaybackStateUpdatehistoryInput | string[];
 	currentTrackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 	positionMs?: Prisma.IntFieldUpdateOperationsInput | number;
 	volume?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -582,6 +607,7 @@ export type DevicePlaybackStateSelect<
 		deviceId?: boolean;
 		status?: boolean;
 		queue?: boolean;
+		history?: boolean;
 		currentTrackId?: boolean;
 		positionMs?: boolean;
 		volume?: boolean;
@@ -599,6 +625,7 @@ export type DevicePlaybackStateSelectCreateManyAndReturn<
 		deviceId?: boolean;
 		status?: boolean;
 		queue?: boolean;
+		history?: boolean;
 		currentTrackId?: boolean;
 		positionMs?: boolean;
 		volume?: boolean;
@@ -616,6 +643,7 @@ export type DevicePlaybackStateSelectUpdateManyAndReturn<
 		deviceId?: boolean;
 		status?: boolean;
 		queue?: boolean;
+		history?: boolean;
 		currentTrackId?: boolean;
 		positionMs?: boolean;
 		volume?: boolean;
@@ -630,6 +658,7 @@ export type DevicePlaybackStateSelectScalar = {
 	deviceId?: boolean;
 	status?: boolean;
 	queue?: boolean;
+	history?: boolean;
 	currentTrackId?: boolean;
 	positionMs?: boolean;
 	volume?: boolean;
@@ -640,7 +669,15 @@ export type DevicePlaybackStateSelectScalar = {
 export type DevicePlaybackStateOmit<
 	ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-	'deviceId' | 'status' | 'queue' | 'currentTrackId' | 'positionMs' | 'volume' | 'updatedBy' | 'updatedAt',
+	| 'deviceId'
+	| 'status'
+	| 'queue'
+	| 'history'
+	| 'currentTrackId'
+	| 'positionMs'
+	| 'volume'
+	| 'updatedBy'
+	| 'updatedAt',
 	ExtArgs['result']['devicePlaybackState']
 >;
 export type DevicePlaybackStateInclude<
@@ -670,14 +707,13 @@ export type $DevicePlaybackStatePayload<
 		{
 			deviceId: string;
 			status: $Enums.PlaybackStatus;
-			/**
-			 * Ids of the tracks in play order. Index 0 is "next to play".
-			 */
 			queue: string[];
-			currentTrackId: string | null;
 			/**
-			 * Playback cursor in milliseconds, so a client joining late can resume in place.
+			 * Previously played tracks, most recent last. `previous` pops from here, which is the
+			 * only way to go back without re-adding the track to the queue.
 			 */
+			history: string[];
+			currentTrackId: string | null;
 			positionMs: number;
 			volume: number;
 			updatedBy: string | null;
@@ -1236,6 +1272,7 @@ export interface DevicePlaybackStateFieldRefs {
 	readonly deviceId: Prisma.FieldRef<'DevicePlaybackState', 'String'>;
 	readonly status: Prisma.FieldRef<'DevicePlaybackState', 'PlaybackStatus'>;
 	readonly queue: Prisma.FieldRef<'DevicePlaybackState', 'String[]'>;
+	readonly history: Prisma.FieldRef<'DevicePlaybackState', 'String[]'>;
 	readonly currentTrackId: Prisma.FieldRef<'DevicePlaybackState', 'String'>;
 	readonly positionMs: Prisma.FieldRef<'DevicePlaybackState', 'Int'>;
 	readonly volume: Prisma.FieldRef<'DevicePlaybackState', 'Int'>;

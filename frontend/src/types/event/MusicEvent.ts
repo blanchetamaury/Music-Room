@@ -16,6 +16,13 @@ export interface EventMember {
 	username: string;
 	avatarUrl: string | null;
 	role: EventRole;
+	/** Pending until the invitation is accepted; the backend sends it on the members list. */
+	status?: 'PENDING' | 'ACCEPTED';
+}
+
+export interface EventMembersResponse {
+	members: EventMember[];
+	pendingInvites: string[];
 }
 
 export interface EventTrack {
@@ -49,6 +56,8 @@ export interface MusicEvent extends Omit<MusicEventSummary, 'memberCount' | 'own
 	members: EventMember[];
 	tracks: EventTrack[];
 	canEdit: boolean;
+	myRole: EventRole | null;
+	myInvitationStatus: 'PENDING' | 'ACCEPTED' | null;
 }
 
 export interface GeoPosition {
